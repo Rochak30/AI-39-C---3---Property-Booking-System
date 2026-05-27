@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Create Account — Bookmandu{% endblock %}
+
+{% block extra_css %}
+<style>
+.auth-page {
+  min-height: calc(100vh - 64px); display: grid; grid-template-columns: 1fr 1fr;
+  margin-top: 64px;
+}
+.auth-visual {
+  background: linear-gradient(135deg, #0d1f3c 0%, #1a3a5c 50%, #0d2a2a 100%);
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  padding: 60px; position: relative; overflow: hidden;
+}
+.auth-visual::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 60%, rgba(26,188,156,0.12) 0%, transparent 70%);
+}
+.auth-visual-content { position: relative; z-index: 1; text-align: center; }
+.auth-visual-logo { font-family: var(--font-display); font-size: 48px; font-weight: 800; margin-bottom: 16px; }
+.auth-visual-logo span { color: var(--teal); }
+.auth-visual-tagline { font-size: 18px; color: var(--text-secondary); line-height: 1.6; }
+.auth-form-side {
+  display: flex; align-items: center; justify-content: center;
+  padding: 60px 80px; background: var(--bg-900);
+}
+.auth-form-container { width: 100%; max-width: 420px; }
+.auth-title { font-family: var(--font-display); font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+.auth-subtitle { color: var(--text-secondary); margin-bottom: 36px; font-size: 15px; }
+.auth-form { display: flex; flex-direction: column; gap: 18px; }
+.auth-footer { margin-top: 20px; text-align: center; font-size: 14px; color: var(--text-secondary); }
+.auth-link { color: var(--teal); font-weight: 600; }
+.auth-link:hover { text-decoration: underline; }
+.role-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.role-option {
+  padding: 14px; border-radius: var(--radius-md); border: 2px solid var(--border);
+  cursor: pointer; text-align: center; transition: var(--transition); background: var(--bg-700);
+}
+.role-option:hover { border-color: var(--teal); }
+.role-option.selected { border-color: var(--teal); background: var(--teal-glow); }
+.role-icon { font-size: 24px; margin-bottom: 6px; }
+.role-name { font-size: 14px; font-weight: 700; }
+@media (max-width: 1024px) { .auth-visual { display: none; } .auth-page { grid-template-columns: 1fr; } .auth-form-side { padding: 40px 24px; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-visual">
+    <div class="auth-visual-content">
+      <div class="auth-visual-logo">Book<span>mandu</span></div>
+      <p class="auth-visual-tagline">Join as a Guest to explore<br>or as a Host to earn</p>
+      <div style="margin-top:48px;background:var(--teal-glow);border:1px solid var(--border-teal);border-radius:16px;padding:24px;text-align:left">
+        <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">✓ Free to join, no booking fees for guests</p>
+        <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">✓ Book homestays in Nepali Rupees</p>
+        <p style="font-size:14px;color:var(--text-secondary)">✓ Verified reviews from real travelers</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-form-side">
+    <div class="auth-form-container">
+      <h2 class="auth-title">Create Your Account</h2>
+      <p class="auth-subtitle">Join Bookmandu today</p>
+
+      <form class="auth-form" method="POST" action="/register">
+        {{ csrf_token() if csrf_token is defined }}
+        <input type="hidden" name="role" id="role-input" value="guest">
+
+        <div class="form-group">
+          <label class="form-label">I am joining as</label>
+          <div class="role-selector">
+            <div class="role-option selected" onclick="selectRole('guest', this)">
+              <div class="role-icon">👤</div>
+              <div class="role-name">Guest</div>
+              <div style="font-size:12px;color:var(--text-muted)">Book stays</div>
+            </div>
+            <div class="role-option" onclick="selectRole('host', this)">
+              <div class="role-icon">🏠</div>
+              <div class="role-name">Host</div>
+              <div style="font-size:12px;color:var(--text-muted)">List property</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" name="name" placeholder="Ramesh Sharma" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" name="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" name="phone" placeholder="+977 98XXXXXXXX">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password (min. 8 characters)</label>
+          <input type="password" class="form-input" name="password" placeholder="••••••••"
+                 oninput="checkPassStrength(this.value)" minlength="8" required>
+          <div id="pass-strength" style="height:4px;border-radius:2px;background:var(--bg-500);margin-top:6px;overflow:hidden">
+            <div id="pass-bar" style="height:100%;width:0;transition:all 0.3s;border-radius:2px"></div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center">Create Account</button>
+      </form>
+      <div class="auth-footer">Already have an account? <a href="/login" class="auth-link">Sign in</a></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function selectRole(role, el) {
+  document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('role-input').value = role;
+}
+function checkPassStrength(val) {
+  const bar = document.getElementById('pass-bar');
+  const pct = Math.min(100, val.length * 8);
+  bar.style.width = pct + '%';
+  bar.style.background = pct < 40 ? '#e74c3c' : pct < 70 ? '#f0a500' : '#2ecc71';
+}
+</script>
+{% endblock %}

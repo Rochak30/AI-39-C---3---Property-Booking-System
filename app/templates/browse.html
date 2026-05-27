@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block title %}Browse Properties — Bookmandu{% endblock %}
+
+{% block extra_css %}
+<style>
+.browse-header {
+  padding: 40px 24px 32px; background: var(--bg-800);
+  border-bottom: 1px solid var(--border); margin-top: 64px;
+}
+.browse-title { font-family: var(--font-display); font-size: 32px; font-weight: 800; margin-bottom: 20px; }
+.filters-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.filter-group { display: flex; align-items: center; gap: 6px; }
+.filter-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
+.filter-pills { display: flex; gap: 6px; }
+.filter-pill {
+  padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 500;
+  background: var(--bg-600); border: 1px solid var(--border); color: var(--text-secondary);
+  cursor: pointer; transition: var(--transition); white-space: nowrap;
+}
+.filter-pill:hover, .filter-pill.active { background: var(--teal-glow); border-color: var(--border-teal); color: var(--teal); }
+.price-inputs { display: flex; align-items: center; gap: 8px; }
+.price-input {
+  width: 100px; padding: 7px 12px; background: var(--bg-700);
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text-primary); font-size: 13px;
+}
+.price-input:focus { border-color: var(--teal); outline: none; }
+.browse-body { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
+.browse-results-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.results-count { font-size: 14px; color: var(--text-secondary); }
+.results-count strong { color: var(--text-primary); }
+.sort-select {
+  padding: 7px 34px 7px 12px; background: var(--bg-700); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text-primary); font-size: 13px;
+  appearance: none; cursor: pointer; outline: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238b949e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+}
+@media (max-width: 768px) {
+  .browse-header { padding-left: 16px; padding-right: 16px; }
+  .filters-bar { gap: 8px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="browse-header">
+  <div class="container">
+    <h1 class="browse-title">Browse Properties</h1>
+    <p style="color:var(--text-secondary);margin-bottom:20px">Find your perfect stay across Nepal</p>
+    <div class="filters-bar">
+      <div class="filter-group">
+        <span class="filter-label">Type</span>
+        <div class="filter-pills">
+          <span class="filter-pill active" onclick="applyFilter('type','all',this)">All</span>
+          <span class="filter-pill" onclick="applyFilter('type','homestay',this)">Homestay</span>
+          <span class="filter-pill" onclick="applyFilter('type','guesthouse',this)">Guesthouse</span>
+          <span class="filter-pill" onclick="applyFilter('type','private-room',this)">Private Room</span>
+          <span class="filter-pill" onclick="applyFilter('type','entire-property',this)">Entire Property</span>
+        </div>
+      </div>
+      <div class="filter-group" style="margin-left:auto">
+        <span class="filter-label">Price (NPR)</span>
+        <div class="price-inputs">
+          <input class="price-input" type="number" placeholder="Min" id="price-min" onchange="applyPriceFilter()">
+          <span style="color:var(--text-muted)">–</span>
+          <input class="price-input" type="number" placeholder="Max" id="price-max" onchange="applyPriceFilter()">
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Amenity</span>
+        <div class="filter-pills">
+          <span class="filter-pill" onclick="applyFilter('amenity','wifi',this)">WiFi</span>
+          <span class="filter-pill" onclick="applyFilter('amenity','breakfast',this)">Breakfast</span>
+          <span class="filter-pill" onclick="applyFilter('amenity','parking',this)">Parking</span>
+          <span class="filter-pill" onclick="applyFilter('amenity','kitchen',this)">Kitchen</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="browse-body">
+  <div class="browse-results-meta">
+    <span class="results-count" id="results-count"><strong>8</strong> properties found</span>
+    <select class="sort-select" onchange="sortProperties(this.value)">
+      <option value="popular">Sort: Most Popular</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="rating">Highest Rated</option>
+    </select>
+  </div>
+  <div class="props-grid" id="browse-grid"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  renderBrowse();
+  // Check URL params for region filter
+  const params = new URLSearchParams(window.location.search);
+  const region = params.get('region');
+  if (region && region !== 'all') {
+    window._regionFilter = region;
+    renderBrowse();
+  }
+});
+
+function renderBrowse() {
+  const props = getFilteredProps();
+  const grid = document.getElementById('browse-grid');
+  document.getElementById('results-count').innerHTML = `<strong>${props.length}</strong> properties found`;
+  grid.innerHTML = props.length
+    ? props.map(p => buildCard(p, true)).join('')
+    : '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted)"><div style="font-size:48px;margin-bottom:16px">🔍</div><div>No properties found matching your filters.</div></div>';
+}
+
+function buildCard(p, linkToDetail) {
+  const inWishlist = wishlist.includes(p.id);
+  const href = linkToDetail ? `/property/${p.id}` : `javascript:void(0)`;
+  return `
+    <div class="prop-card" onclick="window.location.href='/property/${p.id}'">
+      <div class="prop-img-placeholder">
+        <span style="position:relative;z-index:1">${p.icon}</span>
+        <div class="prop-badge-row">
+          <span class="prop-type-badge">${p.type}</span>
+          ${p.trending ? '<span class="prop-trending">🔥 Trending</span>' : ''}
+        </div>
+        <div class="prop-wishlist ${inWishlist ? 'active' : ''}" onclick="event.stopPropagation();toggleWishlist(${p.id},this)">
+          ${inWishlist ? '❤️' : '🤍'}
+        </div>
+      </div>
+      <div class="prop-body">
+        <div class="prop-location">📍 ${p.region}</div>
+        <div class="prop-title">${p.title}</div>
+        <div class="prop-amenities">
+          ${p.amenities.slice(0,3).map(a => `<span class="amenity-tag">${a}</span>`).join('')}
+          ${p.amenities.length > 3 ? `<span class="amenity-tag">+${p.amenities.length-3}</span>` : ''}
+        </div>
+        <div class="prop-footer">
+          <div class="prop-price">
+            <span class="prop-price-amount">NPR ${p.price.toLocaleString()}</span>
+            <span class="prop-price-night">/ night</span>
+          </div>
+          <div>
+            <div class="prop-rating"><span class="prop-rating-star">★</span>${p.rating} <span class="prop-rating-count">(${p.reviews})</span></div>
+            <div class="prop-bookings">🔥 ${p.bookings} bookings</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+</script>
+{% endblock %}

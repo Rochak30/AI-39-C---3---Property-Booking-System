@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        Bookmandu — Explore Nepal
+        {% endblock %}
+    </title>
+
+    <!-- Fonts -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+          rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static',
+          filename='css/style.css') }}">
+
+    {% block extra_css %}
+    {% endblock %}
+</head>
+
+<body>
+body {
+
+    padding-top: 64px;
+
+}
+    <!-- NAV -->
+    <nav class="nav">
+        <div class="nav-inner">
+
+            <a href="{{ url_for('auth.home') }}"
+               class="nav-logo">
+
+                <div class="nav-logo-icon">
+                    🏔
+                </div>
+
+                <div class="nav-logo-text">
+                    Book<span>mandu</span>
+                </div>
+            </a>
+
+            <div class="nav-links">
+
+                <a href="{{ url_for('auth.home') }}"
+                   class="nav-link {% if request.endpoint == 'auth.home' %}active{% endif %}">
+                    Home
+                </a>
+
+                <a href="{{ url_for('auth.browse') }}"
+                   class="nav-link {% if request.endpoint == 'auth.browse' %}active{% endif %}">
+                    Browse
+                </a>
+
+                <a href="{{ url_for('auth.guest_dashboard') }}"
+                   class="nav-link {% if request.endpoint == 'auth.guest_dashboard' %}active{% endif %}">
+                    Guest
+                </a>
+
+                <a href="{{ url_for('auth.host_dashboard') }}"
+                   class="nav-link {% if request.endpoint == 'auth.host_dashboard' %}active{% endif %}">
+                    Host
+                </a>
+
+                <a href="{{ url_for('auth.admin') }}"
+                   class="nav-link {% if request.endpoint == 'auth.admin' %}active{% endif %}">
+                    Admin
+                </a>
+
+                <a href="{{ url_for('auth.faq') }}"
+                   class="nav-link {% if request.endpoint == 'auth.faq' %}active{% endif %}">
+                    FAQ
+                </a>
+
+                <a href="{{ url_for('auth.contact') }}"
+                   class="nav-link {% if request.endpoint == 'auth.contact' %}active{% endif %}">
+                    Contact
+                </a>
+
+            </div>
+
+            <div class="nav-actions">
+
+                <div class="nav-role-badge">
+                    au: GUEST ✦
+                </div>
+
+                <button class="btn-icon"
+                        onclick="toggleTheme()"
+                        title="Toggle theme"
+                        id="theme-btn">
+                    🌙
+                </button>
+
+                <a href="{{ url_for('auth.login') }}"
+                   class="btn btn-ghost btn-sm">
+                    Login
+                </a>
+
+                <a href="{{ url_for('auth.register') }}"
+                   class="btn btn-primary btn-sm">
+                    Register
+                </a>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Toast Container -->
+    <div class="toast-container"
+         id="toasts"></div>
+
+    <!-- Modal -->
+    <div class="modal-overlay"
+         id="modal-overlay"
+         onclick="closeModal(event)">
+
+        <div class="modal"
+             id="modal">
+
+            <div class="modal-header">
+
+                <span class="modal-title"
+                      id="modal-title">
+                    Confirm Action
+                </span>
+
+                <button class="modal-close"
+                        onclick="closeModal()">
+                    ✕
+                </button>
+
+            </div>
+
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    {% block content %}
+    {% endblock %}
+
+    <!-- JS -->
+    <script src="{{ url_for('static',
+        filename='js/app.js') }}">
+    </script>
+
+    {% block extra_js %}
+    {% endblock %}
+
+</body>
+</html>

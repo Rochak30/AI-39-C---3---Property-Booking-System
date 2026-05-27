@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block title %}Guest Dashboard — Bookmandu{% endblock %}
+
+{% block extra_css %}
+<style>
+.dashboard-layout { max-width: 1280px; margin: 0 auto; padding: 40px 24px; display: grid; grid-template-columns: 260px 1fr; gap: 32px; margin-top: 64px; }
+.sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; height: fit-content; position: sticky; top: 84px; }
+.sidebar-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--cyan)); display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 14px; }
+.sidebar-name { font-family: var(--font-display); font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+.sidebar-email { font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 24px; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+.sidebar-link { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: var(--transition); text-decoration: none; }
+.sidebar-link:hover { background: var(--bg-600); color: var(--text-primary); }
+.sidebar-link.active { background: var(--teal-glow); color: var(--teal); border-left: 3px solid var(--teal); margin-left: -3px; }
+.sidebar-icon { font-size: 18px; width: 20px; }
+.dash-greeting { margin-bottom: 32px; }
+.dash-greeting h2 { font-family: var(--font-display); font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+.dash-greeting p { color: var(--text-secondary); font-size: 15px; }
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+.stat-card { padding: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); text-align: center; transition: var(--transition); }
+.stat-card:hover { border-color: var(--border-teal); }
+.stat-value { font-family: var(--font-display); font-size: 32px; font-weight: 800; color: var(--teal); }
+.stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+.booking-list { display: flex; flex-direction: column; gap: 16px; }
+.booking-item { display: flex; align-items: center; gap: 16px; padding: 18px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); transition: var(--transition); }
+.booking-item:hover { border-color: var(--border-teal); }
+.booking-img { width: 80px; height: 80px; border-radius: var(--radius-sm); background: var(--bg-700); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; }
+.booking-info { flex: 1; }
+.booking-prop-name { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+.booking-dates { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
+.booking-ref { font-size: 11px; color: var(--text-muted); font-family: monospace; }
+.booking-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+.wishlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.wishlist-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; transition: var(--transition); }
+.wishlist-card:hover { border-color: var(--border-teal); }
+.wishlist-img { height: 130px; background: var(--bg-700); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+.wishlist-info { padding: 12px; }
+.wishlist-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.wishlist-price { font-size: 13px; color: var(--teal); font-weight: 600; }
+@media (max-width: 768px) { .dashboard-layout { grid-template-columns: 1fr; } .sidebar { position: static; } .stats-row { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <div class="sidebar-avatar">👤</div>
+    <div class="sidebar-name">Ramesh Sharma</div>
+    <div class="sidebar-email">ramesh@gmail.com</div>
+    <nav class="sidebar-nav">
+      <a href="#" class="sidebar-link active" onclick="showTab('bookings',this);return false"><span class="sidebar-icon">📋</span>My Bookings</a>
+      <a href="#" class="sidebar-link" onclick="showTab('wishlist',this);return false"><span class="sidebar-icon">❤️</span>My Wishlist</a>
+      <a href="#" class="sidebar-link" onclick="showTab('profile',this);return false"><span class="sidebar-icon">⚙️</span>My Profile</a>
+      <a href="/logout" class="sidebar-link" style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px"><span class="sidebar-icon">🚪</span>Sign Out</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="dash-greeting">
+      <h2>Welcome back, <span class="text-teal">Ramesh</span>! 👋</h2>
+      <p>Manage your bookings, wishlist, and profile from here.</p>
+    </div>
+
+    <!-- Bookings Tab -->
+    <div id="tab-bookings">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Total Bookings</div></div>
+        <div class="stat-card"><div class="stat-value">1</div><div class="stat-label">Upcoming Stays</div></div>
+        <div class="stat-card"><div class="stat-value">5</div><div class="stat-label">Saved Properties</div></div>
+      </div>
+      <h3 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:16px">My Bookings</h3>
+      <div class="booking-list" id="guest-bookings"></div>
+    </div>
+
+    <!-- Wishlist Tab -->
+    <div id="tab-wishlist" class="hidden">
+      <h3 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:16px">My Wishlist</h3>
+      <div class="wishlist-grid" id="wishlist-grid"></div>
+    </div>
+
+    <!-- Profile Tab -->
+    <div id="tab-profile" class="hidden">
+      <h3 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:24px">My Profile</h3>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:500px">
+        <form style="display:flex;flex-direction:column;gap:16px" onsubmit="saveProfile(event)">
+          <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" value="Ramesh Sharma"></div>
+          <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" value="ramesh@gmail.com"></div>
+          <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-input" value="+977 9841234567"></div>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Cancel Modal -->
+<div class="modal-overlay" id="cancel-modal" onclick="closeCancelModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Cancel Booking</span>
+      <button class="modal-close" onclick="closeCancelModal()">✕</button>
+    </div>
+    <p style="color:var(--text-secondary);margin-bottom:20px">Please provide a reason for your cancellation.</p>
+    <div class="form-group" style="margin-bottom:20px">
+      <label class="form-label">Reason for Cancellation</label>
+      <textarea class="form-input" rows="3" placeholder="Please explain why you need to cancel..." style="resize:vertical"></textarea>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-danger" style="flex:1;justify-content:center" onclick="submitCancel()">Submit Request</button>
+      <button class="btn btn-ghost" onclick="closeCancelModal()">Keep Booking</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const BOOKINGS_DATA = [
+  { ref:"BM-A7K2M9PQ", prop:"Mountain View Homestay", icon:"🏔", dates:"May 20–23, 2026", guests:2, status:"confirmed", amount:"NPR 9,600" },
+  { ref:"BM-C3L8N5RX", prop:"Lakeside Comfort Inn", icon:"🏞", dates:"Jun 5–8, 2026", guests:2, status:"pending", amount:"NPR 5,400" },
+  { ref:"BM-K1P4Q7YZ", prop:"Thamel Heritage House", icon:"🕌", dates:"Mar 10–13, 2026", guests:3, status:"cancelled", amount:"NPR 8,400" },
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderBookings();
+  renderWishlistGrid();
+});
+
+function renderBookings() {
+  document.getElementById('guest-bookings').innerHTML = BOOKINGS_DATA.map(b => `
+    <div class="booking-item">
+      <div class="booking-img">${b.icon}</div>
+      <div class="booking-info">
+        <div class="booking-prop-name">${b.prop}</div>
+        <div class="booking-dates">📅 ${b.dates} · 👥 ${b.guests} guests</div>
+        <div class="booking-ref">Ref: ${b.ref}</div>
+      </div>
+      <div class="booking-actions">
+        <span class="badge badge-${b.status==='confirmed'?'green':b.status==='pending'?'amber':'red'}">${b.status}</span>
+        ${b.status!=='cancelled' ? `<button class="btn btn-ghost btn-sm" onclick="showToast('📄 Invoice downloaded','success')">Invoice</button>` : ''}
+        ${b.status==='confirmed' ? `<button class="btn btn-danger btn-sm" onclick="openCancelModal('${b.ref}')">Cancel</button>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+function renderWishlistGrid() {
+  const grid = document.getElementById('wishlist-grid');
+  if (!grid) return;
+  const favs = PROPERTIES.filter(p => wishlist.includes(p.id));
+  grid.innerHTML = favs.length ? favs.map(p => `
+    <div class="wishlist-card">
+      <div class="wishlist-img">${p.icon}</div>
+      <div class="wishlist-info">
+        <div class="wishlist-title">${p.title}</div>
+        <div class="wishlist-price">NPR ${p.price.toLocaleString()} / night</div>
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <a href="/property/${p.id}" class="btn btn-primary btn-sm" style="flex:1;justify-content:center">Book</a>
+          <button class="btn btn-danger btn-sm" onclick="toggleWishlist(${p.id});renderWishlistGrid()">✕</button>
+        </div>
+      </div>
+    </div>`).join('') : '<p style="color:var(--text-muted);font-size:14px">No saved properties yet. Browse and click ❤️ to save!</p>';
+}
+
+function showTab(tab, el) {
+  ['bookings','wishlist','profile'].forEach(t => document.getElementById('tab-'+t)?.classList.toggle('hidden', t!==tab));
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+function openCancelModal(ref) { document.getElementById('cancel-modal').classList.add('open'); }
+function closeCancelModal(e) {
+  if (!e || e.target.id==='cancel-modal' || e.target.classList.contains('modal-close')) document.getElementById('cancel-modal').classList.remove('open');
+}
+function submitCancel() {
+  document.getElementById('cancel-modal').classList.remove('open');
+  showToast('Cancellation requested. Host has 5 days to respond.', 'info');
+}
+function saveProfile(e) { e.preventDefault(); showToast('Profile updated!', 'success'); }
+</script>
+{% endblock %}

@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel — Bookmandu{% endblock %}
+
+{% block extra_css %}
+<style>
+.admin-page { padding-top: 64px; }
+.admin-header { padding: 40px 24px 0; max-width: 1280px; margin: 0 auto; }
+.admin-header h2 { font-family: var(--font-display); font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+.admin-tabs { display: flex; gap: 4px; margin-top: 20px; border-bottom: 1px solid var(--border); }
+.admin-tab {
+  padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+  color: var(--text-secondary); border-bottom: 2px solid transparent;
+  transition: var(--transition); margin-bottom: -1px; background: none; border-top: none; border-left: none; border-right: none;
+}
+.admin-tab:hover { color: var(--text-primary); }
+.admin-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+.admin-body { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
+.admin-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+.admin-stat {
+  padding: 20px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); display: flex; align-items: center; gap: 16px; transition: var(--transition);
+}
+.admin-stat:hover { border-color: var(--border-teal); }
+.admin-stat-icon { width: 48px; height: 48px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.admin-stat-icon.teal { background: var(--teal-glow); }
+.admin-stat-icon.amber { background: rgba(240,165,0,0.12); }
+.admin-stat-icon.green { background: rgba(46,204,113,0.12); }
+.admin-stat-icon.purple { background: rgba(155,89,182,0.12); }
+.admin-stat-value { font-family: var(--font-display); font-size: 28px; font-weight: 800; }
+.admin-stat-label { font-size: 13px; color: var(--text-secondary); }
+.admin-tab-content { display: none; }
+.admin-tab-content.active { display: block; }
+.table-wrap { overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 700;
+  color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border); background: var(--bg-700);
+}
+.data-table td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+.data-table tr:hover td { background: var(--surface-hover); }
+.data-table td strong { color: var(--text-primary); }
+@media (max-width: 1024px) { .admin-stats { grid-template-columns: repeat(2,1fr); } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-page">
+  <div class="admin-header">
+    <h2>Admin Management Panel</h2>
+    <p style="color:var(--text-secondary)">Full platform oversight — users, listings, bookings, and more.</p>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="showAdminTab('users',this)">👥 Users</button>
+      <button class="admin-tab" onclick="showAdminTab('listings',this)">🏘 Listings</button>
+      <button class="admin-tab" onclick="showAdminTab('bookings',this)">📋 Bookings</button>
+      <button class="admin-tab" onclick="showAdminTab('coupons',this)">🎫 Coupons</button>
+      <button class="admin-tab" onclick="showAdminTab('support',this)">💬 Support</button>
+    </div>
+  </div>
+
+  <div class="admin-body">
+    <!-- Stats row always visible -->
+    <div class="admin-stats">
+      <div class="admin-stat"><div class="admin-stat-icon teal">👥</div><div><div class="admin-stat-value">142</div><div class="admin-stat-label">Total Users</div></div></div>
+      <div class="admin-stat"><div class="admin-stat-icon amber">🏘</div><div><div class="admin-stat-value">38</div><div class="admin-stat-label">Active Listings</div></div></div>
+      <div class="admin-stat"><div class="admin-stat-icon green">📋</div><div><div class="admin-stat-value">1,247</div><div class="admin-stat-label">Total Bookings</div></div></div>
+      <div class="admin-stat"><div class="admin-stat-icon purple">💬</div><div><div class="admin-stat-value">8</div><div class="admin-stat-label">Open Queries</div></div></div>
+    </div>
+
+    <!-- Users Tab -->
+    <div class="admin-tab-content active" id="admin-users">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+        <h3 style="font-family:var(--font-display);font-size:18px;font-weight:700">All Users</h3>
+        <input type="text" class="form-input" placeholder="Search users..." style="max-width:240px" oninput="filterUsers(this.value)">
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Registered</th><th>Actions</th></tr></thead>
+          <tbody id="admin-users-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Listings Tab -->
+    <div class="admin-tab-content" id="admin-listings">
+      <h3 style="font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:16px">Property Listings</h3>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Property</th><th>Host</th><th>Region</th><th>Price/Night</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="admin-listings-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Bookings Tab -->
+    <div class="admin-tab-content" id="admin-bookings">
+      <h3 style="font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:16px">All Bookings</h3>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Ref #</th><th>Guest</th><th>Property</th><th>Check-in</th><th>Status</th><th>Total</th></tr></thead>
+          <tbody id="admin-bookings-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Coupons Tab -->
+    <div class="admin-tab-content" id="admin-coupons">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h3 style="font-family:var(--font-display);font-size:18px;font-weight:700">Coupon Codes</h3>
+        <button class="btn btn-primary btn-sm" onclick="showToast('Coupon creator coming soon!','info')">+ Add Coupon</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Expires</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><strong>WELCOME10</strong></td><td>Percentage</td><td>10%</td><td>31 Dec 2026</td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-danger btn-sm" onclick="showToast('Coupon deactivated','info')">Deactivate</button></td></tr>
+            <tr><td><strong>SAVE500</strong></td><td>Fixed</td><td>NPR 500</td><td>30 Jun 2026</td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-danger btn-sm" onclick="showToast('Coupon deactivated','info')">Deactivate</button></td></tr>
+            <tr><td><strong>NEPAL20</strong></td><td>Percentage</td><td>20%</td><td>15 May 2026</td><td><span class="badge badge-red">Expired</span></td><td><span style="color:var(--text-muted);font-size:13px">Expired</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Support Tab -->
+    <div class="admin-tab-content" id="admin-support">
+      <h3 style="font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:16px">Support Queries</h3>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Subject</th><th>From</th><th>Email</th><th>Received</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Cannot cancel my booking</strong></td><td>Aman Singh</td><td>aman@test.com</td><td>16 May 2026</td><td><span class="badge badge-amber">Open</span></td><td><button class="btn btn-ghost btn-sm" onclick="showToast('Reply sent!','success')">Reply</button></td></tr>
+            <tr><td><strong>Property listing approval delay</strong></td><td>Gita Thapa</td><td>gita@host.com</td><td>15 May 2026</td><td><span class="badge badge-amber">Open</span></td><td><button class="btn btn-ghost btn-sm" onclick="showToast('Reply sent!','success')">Reply</button></td></tr>
+            <tr><td><strong>Invoice not received</strong></td><td>Hari Bahadur</td><td>hari@gmail.com</td><td>14 May 2026</td><td><span class="badge badge-green">Resolved</span></td><td><span style="color:var(--text-muted);font-size:13px">Done</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const USERS_DATA = [
+  { name:"Ramesh Sharma", email:"ramesh@gmail.com", role:"guest", date:"2026-03-15" },
+  { name:"Sita Rai", email:"sita@host.com", role:"host", date:"2026-02-10" },
+  { name:"Admin", email:"admin@bookmandu.com", role:"admin", date:"2026-01-01" },
+  { name:"Bijay Maharjan", email:"bijay@gmail.com", role:"guest", date:"2026-04-20" },
+  { name:"Mina Tamang", email:"mina@host.com", role:"host", date:"2026-03-05" },
+  { name:"Arjun KC", email:"arjun@gmail.com", role:"guest", date:"2026-05-01" },
+];
+const BOOKINGS_DATA = [
+  { ref:"BM-A7K2M9PQ", prop:"Mountain View Homestay", icon:"🏔", dates:"May 20–23, 2026", guests:2, status:"confirmed", amount:"NPR 9,600" },
+  { ref:"BM-C3L8N5RX", prop:"Lakeside Comfort Inn", icon:"🏞", dates:"Jun 5–8, 2026", guests:2, status:"pending", amount:"NPR 5,400" },
+  { ref:"BM-K1P4Q7YZ", prop:"Thamel Heritage House", icon:"🕌", dates:"Mar 10–13, 2026", guests:3, status:"cancelled", amount:"NPR 8,400" },
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Users
+  document.getElementById('admin-users-tbody').innerHTML = USERS_DATA.map(u => `
+    <tr>
+      <td><strong>${u.name}</strong></td><td>${u.email}</td>
+      <td><span class="badge badge-${u.role==='admin'?'teal':u.role==='host'?'amber':'green'}">${u.role}</span></td>
+      <td>${u.date}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="showToast('User suspended','info')">Suspend</button></td>
+    </tr>`).join('');
+  // Listings
+  document.getElementById('admin-listings-tbody').innerHTML = PROPERTIES.map(p => `
+    <tr>
+      <td><strong>${p.title}</strong></td><td>${p.host}</td><td>${p.region}</td>
+      <td>NPR ${p.price.toLocaleString()}</td>
+      <td><span class="badge badge-green">Approved</span></td>
+      <td>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Listing approved','success')">Approve</button>
+        <button class="btn btn-danger btn-sm" onclick="showToast('Listing rejected','error')">Reject</button>
+      </td>
+    </tr>`).join('');
+  // Bookings
+  document.getElementById('admin-bookings-tbody').innerHTML = BOOKINGS_DATA.map(b => `
+    <tr>
+      <td><code style="font-size:12px;color:var(--teal)">${b.ref}</code></td>
+      <td><strong>Ramesh S.</strong></td><td>${b.prop}</td>
+      <td>${b.dates.split('–')[0]}</td>
+      <td><span class="badge badge-${b.status==='confirmed'?'green':b.status==='pending'?'amber':'red'}">${b.status}</span></td>
+      <td>${b.amount}</td>
+    </tr>`).join('');
+});
+
+function showAdminTab(tab, el) {
+  document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('admin-' + tab)?.classList.add('active');
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+function filterUsers(q) {
+  document.querySelectorAll('#admin-users-tbody tr').forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}

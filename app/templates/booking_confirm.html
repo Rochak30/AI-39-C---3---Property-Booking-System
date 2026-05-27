@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Booking Confirmed — Bookmandu{% endblock %}
+
+{% block extra_css %}
+<style>
+.confirmation-page { max-width: 640px; margin: 0 auto; padding: 100px 24px 60px; text-align: center; }
+.confirmation-icon {
+  width: 88px; height: 88px; border-radius: 50%;
+  background: rgba(46,204,113,0.12); border: 2px solid var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px; margin: 0 auto 28px;
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.confirmation-title { font-family: var(--font-display); font-size: 36px; font-weight: 800; margin-bottom: 10px; color: var(--green); }
+.confirmation-ref {
+  font-family: monospace; font-size: 20px; font-weight: 700;
+  color: var(--teal); background: var(--teal-glow);
+  padding: 10px 24px; border-radius: var(--radius-sm); display: inline-block; margin: 16px 0;
+  border: 1px solid var(--border-teal); letter-spacing: 0.08em;
+}
+.confirmation-details {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 24px; margin: 28px 0; text-align: left;
+}
+.conf-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.conf-row:last-child { border-bottom: none; }
+.conf-row span:first-child { color: var(--text-secondary); }
+.conf-row span:last-child { font-weight: 600; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-page">
+  <div class="confirmation-icon">✓</div>
+  <div class="confirmation-title">Booking Confirmed!</div>
+  <p style="color:var(--text-secondary);margin-bottom:16px">Your booking has been successfully placed. A confirmation email has been sent to your registered address.</p>
+  <div class="confirmation-ref" id="conf-ref">BM-XXXXXXXX</div>
+  <div class="confirmation-details" id="conf-details">
+    <div class="conf-row"><span>Property</span><span id="conf-prop">—</span></div>
+    <div class="conf-row"><span>Location</span><span id="conf-location">—</span></div>
+    <div class="conf-row"><span>Check-in</span><span id="conf-checkin">—</span></div>
+    <div class="conf-row"><span>Check-out</span><span id="conf-checkout">—</span></div>
+    <div class="conf-row"><span>Guests</span><span id="conf-guests">—</span></div>
+    <div class="conf-row"><span>Total Paid</span><span id="conf-total" style="color:var(--teal);font-weight:700">—</span></div>
+  </div>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="showToast('📄 Invoice downloaded!','success')">Download Invoice</button>
+    <a href="/dashboard/guest" class="btn btn-ghost">View My Bookings</a>
+    <a href="/browse" class="btn btn-ghost">Browse More</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const propId = parseInt(params.get('propId'));
+  const prop = PROPERTIES.find(p => p.id === propId);
+  const ref = 'BM-' + Math.random().toString(36).substring(2,10).toUpperCase();
+  document.getElementById('conf-ref').textContent = ref;
+  if (prop) {
+    document.getElementById('conf-prop').textContent = prop.title;
+    document.getElementById('conf-location').textContent = prop.region + ', Nepal';
+  }
+  document.getElementById('conf-checkin').textContent = params.get('checkin') || '—';
+  document.getElementById('conf-checkout').textContent = params.get('checkout') || '—';
+  document.getElementById('conf-guests').textContent = params.get('guests') || '—';
+  const total = params.get('total');
+  document.getElementById('conf-total').textContent = total ? `NPR ${parseInt(total).toLocaleString()}` : '—';
+  showToast('🎉 Booking confirmed! Check your email.', 'success');
+});
+</script>
+{% endblock %}

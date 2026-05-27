@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% block title %}Bookmandu — Explore Nepal{% endblock %}
+
+{% block extra_css %}
+<style>
+/* PAGE: HOME */
+.hero {
+  position: relative; min-height: calc(100vh - 64px);
+  display: flex; align-items: center; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(135deg, #0d1117 0%, #1a2744 50%, #0d2233 100%);
+}
+.hero-bg::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 70% 40%, rgba(26,188,156,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(0,212,255,0.06) 0%, transparent 70%);
+}
+.hero-mountains {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 45%;
+  background:
+    linear-gradient(to top, rgba(13,17,23,0.6) 0%, transparent 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='%231c2333' fill-opacity='0.8' d='M0,160L60,138.7C120,117,240,75,360,80C480,85,600,139,720,144C840,149,960,107,1080,96C1200,85,1320,107,1380,117.3L1440,128L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+  background-size: cover; background-position: center bottom;
+}
+.hero-content {
+  position: relative; z-index: 1; max-width: 680px;
+  padding: 80px 24px; margin: 0 auto; text-align: center;
+  animation: fadeInUp 0.8s ease both;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 20px;
+  background: var(--teal-glow); border: 1px solid var(--border-teal);
+  font-size: 13px; font-weight: 600; color: var(--teal); margin-bottom: 28px;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.hero-title {
+  font-family: var(--font-display); font-size: clamp(40px, 6vw, 72px);
+  font-weight: 800; line-height: 1.08; margin-bottom: 20px; letter-spacing: -0.02em;
+}
+.hero-title .gradient {
+  background: linear-gradient(135deg, var(--teal), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero-subtitle { font-size: 18px; color: var(--text-secondary); margin-bottom: 40px; line-height: 1.7; }
+.search-box {
+  background: var(--bg-800); border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl); padding: 8px; display: flex;
+  align-items: center; gap: 8px; flex-wrap: wrap;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5); animation: fadeInUp 0.8s 0.2s ease both;
+}
+.search-field {
+  flex: 1; min-width: 140px; display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; background: var(--bg-700); border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+.search-field input {
+  background: none; border: none; color: var(--text-primary); font-size: 14px; width: 100%;
+}
+.search-icon { font-size: 16px; color: var(--text-muted); flex-shrink: 0; }
+.search-btn {
+  padding: 12px 28px; background: var(--teal); color: #0d1117;
+  border-radius: var(--radius-md); font-weight: 700; font-size: 15px;
+  transition: var(--transition); border: none; cursor: pointer;
+}
+.search-btn:hover { background: var(--teal-dark); box-shadow: var(--shadow-teal); }
+.region-pills { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 20px; animation: fadeInUp 0.8s 0.3s ease both; }
+.pill {
+  padding: 7px 18px; border-radius: 20px; font-size: 13px; font-weight: 500;
+  background: var(--bg-700); border: 1px solid var(--border); color: var(--text-secondary);
+  cursor: pointer; transition: var(--transition); text-decoration: none; display: inline-block;
+}
+.pill:hover, .pill.active { background: var(--teal-glow); border-color: var(--border-teal); color: var(--teal); }
+.how-section { padding: 100px 24px; }
+.steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; max-width: 900px; margin: 0 auto; }
+.step-card {
+  padding: 32px 24px; text-align: center;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); transition: var(--transition);
+}
+.step-card:hover { border-color: var(--border-teal); transform: translateY(-4px); box-shadow: var(--shadow-teal); }
+.step-icon { width: 64px; height: 64px; border-radius: var(--radius-md); background: var(--teal-glow); border: 1px solid var(--border-teal); display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px; }
+.step-num { font-family: var(--font-display); font-size: 11px; font-weight: 800; color: var(--teal); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+.step-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+.step-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+.properties-section { padding: 0 24px 100px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="padding-top: 64px;">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-mountains"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">🇳🇵 Nepal's First Dedicated Booking Platform</div>
+      <h1 class="hero-title">
+        Experience Nepal<br>Like a <span class="gradient">Local</span>
+      </h1>
+      <p class="hero-subtitle">Book authentic homestays, guesthouses and private rooms across Nepal. Kathmandu, Pokhara, Chitwan and beyond — all in Nepali Rupees.</p>
+
+      <div class="search-box">
+        <div class="search-field">
+          <span class="search-icon">📍</span>
+          <input type="text" id="search-input" placeholder="Destination in Nepal...">
+        </div>
+        <div class="search-field">
+          <span class="search-icon">📅</span>
+          <input type="date" id="checkin-hero" style="background:none;border:none;color:var(--text-primary);font-size:14px;width:100%">
+        </div>
+        <div class="search-field">
+          <span class="search-icon">👥</span>
+          <input type="number" placeholder="Guests" min="1" max="20" value="2" style="background:none;border:none;color:var(--text-primary);font-size:14px;width:60px">
+        </div>
+        <button class="search-btn" onclick="window.location.href='/browse'">Search</button>
+      </div>
+
+      <div class="region-pills">
+        <a href="/browse?region=all" class="pill active">All Nepal</a>
+        <a href="/browse?region=kathmandu" class="pill">Kathmandu</a>
+        <a href="/browse?region=pokhara" class="pill">Pokhara</a>
+        <a href="/browse?region=chitwan" class="pill">Chitwan</a>
+        <a href="/browse?region=lumbini" class="pill">Lumbini</a>
+        <a href="/browse?region=mustang" class="pill">Mustang</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-section">
+    <div class="section-header">
+      <div class="section-label">Simple Process</div>
+      <h2 class="section-title">How Bookmandu Works</h2>
+      <p class="section-sub">Three simple steps to your perfect Nepal stay</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-icon">🔍</div>
+        <div class="step-num">Step 01</div>
+        <div class="step-title">Search & Filter</div>
+        <p class="step-desc">Browse by region, property type, price in NPR, and amenities to find your ideal homestay.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">📅</div>
+        <div class="step-num">Step 02</div>
+        <div class="step-title">Pick Your Dates</div>
+        <p class="step-desc">Select check-in and check-out dates. Our calendar shows real-time availability.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">✅</div>
+        <div class="step-num">Step 03</div>
+        <div class="step-title">Confirm & Stay</div>
+        <p class="step-desc">Book instantly and receive your PDF invoice. Leave a review after your stay!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Properties -->
+  <section class="properties-section">
+    <div style="max-width:1280px;margin:0 auto;">
+      <div class="section-header" style="text-align:left">
+        <div class="section-label">Featured Stays</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px">
+          <h2 class="section-title" style="margin-bottom:0">Popular Homestays</h2>
+          <a href="/browse" class="btn btn-outline btn-sm">View All →</a>
+        </div>
+      </div>
+      <div class="props-grid" id="featured-grid"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-logo">Book<span>mandu</span></div>
+        <p class="footer-desc">Nepal's dedicated accommodation booking platform connecting travelers with authentic local stays — from Kathmandu to Mustang.</p>
+      </div>
+      <div>
+        <div class="footer-heading">Explore</div>
+        <div class="footer-links">
+          <a href="/browse" class="footer-link">Browse Properties</a>
+          <a href="/browse?region=kathmandu" class="footer-link">Kathmandu</a>
+          <a href="/browse?region=pokhara" class="footer-link">Pokhara</a>
+          <a href="/browse?region=chitwan" class="footer-link">Chitwan</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading">Account</div>
+        <div class="footer-links">
+          <a href="/register" class="footer-link">Register</a>
+          <a href="/login" class="footer-link">Sign In</a>
+          <a href="/dashboard/host" class="footer-link">Host Dashboard</a>
+          <a href="/dashboard/guest" class="footer-link">Guest Dashboard</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading">Support</div>
+        <div class="footer-links">
+          <a href="/faq" class="footer-link">FAQ</a>
+          <a href="/contact" class="footer-link">Contact Us</a>
+          <a href="#" class="footer-link">Privacy Policy</a>
+          <a href="#" class="footer-link">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 Bookmandu. All rights reserved. Explore Nepal 🏔</span>
+      <div class="footer-bottom-links">
+        <span class="footer-bottom-link">EN / नेपाली</span>
+        <span class="footer-bottom-link">NPR ₨</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('featured-grid');
+  PROPERTIES.slice(0, 6).forEach(p => grid.innerHTML += buildCard(p));
+  const today = new Date();
+  document.getElementById('checkin-hero').value = today.toISOString().split('T')[0];
+});
+</script>
+{% endblock %}

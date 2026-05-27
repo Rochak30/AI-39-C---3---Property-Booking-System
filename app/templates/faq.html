@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}FAQ — Bookmandu{% endblock %}
+
+{% block extra_css %}
+<style>
+.faq-page { max-width: 800px; margin: 0 auto; padding: 100px 24px 60px; }
+.faq-header { text-align: center; margin-bottom: 48px; }
+.faq-search {
+  display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+  background: var(--bg-800); border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl); margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto;
+}
+.faq-search:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); }
+.faq-search input { background: none; border: none; color: var(--text-primary); font-size: 15px; flex: 1; outline: none; }
+.faq-category { margin-bottom: 36px; }
+.faq-category-title {
+  font-family: var(--font-display); font-size: 18px; font-weight: 700;
+  color: var(--teal); margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+}
+.faq-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); margin-bottom: 8px; overflow: hidden; transition: var(--transition);
+}
+.faq-item:hover { border-color: var(--border-teal); }
+.faq-question {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px; cursor: pointer; font-weight: 600; font-size: 15px;
+}
+.faq-chevron { transition: transform 0.3s; font-size: 16px; color: var(--text-muted); }
+.faq-item.open .faq-chevron { transform: rotate(180deg); }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+.faq-item.open .faq-answer { max-height: 300px; }
+.faq-answer-inner { padding: 0 20px 18px; font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="faq-page">
+  <div class="faq-header">
+    <div class="section-label">Help Centre</div>
+    <h1 class="section-title">Frequently Asked Questions</h1>
+    <p class="section-sub">Find answers to common questions about Bookmandu</p>
+  </div>
+
+  <div class="faq-search">
+    <span style="font-size:18px;color:var(--text-muted)">🔍</span>
+    <input type="text" placeholder="Search frequently asked questions..." id="faq-search-input" oninput="searchFAQ(this.value)">
+  </div>
+
+  <div id="faq-content"></div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-logo">Book<span>mandu</span></div>
+      <p class="footer-desc">Nepal's dedicated accommodation booking platform.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Explore</div>
+      <div class="footer-links">
+        <a href="/browse" class="footer-link">Browse Properties</a>
+        <a href="/" class="footer-link">Home</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-heading">Account</div>
+      <div class="footer-links">
+        <a href="/register" class="footer-link">Register</a>
+        <a href="/login" class="footer-link">Sign In</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-heading">Support</div>
+      <div class="footer-links">
+        <a href="/faq" class="footer-link">FAQ</a>
+        <a href="/contact" class="footer-link">Contact Us</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Bookmandu. All rights reserved. 🏔</span>
+    <div class="footer-bottom-links">
+      <span class="footer-bottom-link">EN / नेपाली</span>
+      <span class="footer-bottom-link">NPR ₨</span>
+    </div>
+  </div>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const FAQ_DATA = [
+  { category:"Booking", icon:"📅", items:[
+    { q:"How do I find a property?", a:"Use the Browse page to search by region, property type, price range, and amenities. You can also use the search bar on the homepage to find properties by city or region name." },
+    { q:"Can I cancel my booking?", a:"Yes. Go to your Guest Dashboard, find the booking, and click 'Cancel Booking'. You'll be asked to provide a reason. The host has 5 days to approve or decline before it escalates to admin." },
+    { q:"What does 'Pending Cancellation' mean?", a:"This means you've submitted a cancellation request and the host is reviewing it. If the host doesn't respond within 5 days, the case is automatically escalated to our admin team." },
+  ]},
+  { category:"Payments", icon:"💳", items:[
+    { q:"What currency are prices shown in?", a:"All prices on Bookmandu are shown exclusively in Nepali Rupees (NPR). This ensures transparency for both local and international travellers." },
+    { q:"Can I use a coupon code?", a:"Yes! Enter your coupon code in the booking form before confirming. Valid codes apply a percentage or fixed NPR discount. Try WELCOME10 for 10% off your first booking." },
+    { q:"How is the total price calculated?", a:"Total = Number of nights × Price per night. Any applicable coupon discount is deducted from this total. The breakdown is shown clearly before you confirm." },
+  ]},
+  { category:"Hosting", icon:"🏠", items:[
+    { q:"How do I list my property?", a:"Register as a host, go to your Host Dashboard, and click 'Add New Property'. Fill in all details including description, pricing, amenities, and upload a property image. Admin will review and approve within 48 hours." },
+    { q:"How long does admin approval take?", a:"Property listings are reviewed by our admin team within 24–48 hours. You'll receive an email notification when your listing is approved or rejected." },
+  ]},
+  { category:"Account", icon:"👤", items:[
+    { q:"How do I reset my password?", a:"Click 'Forgot Password' on the login page. Enter your registered email and a reset link will be sent to you within 2 minutes. The link expires after 1 hour." },
+    { q:"How do I switch the language to Nepali?", a:"Click the 'EN / नेपाली' toggle in the navbar or footer. Your preference is saved to your account and remembered on future visits." },
+    { q:"Is dark mode available?", a:"Yes! Click the moon icon (🌙) in the top navigation bar to switch between light and dark mode. Your preference is saved automatically." },
+  ]},
+];
+
+document.addEventListener('DOMContentLoaded', renderFAQ);
+
+function renderFAQ() {
+  const content = document.getElementById('faq-content');
+  content.innerHTML = FAQ_DATA.map(cat => `
+    <div class="faq-category">
+      <div class="faq-category-title">${cat.icon} ${cat.category}</div>
+      ${cat.items.map(item => `
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-question">${item.q}<span class="faq-chevron">▾</span></div>
+          <div class="faq-answer"><div class="faq-answer-inner">${item.a}</div></div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function toggleFAQ(el) { el.classList.toggle('open'); }
+
+function searchFAQ(q) {
+  const lq = q.toLowerCase();
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.style.display = !q || item.textContent.toLowerCase().includes(lq) ? '' : 'none';
+  });
+  document.querySelectorAll('.faq-category').forEach(cat => {
+    const visible = [...cat.querySelectorAll('.faq-item')].some(i => i.style.display !== 'none');
+    cat.style.display = visible ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}

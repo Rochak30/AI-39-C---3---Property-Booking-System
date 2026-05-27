@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% block title %}Host Dashboard — Bookmandu{% endblock %}
+
+{% block extra_css %}
+<style>
+.dashboard-layout { max-width: 1280px; margin: 0 auto; padding: 40px 24px; display: grid; grid-template-columns: 260px 1fr; gap: 32px; margin-top: 64px; }
+.sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; height: fit-content; position: sticky; top: 84px; }
+.sidebar-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--cyan)); display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 14px; }
+.sidebar-name { font-family: var(--font-display); font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+.sidebar-email { font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 16px; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+.sidebar-link { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: var(--transition); text-decoration: none; }
+.sidebar-link:hover { background: var(--bg-600); color: var(--text-primary); }
+.sidebar-link.active { background: var(--teal-glow); color: var(--teal); border-left: 3px solid var(--teal); margin-left: -3px; }
+.sidebar-icon { font-size: 18px; width: 20px; }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+.stat-card { padding: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); text-align: center; transition: var(--transition); }
+.stat-card:hover { border-color: var(--border-teal); }
+.stat-value { font-family: var(--font-display); font-size: 32px; font-weight: 800; color: var(--teal); }
+.stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+.earnings-card { padding: 28px; background: linear-gradient(135deg, rgba(26,188,156,0.12), rgba(0,212,255,0.06)); border: 1.5px solid var(--border-teal); border-radius: var(--radius-lg); margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; }
+.earnings-total { font-family: var(--font-display); font-size: 42px; font-weight: 800; color: var(--teal); }
+.earnings-label { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+.host-props-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 32px; }
+.host-prop-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; transition: var(--transition); }
+.host-prop-card:hover { border-color: var(--border-teal); }
+.host-prop-img { height: 160px; background: var(--bg-700); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+.host-prop-info { padding: 16px; }
+.host-prop-title { font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+.host-prop-meta { display: flex; align-items: center; justify-content: space-between; }
+.host-prop-earnings { font-size: 13px; color: var(--teal); font-weight: 600; }
+.table-wrap { overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th { padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); background: var(--bg-700); }
+.data-table td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+.data-table tr:hover td { background: var(--surface-hover); }
+.data-table td strong { color: var(--text-primary); }
+.booking-item { display: flex; align-items: center; gap: 16px; padding: 18px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); transition: var(--transition); }
+.booking-item:hover { border-color: var(--border-teal); }
+.booking-img { width: 80px; height: 80px; border-radius: var(--radius-sm); background: var(--bg-700); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; }
+.booking-info { flex: 1; }
+.booking-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+@media (max-width: 768px) { .dashboard-layout { grid-template-columns: 1fr; } .sidebar { position: static; } .stats-row { grid-template-columns: repeat(2,1fr); } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <div class="sidebar-avatar">🏠</div>
+    <div class="sidebar-name">Sita Rai</div>
+    <div class="sidebar-email">sita@host.com</div>
+    <div style="text-align:center;margin-bottom:16px"><span class="badge badge-teal">HOST</span></div>
+    <nav class="sidebar-nav">
+      <a href="#" class="sidebar-link active" onclick="showTab('overview',this);return false"><span class="sidebar-icon">📊</span>Overview</a>
+      <a href="#" class="sidebar-link" onclick="showTab('properties',this);return false"><span class="sidebar-icon">🏘</span>My Properties</a>
+      <a href="#" class="sidebar-link" onclick="showTab('bookings',this);return false"><span class="sidebar-icon">📋</span>Bookings</a>
+      <a href="#" class="sidebar-link" onclick="showTab('cancellations',this);return false"><span class="sidebar-icon">🚫</span>Cancellations</a>
+      <a href="#" class="sidebar-link" onclick="showTab('earnings',this);return false"><span class="sidebar-icon">💰</span>Earnings</a>
+      <a href="/logout" class="sidebar-link" style="border-top:1px solid var(--border);padding-top:12px;margin-top:8px"><span class="sidebar-icon">🚪</span>Sign Out</a>
+    </nav>
+  </aside>
+
+  <main>
+    <!-- Overview -->
+    <div id="tab-overview">
+      <div style="margin-bottom:32px"><h2 style="font-family:var(--font-display);font-size:28px;font-weight:800;margin-bottom:6px">Host Dashboard</h2><p style="color:var(--text-secondary)">Manage your listings and track performance.</p></div>
+      <div class="earnings-card">
+        <div><div class="earnings-total">NPR 45,600</div><div class="earnings-label">Total Earnings (this month)</div></div>
+        <button class="btn btn-primary" onclick="showToast('📊 Exporting earnings report...','info')">Export CSV</button>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Properties</div></div>
+        <div class="stat-card"><div class="stat-value">12</div><div class="stat-label">Total Bookings</div></div>
+        <div class="stat-card"><div class="stat-value">2</div><div class="stat-label">Pending Review</div></div>
+        <div class="stat-card"><div class="stat-value">4.7★</div><div class="stat-label">Avg Rating</div></div>
+      </div>
+    </div>
+
+    <!-- Properties -->
+    <div id="tab-properties" class="hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+        <h3 style="font-family:var(--font-display);font-size:20px;font-weight:700">My Properties</h3>
+        <button class="btn btn-primary" onclick="openAddPropertyModal()">+ Add New Property</button>
+      </div>
+      <div class="host-props-grid" id="host-props-grid"></div>
+    </div>
+
+    <!-- Bookings -->
+    <div id="tab-bookings" class="hidden">
+      <h3 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:20px">Incoming Bookings</h3>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Guest</th><th>Property</th><th>Dates</th><th>Guests</th><th>Total</th><th>Status</th></tr></thead>
+          <tbody id="host-bookings-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Cancellations -->
+    <div id="tab-cancellations" class="hidden">
+      <h3 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:20px">Cancellation Requests</h3>
+      <div class="booking-item">
+        <div class="booking-img">🏔</div>
+        <div class="booking-info">
+          <div style="font-weight:700;font-size:16px;margin-bottom:4px">Mountain View Homestay</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-bottom:6px">Guest: Aman Singh · May 20–23, 2026</div>
+          <div style="font-size:13px;color:var(--text-secondary)">Reason: "Change of travel plans due to visa issues"</div>
+          <div style="font-size:12px;color:var(--amber);margin-top:4px">⏳ 3 days remaining to respond</div>
+        </div>
+        <div class="booking-actions">
+          <button class="btn btn-primary btn-sm" onclick="showToast('✓ Cancellation approved. Guest notified.','success')">Approve</button>
+          <button class="btn btn-danger btn-sm" onclick="showToast('Cancellation declined. Booking restored.','info')">Decline</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earnings -->
+    <div id="tab-earnings" class="hidden">
+      <h3 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:20px">Earnings Summary</h3>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Property</th><th>Month</th><th>Confirmed Bookings</th><th>Earnings (NPR)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Mountain View Homestay</strong></td><td>May 2026</td><td>5</td><td style="color:var(--teal);font-weight:700">NPR 24,000</td></tr>
+            <tr><td><strong>Thamel Heritage House</strong></td><td>May 2026</td><td>4</td><td style="color:var(--teal);font-weight:700">NPR 14,400</td></tr>
+            <tr><td><strong>Lakeside Comfort Inn</strong></td><td>May 2026</td><td>2</td><td style="color:var(--teal);font-weight:700">NPR 7,200</td></tr>
+            <tr style="font-weight:700"><td colspan="3" style="text-align:right">Total</td><td style="color:var(--teal)">NPR 45,600</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add Property Modal -->
+<div class="modal-overlay" id="add-prop-modal" onclick="closeAddPropModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Add New Property</span>
+      <button class="modal-close" onclick="closeAddPropModal()">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-group"><label class="form-label">Property Name</label><input class="form-input" placeholder="e.g. Mountain View Homestay"></div>
+      <div class="form-group"><label class="form-label">Region</label><select class="form-select"><option>Kathmandu</option><option>Pokhara</option><option>Chitwan</option><option>Lumbini</option><option>Mustang</option></select></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label class="form-label">Type</label><select class="form-select"><option>Homestay</option><option>Guesthouse</option><option>Private Room</option><option>Entire Property</option></select></div>
+        <div class="form-group"><label class="form-label">Price / Night (NPR)</label><input class="form-input" type="number" placeholder="3200"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Max Guests</label><input class="form-input" type="number" placeholder="4" min="1" max="20"></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" rows="3" style="resize:vertical" placeholder="Describe your property..."></textarea></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="submitProperty()">Submit Listing</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Render properties
+  const grid = document.getElementById('host-props-grid');
+  if (grid) grid.innerHTML = PROPERTIES.slice(0,3).map(p => `
+    <div class="host-prop-card">
+      <div class="host-prop-img">${p.icon}</div>
+      <div class="host-prop-info">
+        <div class="host-prop-title">${p.title}</div>
+        <div class="host-prop-meta">
+          <span class="badge badge-green">Active</span>
+          <div class="host-prop-earnings">NPR ${(p.price*5).toLocaleString()}</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Edit coming soon','info')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="showToast('Property deactivated','info')">Deactivate</button>
+        </div>
+      </div>
+    </div>`).join('');
+
+  // Render bookings table
+  const tbody = document.getElementById('host-bookings-tbody');
+  if (tbody) tbody.innerHTML = [
+    { guest:"Ramesh S.", prop:"Mountain View Homestay", dates:"May 20–23", guests:2, total:"NPR 9,600", status:"confirmed" },
+    { guest:"James K.", prop:"Thamel Heritage House", dates:"Jun 1–4", guests:3, total:"NPR 8,400", status:"pending" },
+    { guest:"Priya M.", prop:"Lakeside Comfort Inn", dates:"Jun 10–14", guests:2, total:"NPR 7,200", status:"confirmed" },
+  ].map(b => `<tr>
+    <td><strong>${b.guest}</strong></td><td>${b.prop}</td><td>${b.dates}</td><td>${b.guests}</td>
+    <td style="color:var(--teal);font-weight:600">${b.total}</td>
+    <td><span class="badge badge-${b.status==='confirmed'?'green':'amber'}">${b.status}</span></td>
+  </tr>`).join('');
+});
+
+function showTab(tab, el) {
+  ['overview','properties','bookings','cancellations','earnings'].forEach(t => document.getElementById('tab-'+t)?.classList.toggle('hidden', t!==tab));
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+function openAddPropertyModal() { document.getElementById('add-prop-modal').classList.add('open'); }
+function closeAddPropModal(e) {
+  if (!e || e.target.id==='add-prop-modal' || e.target.classList.contains('modal-close')) document.getElementById('add-prop-modal').classList.remove('open');
+}
+function submitProperty() { closeAddPropModal(); showToast('Property submitted for admin review!', 'success'); }
+</script>
+{% endblock %}
