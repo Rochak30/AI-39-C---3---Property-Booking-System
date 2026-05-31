@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Bookmandu{% endblock %}
+
+{% block extra_css %}
+<style>
+.dashboard-layout { max-width: 1280px; margin: 0 auto; padding: 40px 24px; display: grid; grid-template-columns: 260px 1fr; gap: 32px; margin-top: 64px; }
+.sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; height: fit-content; position: sticky; top: 84px; }
+.sidebar-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--cyan)); display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 14px; }
+.sidebar-name { font-family: var(--font-display); font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+.sidebar-role { font-size: 12px; font-weight: 700; text-align: center; margin-bottom: 24px; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+.sidebar-link { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: var(--transition); text-decoration: none; }
+.sidebar-link:hover { background: var(--bg-600); color: var(--text-primary); }
+.sidebar-link.active { background: var(--teal-glow); color: var(--teal); border-left: 3px solid var(--teal); margin-left: -3px; }
+.sidebar-icon { font-size: 18px; width: 20px; }
+.dash-greeting { margin-bottom: 32px; }
+.dash-greeting h2 { font-family: var(--font-display); font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+.dash-greeting p { color: var(--text-secondary); font-size: 15px; }
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+.stat-card { padding: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); text-align: center; transition: var(--transition); }
+.stat-card:hover { border-color: var(--border-teal); }
+.stat-value { font-family: var(--font-display); font-size: 32px; font-weight: 800; color: var(--teal); }
+.stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+.empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state p { font-size: 15px; margin-bottom: 20px; }
+@media (max-width: 768px) { .dashboard-layout { grid-template-columns: 1fr; } .sidebar { position: static; } .stats-row { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <div class="sidebar-avatar">👤</div>
+    <div class="sidebar-name">{{ session.get('user_name', 'User') }}</div>
+    <div class="sidebar-role">
+      <span class="badge badge-teal">{{ session.get('role', 'user')|upper }}</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="sidebar-link active" onclick="showTab('overview', this); return false">
+        <span class="sidebar-icon">📊</span>Overview
+      </a>
+      <a href="#" class="sidebar-link" onclick="showTab('profile', this); return false">
+        <span class="sidebar-icon">⚙️</span>My Profile
+      </a>
+      {% if session.get('role') == 'admin' %}
+      <a href="#" class="sidebar-link" onclick="showTab('admin', this); return false">
+        <span class="sidebar-icon">🛡️</span>Admin Panel
+      </a>
+      {% endif %}
+      <a href="/logout" class="sidebar-link" style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
+        <span class="sidebar-icon">🚪</span>Sign Out
+      </a>
+    </nav>
+  </aside>
+
+  <main>
+    <!-- Overview Tab -->
+    <div id="tab-overview">
+      <div class="dash-greeting">
+        <h2>Welcome back, <span class="text-teal">{{ session.get('user_name', 'User') }}</span>! 👋</h2>
+        <p>You're logged in as <strong>{{ session.get('role', 'user') }}</strong>. Manage your account from here.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Total Bookings</div></div>
+        <div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Upcoming Stays</div></div>
+        <div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Saved Properties</div></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;">
+        <h3 style="font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:16px">Recent Activity</h3>
+        <div class="empty-state">
+          <div class="empty-state-icon">🏔</div>
+          <p>No activity yet. Start exploring properties!</p>
+          <a href="/" class="btn btn-primary">Browse Properties</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Tab -->
+    <div id="tab-profile" class="hidden">
+      <div class="dash-greeting">
+        <h2>My <span class="text-teal">Profile</span></h2>
+        <p>Update your personal information.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:500px">
+        <form style="display:flex;flex-direction:column;gap:16px" onsubmit="saveProfile(event)">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" value="{{ session.get('user_name', '') }}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <input type="text" class="form-input" value="{{ session.get('role', 'user') }}" disabled style="opacity:0.6">
+          </div>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+    </div>
+
+    {% if session.get('role') == 'admin' %}
+    <!-- Admin Tab -->
+    <div id="tab-admin" class="hidden">
+      <div class="dash-greeting">
+        <h2>Admin <span class="text-teal">Panel</span></h2>
+        <p>Manage users and platform settings.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;">
+        <div class="empty-state">
+          <div class="empty-state-icon">🛡️</div>
+          <p>Admin tools coming soon.</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showTab(tab, el) {
+  document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.add('hidden'));
+  document.getElementById('tab-' + tab)?.classList.remove('hidden');
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+function saveProfile(e) {
+  e.preventDefault();
+  showToast('Profile updated!', 'success');
+}
+</script>
+{% endblock %}

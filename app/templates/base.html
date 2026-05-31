@@ -1,162 +1,117 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>
-        {% block title %}
-        Bookmandu — Explore Nepal
-        {% endblock %}
-    </title>
-
-    <!-- Fonts -->
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
-
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
-          rel="stylesheet">
-
-    <!-- CSS -->
-    <link rel="stylesheet"
-          href="{{ url_for('static',
-          filename='css/style.css') }}">
-
-    {% block extra_css %}
-    {% endblock %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Bookmandu — Explore Nepal{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% block extra_css %}{% endblock %}
 </head>
-
 <body>
-body {
 
-    padding-top: 64px;
-
-}
-    <!-- NAV -->
-    <nav class="nav">
-        <div class="nav-inner">
-
-            <a href="{{ url_for('auth.home') }}"
-               class="nav-logo">
-
-                <div class="nav-logo-icon">
-                    🏔
-                </div>
-
-                <div class="nav-logo-text">
-                    Book<span>mandu</span>
-                </div>
-            </a>
-
-            <div class="nav-links">
-
-                <a href="{{ url_for('auth.home') }}"
-                   class="nav-link {% if request.endpoint == 'auth.home' %}active{% endif %}">
-                    Home
-                </a>
-
-                <a href="{{ url_for('auth.browse') }}"
-                   class="nav-link {% if request.endpoint == 'auth.browse' %}active{% endif %}">
-                    Browse
-                </a>
-
-                <a href="{{ url_for('auth.guest_dashboard') }}"
-                   class="nav-link {% if request.endpoint == 'auth.guest_dashboard' %}active{% endif %}">
-                    Guest
-                </a>
-
-                <a href="{{ url_for('auth.host_dashboard') }}"
-                   class="nav-link {% if request.endpoint == 'auth.host_dashboard' %}active{% endif %}">
-                    Host
-                </a>
-
-                <a href="{{ url_for('auth.admin') }}"
-                   class="nav-link {% if request.endpoint == 'auth.admin' %}active{% endif %}">
-                    Admin
-                </a>
-
-                <a href="{{ url_for('auth.faq') }}"
-                   class="nav-link {% if request.endpoint == 'auth.faq' %}active{% endif %}">
-                    FAQ
-                </a>
-
-                <a href="{{ url_for('auth.contact') }}"
-                   class="nav-link {% if request.endpoint == 'auth.contact' %}active{% endif %}">
-                    Contact
-                </a>
-
-            </div>
-
-            <div class="nav-actions">
-
-                <div class="nav-role-badge">
-                    au: GUEST ✦
-                </div>
-
-                <button class="btn-icon"
-                        onclick="toggleTheme()"
-                        title="Toggle theme"
-                        id="theme-btn">
-                    🌙
-                </button>
-
-                <a href="{{ url_for('auth.login') }}"
-                   class="btn btn-ghost btn-sm">
-                    Login
-                </a>
-
-                <a href="{{ url_for('auth.register') }}"
-                   class="btn btn-primary btn-sm">
-                    Register
-                </a>
-
-            </div>
-        </div>
-    </nav>
-
-    <!-- Toast Container -->
-    <div class="toast-container"
-         id="toasts"></div>
-
-    <!-- Modal -->
-    <div class="modal-overlay"
-         id="modal-overlay"
-         onclick="closeModal(event)">
-
-        <div class="modal"
-             id="modal">
-
-            <div class="modal-header">
-
-                <span class="modal-title"
-                      id="modal-title">
-                    Confirm Action
-                </span>
-
-                <button class="modal-close"
-                        onclick="closeModal()">
-                    ✕
-                </button>
-
-            </div>
-
-            <div id="modal-body"></div>
-        </div>
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon">🏔</div>
+      <div class="nav-logo-text">Book<span>mandu</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/about" class="nav-link">About</a>
+      <a href="/contact" class="nav-link">Contact</a>
     </div>
+    <div class="nav-actions">
+      {% if session.get('user_id') %}
+        <div class="nav-role-badge">{{ session.get('role', 'user')|upper }} ✦</div>
+        <span style="font-size:14px;color:var(--text-secondary)">{{ session.get('user_name', '') }}</span>
+        <a href="/dashboard" class="btn btn-ghost btn-sm">Dashboard</a>
+        <a href="/logout" class="btn btn-ghost btn-sm">Logout</a>
+      {% else %}
+        <div class="nav-role-badge">GUEST ✦</div>
+        <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme" id="theme-btn">🌙</button>
+        <a href="/login" class="btn btn-ghost btn-sm">Login</a>
+        <a href="/register" class="btn btn-primary btn-sm">Register</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
 
-    <!-- Page Content -->
-    {% block content %}
-    {% endblock %}
-
-    <!-- JS -->
-    <script src="{{ url_for('static',
-        filename='js/app.js') }}">
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="position:fixed;top:80px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;">
+      {% for category, message in messages %}
+        <div class="toast {{ 'success' if category == 'success' else 'error' if category == 'danger' else 'info' }}" 
+             style="opacity:1;animation:slideInRight 0.3s ease;">
+          <span class="toast-icon">{{ '✓' if category == 'success' else '✕' if category == 'danger' else 'ℹ' }}</span>
+          <span>{{ message }}</span>
+          <span class="toast-close" onclick="this.parentElement.remove()">✕</span>
+        </div>
+      {% endfor %}
+    </div>
+    <script>
+      setTimeout(() => {
+        document.querySelectorAll('.toast').forEach(t => t.remove());
+      }, 4000);
     </script>
+  {% endif %}
+{% endwith %}
 
-    {% block extra_js %}
-    {% endblock %}
+<!-- Toast Container (for JS toasts) -->
+<div class="toast-container" id="toasts"></div>
 
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Confirm Action</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+{% block content %}{% endblock %}
+
+<script>
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('theme-btn').textContent = next === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem('theme', next);
+}
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    const btn = document.getElementById('theme-btn');
+    if (btn) btn.textContent = saved === 'dark' ? '🌙' : '☀️';
+  }
+})();
+
+function showToast(msg, type='info') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span class="toast-icon">${type==='success'?'✓':type==='error'?'✕':'ℹ'}</span><span>${msg}</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+function openModal(title, body) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e) {
+  if (!e || e.target.id === 'modal-overlay' || e.target.classList.contains('modal-close'))
+    document.getElementById('modal-overlay').classList.remove('open');
+}
+</script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -1,102 +1,155 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, flash, redirect, url_for, session
+from app.controllers.basecontroller import BaseController
+from app.models.usermodel import User
 
 
-class AuthController:
+class AuthController(BaseController):
+    def __init__(self):
+        self.user_model = User()
 
-    # HOME
-    def home(self):
-        if request.method == "POST":
-            print(request.form)
 
-        return render_template("home.html")
-
-    # LOGIN
     def login(self):
 
+        if self.is_logged_in():
+
+            return redirect(url_for("auth.dashboard"))
+
         if request.method == "POST":
-            print(request.form)
 
-            # Example redirect after login
-            return redirect(url_for("auth.home"))
+            email = request.form.get("email")
+            password = request.form.get("password")
 
+            print("EMAIL:", email)
+
+            print("PASSWORD:", password)
+
+            user_data = self.user_model.find_by(
+                "email",
+
+                email
+
+            )
+
+            print("USER DATA:", user_data)
+
+            if user_data:
+
+                user = User.from_db(user_data)
+
+                result = user.check_password(password)
+
+                print("PASSWORD CHECK:", result)
+
+                if result:
+
+                    print("LOGIN SUCCESS")
+
+                    session["user_id"] = user_data["id"]
+                    session["user_name"] = user_data["name"]
+                    session["role"] = user_data["role"]
+
+                    return redirect(
+
+                        url_for("auth.dashboard")
+
+                    )
+
+            print("LOGIN FAILED")
+            flash(
+
+            "Invalid email or password.",
+            "danger"
+
+            )
         return render_template("login.html")
 
-    # REGISTER
+    def dashboard(self):
+        # if not self.is_logged_in():
+        #     return redirect(url_for("auth.login"))
+    
+        return render_template("dashboard.html")
+    
     def register(self):
+        print("REGISTER METHOD CALLED")
+        print("Request method:", request.method)
+        if self.is_logged_in():
+            return redirect(url_for("auth.dashboard"))
 
         if request.method == "POST":
-            print(request.form)
+            name, email = self.get_form_data("name", "email")
+            password = request.form.get("password", "")
 
-            # Example redirect
-            return redirect(url_for("auth.login"))
+            print("NAME:", name)
+            print("EMAIL:", email)
+            print("PASSWORD:", password)
+
+            if not name or not email or not password:
+                print("FAILED: missing fields")
+                flash("All fields are required.", "danger")
+                return render_template("register.html")
+
+            if len(name) > 100:
+                print("FAILED: name too long")
+                flash("Name must be under 100 characters.", "danger")
+                return render_template("register.html")
+
+            if len(password) < 6:
+                print("FAILED: password too short")
+                flash("Password must be at least 6 characters.", "danger")
+                return render_template("register.html")
+
+            new_user = User(name=name, email=email, password=password, role="user")
+            print("USER CREATED:", new_user)
+
+            print("CHECKING EMAIL...")
+            if new_user.email_exists():
+                print("FAILED: email exists")
+                flash("Email already exists.", "danger")
+                return render_template("register.html")
+
+            print("SAVING USER...")
+            try:
+                new_user.save()
+                print("SAVED SUCCESSFULLY")
+            except Exception as e:
+                print("SAVE ERROR:", e)
+                flash("Registration failed: " + str(e), "danger")
+                return render_template("register.html")
+
+            return self.flash_and_redirect(
+            "Registration successful! Please login.", "success", "auth.login"
+        )
 
         return render_template("register.html")
+    
 
-    # ABOUT
+
+    
     def about(self):
+        return render_template("about.html")
+    def home(self):
+        return render_template("home.html")
 
-        products = [
-            {"name": "iPhone 15", "price": 999, "model": "A3090"},
-            {"name": "Samsung Galaxy S24", "price": 899, "model": "SM-S921B"},
-            {"name": "MacBook Air", "price": 1299, "model": "M2"},
-            {"name": "Dell XPS 13", "price": 1199, "model": "9320"},
-            {"name": "Sony WH-1000XM4", "price": 349, "model": "XM4"},
-            {"name": "iPad Pro", "price": 1099, "model": "6th Gen"},
-            {"name": "Acer Nitro V15", "price": 1399, "model": "ANV15"}
-        ]
-
-        return render_template(
-            "about.html",
-            products=products
-        )
-
-    # CONTACT
     def contact(self):
-
-        if request.method == "POST":
-            print(request.form)
-
         return render_template("contact.html")
-
-    # BROWSE
-    def browse(self):
-        return render_template("browse.html")
-
-    # PROPERTY DETAIL
-    def property_detail(self, prop_id):
-        return render_template(
-            "property_detail.html",
-            prop_id=prop_id
-        )
-
-    # BOOKING CONFIRM
-    def booking_confirm(self):
-        return render_template("booking_confirm.html")
-
-    # PASSWORD RESET
-    def password_reset(self):
-
+    
+    def product_form(self):
         if request.method == "POST":
             print(request.form)
-            return redirect(url_for("auth.login"))
+            name = request.form.get("name")
+            description = request.form.get("description")
+            price = request.form.get("price")
+            category = request.form.get("category")
 
-        return render_template("password_reset.html")
+            stock = request.form.get("stock")
 
-    # LOGOUT
+            print(name, description, price, category, stock)
+
+        return render_template("product_form.html")
+    
     def logout(self):
-        return redirect(url_for("auth.home"))
-
-    # DASHBOARDS
-    def guest_dashboard(self):
-        return render_template("guest_dashboard.html")
-
-    def host_dashboard(self):
-        return render_template("host_dashboard.html")
-
-    # ADMIN
-    def admin(self):
-        return render_template("admin.html")
-
-    # FAQ
-    def faq(self):
-        return render_template("faq.html")
+        session.pop("user_id", None)
+        session.pop("user_name", None)
+        session.pop("role", None)
+        flash("Logged out successfully.", "success")
+        return redirect(url_for("auth.login"))
