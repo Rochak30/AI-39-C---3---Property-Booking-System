@@ -1,11 +1,136 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Contact Us — Bookmandu{% endblock %}
+
+{% block extra_css %}
+<style>
+.contact-page { max-width: 900px; margin: 0 auto; padding: 100px 24px 60px; }
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+.contact-info h3 { font-family: var(--font-display); font-size: 28px; font-weight: 800; margin-bottom: 16px; }
+.contact-info p { color: var(--text-secondary); font-size: 15px; line-height: 1.7; margin-bottom: 32px; }
+.contact-detail { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+.contact-detail-icon {
+  width: 40px; height: 40px; border-radius: var(--radius-sm);
+  background: var(--teal-glow); border: 1px solid var(--border-teal);
+  display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+}
+.contact-detail-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.contact-detail-value { font-size: 14px; color: var(--text-primary); }
+.contact-form-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 32px;
+}
+.contact-form { display: flex; flex-direction: column; gap: 18px; }
+@media (max-width: 768px) {
+  .contact-grid { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contact-page">
+  <div class="section-header" style="text-align:left;margin-bottom:48px">
+    <div class="section-label">Get In Touch</div>
+    <h1 class="section-title">Contact Us</h1>
+    <p class="section-sub" style="text-align:left;margin:0">Have a question? Send us a message and we'll respond within 24 hours.</p>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-info">
+      <h3>We're here to help</h3>
+      <p>Whether you're a guest with a booking question or a host needing support, our team is ready to assist you.</p>
+      <div class="contact-detail">
+        <div class="contact-detail-icon">📧</div>
+        <div><div class="contact-detail-label">Email</div><div class="contact-detail-value">support@bookmandu.com</div></div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-detail-icon">📞</div>
+        <div><div class="contact-detail-label">Phone</div><div class="contact-detail-value">+977 01-XXXXXXX</div></div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-detail-icon">📍</div>
+        <div><div class="contact-detail-label">Location</div><div class="contact-detail-value">Kathmandu, Nepal</div></div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-detail-icon">⏰</div>
+        <div><div class="contact-detail-label">Response Time</div><div class="contact-detail-value">Within 24 hours (NPT)</div></div>
+      </div>
+    </div>
+
+    <div class="contact-form-card">
+      <div class="contact-form">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="contact-name" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="contact-email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <input type="text" class="form-input" id="contact-subject" placeholder="How can we help?">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-input" id="contact-message" rows="5" placeholder="Describe your issue in detail..." style="resize:vertical"></textarea>
+        </div>
+        <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" onclick="sendContact()">Send Message</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-logo">Book<span>mandu</span></div>
+      <p class="footer-desc">Nepal's dedicated accommodation booking platform.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Explore</div>
+      <div class="footer-links">
+        <a href="/browse" class="footer-link">Browse Properties</a>
+        <a href="/" class="footer-link">Home</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-heading">Account</div>
+      <div class="footer-links">
+        <a href="/register" class="footer-link">Register</a>
+        <a href="/login" class="footer-link">Sign In</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-heading">Support</div>
+      <div class="footer-links">
+        <a href="/faq" class="footer-link">FAQ</a>
+        <a href="/contact" class="footer-link">Contact Us</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Bookmandu. All rights reserved. 🏔</span>
+    <div class="footer-bottom-links">
+      <span class="footer-bottom-link">EN / नेपाली</span>
+      <span class="footer-bottom-link">NPR ₨</span>
+    </div>
+  </div>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function sendContact() {
+  const n = document.getElementById('contact-name').value;
+  const e = document.getElementById('contact-email').value;
+  const s = document.getElementById('contact-subject').value;
+  const m = document.getElementById('contact-message').value;
+  if (!n || !e || !s || !m) { showToast('Please fill in all fields.', 'error'); return; }
+  showToast("✓ Message sent! We'll respond within 24 hours.", 'success');
+  document.getElementById('contact-name').value = '';
+  document.getElementById('contact-email').value = '';
+  document.getElementById('contact-subject').value = '';
+  document.getElementById('contact-message').value = '';
+}
+</script>
+{% endblock %}
