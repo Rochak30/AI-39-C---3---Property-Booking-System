@@ -146,6 +146,26 @@ class AuthController(BaseController):
 
     def about(self):
         return render_template("about.html")
+    def browse(self):
+        return render_template("browse.html")
+
+    def property_mountain_view(self):
+        return redirect(url_for("auth.browse"))
+
+    def property_thamel_heritage(self):
+        return redirect(url_for("auth.browse"))
+
+    def property_jungle_retreat(self):
+        return redirect(url_for("auth.browse"))
+
+    def property_lumbini_peace(self):
+        return redirect(url_for("auth.browse"))
+
+    def property_mustang_desert(self):
+        return redirect(url_for("auth.browse"))
+
+    def property_lakeside_comfort(self):
+        return redirect(url_for("auth.browse"))
 
     def faq(self):
         return render_template("faq.html")
