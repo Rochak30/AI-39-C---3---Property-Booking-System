@@ -102,13 +102,6 @@ class AuthController(BaseController):
         return render_template("register.html")
 
     def forgot_password(self):
-        """
-        GET  /forgot-password  — show the reset-request form
-        POST /forgot-password  — look up the email and (in production)
-                                 send a reset link; flash success either
-                                 way so we don't reveal whether the email
-                                 exists (security best practice).
-        """
         if self.is_logged_in():
             return redirect(url_for("auth.dashboard"))
 
@@ -119,23 +112,13 @@ class AuthController(BaseController):
                 flash("Please enter your email address.", "danger")
                 return render_template("password_reset.html")
 
-            # Look up the user (but don't reveal whether they exist)
             user_data = self.user_model.find_by("email", email)
 
             if user_data:
-                # TODO: generate a signed token, store it, and email the link.
-                # Example (requires itsdangerous + an email utility):
-                #
-                #   token = generate_reset_token(email)
-                #   reset_url = url_for("auth.reset_password", token=token, _external=True)
-                #   send_reset_email(email, reset_url)
-                #
                 print(f"RESET REQUESTED for existing user: {email}")
             else:
-                # Still succeed silently — never reveal missing accounts
                 print(f"RESET REQUESTED for unknown email: {email}")
 
-            # Always show the same success message
             flash(
                 f"If an account exists for {email}, a reset link has been sent.",
                 "success",
@@ -146,26 +129,37 @@ class AuthController(BaseController):
 
     def about(self):
         return render_template("about.html")
+    
     def browse(self):
         return render_template("browse.html")
 
+    # ============================================================
+    # UPDATED PROPERTY METHODS — NOW RENDER DETAIL PAGES
+    # ============================================================
+    
     def property_mountain_view(self):
-        return redirect(url_for("auth.browse"))
+        """Mountain View Homestay detail page"""
+        return render_template("mountain_view.html")
 
     def property_thamel_heritage(self):
-        return redirect(url_for("auth.browse"))
+        """Thamel Heritage House detail page"""
+        return render_template("thamel_heritage.html")
 
     def property_jungle_retreat(self):
-        return redirect(url_for("auth.browse"))
+        """Jungle Retreat Chitwan detail page"""
+        return render_template("jungle_retreat.html")
 
     def property_lumbini_peace(self):
-        return redirect(url_for("auth.browse"))
+        """Lumbini Peace Lodge detail page"""
+        return render_template("lumbini_peace.html")
 
     def property_mustang_desert(self):
-        return redirect(url_for("auth.browse"))
+        """Mustang Desert Homestay detail page"""
+        return render_template("mustang_desert.html")
 
     def property_lakeside_comfort(self):
-        return redirect(url_for("auth.browse"))
+        """Lakeside Comfort Inn detail page"""
+        return render_template("lakeside_comfort.html")
 
     def faq(self):
         return render_template("faq.html")
