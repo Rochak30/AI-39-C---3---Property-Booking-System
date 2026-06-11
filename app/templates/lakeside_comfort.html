@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% block title %}Lakeside Comfort Inn – Pokhara | Bookmandu{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/property_details.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="property-container">
+    <div class="hero-section">
+        <div class="hero-image" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1600');">
+            <div class="hero-overlay-content">
+                <div class="hero-tagline">🌅 Lakeside Serenity with Himalayan Views</div>
+                <h1 class="hero-title">Lakeside Comfort Inn</h1>
+                <div class="hero-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> Lakeside, Pokhara</span>
+                    <span class="hero-type"><i class="fas fa-building"></i> Guesthouse</span>
+                    <span class="hero-rating"><i class="fas fa-star"></i> 4.4 (31 reviews)</span>
+                </div>
+                <div class="hero-price-badge">NPR 2,200 <span>/ night</span></div>
+                <a href="#booking-panel" class="btn btn-primary btn-hero">Book Now <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="property-layout">
+        <div class="property-main">
+            <!-- Gallery Section -->
+            <div class="gallery-section">
+                <div class="gallery-grid">
+                    <div class="gallery-main">
+                        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800" alt="Lakeside Comfort Inn">
+                    </div>
+                    <div class="gallery-thumbs">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400" alt="Lake View">
+                        <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400" alt="Comfortable Room">
+                        <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400" alt="Rooftop Cafe">
+                        <img src="https://images.unsplash.com/photo-1468413253725-0d518109b803?w=400" alt="Fewa Lake">
+                        <img src="https://images.unsplash.com/photo-1558798539-e7d702ca26a9?w=400" alt="Garden Area">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Section -->
+            <div class="description-section">
+                <h2>Your Home Away from Home by Fewa Lake</h2>
+                <p>Lakeside Comfort Inn offers the perfect blend of convenience, comfort, and stunning natural beauty. Located just a 3-minute walk from the serene Fewa Lake, our guesthouse provides easy access to Pokhara's best restaurants, shops, and adventure activity centers while maintaining a peaceful, relaxing atmosphere.</p>
+                <p>Our rooms are designed for comfort with plush bedding, modern bathrooms with hot water, and private balconies offering garden or mountain views. Start your day with a complimentary breakfast on our rooftop terrace overlooking the Annapurna range. We offer free WiFi, parking, and a fully equipped shared kitchen. Our friendly staff can arrange paragliding, zip-lining, boat rides, and trekking permits for the Annapurna Circuit.</p>
+            </div>
+
+            <!-- Amenities Section -->
+            <div class="amenities-section">
+                <h3><i class="fas fa-concierge-bell"></i> Amenities & Services</h3>
+                <div class="amenities-grid">
+                    <div class="amenity-item"><i class="fas fa-wifi"></i> <span>Free High-Speed WiFi</span></div>
+                    <div class="amenity-item"><i class="fas fa-parking"></i> <span>Free Parking</span></div>
+                    <div class="amenity-item"><i class="fas fa-utensils"></i> <span>Shared Kitchen Access</span></div>
+                    <div class="amenity-item"><i class="fas fa-hot-tub"></i> <span>24/7 Hot Water</span></div>
+                    <div class="amenity-item"><i class="fas fa-mug-hot"></i> <span>Complimentary Breakfast</span></div>
+                    <div class="amenity-item"><i class="fas fa-water"></i> <span>Lake View Terrace</span></div>
+                    <div class="amenity-item"><i class="fas fa-bicycle"></i> <span>Bicycle/Motorcycle Rental</span></div>
+                    <div class="amenity-item"><i class="fas fa-plane"></i> <span>Airport Pickup</span></div>
+                    <div class="amenity-item"><i class="fas fa-hiking"></i> <span>Trekking Arrangements</span></div>
+                    <div class="amenity-item"><i class="fas fa-spa"></i> <span>Massage Services</span></div>
+                </div>
+            </div>
+
+            <!-- Host Section -->
+            <div class="host-section">
+                <div class="host-avatar"><img src="https://randomuser.me/api/portraits/women/42.jpg" alt="Sita Adhikari"></div>
+                <div class="host-details">
+                    <h3>Hosted by Sita Adhikari</h3>
+                    <div class="host-stats">
+                        <span><i class="fas fa-check-circle"></i> Response rate: 99%</span>
+                        <span><i class="fas fa-clock"></i> Responds in 15 mins</span>
+                        <span><i class="fas fa-home"></i> Hosting for 7 years</span>
+                    </div>
+                    <p>Namaste! I'm Sita, a Pokhara local who loves meeting travelers from around the globe. I opened Lakeside Comfort Inn to share the beauty of my hometown. I can help you plan the perfect itinerary, whether you're seeking adventure, relaxation, or cultural experiences. Let me make your Pokhara stay unforgettable!</p>
+                </div>
+            </div>
+
+            <!-- Highlights Section -->
+            <div class="highlights-section">
+                <h3>✨ Why guests love this property</h3>
+                <div class="highlights-grid">
+                    <div class="highlight-card"><i class="fas fa-water"></i> <strong>Lakeside Location</strong>3 min walk to Fewa Lake</div>
+                    <div class="highlight-card"><i class="fas fa-parachute-box"></i> <strong>Adventure Hub</strong>Paragliding & zip-lining nearby</div>
+                    <div class="highlight-card"><i class="fas fa-mountain"></i> <strong>Rooftop Views</strong>Panoramic Annapurna range</div>
+                    <div class="highlight-card"><i class="fas fa-utensils"></i> <strong>Kitchen Access</strong>Save money on meals</div>
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="reviews-section">
+                <h3><i class="fas fa-star"></i> Guest reviews · 4.4 average</h3>
+                <div class="reviews-list">
+                    <div class="review-card">
+                        <div class="review-header"><strong>Emily Watson</strong> <div class="stars">★★★★★</div> <span>March 2026</span></div>
+                        <p>"Wonderful guesthouse in a perfect location! Sita is an amazing host who helped us book our paragliding adventure. The room was clean, breakfast was delicious, and the rooftop views of the Himalayas are breathtaking. Highly recommend!"</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header"><strong>Chris Evans</strong> <div class="stars">★★★★☆</div> <span>February 2026</span></div>
+                        <p>"Great value for money. The location is superb - close to the lake but on a quiet street. The shared kitchen is well-equipped. WiFi worked well. Would definitely stay again."</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header"><strong>Neha Sharma</strong> <div class="stars">★★★★★</div> <span>January 2026</span></div>
+                        <p>"Sita made us feel like family! She gave great recommendations for restaurants and activities. The rooms are spacious and comfortable. The terrace is perfect for sunrise views. Will be back!"</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header"><strong>Tom Baker</strong> <div class="stars">★★★★☆</div> <span>December 2025</span></div>
+                        <p>"Clean, comfortable, and conveniently located. The staff is friendly and helpful. Only minor issue was street noise at night, but earplugs solved that. Overall great stay."</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header"><strong>Lisa Wong</strong> <div class="stars">★★★★★</div> <span>November 2025</span></div>
+                        <p>"Perfect base for exploring Pokhara! Sita arranged our Annapurna trek permits and transportation. The hot shower was amazing after long hiking days. Highly recommend this guesthouse!"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location Section -->
+            <div class="location-section">
+                <h3><i class="fas fa-map-pin"></i> Location & nearby attractions</h3>
+                <div class="map-placeholder">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.0278977785766!2d83.97240131506072!3d28.20945198262296!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3995943f2fc2939b%3A0x1d5c794f7ee8969d!2sPhewa%20Lake!5e0!3m2!1sen!2snp!4v1713234567890!5m2!1sen!2snp" width="100%" height="280" style="border:0; border-radius: 20px;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <div class="nearby-places">
+                    <div class="place-item"><i class="fas fa-water"></i> Fewa Lake — 250 m</div>
+                    <div class="place-item"><i class="fas fa-mountain"></i> World Peace Pagoda — 3.5 km</div>
+                    <div class="place-item"><i class="fas fa-church"></i> Tal Barahi Temple — 300 m</div>
+                    <div class="place-item"><i class="fas fa-hiking"></i> Sarangkot Viewpoint — 10 km</div>
+                    <div class="place-item"><i class="fas fa-shopping-bag"></i> Lakeside Shopping Street — 200 m</div>
+                    <div class="place-item"><i class="fas fa-music"></i> Live Music Bars — 150 m</div>
+                </div>
+            </div>
+
+            <!-- Similar Properties -->
+            <div class="similar-properties">
+                <h3>Similar stays you might like</h3>
+                <div class="similar-grid">
+                    <a href="{{ url_for('auth.property_mountain_view') }}" class="similar-card">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400" alt="Mountain View">
+                        <div class="similar-info">
+                            <strong>Mountain View Homestay</strong>
+                            <span>Pokhara · NPR 2,500/night</span>
+                            <div class="stars">★★★★★ 4.8</div>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('auth.property_thamel_heritage') }}" class="similar-card">
+                        <img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=400" alt="Thamel">
+                        <div class="similar-info">
+                            <strong>Thamel Heritage House</strong>
+                            <span>Kathmandu · NPR 3,200/night</span>
+                            <div class="stars">★★★★½ 4.5</div>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('auth.property_mustang_desert') }}" class="similar-card">
+                        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400" alt="Mustang">
+                        <div class="similar-info">
+                            <strong>Mustang Desert Homestay</strong>
+                            <span>Mustang · NPR 5,500/night</span>
+                            <div class="stars">★★★★☆ 4.7</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Sidebar -->
+        <aside class="booking-sidebar" id="booking-panel">
+            <div class="booking-card-sticky">
+                <div class="booking-price">NPR 2,200 <span class="per-night">/ night</span></div>
+                <div class="rating-summary"><i class="fas fa-star"></i> 4.4 · 31 reviews</div>
+                <form class="booking-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Check-in</label>
+                            <input type="date" id="checkin" class="form-input" value="2026-06-10">
+                        </div>
+                        <div class="form-group">
+                            <label>Check-out</label>
+                            <input type="date" id="checkout" class="form-input" value="2026-06-12">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Guests <span class="guest-max">(max 5)</span></label>
+                        <select id="guests" class="form-select">
+                            <option value="1">1 guest</option>
+                            <option value="2" selected>2 guests</option>
+                            <option value="3">3 guests</option>
+                            <option value="4">4 guests</option>
+                            <option value="5">5 guests</option>
+                        </select>
+                    </div>
+                    <div class="total-price">
+                        <span>Total (with taxes & fees)</span>
+                        <strong id="totalAmount">NPR 4,400</strong>
+                    </div>
+                    <button type="button" id="bookNowBtn" class="btn btn-primary btn-block">Reserve Now</button>
+                    <p class="secure-note"><i class="fas fa-lock"></i> You won't be charged yet</p>
+                </form>
+                <div class="extra-info">✓ Free cancellation up to 7 days</div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    const checkinInput = document.getElementById('checkin');
+    const checkoutInput = document.getElementById('checkout');
+    const guestsSelect = document.getElementById('guests');
+    const totalSpan = document.getElementById('totalAmount');
+
+    function calculateTotal() {
+        const checkin = new Date(checkinInput.value);
+        const checkout = new Date(checkoutInput.value);
+        let nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+        if (nights <= 0 || isNaN(nights)) nights = 1;
+        const pricePerNight = 2200;
+        let total = nights * pricePerNight;
+        totalSpan.innerText = `NPR ${total.toLocaleString()}`;
+    }
+
+    checkinInput.addEventListener('change', calculateTotal);
+    checkoutInput.addEventListener('change', calculateTotal);
+    guestsSelect.addEventListener('change', calculateTotal);
+    calculateTotal();
+
+    document.getElementById('bookNowBtn').addEventListener('click', () => {
+        alert('Booking request received! (Demo) – In production, redirect to checkout / payment.');
+    });
+</script>
+{% endblock %}
