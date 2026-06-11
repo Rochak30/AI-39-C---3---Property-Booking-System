@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% block title %}Lumbini Peace Lodge – Lumbini | Bookmandu{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/property_details.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="property-container">
+    <div class="hero-section">
+        <div class="hero-image" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600');">
+            <div class="hero-overlay-content">
+                <div class="hero-tagline">🕊️ Serenity & Spiritual Awakening</div>
+                <h1 class="hero-title">Lumbini Peace Lodge</h1>
+                <div class="hero-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> Lumbini, Sacred Garden</span>
+                    <span class="hero-type"><i class="fas fa-bed"></i> Private Room</span>
+                    <span class="hero-rating"><i class="fas fa-star"></i> 4.3 (19 reviews)</span>
+                </div>
+                <div class="hero-price-badge">NPR 1,800 <span>/ night</span></div>
+                <a href="#booking-panel" class="btn btn-primary btn-hero">Book Now <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="property-layout">
+        <div class="property-main">
+            <!-- Gallery Section -->
+            <div class="gallery-section">
+                <div class="gallery-grid">
+                    <div class="gallery-main">
+                        <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800" alt="Lumbini Peace Lodge">
+                    </div>
+                    <div class="gallery-thumbs">
+                        <img src="https://images.unsplash.com/photo-1528164344705-47542687000d?w=400" alt="Mayadevi Temple">
+                        <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400" alt="Peaceful Garden">
+                        <img src="https://images.unsplash.com/photo-1582653291997-079a1b04e6e2?w=400" alt="Meditation Hall">
+                        <img src="https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=400" alt="Monastery">
+                        <img src="https://images.unsplash.com/photo-1531835551805-16d864c8d311?w=400" alt="Peace Lodge Room">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Section -->
+            <div class="description-section">
+                <h2>Find Inner Peace at the Birthplace of Buddha</h2>
+                <p>Lumbini Peace Lodge offers a tranquil retreat just steps away from the sacred Mayadevi Temple, the birthplace of Lord Buddha. Our lodge provides clean, comfortable rooms with a peaceful garden setting, perfect for pilgrims, meditators, and travelers seeking spiritual solace.</p>
+                <p>We are located within walking distance of the Lumbini Sacred Garden, where you can explore ancient ruins, monasteries from Buddhist nations worldwide, and the peaceful Pushkarini Sacred Pond. Our staff can arrange meditation sessions, monastery visits, and guided tours of this UNESCO World Heritage Site. Enjoy simple, wholesome vegetarian meals in our garden restaurant.</p>
+            </div>
+
+            <!-- Amenities Section -->
+            <div class="amenities-section">
+                <h3><i class="fas fa-concierge-bell"></i> Amenities & Services</h3>
+                <div class="amenities-grid">
+                    <div class="amenity-item"><i class="fas fa-wifi"></i> <span>Free WiFi</span></div>
+                    <div class="amenity-item"><i class="fas fa-hot-tub"></i> <span>Hot Water 24/7</span></div>
+                    <div class="amenity-item"><i class="fas fa-utensils"></i> <span>Vegetarian Meals</span></div>
+                    <div class="amenity-item"><i class="fas fa-praying-hands"></i> <span>Meditation Space</span></div>
+                    <div class="amenity-item"><i class="fas fa-book"></i> <span>Library</span></div>
+                    <div class="amenity-item"><i class="fas fa-bicycle"></i> <span>Bicycle Rental</span></div>
+                    <div class="amenity-item"><i class="fas fa-taxi"></i> <span>Airport Pickup</span></div>
+                    <div class="amenity-item"><i class="fas fa-leaf"></i> <span>Organic Garden</span></div>
+                </div>
+            </div>
+
+            <!-- Host Section -->
+            <div class="host-section">
+                <div class="host-avatar"><img src="https://randomuser.me/api/portraits/men/52.jpg" alt="Manoj Sharma"></div>
+                <div class="host-details">
+                    <h3>Hosted by Manoj Sharma</h3>
+                    <div class="host-stats">
+                        <span><i class="fas fa-check-circle"></i> Response rate: 95%</span>
+                        <span><i class="fas fa-clock"></i> Responds in 1 hour</span>
+                        <span><i class="fas fa-home"></i> Hosting for 5 years</span>
+                    </div>
+                    <p>Namaste! I'm Manoj, a local from Lumbini who grew up in the shadow of the sacred garden. I'm passionate about sharing the spiritual heritage of my homeland. Whether you're here for pilgrimage, meditation, or cultural exploration, I'll ensure your stay is peaceful and meaningful.</p>
+                </div>
+            </div>
+
+            <!-- Highlights Section -->
+            <div class="highlights-section">
+                <h3>✨ Why guests love this property</h3>
+                <div class="highlights-grid">
+                    <div class="highlight-card"><i class="fas fa-pray"></i> <strong>Sacred Location</strong>2 min walk to Mayadevi Temple</div>
+                    <div class="highlight-card"><i class="fas fa-peace"></i> <strong>Peaceful Garden</strong>Perfect for meditation & reflection</div>
+                    <div class="highlight-card"><i class="fas fa-church"></i> <strong>Monastery Tours</strong>Visit 40+ international monasteries</div>
+                    <div class="highlight-card"><i class="fas fa-heart"></i> <strong>Ayurveda Massage</strong>Traditional wellness treatments</div>
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="reviews-section">
+                <h3><i class="fas fa-star"></i> Guest reviews · 4.3 average</h3>
+                <div class="reviews-list">
+                    <div class="review-card">
+                        <div class="review-header"><strong>Tenzin Wangmo</strong> <div class="stars">★★★★★</div> <span>March 2026</span></div>
+                        <p>"A truly peaceful place close to the sacred garden. The owners are incredibly kind and helpful. Simple but clean rooms. Perfect for pilgrims and those seeking quiet contemplation."</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header"><strong>David Goldberg</strong> <div class="stars">★★★★☆</div> <span>February 2026</span></div>
+                        <p>"Great value for money. Location is excellent - walking distance to all major sites. The garden is beautiful for morning meditation. Would stay again."</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header"><strong>Anita Desai</strong> <div class="stars">★★★★★</div> <span>January 2026</span></div>
+                        <p>"Manoj is a wonderful host who went out of his way to help us arrange monastery visits. The vegetarian food was delicious and freshly prepared. Highly recommend for spiritual travelers."</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header"><strong>Michael Chen</strong> <div class="stars">★★★★☆</div> <span>December 2025</span></div>
+                        <p>"Basic but comfortable accommodation. The hot water worked well and room was clean. Very close to the temple complex. Great for budget travelers."</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header"><strong>Sarah Jones</strong> <div class="stars">★★★☆☆</div> <span>November 2025</span></div>
+                        <p>"Good location but rooms are quite basic. WiFi was slow. However, the peaceful atmosphere and kind staff made up for it. Bring your own toiletries."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location Section -->
+            <div class="location-section">
+                <h3><i class="fas fa-map-pin"></i> Location & nearby attractions</h3>
+                <div class="map-placeholder">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3530.4567!2d83.012345!3d27.468888!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3996e1a7b2b2b2b1%3A0x1a2b3c4d5e6f7g8h!2sLumbini%20Sacred%20Garden!5e0!3m2!1sen!2snp!4v1713234567890!5m2!1sen!2snp" width="100%" height="280" style="border:0; border-radius: 20px;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <div class="nearby-places">
+                    <div class="place-item"><i class="fas fa-temple"></i> Mayadevi Temple — 200 m</div>
+                    <div class="place-item"><i class="fas fa-water"></i> Pushkarini Sacred Pond — 250 m</div>
+                    <div class="place-item"><i class="fas fa-monument"></i> Ashoka Pillar — 300 m</div>
+                    <div class="place-item"><i class="fas fa-church"></i> World Peace Pagoda — 1 km</div>
+                    <div class="place-item"><i class="fas fa-university"></i> Lumbini Museum — 1.5 km</div>
+                </div>
+            </div>
+
+            <!-- Similar Properties -->
+            <div class="similar-properties">
+                <h3>Similar stays you might like</h3>
+                <div class="similar-grid">
+                    <a href="{{ url_for('auth.property_mountain_view') }}" class="similar-card">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400" alt="Mountain View">
+                        <div class="similar-info">
+                            <strong>Mountain View Homestay</strong>
+                            <span>Pokhara · NPR 2,500/night</span>
+                            <div class="stars">★★★★★ 4.8</div>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('auth.property_thamel_heritage') }}" class="similar-card">
+                        <img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=400" alt="Thamel">
+                        <div class="similar-info">
+                            <strong>Thamel Heritage House</strong>
+                            <span>Kathmandu · NPR 3,200/night</span>
+                            <div class="stars">★★★★½ 4.5</div>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="similar-card">
+                        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400" alt="Lakeside">
+                        <div class="similar-info">
+                            <strong>Lakeside Comfort Inn</strong>
+                            <span>Pokhara · NPR 2,200/night</span>
+                            <div class="stars">★★★★☆ 4.4</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Sidebar -->
+        <aside class="booking-sidebar" id="booking-panel">
+            <div class="booking-card-sticky">
+                <div class="booking-price">NPR 1,800 <span class="per-night">/ night</span></div>
+                <div class="rating-summary"><i class="fas fa-star"></i> 4.3 · 19 reviews</div>
+                <form class="booking-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Check-in</label>
+                            <input type="date" id="checkin" class="form-input" value="2026-06-10">
+                        </div>
+                        <div class="form-group">
+                            <label>Check-out</label>
+                            <input type="date" id="checkout" class="form-input" value="2026-06-12">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Guests <span class="guest-max">(max 3)</span></label>
+                        <select id="guests" class="form-select">
+                            <option value="1">1 guest</option>
+                            <option value="2" selected>2 guests</option>
+                            <option value="3">3 guests</option>
+                        </select>
+                    </div>
+                    <div class="total-price">
+                        <span>Total (with taxes & fees)</span>
+                        <strong id="totalAmount">NPR 3,600</strong>
+                    </div>
+                    <button type="button" id="bookNowBtn" class="btn btn-primary btn-block">Reserve Now</button>
+                    <p class="secure-note"><i class="fas fa-lock"></i> You won't be charged yet</p>
+                </form>
+                <div class="extra-info">✓ Free cancellation up to 7 days</div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    const checkinInput = document.getElementById('checkin');
+    const checkoutInput = document.getElementById('checkout');
+    const guestsSelect = document.getElementById('guests');
+    const totalSpan = document.getElementById('totalAmount');
+
+    function calculateTotal() {
+        const checkin = new Date(checkinInput.value);
+        const checkout = new Date(checkoutInput.value);
+        let nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+        if (nights <= 0 || isNaN(nights)) nights = 1;
+        const pricePerNight = 1800;
+        let total = nights * pricePerNight;
+        totalSpan.innerText = `NPR ${total.toLocaleString()}`;
+    }
+
+    checkinInput.addEventListener('change', calculateTotal);
+    checkoutInput.addEventListener('change', calculateTotal);
+    guestsSelect.addEventListener('change', calculateTotal);
+    calculateTotal();
+
+    document.getElementById('bookNowBtn').addEventListener('click', () => {
+        alert('Booking request received! (Demo) – In production, redirect to checkout / payment.');
+    });
+</script>
+{% endblock %}
