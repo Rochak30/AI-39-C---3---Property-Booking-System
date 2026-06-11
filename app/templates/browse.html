@@ -4,10 +4,9 @@
 {% block content %}
 <section class="browse-page">
 
-  <!-- ── Filter Panel ── -->
+  <!-- Filter Panel -->
   <div class="filter-panel">
     <div class="container">
-
       <div class="filter-search-row">
         <div class="filter-search-wrap">
           <span class="filter-search-icon">🔍</span>
@@ -70,17 +69,16 @@
 
         <button class="btn btn-ghost btn-sm clear-btn" id="clearFilters">Clear All Filters</button>
       </div>
-
     </div>
   </div>
 
-  <!-- ── Results ── -->
+  <!-- Results Grid -->
   <div class="container browse-results">
     <p class="results-count" id="resultsCount">6 properties found</p>
 
     <div class="props-grid" id="propertiesGrid">
 
-      <!-- Card 1 -->
+      <!-- Card 1 - Mountain View Homestay -->
       <a href="{{ url_for('auth.property_mountain_view') }}" class="prop-card"
          data-region="Pokhara" data-type="Homestay" data-price="2500"
          data-amenities="WiFi,Breakfast Included,Mountain View" data-rating="4.8" data-bookings="42" data-trending="true">
@@ -109,11 +107,11 @@
               <span class="prop-rating-count">· 🔥 42</span>
             </div>
           </div>
-          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">Book Now</button>
+          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">View Details</button>
         </div>
       </a>
 
-      <!-- Card 2 -->
+      <!-- Card 2 - Thamel Heritage House -->
       <a href="{{ url_for('auth.property_thamel_heritage') }}" class="prop-card"
          data-region="Kathmandu" data-type="Guesthouse" data-price="3200"
          data-amenities="WiFi,Parking,Kitchen Access" data-rating="4.5" data-bookings="38" data-trending="true">
@@ -142,11 +140,11 @@
               <span class="prop-rating-count">· 🔥 38</span>
             </div>
           </div>
-          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">Book Now</button>
+          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">View Details</button>
         </div>
       </a>
 
-      <!-- Card 3 -->
+      <!-- Card 3 - Jungle Retreat Chitwan -->
       <a href="{{ url_for('auth.property_jungle_retreat') }}" class="prop-card"
          data-region="Chitwan" data-type="Entire Property" data-price="4500"
          data-amenities="Breakfast Included,Parking,Hot Water" data-rating="4.9" data-bookings="55" data-trending="true">
@@ -175,11 +173,11 @@
               <span class="prop-rating-count">· 🔥 55</span>
             </div>
           </div>
-          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">Book Now</button>
+          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">View Details</button>
         </div>
       </a>
 
-      <!-- Card 4 -->
+      <!-- Card 4 - Lumbini Peace Lodge -->
       <a href="{{ url_for('auth.property_lumbini_peace') }}" class="prop-card"
          data-region="Lumbini" data-type="Private Room" data-price="1800"
          data-amenities="WiFi,Hot Water" data-rating="4.3" data-bookings="19" data-trending="false">
@@ -205,11 +203,11 @@
               <span class="prop-rating-count">· 🔥 19</span>
             </div>
           </div>
-          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">Book Now</button>
+          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">View Details</button>
         </div>
       </a>
 
-      <!-- Card 5 -->
+      <!-- Card 5 - Mustang Desert Homestay -->
       <a href="{{ url_for('auth.property_mustang_desert') }}" class="prop-card"
          data-region="Mustang" data-type="Homestay" data-price="5500"
          data-amenities="Breakfast Included,Hot Water,Mountain View" data-rating="4.7" data-bookings="29" data-trending="false">
@@ -236,11 +234,11 @@
               <span class="prop-rating-count">· 🔥 29</span>
             </div>
           </div>
-          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">Book Now</button>
+          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">View Details</button>
         </div>
       </a>
 
-      <!-- Card 6 -->
+      <!-- Card 6 - Lakeside Comfort Inn -->
       <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="prop-card"
          data-region="Pokhara" data-type="Guesthouse" data-price="2200"
          data-amenities="WiFi,Parking,Kitchen Access" data-rating="4.4" data-bookings="31" data-trending="false">
@@ -267,11 +265,11 @@
               <span class="prop-rating-count">· 🔥 31</span>
             </div>
           </div>
-          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">Book Now</button>
+          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">View Details</button>
         </div>
       </a>
 
-    </div><!-- /props-grid -->
+    </div>
 
     <p class="no-results hidden" id="noResults">No properties match your filters.</p>
   </div>
@@ -279,7 +277,7 @@
 </section>
 
 <style>
-/* ── Browse Page ── */
+/* Browse Page Specific Styles */
 .browse-page { padding-top: 80px; min-height: 100vh; }
 
 .filter-panel {
@@ -299,7 +297,6 @@
   transition: var(--transition);
 }
 .filter-search:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); outline: none; }
-.filter-search::placeholder { color: var(--text-muted); }
 
 .filter-row { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
 .filter-row-bottom { align-items: flex-start; gap: 24px; }
@@ -322,20 +319,16 @@
 
 .clear-btn { margin-left: auto; align-self: center; }
 
-/* ── Results ── */
 .browse-results { padding: 32px 24px 80px; }
 .results-count { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; font-weight: 500; }
 
 .no-results { text-align: center; padding: 60px; color: var(--text-muted); font-size: 16px; }
 
-/* Prop card image background override */
-.prop-img-placeholder[style] {
-  background-color: var(--bg-600) !important;
-}
+.hidden { display: none !important; }
 </style>
 
 <script>
-// ── Filter Logic ──
+// Filter Logic
 const cards = document.querySelectorAll('.prop-card');
 const resultsCount = document.getElementById('resultsCount');
 const noResults = document.getElementById('noResults');
@@ -423,7 +416,6 @@ function applyFilters() {
     return true;
   });
 
-  // Sort
   if (sortBy === 'price-asc') visible.sort((a, b) => a.dataset.price - b.dataset.price);
   else if (sortBy === 'price-desc') visible.sort((a, b) => b.dataset.price - a.dataset.price);
   else if (sortBy === 'rating') visible.sort((a, b) => b.dataset.rating - a.dataset.rating);
@@ -439,5 +431,7 @@ function applyFilters() {
 function toggleWishlist(btn) {
   btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
 }
+
+applyFilters();
 </script>
 {% endblock %}
