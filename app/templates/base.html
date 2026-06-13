@@ -6,12 +6,16 @@
 <title>{% block title %}Pahuna — Explore Nepal{% endblock %}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+
+<!-- ========== FONT AWESOME 6 (FREE ICONS) - ADDED ========== -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <style>
   /* ── Pahuna brand colours ── */
   :root {
     --pahuna-navy:  #e7eaf2;
-    --pahuna-orange:#fffefc;
+    --pahuna-orange: #fffefc;
     --pahuna-blue:  #fbfbfb;
     --pahuna-pink:  #ffffff;
   }
@@ -130,7 +134,8 @@ function toggleTheme() {
   const html = document.documentElement;
   const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   html.setAttribute('data-theme', next);
-  document.getElementById('theme-btn').textContent = next === 'dark' ? '🌙' : '☀️';
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = next === 'dark' ? '🌙' : '☀️';
   localStorage.setItem('theme', next);
 }
 (function() {
@@ -143,10 +148,18 @@ function toggleTheme() {
 })();
 
 function showToast(msg, type='info') {
+  let toastContainer = document.getElementById('toasts');
+  if (!toastContainer) {
+    const container = document.createElement('div');
+    container.className = 'toast-container';
+    container.id = 'toasts';
+    document.body.appendChild(container);
+    toastContainer = container;
+  }
   const t = document.createElement('div');
   t.className = `toast ${type}`;
   t.innerHTML = `<span class="toast-icon">${type==='success'?'✓':type==='error'?'✕':'ℹ'}</span><span>${msg}</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
-  document.getElementById('toasts').appendChild(t);
+  toastContainer.appendChild(t);
   setTimeout(() => t.remove(), 4000);
 }
 
