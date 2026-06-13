@@ -4,7 +4,7 @@ Email Service — sends password reset codes via Gmail SMTP.
 Setup (one-time):
   1. Go to myaccount.google.com → Security → 2-Step Verification → turn ON
   2. Go to myaccount.google.com → Security → App Passwords
-  3. Create an app password (name it "Bookmandu")
+  3. Create an app password (name it "Pahuna")
   4. Copy the 16-character password into config.py as GMAIL_APP_PASSWORD
 """
 
@@ -21,7 +21,7 @@ def send_reset_code(to_email: str, code: str) -> bool:
     """
     try:
         msg = MIMEMultipart("alternative")
-        msg["Subject"] = f"{code} is your Bookmandu reset code"
+        msg["Subject"] = f"{code} is your Pahuna reset code"
         msg["From"]    = config.GMAIL_ADDRESS
         msg["To"]      = to_email
 
@@ -29,13 +29,13 @@ def send_reset_code(to_email: str, code: str) -> bool:
         plain = f"""
 Hi,
 
-Your Bookmandu password reset code is:
+Your Pahuna password reset code is:
 
   {code}
 
 This code expires in 10 minutes. If you didn't request this, ignore this email.
 
-— The Bookmandu Team
+— The Pahuna Team
         """.strip()
 
         # HTML version
@@ -53,7 +53,7 @@ This code expires in 10 minutes. If you didn't request this, ignore this email.
           <tr>
             <td style="background:linear-gradient(135deg,#0d1f3c,#1a3a5c,#0d2a2a);padding:32px;text-align:center;">
               <div style="font-size:28px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">
-                Book<span style="color:#00c97a;">mandu</span>
+                Pahuna
               </div>
               <div style="font-size:13px;color:#8b949e;margin-top:4px;">Nepal's trusted accommodation platform</div>
             </td>
@@ -64,7 +64,7 @@ This code expires in 10 minutes. If you didn't request this, ignore this email.
             <td style="padding:36px 40px;">
               <p style="margin:0 0 8px;font-size:15px;color:#8b949e;">Hi there,</p>
               <p style="margin:0 0 28px;font-size:15px;color:#c9d1d9;line-height:1.6;">
-                We received a request to reset your Bookmandu password. Use the code below:
+                We received a request to reset your Pahuna password. Use the code below:
               </p>
 
               <!-- Code block -->
@@ -90,7 +90,7 @@ This code expires in 10 minutes. If you didn't request this, ignore this email.
           <tr>
             <td style="padding:20px 40px;border-top:1px solid #21262d;text-align:center;">
               <p style="margin:0;font-size:12px;color:#484f58;">
-                © 2026 Bookmandu · Nepal's Homestay Booking Platform
+                © 2026 Pahuna · Nepal's Homestay Booking Platform
               </p>
             </td>
           </tr>
