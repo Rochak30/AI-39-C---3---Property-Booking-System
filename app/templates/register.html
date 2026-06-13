@@ -34,6 +34,16 @@
 .flash-msg { padding: 12px 16px; border-radius: var(--radius-sm); font-size: 14px; margin-bottom: 16px; }
 .flash-danger { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); color: var(--red); }
 .flash-success { background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); color: var(--green); }
+/* ── Eye toggle ── */
+.input-password-wrap { position: relative; }
+.input-password-wrap .form-input { width: 100%; padding-right: 44px; }
+.btn-eye {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; padding: 0; cursor: pointer;
+  color: var(--text-muted); font-size: 18px; line-height: 1;
+  transition: color 0.2s; display: flex; align-items: center;
+}
+.btn-eye:hover { color: var(--text-secondary); }
 @media (max-width: 1024px) { .auth-visual { display: none; } .auth-page { grid-template-columns: 1fr; } .auth-form-side { padding: 40px 24px; } }
 </style>
 {% endblock %}
@@ -76,8 +86,15 @@
         </div>
         <div class="form-group">
           <label class="form-label">Password <span style="color:var(--text-muted);font-weight:400">(min. 6 characters)</span></label>
-          <input type="password" class="form-input" name="password" placeholder="••••••••"
-                 oninput="checkPassStrength(this.value)" minlength="6" required>
+          <div class="input-password-wrap">
+            <input type="password" class="form-input" name="password" id="reg-password" placeholder="••••••••"
+                   oninput="checkPassStrength(this.value)" minlength="6" required>
+            <button type="button" class="btn-eye" onclick="toggleEye('reg-password', this)" aria-label="Show password">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
           <div style="height:4px;border-radius:2px;background:var(--bg-500);margin-top:6px;overflow:hidden">
             <div id="pass-bar" style="height:100%;width:0;transition:all 0.3s;border-radius:2px"></div>
           </div>
@@ -98,6 +115,20 @@ function checkPassStrength(val) {
   const pct = Math.min(100, val.length * 10);
   bar.style.width = pct + '%';
   bar.style.background = pct < 40 ? '#e74c3c' : pct < 70 ? '#f0a500' : '#2ecc71';
+}
+
+function toggleEye(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+  btn.querySelector('svg').innerHTML = isHidden
+    ? /* eye-off */
+      '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>' +
+      '<path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>' +
+      '<line x1="1" y1="1" x2="23" y2="23"/>'
+    : /* eye */
+      '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
 }
 </script>
 {% endblock %}
