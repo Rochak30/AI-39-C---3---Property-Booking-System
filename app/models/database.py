@@ -66,7 +66,18 @@ class Database:
                 registered_at TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
             )
         """)
-
+        # -- FORGOT PASSWORD ─────────────────────────────────────────────────
+        db.execute("""
+                   CREATE TABLE IF NOT EXISTS password_resets (
+                    id         INT AUTO_INCREMENT PRIMARY KEY,
+                    email      VARCHAR(100) NOT NULL,
+                    code       VARCHAR(6)   NOT NULL,
+                    expires_at DATETIME     NOT NULL,
+                    used       BOOLEAN      NOT NULL DEFAULT FALSE,
+                    created_at DATETIME     DEFAULT CURRENT_TIMESTAMP,
+                    INDEX idx_email (email) 
+                );
+        """)           
         # ── AMENITIES ─────────────────────────────────────────────────────────
         db.execute("""
             CREATE TABLE IF NOT EXISTS amenities (
