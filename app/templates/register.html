@@ -3,89 +3,312 @@
 
 {% block extra_css %}
 <style>
-.auth-page {
-  min-height: calc(100vh - 64px); display: grid; grid-template-columns: 1fr 1fr;
-  margin-top: 64px;
-}
-.auth-visual {
-  background: linear-gradient(135deg, #0d1f3c 0%, #1a3a5c 50%, #0d2a2a 100%);
-  display: flex; align-items: center; justify-content: center; flex-direction: column;
-  padding: 60px; position: relative; overflow: hidden;
-}
-.auth-visual::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse 70% 50% at 50% 60%, rgba(26,188,156,0.12) 0%, transparent 70%);
-}
-.auth-visual-content { position: relative; z-index: 1; text-align: center; }
-.auth-visual-logo { font-family: var(--font-display); font-size: 48px; font-weight: 800; margin-bottom: 16px; }
-.auth-visual-logo span { color: var(--teal); }
-.auth-visual-tagline { font-size: 18px; color: var(--text-secondary); line-height: 1.6; }
-.auth-form-side {
-  display: flex; align-items: center; justify-content: center;
-  padding: 60px 80px; background: var(--bg-900);
-}
-.auth-form-container { width: 100%; max-width: 420px; }
-.auth-title { font-family: var(--font-display); font-size: 32px; font-weight: 800; margin-bottom: 8px; }
-.auth-subtitle { color: var(--text-secondary); margin-bottom: 36px; font-size: 15px; }
-.auth-form { display: flex; flex-direction: column; gap: 18px; }
-.auth-footer { margin-top: 20px; text-align: center; font-size: 14px; color: var(--text-secondary); }
-.auth-link { color: var(--teal); font-weight: 600; }
-.auth-link:hover { text-decoration: underline; }
-.flash-msg { padding: 12px 16px; border-radius: var(--radius-sm); font-size: 14px; margin-bottom: 16px; }
-.flash-danger { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); color: var(--red); }
-.flash-success { background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); color: var(--green); }
-@media (max-width: 1024px) { .auth-visual { display: none; } .auth-page { grid-template-columns: 1fr; } .auth-form-side { padding: 40px 24px; } }
+  /* Additional component styles that complement the existing style.css */
+  .role-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .role-btn {
+    background: var(--bg-700);
+    border: 1.5px solid var(--border);
+    border-radius: 60px;
+    padding: 12px 8px;
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-secondary);
+  }
+  .role-btn.active {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #051209;
+    box-shadow: 0 4px 12px rgba(0, 201, 122, 0.3);
+  }
+  .role-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    background: var(--bg-600);
+    padding: 6px 12px;
+    border-radius: 30px;
+    margin-top: -12px;
+    margin-bottom: 20px;
+    display: inline-block;
+    width: 100%;
+  }
+  .conditional-card {
+    background: var(--bg-600);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px 0 16px;
+  }
+  .conditional-title {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .two-col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .full-width {
+    grid-column: span 2;
+  }
+  .section-upper {
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin: 12px 0 8px 0;
+  }
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0 8px;
+  }
+  .checkbox-group input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--teal);
+  }
+  .input-icon-group {
+    display: flex;
+    align-items: center;
+    background: var(--bg-700);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: all 0.2s;
+  }
+  .input-icon-group:focus-within {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px var(--teal-glow);
+  }
+  .input-icon {
+    padding: 0 12px;
+    font-size: 18px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .input-icon-group input, .input-icon-group select {
+    background: transparent;
+    border: none;
+    padding: 12px 12px 12px 0;
+    width: 100%;
+    font-size: 14px;
+    color: var(--text-primary);
+    outline: none;
+  }
+  /* ── Eye toggle ── */
+  .btn-eye {
+    background: none;
+    border: none;
+    padding: 0 12px;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+  .btn-eye:hover { color: var(--text-secondary); }
+  /* ── /Eye toggle ── */
+  .validation-feedback {
+    font-size: 11px;
+    margin-top: 4px;
+    margin-left: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .valid-ok { color: var(--green); }
+  .valid-error { color: var(--red); }
+  .strength-bar {
+    height: 5px;
+    background: var(--bg-500);
+    border-radius: 6px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .strength-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.2s, background 0.2s;
+    border-radius: 6px;
+  }
+  @media (max-width: 640px) {
+    .two-col-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .full-width {
+      grid-column: span 1;
+    }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="auth-page">
-  <div class="auth-visual">
-    <div class="auth-visual-content">
-      <div class="auth-visual-logo">Book<span>mandu</span></div>
-      <p class="auth-visual-tagline">Join as a Guest to explore<br>or as a Host to earn</p>
-      <div style="margin-top:48px;background:var(--teal-glow);border:1px solid var(--border-teal);border-radius:16px;padding:24px;text-align:left">
-        <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">✓ Free to join, no booking fees for guests</p>
-        <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">✓ Book homestays in Nepali Rupees</p>
-        <p style="font-size:14px;color:var(--text-secondary)">✓ Verified reviews from real travelers</p>
+<div class="auth-page" style="margin-top: 64px; min-height: calc(100vh - 64px); display: grid; grid-template-columns: 1fr 1fr;">
+  <!-- LEFT SIDE: Hero panel with marketing -->
+  <div class="auth-visual" style="background: linear-gradient(135deg, #0d1f3c 0%, #1a3a5c 50%, #0d2a2a 100%); display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 60px; position: relative; overflow: hidden;">
+    <div class="auth-visual-content" style="position: relative; z-index: 1; text-align: center;">
+      <div class="auth-visual-logo" style="font-family: var(--font-display); font-size: 48px; font-weight: 800; margin-bottom: 16px;">Book<span style="color: var(--teal);">mandu</span></div>
+      <p class="auth-visual-tagline" style="font-size: 18px; color: var(--text-secondary); line-height: 1.6;">Join as a Guest to explore<br>or as a Host to earn</p>
+      <div style="margin-top:48px; background: var(--teal-glow); border:1px solid var(--border-teal); border-radius:16px; padding:24px; text-align:left">
+        <p style="font-size:14px; color:var(--text-secondary); margin-bottom:12px">✓ Free to join, no booking fees for guests</p>
+        <p style="font-size:14px; color:var(--text-secondary); margin-bottom:12px">✓ Hosts list in minutes & earn in Nepali Rupees</p>
+        <p style="font-size:14px; color:var(--text-secondary)">✓ Verified reviews from real travelers</p>
       </div>
+      <div style="margin-top: 32px; font-style: italic; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 20px;">"Travel like a local, host like a friend — Bookmandu connects souls of Nepal."</div>
     </div>
   </div>
 
-  <div class="auth-form-side">
-    <div class="auth-form-container">
-      <h2 class="auth-title">Create Your Account</h2>
-      <p class="auth-subtitle">Join Bookmandu today</p>
+  <!-- RIGHT SIDE: Form card -->
+  <div class="auth-form-side" style="display: flex; align-items: center; justify-content: center; padding: 60px 80px; background: var(--bg-900);">
+    <div class="auth-form-container" style="width: 100%; max-width: 520px;">
+      <h2 class="auth-title" style="font-family: var(--font-display); font-size: 32px; font-weight: 800; margin-bottom: 8px;">Create your account</h2>
+      <p class="auth-subtitle" style="color: var(--text-secondary); margin-bottom: 28px; font-size: 15px;">It only takes a minute to get started.</p>
 
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          {% for category, message in messages %}
-            <div class="flash-msg flash-{{ category }}">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
+      <!-- Role Selector -->
+      <div class="role-switch">
+        <div id="roleGuestBtn" class="role-btn active">🧳 Guest — I want to book</div>
+        <div id="roleHostBtn" class="role-btn">🏠 Host — I want to list</div>
+      </div>
+      <div class="role-note">Admin accounts are created internally and cannot be self-registered.</div>
 
-      <form class="auth-form" method="POST" action="/register">
-        <div class="form-group">
-          <label class="form-label">Full Name</label>
-          <input type="text" class="form-input" name="name" placeholder="Ramesh Sharma" required>
+      <!-- Shared fields form (no actual submit event, handled via JS) -->
+      <div id="registerForm">
+        <!-- Full Name -->
+        <div class="form-group" style="margin-bottom: 18px;">
+          <div class="input-icon-group">
+            <span class="input-icon">👤</span>
+            <input type="text" id="fullName" placeholder="Full Name" autocomplete="name">
+          </div>
+          <div class="validation-feedback" id="nameFeedback"></div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input type="email" class="form-input" name="email" placeholder="you@example.com" required>
+
+        <!-- Email -->
+        <div class="form-group" style="margin-bottom: 18px;">
+          <div class="input-icon-group">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="email" placeholder="Email Address" autocomplete="email">
+          </div>
+          <div class="validation-feedback" id="emailFeedback"></div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Password <span style="color:var(--text-muted);font-weight:400">(min. 6 characters)</span></label>
-          <input type="password" class="form-input" name="password" placeholder="••••••••"
-                 oninput="checkPassStrength(this.value)" minlength="6" required>
-          <div style="height:4px;border-radius:2px;background:var(--bg-500);margin-top:6px;overflow:hidden">
-            <div id="pass-bar" style="height:100%;width:0;transition:all 0.3s;border-radius:2px"></div>
+
+        <!-- Password -->
+        <div class="form-group" style="margin-bottom: 18px;">
+          <div class="input-icon-group">
+            <span class="input-icon">🔑</span>
+            <input type="password" id="password" placeholder="Password (min. 8 characters)">
+            <button type="button" class="btn-eye" onclick="toggleEye('password', this)" aria-label="Show password">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+          <div class="validation-feedback" id="passwordFeedback"></div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group" style="margin-bottom: 18px;">
+          <div class="input-icon-group">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password">
+            <button type="button" class="btn-eye" onclick="toggleEye('confirmPassword', this)" aria-label="Show password">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <div class="validation-feedback" id="confirmFeedback"></div>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="form-group" style="margin-bottom: 18px;">
+          <div class="input-icon-group">
+            <span class="input-icon">📱</span>
+            <input type="tel" id="phone" placeholder="Phone Number (e.g., +977 98XXXXXXXX)">
+          </div>
+          <div class="validation-feedback" id="phoneFeedback"></div>
+        </div>
+
+        <!-- Guest Only Block (visible by default) -->
+        <div id="guestBlock" class="conditional-card">
+          <div class="conditional-title">🏡 Guest details</div>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <input type="text" id="homeAddress" class="form-input" placeholder="Home Address (City, Country)" style="width:100%;">
+          </div>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <input type="tel" id="emergencyContact" class="form-input" placeholder="Emergency Contact (phone)">
+          </div>
+          <div class="form-group">
+            <select id="preferredLanguage" class="form-select">
+              <option value="English">English</option>
+              <option value="नेपाली">नेपाली</option>
+              <option value="हिन्दी">हिन्दी</option>
+              <option value="中文">中文</option>
+              <option value="Deutsch">Deutsch</option>
+            </select>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center">Create Account</button>
-      </form>
-      <div class="auth-footer">Already have an account? <a href="/login" class="auth-link">Sign in</a></div>
+        <!-- Host Only Block (hidden initially) -->
+        <div id="hostBlock" class="conditional-card" style="display: none;">
+          <div class="conditional-title">🛡️ Host verification</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom: 16px;">Reviewed manually. Never shared publicly.</div>
+          
+          <div class="section-upper">Identity</div>
+          <div class="two-col-grid">
+            <select id="idType" class="form-select">
+              <option value="Citizenship">Citizenship</option>
+              <option value="Passport">Passport</option>
+              <option value="Driving License">Driving License</option>
+            </select>
+            <input type="text" id="idNumber" class="form-input" placeholder="ID Number">
+          </div>
+
+          <div class="section-upper">Property</div>
+          <div class="two-col-grid">
+            <select id="propertyType" class="form-select">
+              <option value="Homestay">Homestay</option>
+              <option value="Guesthouse">Guesthouse</option>
+              <option value="Private Room">Private Room</option>
+              <option value="Entire Property">Entire Property</option>
+            </select>
+            <input type="text" id="payoutBank" class="form-input" placeholder="Payout Bank Account">
+          </div>
+          <div class="form-group full-width" style="margin-top: 4px;">
+            <input type="text" id="hostAddress" class="form-input" placeholder="Property Address (full address)">
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="consentCheckbox">
+            <label for="consentCheckbox" style="font-size:13px;">I consent to a background & document verification check, and agree to Bookmandu's Host Terms.</label>
+          </div>
+          <div class="validation-feedback" id="consentFeedback"></div>
+        </div>
+
+        <button type="button" id="submitAccountBtn" class="btn btn-primary btn-lg" style="width:100%; justify-content:center; margin-top: 12px;">Create Guest Account</button>
+      </div>
+
+      <div class="auth-footer" style="margin-top: 24px; text-align: center; font-size: 14px;">Already have an account? <a href="/login" class="auth-link" style="color: var(--teal); font-weight: 600;">Sign in</a></div>
     </div>
   </div>
 </div>
@@ -93,11 +316,293 @@
 
 {% block extra_js %}
 <script>
-function checkPassStrength(val) {
-  const bar = document.getElementById('pass-bar');
-  const pct = Math.min(100, val.length * 10);
-  bar.style.width = pct + '%';
-  bar.style.background = pct < 40 ? '#e74c3c' : pct < 70 ? '#f0a500' : '#2ecc71';
-}
+  // ── Eye toggle ──
+  function toggleEye(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+    btn.querySelector('svg').innerHTML = isHidden
+      ? /* eye-off */
+        '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>' +
+        '<path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>' +
+        '<line x1="1" y1="1" x2="23" y2="23"/>'
+      : /* eye */
+        '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  }
+  // ── /Eye toggle ──
+
+  // DOM elements
+  const roleGuestBtn = document.getElementById('roleGuestBtn');
+  const roleHostBtn = document.getElementById('roleHostBtn');
+  const guestBlock = document.getElementById('guestBlock');
+  const hostBlock = document.getElementById('hostBlock');
+  const submitBtn = document.getElementById('submitAccountBtn');
+
+  // Shared fields
+  const fullName = document.getElementById('fullName');
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
+  const confirmPwd = document.getElementById('confirmPassword');
+  const phone = document.getElementById('phone');
+
+  // Guest specific
+  const homeAddress = document.getElementById('homeAddress');
+  const emergencyContact = document.getElementById('emergencyContact');
+  const preferredLanguage = document.getElementById('preferredLanguage');
+
+  // Host specific
+  const idType = document.getElementById('idType');
+  const idNumber = document.getElementById('idNumber');
+  const propertyType = document.getElementById('propertyType');
+  const payoutBank = document.getElementById('payoutBank');
+  const hostAddress = document.getElementById('hostAddress');
+  const consentCheckbox = document.getElementById('consentCheckbox');
+
+  // Feedback spans
+  const nameFeed = document.getElementById('nameFeedback');
+  const emailFeed = document.getElementById('emailFeedback');
+  const passwordFeed = document.getElementById('passwordFeedback');
+  const confirmFeed = document.getElementById('confirmFeedback');
+  const phoneFeed = document.getElementById('phoneFeedback');
+  const consentFeed = document.getElementById('consentFeedback');
+  const strengthFill = document.getElementById('strengthFill');
+
+  let selectedRole = 'guest'; // 'guest' or 'host'
+
+  // Helper: Toast
+  function showToast(message, type = 'success') {
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.className = 'toast-container';
+      document.body.appendChild(toastContainer);
+    }
+    const toast = document.createElement('div');
+    toast.className = `toast ${type === 'success' ? 'success' : 'error'}`;
+    toast.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : '⚠️'}</span><span>${message}</span><span class="toast-close" style="cursor:pointer;">✕</span>`;
+    toastContainer.appendChild(toast);
+    toast.querySelector('.toast-close').addEventListener('click', () => toast.remove());
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // Password strength evaluator (length, uppercase, digit, special)
+  function getPasswordStrength(pwd) {
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (pwd.length >= 12) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+    return Math.min(4, Math.floor(score / 1.5));
+  }
+
+  function updateStrengthBar() {
+    const pwd = password.value;
+    const strength = getPasswordStrength(pwd);
+    let percent = 0;
+    let color = '#e74c3c';
+    if (pwd.length === 0) percent = 0;
+    else if (strength <= 1) { percent = 30; color = '#e74c3c'; }
+    else if (strength === 2) { percent = 55; color = '#f0a500'; }
+    else { percent = 100; color = '#2ecc71'; }
+    strengthFill.style.width = percent + '%';
+    strengthFill.style.background = color;
+    if (pwd.length > 0 && pwd.length < 8) passwordFeed.innerHTML = '<span class="valid-error">❌ Must be at least 8 characters</span>';
+    else if (pwd.length >= 8 && strength < 2) passwordFeed.innerHTML = '<span class="valid-error">⚠️ Weak — add uppercase, number or symbol</span>';
+    else if (strength >= 2) passwordFeed.innerHTML = '<span class="valid-ok">✓ Strong password</span>';
+    else passwordFeed.innerHTML = '';
+  }
+
+  // live validators
+  function validateName() { return fullName.value.trim().length > 0; }
+  function validateEmailFormat() { return /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(email.value.trim()); }
+  function validatePhone() { return (phone.value.replace(/[^0-9]/g, '').length >= 10); }
+  function validatePasswordMatch() { return password.value === confirmPwd.value && password.value.length >= 8; }
+
+  function updateLiveFeedback() {
+    // Name
+    if (fullName.value.trim() === '') nameFeed.innerHTML = '<span class="valid-error">❌ Required</span>';
+    else nameFeed.innerHTML = '<span class="valid-ok">✓ Valid</span>';
+    // Email
+    if (!validateEmailFormat() && email.value !== '') emailFeed.innerHTML = '<span class="valid-error">❌ Invalid email</span>';
+    else if (email.value === '') emailFeed.innerHTML = '<span class="valid-error">❌ Required</span>';
+    else emailFeed.innerHTML = '<span class="valid-ok">✓ Looks good</span>';
+    // Confirm password
+    if (confirmPwd.value !== '' && password.value !== confirmPwd.value) confirmFeed.innerHTML = '<span class="valid-error">❌ Passwords do not match</span>';
+    else if (password.value.length >= 8 && password.value === confirmPwd.value && confirmPwd.value !== '') confirmFeed.innerHTML = '<span class="valid-ok">✓ Matches</span>';
+    else if (confirmPwd.value !== '') confirmFeed.innerHTML = '<span class="valid-error">❌ Not matching</span>';
+    else confirmFeed.innerHTML = '';
+    // Phone
+    if (phone.value !== '' && !validatePhone()) phoneFeed.innerHTML = '<span class="valid-error">❌ At least 10 digits</span>';
+    else if (phone.value === '') phoneFeed.innerHTML = '<span class="valid-error">❌ Required</span>';
+    else phoneFeed.innerHTML = '<span class="valid-ok">✓ Valid phone</span>';
+  }
+
+  function checkEmailUniqueness(emailStr) {
+    const accounts = JSON.parse(localStorage.getItem('bookmandu_accounts') || '[]');
+    return !accounts.some(acc => acc.email.toLowerCase() === emailStr.toLowerCase());
+  }
+
+  function validateHostFields() {
+    if (!idNumber.value.trim()) return false;
+    if (!payoutBank.value.trim()) return false;
+    if (!hostAddress.value.trim()) return false;
+    if (!consentCheckbox.checked) return false;
+    return true;
+  }
+
+  function validateGuestFields() {
+    if (!homeAddress.value.trim()) return false;
+    if (!emergencyContact.value.trim()) return false;
+    return true;
+  }
+
+  function getFullAccountObject() {
+    const base = {
+      fullName: fullName.value.trim(),
+      email: email.value.trim(),
+      password: password.value, // plain for demo
+      phone: phone.value.trim(),
+      role: selectedRole,
+      createdAt: new Date().toISOString()
+    };
+    if (selectedRole === 'guest') {
+      base.guestDetails = {
+        homeAddress: homeAddress.value.trim(),
+        emergencyContact: emergencyContact.value.trim(),
+        preferredLanguage: preferredLanguage.value
+      };
+    } else {
+      base.hostDetails = {
+        idType: idType.value,
+        idNumber: idNumber.value.trim(),
+        propertyType: propertyType.value,
+        payoutBank: payoutBank.value.trim(),
+        hostAddress: hostAddress.value.trim(),
+        consent: consentCheckbox.checked
+      };
+    }
+    return base;
+  }
+
+  function validateAll() {
+    let isValid = true;
+    if (!fullName.value.trim()) { isValid = false; nameFeed.innerHTML = '<span class="valid-error">❌ Full name required</span>'; }
+    if (!validateEmailFormat()) { isValid = false; emailFeed.innerHTML = '<span class="valid-error">❌ Valid email required</span>'; }
+    if (password.value.length < 8) { isValid = false; passwordFeed.innerHTML = '<span class="valid-error">❌ Password must be at least 8 characters</span>'; }
+    if (password.value !== confirmPwd.value) { isValid = false; confirmFeed.innerHTML = '<span class="valid-error">❌ Passwords do not match</span>'; }
+    if (!validatePhone()) { isValid = false; phoneFeed.innerHTML = '<span class="valid-error">❌ Phone must have at least 10 digits</span>'; }
+    if (selectedRole === 'guest') {
+      if (!validateGuestFields()) { isValid = false; showToast('Please fill all Guest details (Home Address, Emergency Contact)', 'error'); }
+    } else {
+      if (!validateHostFields()) { isValid = false; consentFeed.innerHTML = '<span class="valid-error">❌ All host fields & consent required</span>'; setTimeout(() => consentFeed.innerHTML = '', 2000); }
+      else consentFeed.innerHTML = '';
+    }
+    if (!checkEmailUniqueness(email.value.trim())) { isValid = false; showToast('Email already registered. Please sign in.', 'error'); emailFeed.innerHTML = '<span class="valid-error">❌ Email already exists</span>'; }
+    return isValid;
+  }
+
+  // Role switcher
+  function setRole(role) {
+    selectedRole = role;
+    if (role === 'guest') {
+      roleGuestBtn.classList.add('active');
+      roleHostBtn.classList.remove('active');
+      guestBlock.style.display = 'block';
+      hostBlock.style.display = 'none';
+      submitBtn.innerText = 'Create Guest Account';
+    } else {
+      roleHostBtn.classList.add('active');
+      roleGuestBtn.classList.remove('active');
+      guestBlock.style.display = 'none';
+      hostBlock.style.display = 'block';
+      submitBtn.innerText = 'Create Host Account';
+    }
+  }
+
+  roleGuestBtn.addEventListener('click', () => setRole('guest'));
+  roleHostBtn.addEventListener('click', () => setRole('host'));
+
+  // save account to localStorage
+  function saveAccountToLocalStorage(account) {
+    const accounts = JSON.parse(localStorage.getItem('bookmandu_accounts') || '[]');
+    accounts.push(account);
+    localStorage.setItem('bookmandu_accounts', JSON.stringify(accounts));
+  }
+
+// ─submitBtn click handler 
+
+submitBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  updateLiveFeedback();
+
+  // Client-side validation
+  let isValid = true;
+  if (!fullName.value.trim()) { isValid = false; nameFeed.innerHTML = '<span class="valid-error">❌ Full name required</span>'; }
+  if (!validateEmailFormat()) { isValid = false; emailFeed.innerHTML = '<span class="valid-error">❌ Valid email required</span>'; }
+  if (password.value.length < 8) { isValid = false; passwordFeed.innerHTML = '<span class="valid-error">❌ Password must be at least 8 characters</span>'; }
+  if (password.value !== confirmPwd.value) { isValid = false; confirmFeed.innerHTML = '<span class="valid-error">❌ Passwords do not match</span>'; }
+  if (!validatePhone()) { isValid = false; phoneFeed.innerHTML = '<span class="valid-error">❌ Phone must have at least 10 digits</span>'; }
+  if (selectedRole === 'guest' && !validateGuestFields()) { isValid = false; showToast('Please fill all Guest details (Home Address, Emergency Contact)', 'error'); }
+  if (selectedRole === 'host' && !validateHostFields()) {
+    isValid = false;
+    consentFeed.innerHTML = '<span class="valid-error">❌ All host fields & consent required</span>';
+    showToast('Please fill all Host fields and accept the consent checkbox.', 'error');
+  }
+
+  if (!isValid) {
+    showToast('Please fix the errors before submitting.', 'error');
+    return;
+  }
+
+  // Build a hidden form and POST to Flask
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '/register';
+
+  const fields = {
+    name:     fullName.value.trim(),
+    email:    email.value.trim(),
+    password: password.value,
+    role:     selectedRole
+  };
+
+  // Add host-specific fields if registering as host
+  if (selectedRole === 'host') {
+    fields.id_type       = idType.value;
+    fields.id_number     = idNumber.value.trim();
+    fields.property_type = propertyType.value;
+    fields.payout_bank   = payoutBank.value.trim();
+    fields.host_address  = hostAddress.value.trim();
+    fields.consent       = consentCheckbox.checked ? 'true' : 'false';
+  }
+
+  for (const [key, val] of Object.entries(fields)) {
+    const input = document.createElement('input');
+    input.type  = 'hidden';
+    input.name  = key;
+    input.value = val;
+    form.appendChild(input);
+  }
+
+  document.body.appendChild(form);
+  form.submit();
+});
+
+  // live events
+  fullName.addEventListener('input', updateLiveFeedback);
+  email.addEventListener('input', updateLiveFeedback);
+  password.addEventListener('input', () => { updateStrengthBar(); updateLiveFeedback(); });
+  confirmPwd.addEventListener('input', updateLiveFeedback);
+  phone.addEventListener('input', updateLiveFeedback);
+  homeAddress.addEventListener('input', () => {});
+  emergencyContact.addEventListener('input', () => {});
+  consentCheckbox.addEventListener('change', () => { if(consentCheckbox.checked) consentFeed.innerHTML = ''; });
+
+  // initial validations
+  updateStrengthBar();
+  updateLiveFeedback();
+  setRole('guest');
 </script>
 {% endblock %}

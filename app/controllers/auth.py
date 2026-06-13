@@ -30,11 +30,9 @@ class AuthController(BaseController):
 
                 if result:
                     print("LOGIN SUCCESS")
-
-                    session["user_id"] = user_data["id"]
+                    session["user_id"] = user_data["user_id"]
                     session["user_name"] = user_data["name"]
                     session["role"] = user_data["role"]
-
                     return redirect(url_for("auth.dashboard"))
 
             print("LOGIN FAILED")
@@ -43,8 +41,6 @@ class AuthController(BaseController):
         return render_template("login.html")
 
     def dashboard(self):
-        # if not self.is_logged_in():
-        #     return redirect(url_for("auth.login"))
         return render_template("dashboard.html")
 
     def register(self):
@@ -58,38 +54,57 @@ class AuthController(BaseController):
             name, email = self.get_form_data("name", "email")
             password = request.form.get("password", "")
 
+            # Sanitize role — never allow self-registration as admin
+            role = request.form.get("role", "user")
+            if role not in ("guest", "host"):
+                role = "user"
+
             print("NAME:", name)
             print("EMAIL:", email)
             print("PASSWORD:", password)
+            print("ROLE:", role)
 
             if not name or not email or not password:
-                print("FAILED: missing fields")
                 flash("All fields are required.", "danger")
                 return render_template("register.html")
 
             if len(name) > 100:
-                print("FAILED: name too long")
                 flash("Name must be under 100 characters.", "danger")
                 return render_template("register.html")
 
             if len(password) < 6:
-                print("FAILED: password too short")
                 flash("Password must be at least 6 characters.", "danger")
                 return render_template("register.html")
 
-            new_user = User(name=name, email=email, password=password, role="user")
-            print("USER CREATED:", new_user)
+            new_user = User(name=name, email=email, password=password, role=role)
 
-            print("CHECKING EMAIL...")
             if new_user.email_exists():
-                print("FAILED: email exists")
                 flash("Email already exists.", "danger")
                 return render_template("register.html")
 
-            print("SAVING USER...")
             try:
-                new_user.save()
-                print("SAVED SUCCESSFULLY")
+                # save() now returns the new user_id
+                user_id = new_user.save()
+                print("USER SAVED — user_id:", user_id)
+
+                # ── If registering as host, save profile too ──
+                if role == "host":
+                    id_type      = request.form.get("id_type", "")
+                    id_number    = request.form.get("id_number", "")
+                    property_type = request.form.get("property_type", "")
+                    payout_bank  = request.form.get("payout_bank", "")
+                    host_address = request.form.get("host_address", "")
+                    consent      = request.form.get("consent") == "true"
+
+                    print("HOST FIELDS:", id_type, id_number, property_type,
+                          payout_bank, host_address, consent)
+
+                    new_user.save_host_profile(
+                        user_id, id_type, id_number, property_type,
+                        payout_bank, host_address, consent
+                    )
+                    print("HOST PROFILE SAVED")
+
             except Exception as e:
                 print("SAVE ERROR:", e)
                 flash("Registration failed: " + str(e), "danger")
@@ -129,36 +144,26 @@ class AuthController(BaseController):
 
     def about(self):
         return render_template("about.html")
-    
+
     def browse(self):
         return render_template("browse.html")
 
-    # ============================================================
-    # UPDATED PROPERTY METHODS — NOW RENDER DETAIL PAGES
-    # ============================================================
-    
     def property_mountain_view(self):
-        """Mountain View Homestay detail page"""
         return render_template("mountain_view.html")
 
     def property_thamel_heritage(self):
-        """Thamel Heritage House detail page"""
         return render_template("thamel_heritage.html")
 
     def property_jungle_retreat(self):
-        """Jungle Retreat Chitwan detail page"""
         return render_template("jungle_retreat.html")
 
     def property_lumbini_peace(self):
-        """Lumbini Peace Lodge detail page"""
         return render_template("lumbini_peace.html")
 
     def property_mustang_desert(self):
-        """Mustang Desert Homestay detail page"""
         return render_template("mustang_desert.html")
 
     def property_lakeside_comfort(self):
-        """Lakeside Comfort Inn detail page"""
         return render_template("lakeside_comfort.html")
 
     def faq(self):
@@ -179,7 +184,6 @@ class AuthController(BaseController):
             category = request.form.get("category")
             stock = request.form.get("stock")
             print(name, description, price, category, stock)
-
         return render_template("product_form.html")
 
     def logout(self):
