@@ -4,9 +4,10 @@
 {% block content %}
 <section class="browse-page">
 
-  <!-- Filter Panel -->
-  <div class="filter-panel">
+  <!-- Filter Panel - Animated -->
+  <div class="filter-panel" id="filterPanel">
     <div class="container">
+
       <div class="filter-search-row">
         <div class="filter-search-wrap">
           <span class="filter-search-icon">🔍</span>
@@ -14,7 +15,7 @@
         </div>
       </div>
 
-      <div class="filter-row">
+      <div class="filter-row" id="filterRow1">
         <span class="filter-label">REGION</span>
         <div class="filter-chips" id="regionFilter">
           <button class="chip active" data-value="all">All</button>
@@ -26,7 +27,7 @@
         </div>
       </div>
 
-      <div class="filter-row">
+      <div class="filter-row" id="filterRow2">
         <span class="filter-label">TYPE</span>
         <div class="filter-chips" id="typeFilter">
           <button class="chip active" data-value="all">All</button>
@@ -37,11 +38,12 @@
         </div>
       </div>
 
-      <div class="filter-row filter-row-bottom">
+      <div class="filter-row filter-row-bottom" id="filterRow3">
         <div class="filter-price-group">
           <span class="filter-label">PRICE</span>
-          <input type="number" class="form-input price-input" id="priceMin" placeholder="Min">
-          <input type="number" class="form-input price-input" id="priceMax" placeholder="Max">
+          <input type="number" id="priceMin" class="form-input price-input" placeholder="Min" value="">
+          <span style="color: var(--text-muted);">—</span>
+          <input type="number" id="priceMax" class="form-input price-input" placeholder="Max" value="">
         </div>
 
         <div class="filter-amenity-group">
@@ -69,10 +71,11 @@
 
         <button class="btn btn-ghost btn-sm clear-btn" id="clearFilters">Clear All Filters</button>
       </div>
+
     </div>
   </div>
 
-  <!-- Results Grid -->
+  <!-- Results -->
   <div class="container browse-results">
     <p class="results-count" id="resultsCount">6 properties found</p>
 
@@ -81,12 +84,13 @@
       <!-- Card 1 - Mountain View Homestay -->
       <a href="{{ url_for('auth.property_mountain_view') }}" class="prop-card"
          data-region="Pokhara" data-type="Homestay" data-price="2500"
-         data-amenities="WiFi,Breakfast Included,Mountain View" data-rating="4.8" data-bookings="42" data-trending="true">
-        <div class="prop-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600'); background-size:cover; background-position:center;">
+         data-amenities="WiFi,Breakfast Included,Mountain View,Hot Water" data-rating="4.8" data-bookings="42" data-trending="true">
+        <div class="prop-img-placeholder">
+          <img src="{{ url_for('static', filename='images/mvh1.jpg') }}" alt="Mountain View Homestay" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
           <div class="prop-badge-row">
             <span class="prop-trending">🔥 Trending</span>
           </div>
-          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(this)">🤍</button>
+          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(1,this)">🤍</button>
         </div>
         <div class="prop-body">
           <p class="prop-location">📍 Pokhara · Homestay</p>
@@ -99,7 +103,7 @@
           <div class="prop-footer">
             <div class="prop-price">
               <span class="prop-price-amount">NPR 2,500</span>
-              <span class="prop-price-night">/night</span>
+              <span class="prop-price-night">/ night</span>
             </div>
             <div class="prop-rating">
               <span class="prop-rating-star">★★★★★</span>
@@ -114,12 +118,13 @@
       <!-- Card 2 - Thamel Heritage House -->
       <a href="{{ url_for('auth.property_thamel_heritage') }}" class="prop-card"
          data-region="Kathmandu" data-type="Guesthouse" data-price="3200"
-         data-amenities="WiFi,Parking,Kitchen Access" data-rating="4.5" data-bookings="38" data-trending="true">
-        <div class="prop-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1548013146-72479768bada?w=600'); background-size:cover; background-position:center;">
+         data-amenities="WiFi,Parking,Kitchen Access,Hot Water" data-rating="4.5" data-bookings="38" data-trending="true">
+        <div class="prop-img-placeholder">
+           <img src="{{ url_for('static', filename='images/th1.jpg') }}" alt="Thamel Heritage House" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
           <div class="prop-badge-row">
             <span class="prop-trending">🔥 Trending</span>
           </div>
-          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(this)">🤍</button>
+          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(2,this)">🤍</button>
         </div>
         <div class="prop-body">
           <p class="prop-location">📍 Kathmandu · Guesthouse</p>
@@ -132,7 +137,7 @@
           <div class="prop-footer">
             <div class="prop-price">
               <span class="prop-price-amount">NPR 3,200</span>
-              <span class="prop-price-night">/night</span>
+              <span class="prop-price-night">/ night</span>
             </div>
             <div class="prop-rating">
               <span class="prop-rating-star">★★★★★</span>
@@ -148,11 +153,12 @@
       <a href="{{ url_for('auth.property_jungle_retreat') }}" class="prop-card"
          data-region="Chitwan" data-type="Entire Property" data-price="4500"
          data-amenities="Breakfast Included,Parking,Hot Water" data-rating="4.9" data-bookings="55" data-trending="true">
-        <div class="prop-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600'); background-size:cover; background-position:center;">
+        <div class="prop-img-placeholder">
+          <img src="{{ url_for('static', filename='images/jrc1.jpg') }}" alt="Jungle Retreat Chitwan" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;" onerror="this.src='{{ url_for('static', filename='images/mvh3.jpg') }}'">
           <div class="prop-badge-row">
             <span class="prop-trending">🔥 Trending</span>
           </div>
-          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(this)">🤍</button>
+          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(3,this)">🤍</button>
         </div>
         <div class="prop-body">
           <p class="prop-location">📍 Chitwan · Entire Property</p>
@@ -165,7 +171,7 @@
           <div class="prop-footer">
             <div class="prop-price">
               <span class="prop-price-amount">NPR 4,500</span>
-              <span class="prop-price-night">/night</span>
+              <span class="prop-price-night">/ night</span>
             </div>
             <div class="prop-rating">
               <span class="prop-rating-star">★★★★★</span>
@@ -181,9 +187,10 @@
       <a href="{{ url_for('auth.property_lumbini_peace') }}" class="prop-card"
          data-region="Lumbini" data-type="Private Room" data-price="1800"
          data-amenities="WiFi,Hot Water" data-rating="4.3" data-bookings="19" data-trending="false">
-        <div class="prop-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600'); background-size:cover; background-position:center;">
+        <div class="prop-img-placeholder">
+          <img src="{{ url_for('static', filename='images/lpl1.jpg') }}" alt="Lumbini Peace Lodge" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;" onerror="this.src='{{ url_for('static', filename='images/mvh4.jpg') }}'">
           <div class="prop-badge-row"></div>
-          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(this)">🤍</button>
+          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(4,this)">🤍</button>
         </div>
         <div class="prop-body">
           <p class="prop-location">📍 Lumbini · Private Room</p>
@@ -195,7 +202,7 @@
           <div class="prop-footer">
             <div class="prop-price">
               <span class="prop-price-amount">NPR 1,800</span>
-              <span class="prop-price-night">/night</span>
+              <span class="prop-price-night">/ night</span>
             </div>
             <div class="prop-rating">
               <span class="prop-rating-star">★★★★</span>
@@ -211,9 +218,10 @@
       <a href="{{ url_for('auth.property_mustang_desert') }}" class="prop-card"
          data-region="Mustang" data-type="Homestay" data-price="5500"
          data-amenities="Breakfast Included,Hot Water,Mountain View" data-rating="4.7" data-bookings="29" data-trending="false">
-        <div class="prop-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600'); background-size:cover; background-position:center;">
+        <div class="prop-img-placeholder">
+          <img src="{{ url_for('static', filename='images/mdh1.jpg') }}" alt="Mustang Desert Homestay" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;" onerror="this.src='{{ url_for('static', filename='images/mvh5.jpg') }}'">
           <div class="prop-badge-row"></div>
-          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(this)">🤍</button>
+          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(5,this)">🤍</button>
         </div>
         <div class="prop-body">
           <p class="prop-location">📍 Lo-Manthang, Mustang · Homestay</p>
@@ -226,7 +234,7 @@
           <div class="prop-footer">
             <div class="prop-price">
               <span class="prop-price-amount">NPR 5,500</span>
-              <span class="prop-price-night">/night</span>
+              <span class="prop-price-night">/ night</span>
             </div>
             <div class="prop-rating">
               <span class="prop-rating-star">★★★★★</span>
@@ -242,9 +250,10 @@
       <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="prop-card"
          data-region="Pokhara" data-type="Guesthouse" data-price="2200"
          data-amenities="WiFi,Parking,Kitchen Access" data-rating="4.4" data-bookings="31" data-trending="false">
-        <div class="prop-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600'); background-size:cover; background-position:center;">
+        <div class="prop-img-placeholder">
+          <img src="{{ url_for('static', filename='images/lci1.jpg') }}" alt="Lakeside Comfort Inn" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;" onerror="this.src='{{ url_for('static', filename='images/mvh6.jpg') }}'">
           <div class="prop-badge-row"></div>
-          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(this)">🤍</button>
+          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(6,this)">🤍</button>
         </div>
         <div class="prop-body">
           <p class="prop-location">📍 Pokhara · Guesthouse</p>
@@ -257,7 +266,7 @@
           <div class="prop-footer">
             <div class="prop-price">
               <span class="prop-price-amount">NPR 2,200</span>
-              <span class="prop-price-night">/night</span>
+              <span class="prop-price-night">/ night</span>
             </div>
             <div class="prop-rating">
               <span class="prop-rating-star">★★★★</span>
@@ -280,16 +289,88 @@
 /* Browse Page Specific Styles */
 .browse-page { padding-top: 80px; min-height: 100vh; }
 
+/* ========== ANIMATED FILTER PANEL ========== */
 .filter-panel {
   background: var(--bg-800);
   border-bottom: 1px solid var(--border);
   padding: 24px 0;
-  position: sticky; top: 64px; z-index: 100;
+  position: sticky;
+  top: 64px;
+  z-index: 100;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 }
+
+/* Compact state - when scrolled down */
+.filter-panel.compact {
+  padding: 8px 0;
+}
+
+.filter-panel.compact .filter-search-row {
+  margin-bottom: 0;
+}
+
+.filter-panel.compact .filter-search {
+  padding: 6px 14px 6px 38px;
+  font-size: 12px;
+}
+
+.filter-panel.compact .filter-row {
+  margin-bottom: 0;
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.filter-panel.compact .filter-row-bottom {
+  margin-top: 0;
+  opacity: 0;
+  height: 0;
+}
+
+.filter-panel.compact .filter-search-icon {
+  font-size: 12px;
+}
+
+/* Smooth transition for all elements inside filter panel */
+.filter-search-row,
+.filter-row,
+.filter-row-bottom,
+.filter-search,
+.filter-label,
+.filter-chips,
+.filter-price-group,
+.filter-amenity-group,
+.filter-sort-group,
+.clear-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scroll progress indicator */
+.filter-panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--cyan));
+  transition: width 0.1s ease;
+  pointer-events: none;
+}
+
+.filter-panel.scrolled::after {
+  width: 100%;
+}
+
+/* ========== END ANIMATED FILTER PANEL ========== */
 
 .filter-search-row { margin-bottom: 18px; }
 .filter-search-wrap { position: relative; }
-.filter-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 14px; }
+.filter-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 14px; transition: all 0.3s ease; }
 .filter-search {
   width: 100%; padding: 11px 14px 11px 38px;
   background: var(--bg-700); border: 1.5px solid var(--border);
@@ -298,9 +379,9 @@
 }
 .filter-search:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); outline: none; }
 
-.filter-row { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+.filter-row { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; transition: all 0.3s ease; }
 .filter-row-bottom { align-items: flex-start; gap: 24px; }
-.filter-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; min-width: 60px; }
+.filter-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; min-width: 60px; transition: all 0.3s ease; }
 
 .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
 .chip {
@@ -315,123 +396,404 @@
 .filter-amenity-group,
 .filter-sort-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-.price-input { width: 90px; padding: 7px 10px; font-size: 13px; }
+.price-input { width: 100px; padding: 7px 10px; font-size: 13px; }
 
 .clear-btn { margin-left: auto; align-self: center; }
 
 .browse-results { padding: 32px 24px 80px; }
 .results-count { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; font-weight: 500; }
 
-.no-results { text-align: center; padding: 60px; color: var(--text-muted); font-size: 16px; }
+/* Property Card Image Fix */
+.prop-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: var(--transition);
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+}
 
+.prop-card:hover {
+  border-color: var(--border-teal);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-teal);
+}
+
+.prop-img-placeholder {
+  width: 100%;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--bg-700), var(--bg-600));
+}
+
+.prop-img-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.prop-card:hover .prop-img-placeholder img {
+  transform: scale(1.05);
+}
+
+.prop-img-placeholder::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+}
+
+.prop-wishlist {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: var(--transition);
+  cursor: pointer;
+  color: white;
+}
+
+.prop-wishlist:hover, .prop-wishlist.active { background: rgba(231,76,60,0.6); }
+.prop-wishlist.active { color: #ff4757; }
+
+.prop-badge-row {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+  display: flex;
+  gap: 6px;
+}
+
+.prop-trending {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(240,165,0,0.9);
+  color: #000;
+}
+
+.prop-body { padding: 16px; }
+.prop-location { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+.prop-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; margin-bottom: 10px; line-height: 1.3; color: var(--text-primary); }
+.prop-amenities { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.amenity-tag {
+  padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  background: var(--teal-glow); color: var(--teal); border: 1px solid var(--border-teal);
+}
+.prop-footer { display: flex; align-items: center; justify-content: space-between; }
+.prop-price { font-family: var(--font-display); }
+.prop-price-amount { font-size: 20px; font-weight: 800; color: var(--teal); }
+.prop-price-night { font-size: 12px; color: var(--text-muted); margin-left: 2px; }
+.prop-rating { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--text-secondary); }
+.prop-rating-star { color: var(--amber); }
+.prop-rating-count { color: var(--text-muted); font-size: 12px; }
+
+.props-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.no-results { text-align: center; padding: 60px; color: var(--text-muted); font-size: 16px; }
 .hidden { display: none !important; }
+
+/* Toast styles */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: var(--bg-800);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 250px;
+  animation: slideInRight 0.3s ease;
+}
+
+.toast.success { border-left: 3px solid var(--teal); }
+.toast.error { border-left: 3px solid var(--red); }
+.toast.info { border-left: 3px solid var(--cyan); }
+
+.toast-icon { font-size: 18px; }
+.toast-close { margin-left: auto; cursor: pointer; }
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (max-width: 768px) {
+  .filter-row { flex-direction: column; align-items: stretch; }
+  .filter-row-bottom { flex-direction: column; }
+  .filter-price-group, .filter-amenity-group, .filter-sort-group { justify-content: space-between; }
+  .clear-btn { margin-left: 0; margin-top: 10px; }
+  .props-grid { grid-template-columns: 1fr; }
+  
+  /* On mobile, keep filter panel normal (don't compact) */
+  .filter-panel.compact {
+    padding: 12px 0;
+  }
+  .filter-panel.compact .filter-row {
+    opacity: 1;
+    pointer-events: auto;
+    height: auto;
+    margin-bottom: 14px;
+  }
+}
 </style>
 
 <script>
-// Filter Logic
+// ========== ANIMATED FILTER PANEL SCROLL BEHAVIOR ==========
+const filterPanel = document.getElementById('filterPanel');
+let lastScrollY = window.scrollY;
+let ticking = false;
+
+function handleFilterPanelScroll() {
+  const currentScrollY = window.scrollY;
+  const scrollThreshold = 100; // Pixels to scroll before compacting
+  
+  if (currentScrollY > scrollThreshold) {
+    filterPanel.classList.add('compact');
+  } else {
+    filterPanel.classList.remove('compact');
+  }
+  
+  // Add scrolled class for progress bar
+  if (currentScrollY > 10) {
+    filterPanel.classList.add('scrolled');
+  } else {
+    filterPanel.classList.remove('scrolled');
+  }
+  
+  // Update progress bar width based on scroll percentage
+  const scrollPercent = Math.min((currentScrollY / 200) * 100, 100);
+  filterPanel.style.setProperty('--scroll-progress', scrollPercent + '%');
+  
+  lastScrollY = currentScrollY;
+  ticking = false;
+}
+
+// Throttled scroll event for better performance
+window.addEventListener('scroll', function() {
+  if (!ticking) {
+    requestAnimationFrame(handleFilterPanelScroll);
+    ticking = true;
+  }
+});
+
+// Initialize on page load
+handleFilterPanelScroll();
+// ========== END ANIMATED FILTER PANEL ==========
+
+// Wishlist storage
+let wishlistIds = [];
+
+function toggleWishlist(id, btn) {
+  const index = wishlistIds.indexOf(id);
+  if (index === -1) {
+    wishlistIds.push(id);
+    if (btn) { btn.classList.add('active'); btn.textContent = '❤️'; }
+    showToast('❤️ Added to wishlist!', 'success');
+  } else {
+    wishlistIds.splice(index, 1);
+    if (btn) { btn.classList.remove('active'); btn.textContent = '🤍'; }
+    showToast('Removed from wishlist', 'info');
+  }
+}
+
+// Get all property cards
 const cards = document.querySelectorAll('.prop-card');
 const resultsCount = document.getElementById('resultsCount');
 const noResults = document.getElementById('noResults');
+const propertiesGrid = document.getElementById('propertiesGrid');
 
+// Filter states
 let activeRegion = 'all';
 let activeType = 'all';
 let activeAmenities = [];
 let searchTerm = '';
 let sortBy = 'default';
+let minPrice = null;
+let maxPrice = null;
+
+function getPriceValue(card) { return parseInt(card.dataset.price) || 0; }
+function getRatingValue(card) { return parseFloat(card.dataset.rating) || 0; }
+function getBookingsValue(card) { return parseInt(card.dataset.bookings) || 0; }
+
+function applyFiltersAndSort() {
+  const priceMinInput = document.getElementById('priceMin');
+  const priceMaxInput = document.getElementById('priceMax');
+  
+  minPrice = priceMinInput.value ? parseInt(priceMinInput.value) : null;
+  maxPrice = priceMaxInput.value ? parseInt(priceMaxInput.value) : null;
+  sortBy = document.getElementById('sortSelect').value;
+  
+  let visibleCards = Array.from(cards).filter(card => {
+    const region = card.dataset.region;
+    if (activeRegion !== 'all' && region !== activeRegion) return false;
+    
+    const type = card.dataset.type;
+    if (activeType !== 'all' && type !== activeType) return false;
+    
+    const price = getPriceValue(card);
+    if (minPrice !== null && price < minPrice) return false;
+    if (maxPrice !== null && price > maxPrice) return false;
+    
+    const amenities = card.dataset.amenities.split(',');
+    if (activeAmenities.length > 0) {
+      const hasAllAmenities = activeAmenities.every(amenity => amenities.includes(amenity));
+      if (!hasAllAmenities) return false;
+    }
+    
+    const title = card.querySelector('.prop-title').textContent.toLowerCase();
+    const location = card.querySelector('.prop-location').textContent.toLowerCase();
+    if (searchTerm && !title.includes(searchTerm) && !location.includes(searchTerm)) return false;
+    
+    return true;
+  });
+  
+  if (sortBy === 'price-asc') {
+    visibleCards.sort((a, b) => getPriceValue(a) - getPriceValue(b));
+  } else if (sortBy === 'price-desc') {
+    visibleCards.sort((a, b) => getPriceValue(b) - getPriceValue(a));
+  } else if (sortBy === 'rating') {
+    visibleCards.sort((a, b) => getRatingValue(b) - getRatingValue(a));
+  } else if (sortBy === 'bookings') {
+    visibleCards.sort((a, b) => getBookingsValue(b) - getBookingsValue(a));
+  } else {
+    visibleCards.sort((a, b) => {
+      const idA = parseInt(a.getAttribute('href').split('/').pop()) || 0;
+      const idB = parseInt(b.getAttribute('href').split('/').pop()) || 0;
+      return idA - idB;
+    });
+  }
+  
+  cards.forEach(card => card.classList.add('hidden'));
+  visibleCards.forEach(card => {
+    card.classList.remove('hidden');
+    propertiesGrid.appendChild(card);
+  });
+  
+  resultsCount.textContent = `${visibleCards.length} propert${visibleCards.length === 1 ? 'y' : 'ies'} found`;
+  noResults.classList.toggle('hidden', visibleCards.length === 0);
+}
 
 function setChipGroup(groupId, value) {
-  document.querySelectorAll(`#${groupId} .chip`).forEach(c => {
-    c.classList.toggle('active', c.dataset.value === value);
+  const chips = document.querySelectorAll(`#${groupId} .chip`);
+  chips.forEach(chip => {
+    if (chip.dataset.value === value) chip.classList.add('active');
+    else chip.classList.remove('active');
   });
 }
 
-document.getElementById('regionFilter').addEventListener('click', e => {
+document.getElementById('regionFilter').addEventListener('click', (e) => {
   if (!e.target.classList.contains('chip')) return;
   activeRegion = e.target.dataset.value;
   setChipGroup('regionFilter', activeRegion);
-  applyFilters();
+  applyFiltersAndSort();
 });
 
-document.getElementById('typeFilter').addEventListener('click', e => {
+document.getElementById('typeFilter').addEventListener('click', (e) => {
   if (!e.target.classList.contains('chip')) return;
   activeType = e.target.dataset.value;
   setChipGroup('typeFilter', activeType);
-  applyFilters();
+  applyFiltersAndSort();
 });
 
-document.getElementById('amenityFilter').addEventListener('click', e => {
+document.getElementById('amenityFilter').addEventListener('click', (e) => {
   if (!e.target.classList.contains('chip')) return;
-  const val = e.target.dataset.value;
-  if (activeAmenities.includes(val)) {
-    activeAmenities = activeAmenities.filter(a => a !== val);
-    e.target.classList.remove('active');
-  } else {
-    activeAmenities.push(val);
+  const amenity = e.target.dataset.value;
+  const index = activeAmenities.indexOf(amenity);
+  if (index === -1) {
+    activeAmenities.push(amenity);
     e.target.classList.add('active');
+  } else {
+    activeAmenities.splice(index, 1);
+    e.target.classList.remove('active');
   }
-  applyFilters();
+  applyFiltersAndSort();
 });
 
-document.getElementById('searchInput').addEventListener('input', e => {
+document.getElementById('searchInput').addEventListener('input', (e) => {
   searchTerm = e.target.value.toLowerCase();
-  applyFilters();
+  applyFiltersAndSort();
 });
 
-document.getElementById('sortSelect').addEventListener('change', e => {
+document.getElementById('sortSelect').addEventListener('change', (e) => {
   sortBy = e.target.value;
-  applyFilters();
+  applyFiltersAndSort();
 });
+
+const priceMinInput = document.getElementById('priceMin');
+const priceMaxInput = document.getElementById('priceMax');
+priceMinInput.addEventListener('input', () => applyFiltersAndSort());
+priceMaxInput.addEventListener('input', () => applyFiltersAndSort());
 
 document.getElementById('clearFilters').addEventListener('click', () => {
-  activeRegion = 'all'; activeType = 'all'; activeAmenities = []; searchTerm = ''; sortBy = 'default';
+  activeRegion = 'all';
+  activeType = 'all';
+  activeAmenities = [];
+  searchTerm = '';
+  sortBy = 'default';
+  
+  document.getElementById('searchInput').value = '';
+  priceMinInput.value = '';
+  priceMaxInput.value = '';
+  document.getElementById('sortSelect').value = 'default';
+  
   setChipGroup('regionFilter', 'all');
   setChipGroup('typeFilter', 'all');
-  document.querySelectorAll('#amenityFilter .chip').forEach(c => c.classList.remove('active'));
-  document.getElementById('searchInput').value = '';
-  document.getElementById('priceMin').value = '';
-  document.getElementById('priceMax').value = '';
-  document.getElementById('sortSelect').value = 'default';
-  applyFilters();
+  document.querySelectorAll('#amenityFilter .chip').forEach(chip => chip.classList.remove('active'));
+  
+  applyFiltersAndSort();
+  showToast('All filters cleared', 'info');
 });
 
-function applyFilters() {
-  const priceMin = parseInt(document.getElementById('priceMin').value) || 0;
-  const priceMax = parseInt(document.getElementById('priceMax').value) || Infinity;
-  const grid = document.getElementById('propertiesGrid');
-  const cardsArr = Array.from(cards);
-
-  let visible = cardsArr.filter(card => {
-    const region = card.dataset.region;
-    const type = card.dataset.type;
-    const price = parseInt(card.dataset.price);
-    const amenities = card.dataset.amenities.split(',');
-    const title = card.querySelector('.prop-title').textContent.toLowerCase();
-    const location = card.querySelector('.prop-location').textContent.toLowerCase();
-
-    if (activeRegion !== 'all' && region !== activeRegion) return false;
-    if (activeType !== 'all' && type !== activeType) return false;
-    if (price < priceMin || price > priceMax) return false;
-    if (activeAmenities.length && !activeAmenities.every(a => amenities.includes(a))) return false;
-    if (searchTerm && !title.includes(searchTerm) && !location.includes(searchTerm)) return false;
-    return true;
-  });
-
-  if (sortBy === 'price-asc') visible.sort((a, b) => a.dataset.price - b.dataset.price);
-  else if (sortBy === 'price-desc') visible.sort((a, b) => b.dataset.price - a.dataset.price);
-  else if (sortBy === 'rating') visible.sort((a, b) => b.dataset.rating - a.dataset.rating);
-  else if (sortBy === 'bookings') visible.sort((a, b) => b.dataset.bookings - a.dataset.bookings);
-
-  cardsArr.forEach(c => c.classList.add('hidden'));
-  visible.forEach(c => { c.classList.remove('hidden'); grid.appendChild(c); });
-
-  resultsCount.textContent = `${visible.length} propert${visible.length === 1 ? 'y' : 'ies'} found`;
-  noResults.classList.toggle('hidden', visible.length > 0);
+function showToast(message, type) {
+  let container = document.getElementById('toasts');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'toast-container';
+    container.id = 'toasts';
+    document.body.appendChild(container);
+  }
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  const icon = type === 'success' ? '✓' : (type === 'error' ? '✕' : 'ℹ');
+  toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
 }
 
-function toggleWishlist(btn) {
-  btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
-}
-
-applyFilters();
+applyFiltersAndSort();
 </script>
 {% endblock %}
