@@ -6,7 +6,6 @@
 <style>
     /* ========== COMPACT DESIGN OVERRIDES ========== */
     
-    /* Hero Section - Reduced Height */
     .hero-section {
         height: 45vh;
         min-height: 380px;
@@ -37,26 +36,43 @@
         font-size: 14px;
     }
     
-    /* Property Layout - Tighter */
     .property-layout {
         gap: 32px;
         padding: 32px 24px;
     }
     
-    /* Gallery - Smaller */
     .gallery-section {
         margin-bottom: 28px;
     }
     
     .gallery-main img {
         height: 320px;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+    
+    .gallery-thumbs {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+        margin-top: 10px;
     }
     
     .gallery-thumbs img {
         height: 70px;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s;
     }
     
-    /* Sections - Compact */
+    .gallery-thumbs img:hover {
+        transform: scale(1.05);
+        border: 2px solid var(--teal);
+    }
+    
     .description-section, .amenities-section, .host-section,
     .highlights-section, .reviews-section, .location-section,
     .similar-properties {
@@ -82,16 +98,24 @@
     }
     
     .amenities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 10px;
     }
     
     .amenity-item {
         padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--bg-700);
+        border-radius: 8px;
     }
     
     .amenity-item i {
         font-size: 16px;
         width: 24px;
+        color: var(--teal);
     }
     
     .amenity-item span {
@@ -101,11 +125,16 @@
     .host-section {
         padding: 20px;
         gap: 18px;
+        display: flex;
+        background: var(--bg-700);
+        border-radius: 12px;
     }
     
     .host-avatar img {
         width: 60px;
         height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
     }
     
     .host-details h3 {
@@ -114,9 +143,16 @@
     }
     
     .host-stats {
+        display: flex;
         gap: 16px;
         font-size: 11px;
         margin-bottom: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .host-stats i {
+        color: var(--teal);
+        margin-right: 4px;
     }
     
     .host-details p {
@@ -125,25 +161,44 @@
     }
     
     .highlights-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 16px;
     }
     
     .highlight-card {
         padding: 16px 12px;
+        background: linear-gradient(135deg, var(--bg-700), var(--bg-600));
+        border-radius: 12px;
+        text-align: center;
     }
     
     .highlight-card i {
         font-size: 28px;
         margin-bottom: 10px;
+        color: var(--teal);
     }
     
     .highlight-card strong {
+        display: block;
         font-size: 14px;
         margin-bottom: 6px;
     }
     
     .review-card {
         padding: 14px;
+        background: var(--bg-700);
+        border-radius: 8px;
+        border-left: 3px solid var(--teal);
+        margin-bottom: 12px;
+    }
+    
+    .review-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
     }
     
     .review-header strong {
@@ -151,25 +206,39 @@
     }
     
     .stars {
+        color: #f0a500;
         font-size: 12px;
     }
     
     .review-card p {
         font-size: 13px;
         line-height: 1.5;
+        color: var(--text-secondary);
     }
     
     .map-placeholder iframe {
         height: 200px;
+        width: 100%;
+        border-radius: 12px;
     }
     
     .place-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         padding: 5px 12px;
+        background: var(--bg-700);
+        border-radius: 30px;
         font-size: 12px;
+        margin-right: 8px;
+        margin-bottom: 8px;
     }
     
     .similar-card img {
         height: 130px;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 8px 8px 0 0;
     }
     
     .similar-info {
@@ -178,90 +247,339 @@
     
     .similar-info strong {
         font-size: 13px;
+        display: block;
     }
     
     .similar-info span {
         font-size: 11px;
+        color: var(--text-muted);
     }
     
-    /* Booking Sidebar - Compact */
     .booking-card-sticky {
         padding: 18px;
         top: 80px;
+        background: linear-gradient(135deg, var(--surface), var(--bg-700));
+        border-radius: 16px;
+        border: 1px solid var(--border-teal);
+        position: sticky;
     }
     
     .booking-price {
         font-size: 26px;
+        font-weight: 800;
+        color: var(--teal);
+    }
+    
+    .booking-price .per-night {
+        font-size: 12px;
+        font-weight: normal;
+        color: var(--text-muted);
+    }
+    
+    .rating-summary {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
     }
     
     .calendar-container {
+        background: var(--bg-700);
+        border-radius: 12px;
         padding: 12px;
         margin-bottom: 16px;
     }
     
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+    
     .calendar-month {
         font-size: 14px;
+        font-weight: 700;
+        color: var(--teal);
     }
     
     .calendar-nav-btn {
+        background: var(--bg-600);
+        border: none;
         padding: 4px 8px;
-        font-size: 12px;
+        border-radius: 6px;
+        cursor: pointer;
     }
     
     .calendar-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        text-align: center;
         font-size: 10px;
+        margin-bottom: 8px;
+        color: var(--text-muted);
+    }
+    
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
     }
     
     .calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 11px;
+        border-radius: 6px;
+        cursor: pointer;
+        background: var(--bg-600);
+    }
+    
+    .calendar-day.available {
+        background: rgba(46, 204, 113, 0.2);
+        color: var(--green);
+    }
+    
+    .calendar-day.booked {
+        background: rgba(231, 76, 60, 0.2);
+        color: var(--red);
+        text-decoration: line-through;
+        cursor: not-allowed;
+    }
+    
+    .calendar-day.selected {
+        background: var(--teal);
+        color: #051209;
+    }
+    
+    .calendar-legend {
+        display: flex;
+        gap: 12px;
+        margin-top: 10px;
+        font-size: 10px;
+    }
+    
+    .legend-color {
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+        display: inline-block;
+        margin-right: 4px;
     }
     
     .selected-dates-display {
+        background: var(--teal-glow);
         padding: 8px;
+        border-radius: 8px;
         margin: 10px 0;
         font-size: 11px;
+        text-align: center;
+    }
+    
+    .form-group {
+        margin-bottom: 12px;
     }
     
     .form-group label {
         font-size: 11px;
+        display: block;
+        margin-bottom: 4px;
+        color: var(--text-muted);
     }
     
     .form-select, .form-input {
+        width: 100%;
         padding: 7px 10px;
-        font-size: 13px;
+        background: var(--bg-700);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text-primary);
+        font-size: 12px;
     }
     
+    /* Coupon Section */
     .coupon-section {
-        margin: 10px 0;
+        margin: 16px 0;
     }
     
     .coupon-section label {
         font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+        display: block;
+        margin-bottom: 8px;
+    }
+    
+    .coupon-input-group {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .coupon-input-group input {
+        flex: 1;
+        padding: 10px 12px;
+        background: var(--bg-700);
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-size: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .coupon-input-group input:focus {
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px var(--teal-glow);
+        outline: none;
+    }
+    
+    .coupon-input-group .btn-outline {
+        background: linear-gradient(135deg, var(--teal-glow), transparent);
+        border: 1.5px solid var(--teal);
+        color: var(--teal);
+        padding: 0 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .coupon-input-group .btn-outline:hover {
+        background: var(--teal);
+        color: #051209;
+        transform: translateY(-2px);
+    }
+    
+    #clearCouponBtn {
+        background: var(--bg-600);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0 12px;
+        color: var(--text-secondary);
+        transition: all 0.2s ease;
+    }
+    
+    #clearCouponBtn:hover {
+        background: var(--red);
+        color: white;
+    }
+    
+    .discount-applied {
+        margin-top: 8px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 500;
+        display: none;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .discount-applied.success {
+        display: flex;
+        background: rgba(46, 204, 113, 0.15);
+        color: var(--green);
+    }
+    
+    .discount-applied.error {
+        display: flex;
+        background: rgba(231, 76, 60, 0.15);
+        color: var(--red);
+    }
+    
+    /* Hide available coupons section - REMOVED */
+    .available-coupons {
+        display: none;
+    }
+    
+    .price-details {
+        margin-top: 14px;
+        background: var(--bg-700);
+        border-radius: 12px;
+        padding: 12px;
+        border: 1px solid var(--border);
+    }
+    
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        padding: 6px 0;
+        color: var(--text-secondary);
+    }
+    
+    .discount-row {
+        color: var(--teal);
+        border-top: 1px dashed var(--border);
+        margin-top: 4px;
+        padding-top: 8px;
     }
     
     .total-price {
-        padding: 8px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0 4px 0;
+        border-top: 2px solid var(--border);
+        margin-top: 4px;
+    }
+    
+    .total-price span {
+        font-size: 14px;
+        font-weight: 700;
     }
     
     .total-price strong {
-        font-size: 16px;
+        font-size: 20px;
+        color: var(--teal);
     }
     
     .btn-block {
-        padding: 8px;
+        width: 100%;
+        padding: 10px;
+        background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+        color: #051209;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 700;
         font-size: 13px;
+        transition: all 0.3s ease;
+        margin-top: 14px;
+    }
+    
+    .btn-block:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: var(--bg-600);
+        color: var(--text-muted);
+    }
+    
+    .btn-block:not(:disabled):hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 201, 122, 0.3);
     }
     
     .secure-note {
         font-size: 10px;
+        text-align: center;
+        margin-top: 8px;
+        color: var(--text-muted);
     }
     
     .extra-info {
-        font-size: 11px;
+        font-size: 10px;
         padding: 8px;
+        background: var(--teal-glow);
+        border-radius: 6px;
+        text-align: center;
+        margin-top: 12px;
+        color: var(--teal);
     }
     
-    /* Scrollable Left Column */
     .property-main {
         max-height: calc(100vh - 64px);
         overflow-y: auto;
@@ -282,21 +600,17 @@
         border-radius: 3px;
     }
     
-    /* Remove extra spacing on mobile */
     @media (max-width: 992px) {
+        .property-layout {
+            grid-template-columns: 1fr;
+        }
         .property-main {
             max-height: none;
             overflow-y: visible;
             padding-right: 0;
         }
-        
         .hero-title {
             font-size: 28px;
-        }
-        
-        .hero-section {
-            height: 40vh;
-            min-height: 320px;
         }
     }
     
@@ -304,30 +618,22 @@
         .hero-title {
             font-size: 24px;
         }
-        
         .hero-overlay-content {
             padding: 20px;
         }
-        
-        .property-layout {
-            padding: 20px;
-            gap: 24px;
+        .gallery-thumbs {
+            grid-template-columns: repeat(3, 1fr);
         }
-        
-        .gallery-main img {
-            height: 220px;
-        }
-        
-        .gallery-thumbs img {
-            height: 50px;
+        .gallery-thumbs img:nth-child(4),
+        .gallery-thumbs img:nth-child(5) {
+            display: none;
         }
     }
     
-    /* Payment Methods Modal - Keep functional */
     .payment-methods {
+        display: flex;
         gap: 12px;
         margin: 16px 0;
-        display: flex;
         flex-wrap: wrap;
     }
     
@@ -337,15 +643,10 @@
         padding: 12px;
         background: var(--bg-700);
         border: 2px solid var(--border);
-        border-radius: var(--radius-md);
+        border-radius: 8px;
         cursor: pointer;
         text-align: center;
         transition: all 0.3s ease;
-    }
-    
-    .payment-method:hover {
-        border-color: var(--teal);
-        transform: translateY(-2px);
     }
     
     .payment-method.active {
@@ -354,73 +655,500 @@
     }
     
     .payment-method img {
-        width: 50px;
-        height: 50px;
-        margin-bottom: 8px;
+        width: 40px;
+        height: 40px;
+        margin-bottom: 6px;
         display: block;
         margin-left: auto;
         margin-right: auto;
-        transition: transform 0.3s ease;
-    }
-    
-    .payment-method:hover img {
-        transform: scale(1.1);
     }
     
     .payment-method .method-name {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 600;
-        color: var(--text-primary);
     }
     
     .booking-modal {
-        padding: 20px;
+        max-width: 520px;
+        width: 90%;
         max-height: 80vh;
+        overflow-y: auto;
+        padding: 20px;
+        background: var(--bg-800);
+        border-radius: 16px;
+        position: relative;
     }
     
-    .booking-modal h3 {
-        font-size: 20px;
+    .close-modal-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: var(--bg-600);
+        border: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    
+    .qr-container {
+        text-align: center;
+        padding: 16px;
+        background: white;
+        border-radius: 12px;
+        margin: 16px 0;
+    }
+    
+    .qr-container img {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .bank-details {
+        background: var(--bg-700);
+        padding: 12px;
+        border-radius: 8px;
+        margin: 12px 0;
+        font-size: 12px;
+    }
+    
+    .copy-btn {
+        background: var(--bg-600);
+        border: none;
+        padding: 2px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 10px;
+        margin-left: 8px;
+    }
+    
+    .stay-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
         margin-bottom: 12px;
     }
     
-    .booking-summary {
-        padding: 12px;
-        margin: 12px 0;
+    .stay-card {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        aspect-ratio: 1;
     }
     
-    .price-breakdown {
-        padding: 12px;
-        margin: 12px 0;
+    .stay-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
     
-    /* Logo in success modal */
+    .stay-card .stay-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 8px;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .stay-room {
+        color: white;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    
+    .view-photos-btn {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        padding: 3px 8px;
+        border-radius: 15px;
+        font-size: 10px;
+        color: white;
+        cursor: pointer;
+    }
+    
+    .view-photos-btn:hover {
+        background: var(--teal);
+        color: #051209;
+    }
+    
+    .view-all-link {
+        text-align: center;
+        margin-top: 8px;
+    }
+    
+    .view-all-link a {
+        color: var(--teal);
+        font-size: 12px;
+        text-decoration: none;
+    }
+    
+    @media (max-width: 640px) {
+        .stay-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    .package-section {
+        padding: 16px;
+        background: linear-gradient(135deg, var(--bg-700), var(--bg-600));
+        border-radius: 12px;
+        margin-bottom: 28px;
+    }
+    
+    .package-section h3 {
+        font-size: 18px;
+        margin-bottom: 4px;
+        color: var(--teal);
+    }
+    
+    .package-subtitle {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .included-items {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .included-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+    }
+    
+    .included-item i {
+        color: var(--teal);
+    }
+    
+    .rules-section {
+        padding: 16px;
+        background: var(--bg-700);
+        border-radius: 12px;
+        margin-bottom: 28px;
+    }
+    
+    .rules-section h3 {
+        font-size: 18px;
+        margin-bottom: 4px;
+    }
+    
+    .rules-section h3 i {
+        color: var(--teal);
+    }
+    
+    .rules-subtitle {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .rules-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+    
+    .rule-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 12px;
+        color: var(--text-secondary);
+    }
+    
+    .rule-item i {
+        color: var(--teal);
+        margin-top: 2px;
+        width: 16px;
+    }
+    
+    .show-all-rules-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: 1px solid var(--teal);
+        color: var(--teal);
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    
+    .show-all-rules-btn:hover {
+        background: var(--teal);
+        color: #051209;
+    }
+    
     .success-icon {
         width: 70px;
         height: 70px;
+        background: linear-gradient(135deg, var(--teal), var(--cyan));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
     }
     
     .success-icon img {
         width: 40px;
         height: 40px;
-    }
-    
-    .success-modal h2 {
-        font-size: 22px;
+        filter: brightness(0) invert(1);
     }
     
     .booking-ref {
+        font-family: monospace;
         font-size: 14px;
         padding: 10px;
+        background: var(--bg-700);
+        border-radius: 8px;
+        margin: 12px 0;
+        color: var(--teal);
     }
     
-    .success-details p {
-        font-size: 12px;
-        margin: 8px 0;
+    .modal-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 16px;
     }
     
     .modal-buttons .btn {
+        flex: 1;
         padding: 8px;
+        border-radius: 30px;
         font-size: 12px;
+    }
+
+    /* ============================================================
+       ENHANCED BOOKING MODAL STYLES - COMPLETE YOUR BOOKING
+       ============================================================ */
+    
+    /* Booking Summary Styling */
+    #bookingSummary {
+        background: linear-gradient(135deg, var(--bg-700), var(--bg-600));
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid var(--border-teal);
+    }
+    
+    .booking-summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px dashed var(--border);
+    }
+    
+    .booking-summary-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    
+    .booking-summary-item span {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+    
+    .booking-summary-item span i {
+        color: var(--teal);
+        width: 20px;
+        font-size: 14px;
+    }
+    
+    .booking-summary-item strong {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    /* Price Breakdown Styling */
+    #priceBreakdown {
+        background: var(--bg-700);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 24px;
+        border: 1px solid var(--border);
+    }
+    
+    #priceBreakdown .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px dashed var(--border);
+    }
+    
+    #priceBreakdown .row:last-child {
+        border-bottom: none;
+        padding-top: 12px;
+        font-size: 18px;
+    }
+    
+    #priceBreakdown .row span:first-child {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--text-secondary);
+    }
+    
+    #priceBreakdown .row span:first-child i {
+        color: var(--teal);
+        width: 20px;
+    }
+    
+    #priceBreakdown .row span:last-child,
+    #priceBreakdown .row strong {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    #priceBreakdown .row strong {
+        font-size: 20px;
+        color: var(--teal);
+    }
+    
+    /* Modal Header with Icon */
+    .booking-modal h3 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: 22px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--teal);
+        color: var(--teal);
+    }
+    
+    .booking-modal h3 i {
+        font-size: 24px;
+    }
+    
+    /* Payment Methods Enhanced */
+    .payment-methods-enhanced {
+        display: flex;
+        gap: 15px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+    }
+    
+    .payment-method-enhanced {
+        flex: 1;
+        min-width: 100px;
+        padding: 16px 12px;
+        background: var(--bg-700);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .payment-method-enhanced::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 201, 122, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .payment-method-enhanced:hover::before {
+        left: 100%;
+    }
+    
+    .payment-method-enhanced:hover {
+        border-color: var(--teal);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 201, 122, 0.15);
+    }
+    
+    .payment-method-enhanced.active {
+        border-color: var(--teal);
+        background: linear-gradient(135deg, var(--teal-glow), var(--bg-700));
+        box-shadow: 0 0 15px rgba(0, 201, 122, 0.3);
+    }
+    
+    .payment-method-enhanced img {
+        width: 45px;
+        height: 45px;
+        margin: 0 auto 10px;
+        display: block;
+        transition: transform 0.3s ease;
+    }
+    
+    .payment-method-enhanced:hover img {
+        transform: scale(1.1);
+    }
+    
+    .payment-method-enhanced .method-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: block;
+    }
+    
+    /* QR Section Styling */
+    #qrSection {
+        margin: 20px 0;
+        animation: fadeInUp 0.4s ease;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Payment Status */
+    .payment-status {
+        margin-top: 20px;
+        padding: 12px;
+        border-radius: 12px;
+        text-align: center;
+        display: none;
+        font-weight: 500;
+    }
+    
+    .payment-status.processing {
+        display: block;
+        background: rgba(240, 165, 0, 0.2);
+        color: var(--amber);
+    }
+    
+    .payment-status.success {
+        display: block;
+        background: rgba(46, 204, 113, 0.2);
+        color: var(--green);
     }
 </style>
 {% endblock %}
@@ -430,7 +1158,7 @@
 <div class="property-container">
     <!-- Hero Section -->
     <div class="hero-section">
-        <div class="hero-image" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600');">
+        <div class="hero-image" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('{{ url_for('static', filename='images/mvh1.jpg') }}');">
             <div class="hero-overlay-content">
                 <div class="hero-tagline">✨ Authentic Nepali Hospitality</div>
                 <h1 class="hero-title">Mountain View Homestay</h1>
@@ -448,16 +1176,18 @@
     <div class="property-layout">
         <!-- Left Column - Scrollable -->
         <div class="property-main">
-            <!-- Gallery -->
+            <!-- Gallery Section with Your Images -->
             <div class="gallery-section">
                 <div class="gallery-grid">
-                    <div class="gallery-main"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800" alt="Mountain View Homestay"></div>
+                    <div class="gallery-main">
+                        <img src="{{ url_for('static', filename='images/mvh1.jpg') }}" alt="Mountain View Homestay">
+                    </div>
                     <div class="gallery-thumbs">
-                        <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400" alt="View">
-                        <img src="https://images.unsplash.com/photo-1468413253725-0d518109b803?w=400" alt="Annapurna">
-                        <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400" alt="Room">
-                        <img src="https://images.unsplash.com/photo-1580829732192-817f0fd9d7cf?w=400" alt="Food">
-                        <img src="https://images.unsplash.com/photo-1558798539-e7d702ca26a9?w=400" alt="Exterior">
+                        <img src="{{ url_for('static', filename='images/mvh2.jpg') }}" alt="Mountain View">
+                        <img src="{{ url_for('static', filename='images/mvh3.jpg') }}" alt="Annapurna View">
+                        <img src="{{ url_for('static', filename='images/mvh4.jpg') }}" alt="Room View">
+                        <img src="{{ url_for('static', filename='images/mvh5.jpg') }}" alt="Food">
+                        <img src="{{ url_for('static', filename='images/mvh6.jpg') }}" alt="Exterior">
                     </div>
                 </div>
             </div>
@@ -473,44 +1203,44 @@
             <div class="amenities-section">
                 <h3><i class="fas fa-star"></i> Premium Amenities</h3>
                 <div class="amenities-grid">
-                    <div class="amenity-item"><i class="fas fa-wind"></i> <span>Air Conditioning</span></div>
-                    <div class="amenity-item"><i class="fas fa-swimming-pool"></i> <span>Swimming Pool</span></div>
-                    <div class="amenity-item"><i class="fas fa-water"></i> <span>Infinity Swimming Pool</span></div>
-                    <div class="amenity-item"><i class="fas fa-crown"></i> <span>Luxury Suites</span></div>
-                    <div class="amenity-item"><i class="fas fa-fire"></i> <span>Fireplace</span></div>
-                    <div class="amenity-item"><i class="fas fa-drumstick-bite"></i> <span>BBQ Setup</span></div>
-                    <div class="amenity-item"><i class="fas fa-campground"></i> <span>Bonfire</span></div>
-                    <div class="amenity-item"><i class="fas fa-eye"></i> <span>Stunning Views</span></div>
+                    <div class="amenity-item"><i class="fas fa-wifi"></i> <span>Free WiFi</span></div>
+                    <div class="amenity-item"><i class="fas fa-utensils"></i> <span>Breakfast Included</span></div>
+                    <div class="amenity-item"><i class="fas fa-mountain"></i> <span>Mountain View</span></div>
+                    <div class="amenity-item"><i class="fas fa-hot-tub"></i> <span>24/7 Hot Water</span></div>
+                    <div class="amenity-item"><i class="fas fa-parking"></i> <span>Free Parking</span></div>
+                    <div class="amenity-item"><i class="fas fa-tree"></i> <span>Garden & Terrace</span></div>
+                    <div class="amenity-item"><i class="fas fa-coffee"></i> <span>Tea/Coffee Maker</span></div>
+                    <div class="amenity-item"><i class="fas fa-shield-alt"></i> <span>Fire Extinguisher</span></div>
                 </div>
             </div>
 
-            <!-- Where You'll Stay -->
+            <!-- Where You'll Stay with Your Images -->
             <div class="where-stay-section">
                 <h3><i class="fas fa-bed"></i> Where you'll stay</h3>
                 <div class="stay-grid">
                     <div class="stay-card">
-                        <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400" alt="Bedroom 1">
+                        <img src="{{ url_for('static', filename='images/mvh2.jpg') }}" alt="Bedroom 1">
                         <div class="stay-info">
                             <span class="stay-room">Bedroom 1</span>
                             <button class="view-photos-btn" onclick="openImageViewer(0)">View photos</button>
                         </div>
                     </div>
                     <div class="stay-card">
-                        <img src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=400" alt="Bedroom 2">
+                        <img src="{{ url_for('static', filename='images/mvh3.jpg') }}" alt="Bedroom 2">
                         <div class="stay-info">
                             <span class="stay-room">Bedroom 2</span>
                             <button class="view-photos-btn" onclick="openImageViewer(1)">View photos</button>
                         </div>
                     </div>
                     <div class="stay-card">
-                        <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=400" alt="Bedroom 3">
+                        <img src="{{ url_for('static', filename='images/mvh4.jpg') }}" alt="Bedroom 3">
                         <div class="stay-info">
                             <span class="stay-room">Bedroom 3</span>
                             <button class="view-photos-btn" onclick="openImageViewer(2)">View photos</button>
                         </div>
                     </div>
                     <div class="stay-card">
-                        <img src="https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=400" alt="Bedroom 4">
+                        <img src="{{ url_for('static', filename='images/mvh5.jpg') }}" alt="Bedroom 4">
                         <div class="stay-info">
                             <span class="stay-room">Bedroom 4</span>
                             <button class="view-photos-btn" onclick="openImageViewer(3)">View photos</button>
@@ -549,15 +1279,15 @@
 
             <!-- Host -->
             <div class="host-section">
-                <div class="host-avatar"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Ram Shrestha"></div>
+                <div class="host-avatar"><img src="{{ url_for('static', filename='images/lakpa.png') }}" alt="Lakpa Tamang"></div>
                 <div class="host-details">
-                    <h3>Hosted by Ram Shrestha</h3>
+                    <h3>Hosted by Lakpa Tamang</h3>
                     <div class="host-stats">
                         <span><i class="fas fa-check-circle"></i> Response rate: 100%</span>
                         <span><i class="fas fa-clock"></i> Responds within 1 hour</span>
                         <span><i class="fas fa-home"></i> Hosting for 8 years</span>
                     </div>
-                    <p>Namaste! I'm Ram, born and raised in Pokhara. I love sharing our culture, trekking tips, and home-cooked meals.</p>
+                    <p>Namaste! I'm Lakpa, born and raised in Pokhara. I love sharing our culture, trekking tips, and home-cooked meals.</p>
                 </div>
             </div>
 
@@ -576,11 +1306,11 @@
             <div class="reviews-section">
                 <h3><i class="fas fa-star"></i> Guest reviews · 4.8 average</h3>
                 <div class="reviews-list">
-                    <div class="review-card"><div class="review-header"><strong>Priya S.</strong> <div class="stars">★★★★★</div> <span>Mar 2026</span></div><p>"Absolutely magical stay. The dal bhat was the best meal of our trip."</p></div>
-                    <div class="review-card"><div class="review-header"><strong>Michael L.</strong> <div class="stars">★★★★★</div> <span>Feb 2026</span></div><p>"Incredible hospitality, clean rooms, and stunning sunrise."</p></div>
-                    <div class="review-card"><div class="review-header"><strong>Elena K.</strong> <div class="stars">★★★★☆</div> <span>Jan 2026</span></div><p>"Beautiful homestay with amazing food. I'd come back for the views."</p></div>
-                    <div class="review-card"><div class="review-header"><strong>David Chen</strong> <div class="stars">★★★★★</div> <span>Dec 2025</span></div><p>"Ram helped us arrange a perfect trek to Poon Hill."</p></div>
-                    <div class="review-card"><div class="review-header"><strong>Sophia M.</strong> <div class="stars">★★★★★</div> <span>Nov 2025</span></div><p>"Best homestay in Pokhara! Felt like family."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>Priya Sherstha</strong> <div class="stars">★★★★★</div> <span>Mar 2026</span></div><p>"Absolutely magical stay. The dal bhat was the best meal of our trip."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>Manoj Lama</strong> <div class="stars">★★★★★</div> <span>Feb 2026</span></div><p>"Incredible hospitality, clean rooms, and stunning sunrise."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>Rochak KC</strong> <div class="stars">★★★★☆</div> <span>Jan 2026</span></div><p>"Beautiful homestay with amazing food."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>Deepak Thapa</strong> <div class="stars">★★★★★</div> <span>Dec 2025</span></div><p>"Lakpa helped us arrange a perfect trek to Poon Hill."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>Shreey Tamang</strong> <div class="stars">★★★★★</div> <span>Nov 2025</span></div><p>"Best homestay in Pokhara! Felt like family."</p></div>
                 </div>
             </div>
 
@@ -602,9 +1332,9 @@
             <div class="similar-properties">
                 <h3>Similar stays you might like</h3>
                 <div class="similar-grid">
-                    <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="similar-card"><img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400" alt="Lakeside"><div class="similar-info"><strong>Lakeside Comfort Inn</strong><span>Pokhara · NPR 2,200/night</span><div class="stars">★★★★☆ 4.4</div></div></a>
-                    <a href="{{ url_for('auth.property_thamel_heritage') }}" class="similar-card"><img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=400" alt="Thamel"><div class="similar-info"><strong>Thamel Heritage House</strong><span>Kathmandu · NPR 3,200/night</span><div class="stars">★★★★½ 4.5</div></div></a>
-                    <a href="{{ url_for('auth.property_mustang_desert') }}" class="similar-card"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400" alt="Mustang"><div class="similar-info"><strong>Mustang Desert Homestay</strong><span>Lo-Manthang · NPR 5,500/night</span><div class="stars">★★★★☆ 4.7</div></div></a>
+                    <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="similar-card"><img src="{{ url_for('static', filename='images/mvh2.jpg') }}" alt="Lakeside"><div class="similar-info"><strong>Lakeside Comfort Inn</strong><span>Pokhara · NPR 2,200/night</span><div class="stars">★★★★☆ 4.4</div></div></a>
+                    <a href="{{ url_for('auth.property_thamel_heritage') }}" class="similar-card"><img src="{{ url_for('static', filename='images/mvh3.jpg') }}" alt="Thamel"><div class="similar-info"><strong>Thamel Heritage House</strong><span>Kathmandu · NPR 3,200/night</span><div class="stars">★★★★½ 4.5</div></div></a>
+                    <a href="{{ url_for('auth.property_mustang_desert') }}" class="similar-card"><img src="{{ url_for('static', filename='images/mvh4.jpg') }}" alt="Mustang"><div class="similar-info"><strong>Mustang Desert Homestay</strong><span>Mustang · NPR 5,500/night</span><div class="stars">★★★★☆ 4.7</div></div></a>
                 </div>
             </div>
         </div>
@@ -645,22 +1375,34 @@
                         </select>
                     </div>
                     
+                    <!-- Coupon Section - Available coupons hidden -->
                     <div class="coupon-section">
-                        <label>Coupon code (optional)</label>
+                        <label><i class="fas fa-ticket-alt"></i> Coupon code (optional)</label>
                         <div class="coupon-input-group">
-                            <input type="text" id="couponCode" class="form-input" placeholder="e.g. WELCOME10">
+                            <input type="text" id="couponCode" class="form-input" placeholder="Enter coupon code">
                             <button type="button" id="applyCouponBtn" class="btn btn-outline btn-sm">Apply</button>
                         </div>
                         <div id="discountMessage" class="discount-applied"></div>
                     </div>
                     
-                    <div class="total-price">
-                        <span>NPR 2,500 × <span id="nightCount">0</span> nights</span>
-                        <strong id="subtotalAmount">NPR 0</strong>
-                    </div>
-                    <div class="total-price" style="border-top: none; padding-top: 0;">
-                        <span>Total</span>
-                        <strong id="totalAmount" style="font-size: 18px;">NPR 0</strong>
+                    <!-- Price Details -->
+                    <div class="price-details">
+                        <div class="price-row">
+                            <span>Subtotal</span>
+                            <span class="amount">NPR <span id="subtotalAmount">0</span></span>
+                        </div>
+                        <div class="price-row" style="font-size: 10px; color: var(--text-muted); padding-top: 0;">
+                            <span><span id="nightCount">0</span> nights × NPR 2,500</span>
+                            <span></span>
+                        </div>
+                        <div class="price-row discount-row" id="discountRow" style="display: none;">
+                            <span><i class="fas fa-tag"></i> Discount <span id="discountPercent"></span></span>
+                            <span class="amount">-NPR <span id="discountAmount">0</span></span>
+                        </div>
+                        <div class="total-price">
+                            <span>Total</span>
+                            <strong>NPR <span id="totalAmount">0</span></strong>
+                        </div>
                     </div>
                     
                     <button type="button" id="confirmBookingBtn" class="btn btn-primary btn-block" disabled>Select Dates First</button>
@@ -677,45 +1419,31 @@
     <div class="booking-modal">
         <button class="close-modal-btn" onclick="closeBookingModal()"><i class="fas fa-times"></i></button>
         <h3><i class="fas fa-receipt"></i> Complete Your Booking</h3>
-        
-        <div class="booking-summary" id="bookingSummary"></div>
-        <div class="price-breakdown" id="priceBreakdown"></div>
-        
+        <div id="bookingSummary"></div>
+        <div id="priceBreakdown"></div>
         <h4><i class="fas fa-credit-card"></i> Select Payment Method</h4>
-        <div class="payment-methods">
-            <div class="payment-method" data-method="esewa">
-                <img src="{{ url_for('static', filename='images/esewa.png') }}" alt="eSewa">
-                <span class="method-name">eSewa</span>
-            </div>
-            <div class="payment-method" data-method="khalti">
-                <img src="{{ url_for('static', filename='images/khalti.png') }}" alt="Khalti">
-                <span class="method-name">Khalti</span>
-            </div>
-            <div class="payment-method" data-method="bank">
-                <img src="{{ url_for('static', filename='images/bank.png') }}" alt="Bank Transfer">
-                <span class="method-name">Bank Transfer</span>
-            </div>
+        <div class="payment-methods-enhanced">
+            <div class="payment-method-enhanced" data-method="esewa"><img src="{{ url_for('static', filename='images/esewa.png') }}" alt="eSewa"><span class="method-name">eSewa</span></div>
+            <div class="payment-method-enhanced" data-method="khalti"><img src="{{ url_for('static', filename='images/khalti.png') }}" alt="Khalti"><span class="method-name">Khalti</span></div>
+            <div class="payment-method-enhanced" data-method="bank"><img src="{{ url_for('static', filename='images/bank.png') }}" alt="Bank"><span class="method-name">Bank Transfer</span></div>
         </div>
-        
         <div id="qrSection" style="display: none;">
             <div class="qr-container">
                 <img id="qrImage" src="" alt="QR Code">
-                <p><i class="fas fa-qrcode"></i> Scan QR code to pay securely</p>
+                <p><i class="fas fa-qrcode"></i> Scan QR code to pay</p>
             </div>
             <div class="bank-details" id="bankDetails" style="display: none;">
-                <p><strong>Bank:</strong> <span id="bankName">Nepal Investment Bank</span> <button class="copy-btn" onclick="copyBankText('bankName')">Copy</button></p>
-                <p><strong>Account:</strong> <span id="accountName">Bookmandu Pvt. Ltd.</span> <button class="copy-btn" onclick="copyBankText('accountName')">Copy</button></p>
-                <p><strong>Number:</strong> <span id="accountNumber">0578010012345</span> <button class="copy-btn" onclick="copyBankText('accountNumber')">Copy</button></p>
-                <p><strong>Amount:</strong> <span id="paymentAmount"></span></p>
+                <p><strong><i class="fas fa-university"></i> Bank:</strong> <span id="bankName">Nepal Investment Bank</span> <button class="copy-btn" onclick="copyBankText('bankName')"><i class="fas fa-copy"></i> Copy</button></p>
+                <p><strong><i class="fas fa-user"></i> Account:</strong> <span id="accountName">Bookmandu Pvt. Ltd.</span> <button class="copy-btn" onclick="copyBankText('accountName')"><i class="fas fa-copy"></i> Copy</button></p>
+                <p><strong><i class="fas fa-hashtag"></i> Number:</strong> <span id="accountNumber">0578010012345</span> <button class="copy-btn" onclick="copyBankText('accountNumber')"><i class="fas fa-copy"></i> Copy</button></p>
+                <p><strong><i class="fas fa-money-bill-wave"></i> Amount:</strong> <span id="paymentAmount"></span></p>
             </div>
         </div>
-        
-        <div class="payment-status" id="paymentStatus"></div>
-        
+        <div id="paymentStatus" class="payment-status"></div>
         <div class="modal-buttons">
-            <button class="btn btn-ghost" onclick="closeBookingModal()">Cancel</button>
-            <button class="btn btn-primary" id="proceedPaymentBtn">Proceed to Pay</button>
-            <button class="btn btn-primary" id="confirmPaymentBtn" style="display: none;">Confirm Payment</button>
+            <button class="btn btn-ghost" onclick="closeBookingModal()"><i class="fas fa-times"></i> Cancel</button>
+            <button class="btn btn-primary" id="proceedPaymentBtn">Proceed to Pay <i class="fas fa-arrow-right"></i></button>
+            <button class="btn btn-primary" id="confirmPaymentBtn" style="display: none;">Confirm Payment <i class="fas fa-check"></i></button>
         </div>
     </div>
 </div>
@@ -724,13 +1452,11 @@
 <div class="success-modal-overlay" id="successModal">
     <div class="success-modal">
         <button class="close-modal-btn" onclick="closeSuccessModal()"><i class="fas fa-times"></i></button>
-        <div class="success-icon">
-            <img src="{{ url_for('static', filename='images/wing.png') }}" alt="Logo">
-        </div>
+        <div class="success-icon"><img src="{{ url_for('static', filename='images/wing.png') }}" alt="Logo"></div>
         <h2>Booking Confirmed!</h2>
         <p>Your reservation has been confirmed.</p>
         <div class="booking-ref" id="bookingRef"></div>
-        <div class="success-details" id="successDetails"></div>
+        <div id="successDetails"></div>
         <div class="modal-buttons">
             <button class="btn btn-outline" onclick="downloadInvoice()"><i class="fas fa-download"></i> Download Invoice</button>
             <button class="btn btn-primary" onclick="redirectToBrowse()"><i class="fas fa-search"></i> Browse More</button>
@@ -739,6 +1465,14 @@
 </div>
 
 <script>
+// Bedroom images for viewer - Using your uploaded images
+var bedroomImages = [
+    '{{ url_for("static", filename="images/mvh2.jpg") }}',
+    '{{ url_for("static", filename="images/mvh3.jpg") }}',
+    '{{ url_for("static", filename="images/mvh4.jpg") }}',
+    '{{ url_for("static", filename="images/mvh5.jpg") }}'
+];
+
 // Booked dates
 var bookedDates = [
     '2026-06-05', '2026-06-06', '2026-06-07',
@@ -750,346 +1484,413 @@ var bookedDates = [
 var currentDate = new Date(2026, 5);
 var selectedCheckIn = null;
 var selectedCheckOut = null;
-var discountType = null;
+var appliedCoupon = null;
 var selectedPaymentMethod = null;
 
 var pricePerNight = 2500;
-var coupons = {
-    'WELCOME10': { discount: 10, type: 'percentage', message: '10% off!' },
-    'SAVE20': { discount: 20, type: 'percentage', message: '20% off!' },
-    'FLAT500': { discount: 500, type: 'fixed', message: 'NPR 500 off!' }
+var availableCoupons = {
+    'WELCOME10': { discount: 10, type: 'percentage', message: '10% off!', description: '10% discount applied' },
+    'SAVE20': { discount: 20, type: 'percentage', message: '20% off!', description: '20% discount applied' },
+    'FLAT500': { discount: 500, type: 'fixed', message: 'NPR 500 off!', description: 'NPR 500 discount applied' }
 };
 
-function formatDate(year, month, day) {
-    return year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+// ========== PERSISTENT COUPON TRACKING USING LOCALSTORAGE ==========
+// Load used coupons from localStorage
+var usedCoupons = [];
+
+function loadUsedCouponsFromStorage() {
+    try {
+        var saved = localStorage.getItem('bookmandu_used_coupons');
+        if (saved) {
+            usedCoupons = JSON.parse(saved);
+            console.log('Loaded used coupons:', usedCoupons);
+        } else {
+            usedCoupons = [];
+        }
+    } catch(e) {
+        console.log('Error loading coupons:', e);
+        usedCoupons = [];
+    }
 }
 
-function isDateBooked(year, month, day) {
-    var dateStr = formatDate(year, month, day);
-    return bookedDates.indexOf(dateStr) !== -1;
+function saveUsedCouponsToStorage() {
+    try {
+        localStorage.setItem('bookmandu_used_coupons', JSON.stringify(usedCoupons));
+        console.log('Saved used coupons:', usedCoupons);
+    } catch(e) {
+        console.log('Error saving coupons:', e);
+    }
 }
 
-function getQRCodeUrl(amount, method) {
-    return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + method.toUpperCase() + ':PAY:' + amount + ':BOOKMANDU';
+function isCouponAlreadyUsed(couponCode) {
+    return usedCoupons.includes(couponCode);
+}
+
+function markCouponAsUsed(couponCode) {
+    if (!usedCoupons.includes(couponCode)) {
+        usedCoupons.push(couponCode);
+        saveUsedCouponsToStorage();
+        console.log('Coupon marked as used:', couponCode);
+        return true;
+    }
+    return false;
+}
+
+// Load used coupons when page loads
+loadUsedCouponsFromStorage();
+
+function formatDate(year, month, day) { return year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0'); }
+function isDateBooked(year, month, day) { return bookedDates.indexOf(formatDate(year, month, day)) !== -1; }
+function getQRCodeUrl(amount, method) { return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + method.toUpperCase() + ':PAY:' + amount + ':BOOKMANDU'; }
+function getNights() { if (!selectedCheckIn || !selectedCheckOut) return 0; return Math.ceil(Math.abs(selectedCheckOut - selectedCheckIn) / (1000 * 60 * 60 * 24)); }
+
+function calculatePriceWithDiscount() {
+    var nights = getNights();
+    if (nights === 0) {
+        document.getElementById('nightCount').textContent = '0';
+        document.getElementById('subtotalAmount').textContent = '0';
+        document.getElementById('totalAmount').textContent = '0';
+        document.getElementById('discountRow').style.display = 'none';
+        return { nights: 0, subtotal: 0, discount: 0, total: 0 };
+    }
+    var subtotal = nights * pricePerNight;
+    var discountAmount = 0;
+    var discountPercentText = '';
+    if (appliedCoupon && availableCoupons[appliedCoupon]) {
+        var coupon = availableCoupons[appliedCoupon];
+        if (coupon.type === 'percentage') { discountAmount = subtotal * (coupon.discount / 100); discountPercentText = '(' + coupon.discount + '% off)'; }
+        else { discountAmount = Math.min(coupon.discount, subtotal); discountPercentText = '(NPR ' + coupon.discount + ' off)'; }
+    }
+    var total = subtotal - discountAmount;
+    document.getElementById('nightCount').textContent = nights;
+    document.getElementById('subtotalAmount').textContent = subtotal.toLocaleString();
+    document.getElementById('totalAmount').textContent = total.toLocaleString();
+    if (discountAmount > 0) {
+        document.getElementById('discountRow').style.display = 'flex';
+        document.getElementById('discountPercent').innerHTML = discountPercentText;
+        document.getElementById('discountAmount').textContent = discountAmount.toLocaleString();
+    } else { document.getElementById('discountRow').style.display = 'none'; }
+    var confirmBtn = document.getElementById('confirmBookingBtn');
+    if (nights > 0 && selectedCheckIn && selectedCheckOut) { confirmBtn.disabled = false; confirmBtn.innerHTML = '<i class="fas fa-lock"></i> Confirm Booking · NPR ' + total.toLocaleString(); }
+    else { confirmBtn.disabled = true; confirmBtn.innerHTML = 'Select Dates First'; }
+    return { nights: nights, subtotal: subtotal, discount: discountAmount, total: total };
 }
 
 function renderCalendar() {
-    var year = currentDate.getFullYear();
-    var month = currentDate.getMonth();
-    var firstDay = new Date(year, month, 1);
-    var startWeekday = firstDay.getDay();
-    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var year = currentDate.getFullYear(), month = currentDate.getMonth();
+    var firstDay = new Date(year, month, 1), startWeekday = firstDay.getDay(), daysInMonth = new Date(year, month + 1, 0).getDate();
     var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    
     document.getElementById('currentMonthYear').textContent = monthNames[month] + ' ' + year;
     var calendarDays = document.getElementById('calendarDays');
     calendarDays.innerHTML = '';
-    
-    for (var i = 0; i < startWeekday; i++) {
-        var emptyCell = document.createElement('div');
-        emptyCell.className = 'calendar-day disabled';
-        emptyCell.style.visibility = 'hidden';
-        calendarDays.appendChild(emptyCell);
-    }
-    
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
+    for (var i = 0; i < startWeekday; i++) { var emptyCell = document.createElement('div'); emptyCell.className = 'calendar-day disabled'; emptyCell.style.visibility = 'hidden'; calendarDays.appendChild(emptyCell); }
+    var today = new Date(); today.setHours(0, 0, 0, 0);
     for (var day = 1; day <= daysInMonth; day++) {
-        var isBooked = isDateBooked(year, month, day);
-        var cellDate = new Date(year, month, day);
-        var isPast = cellDate < today;
-        
-        var dayCell = document.createElement('div');
-        dayCell.className = 'calendar-day';
-        dayCell.textContent = day;
-        
-        if (isPast && (year < 2026 || (year === 2026 && month < 5))) {
-            dayCell.classList.add('disabled');
-        } else if (isBooked) {
-            dayCell.classList.add('booked');
-        } else {
+        var isBooked = isDateBooked(year, month, day), cellDate = new Date(year, month, day), isPast = cellDate < today;
+        var dayCell = document.createElement('div'); dayCell.className = 'calendar-day'; dayCell.textContent = day;
+        if (isPast && (year < 2026 || (year === 2026 && month < 5))) { dayCell.classList.add('disabled'); }
+        else if (isBooked) { dayCell.classList.add('booked'); }
+        else {
             dayCell.classList.add('available');
-            if (selectedCheckIn && cellDate.getTime() === selectedCheckIn.getTime()) {
-                dayCell.classList.add('selected');
-            } else if (selectedCheckOut && cellDate.getTime() === selectedCheckOut.getTime()) {
-                dayCell.classList.add('selected');
-            } else if (selectedCheckIn && selectedCheckOut && cellDate > selectedCheckIn && cellDate < selectedCheckOut) {
-                dayCell.classList.add('selected-range');
-            }
-            dayCell.onclick = (function(y, m, d) {
-                return function() { selectDate(y, m, d); };
-            })(year, month, day);
+            if (selectedCheckIn && cellDate.getTime() === selectedCheckIn.getTime()) { dayCell.classList.add('selected'); }
+            else if (selectedCheckOut && cellDate.getTime() === selectedCheckOut.getTime()) { dayCell.classList.add('selected'); }
+            else if (selectedCheckIn && selectedCheckOut && cellDate > selectedCheckIn && cellDate < selectedCheckOut) { dayCell.classList.add('selected-range'); }
+            dayCell.onclick = (function(y, m, d) { return function() { selectDate(y, m, d); }; })(year, month, day);
         }
         calendarDays.appendChild(dayCell);
     }
 }
 
 function selectDate(year, month, day) {
-    var selectedDate = new Date(year, month, day);
-    var dateStr = formatDate(year, month, day);
-    
-    if (bookedDates.indexOf(dateStr) !== -1) {
-        showToast('This date is already booked.', 'error');
-        return;
-    }
-    
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (selectedDate < today) {
-        showToast('Cannot select past dates.', 'error');
-        return;
-    }
-    
-    if (!selectedCheckIn) {
-        selectedCheckIn = selectedDate;
-        selectedCheckOut = null;
-        renderCalendar();
-        updateBookingSummary();
-        showToast('Check-in set', 'success');
-    } else if (selectedCheckIn && !selectedCheckOut) {
-        if (selectedDate <= selectedCheckIn) {
-            selectedCheckIn = selectedDate;
-            renderCalendar();
-            updateBookingSummary();
-            showToast('Check-in updated', 'success');
-        } else {
-            selectedCheckOut = selectedDate;
-            renderCalendar();
-            updateBookingSummary();
-            showToast('Check-out set', 'success');
-            document.getElementById('confirmBookingBtn').disabled = false;
-            document.getElementById('confirmBookingBtn').textContent = 'Confirm Booking';
-        }
-    } else {
-        selectedCheckIn = selectedDate;
-        selectedCheckOut = null;
-        renderCalendar();
-        updateBookingSummary();
-        document.getElementById('confirmBookingBtn').disabled = true;
-        document.getElementById('confirmBookingBtn').textContent = 'Select Check-out Date First';
-    }
-}
-
-function getNights() {
-    if (!selectedCheckIn || !selectedCheckOut) return 0;
-    var diffTime = Math.abs(selectedCheckOut - selectedCheckIn);
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-}
-
-function calculateTotal() {
-    var nights = getNights();
-    var subtotal = nights * pricePerNight;
-    var total = subtotal;
-    if (discountType && coupons[discountType]) {
-        var coupon = coupons[discountType];
-        if (coupon.type === 'percentage') {
-            total = subtotal * (1 - coupon.discount / 100);
-        } else {
-            total = Math.max(0, subtotal - coupon.discount);
-        }
-    }
-    return { nights: nights, subtotal: subtotal, total: total };
+    var selectedDate = new Date(year, month, day), dateStr = formatDate(year, month, day);
+    if (bookedDates.indexOf(dateStr) !== -1) { showToast('This date is already booked.', 'error'); return; }
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    if (selectedDate < today) { showToast('Cannot select past dates.', 'error'); return; }
+    if (!selectedCheckIn) { selectedCheckIn = selectedDate; selectedCheckOut = null; renderCalendar(); updateBookingSummary(); showToast('Check-in set', 'success'); }
+    else if (selectedCheckIn && !selectedCheckOut) {
+        if (selectedDate <= selectedCheckIn) { selectedCheckIn = selectedDate; renderCalendar(); updateBookingSummary(); showToast('Check-in updated', 'success'); }
+        else { selectedCheckOut = selectedDate; renderCalendar(); updateBookingSummary(); showToast('Check-out set', 'success'); }
+    } else { selectedCheckIn = selectedDate; selectedCheckOut = null; renderCalendar(); updateBookingSummary(); showToast('Check-in reset', 'info'); }
 }
 
 function updateBookingSummary() {
-    var calc = calculateTotal();
-    document.getElementById('nightCount').textContent = calc.nights;
-    document.getElementById('subtotalAmount').textContent = 'NPR ' + calc.subtotal.toLocaleString();
-    document.getElementById('totalAmount').textContent = 'NPR ' + calc.total.toLocaleString();
+    var calc = calculatePriceWithDiscount();
+    if (selectedCheckIn && selectedCheckOut) {
+        var options = { year: 'numeric', month: 'short', day: 'numeric' }, nights = getNights(), subtotal = nights * pricePerNight, finalTotal = appliedCoupon ? (subtotal - calc.discount) : subtotal;
+        document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-check"></i> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '<br><small>' + nights + ' nights · ' + (appliedCoupon ? '<span style="text-decoration: line-through; opacity: 0.6;">NPR ' + subtotal.toLocaleString() + '</span> → ' : '') + 'NPR ' + finalTotal.toLocaleString() + '</small>';
+    } else if (selectedCheckIn) { document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-day"></i> Check-in: ' + selectedCheckIn.toDateString() + '<br><small>Select check-out date</small>'; }
+    else { document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-alt"></i> Select check-in and check-out dates'; }
+}
+
+// ========== UPDATED APPLY COUPON WITH ONE-TIME USE CHECK ==========
+function fillCoupon(code) { 
+    document.getElementById('couponCode').value = code; 
+    applyCoupon(); 
+}
+
+function applyCoupon() {
+    var couponCode = document.getElementById('couponCode').value.trim().toUpperCase();
+    var msgDiv = document.getElementById('discountMessage');
     
-    if (selectedCheckIn && selectedCheckOut) {
-        var options = { year: 'numeric', month: 'short', day: 'numeric' };
-        document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-check"></i> ' + 
-            selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) +
-            '<br><small>' + calc.nights + ' nights · NPR ' + calc.total.toLocaleString() + '</small>';
-    } else if (selectedCheckIn) {
-        document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-day"></i> Check-in: ' + selectedCheckIn.toDateString();
+    if (!couponCode) { 
+        msgDiv.innerHTML = '<i class="fas fa-info-circle"></i> Please enter a coupon code'; 
+        msgDiv.className = 'discount-applied error'; 
+        msgDiv.style.display = 'flex'; 
+        setTimeout(function() { msgDiv.style.display = 'none'; }, 3000); 
+        return; 
     }
-}
-
-document.getElementById('applyCouponBtn').addEventListener('click', function() {
-    var code = document.getElementById('couponCode').value.trim().toUpperCase();
-    if (coupons[code]) {
-        discountType = code;
-        document.getElementById('discountMessage').innerHTML = '<i class="fas fa-tag"></i> ' + coupons[code].message + ' Applied!';
-        updateBookingSummary();
-        showToast('Coupon applied!', 'success');
-    } else if (code === '') {
-        discountType = null;
-        document.getElementById('discountMessage').innerHTML = '';
-        updateBookingSummary();
-    } else {
-        showToast('Invalid coupon', 'error');
+    
+    // Check if coupon exists
+    var coupon = availableCoupons[couponCode];
+    if (!coupon) { 
+        msgDiv.innerHTML = '<i class="fas fa-times-circle"></i> ❌ Invalid coupon code. Please check and try again.'; 
+        msgDiv.className = 'discount-applied error'; 
+        msgDiv.style.display = 'flex'; 
+        appliedCoupon = null; 
+        calculatePriceWithDiscount(); 
+        updateBookingSummary(); 
+        setTimeout(function() { msgDiv.style.display = 'none'; }, 3000); 
+        return; 
     }
-});
-
-document.getElementById('prevMonthBtn').addEventListener('click', function() {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    renderCalendar();
-});
-
-document.getElementById('nextMonthBtn').addEventListener('click', function() {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    renderCalendar();
-});
-
-document.getElementById('guests').addEventListener('change', updateBookingSummary);
-
-// Payment method selection
-var paymentMethods = document.querySelectorAll('.payment-method');
-for (var i = 0; i < paymentMethods.length; i++) {
-    paymentMethods[i].addEventListener('click', function() {
-        var methods = document.querySelectorAll('.payment-method');
-        for (var j = 0; j < methods.length; j++) {
-            methods[j].classList.remove('active');
-        }
-        this.classList.add('active');
-        selectedPaymentMethod = this.getAttribute('data-method');
-        
-        var calc = calculateTotal();
-        var qrSection = document.getElementById('qrSection');
-        var bankDetails = document.getElementById('bankDetails');
-        var qrImage = document.getElementById('qrImage');
-        
-        qrSection.style.display = 'block';
-        
-        if (selectedPaymentMethod === 'bank') {
-            bankDetails.style.display = 'block';
-            qrImage.style.display = 'none';
-            document.getElementById('paymentAmount').textContent = 'NPR ' + calc.total.toLocaleString();
-        } else {
-            bankDetails.style.display = 'none';
-            qrImage.style.display = 'block';
-            var methodName = selectedPaymentMethod === 'esewa' ? 'eSewa' : 'Khalti';
-            qrImage.src = getQRCodeUrl(calc.total, methodName);
-        }
-    });
-}
-
-document.getElementById('confirmBookingBtn').addEventListener('click', function() {
-    if (selectedCheckIn && selectedCheckOut) {
-        var calc = calculateTotal();
-        var options = { year: 'numeric', month: 'short', day: 'numeric' };
-        
-        document.getElementById('bookingSummary').innerHTML = 
-            '<div class="booking-summary-item"><span>Property</span><strong>Mountain View Homestay</strong></div>' +
-            '<div class="booking-summary-item"><span>Check-in</span><strong>' + selectedCheckIn.toLocaleDateString('en-US', options) + '</strong></div>' +
-            '<div class="booking-summary-item"><span>Check-out</span><strong>' + selectedCheckOut.toLocaleDateString('en-US', options) + '</strong></div>' +
-            '<div class="booking-summary-item"><span>Guests</span><strong>' + document.getElementById('guests').value + '</strong></div>';
-        
-        var priceHtml = '<div class="row"><span>Nightly rate (x' + calc.nights + ')</span><span>NPR ' + pricePerNight.toLocaleString() + '</span></div>';
-        if (discountType && coupons[discountType]) {
-            priceHtml += '<div class="row"><span>Discount</span><span style="color: var(--teal);">-NPR ' + (calc.subtotal - calc.total).toLocaleString() + '</span></div>';
-        }
-        priceHtml += '<div class="row"><span>Total Amount</span><strong>NPR ' + calc.total.toLocaleString() + '</strong></div>';
-        document.getElementById('priceBreakdown').innerHTML = priceHtml;
-        
-        document.getElementById('bookingModal').classList.add('active');
-        document.getElementById('proceedPaymentBtn').style.display = 'flex';
-        document.getElementById('confirmPaymentBtn').style.display = 'none';
-        document.getElementById('paymentStatus').className = 'payment-status';
-        document.getElementById('paymentStatus').style.display = 'none';
-        document.getElementById('qrSection').style.display = 'none';
-        
-        var methods = document.querySelectorAll('.payment-method');
-        for (var j = 0; j < methods.length; j++) {
-            methods[j].classList.remove('active');
-        }
-        selectedPaymentMethod = null;
-    }
-});
-
-document.getElementById('proceedPaymentBtn').addEventListener('click', function() {
-    if (!selectedPaymentMethod) {
-        showToast('Please select a payment method', 'error');
+    
+    // CRITICAL: Check if coupon has already been used (from localStorage)
+    if (isCouponAlreadyUsed(couponCode)) {
+        msgDiv.innerHTML = '<i class="fas fa-ban"></i> ❌ This coupon code has already been used! Each coupon can only be used once per device.'; 
+        msgDiv.className = 'discount-applied error'; 
+        msgDiv.style.display = 'flex'; 
+        appliedCoupon = null; 
+        calculatePriceWithDiscount(); 
+        updateBookingSummary(); 
+        setTimeout(function() { msgDiv.style.display = 'none'; }, 4000); 
         return;
     }
     
-    var statusDiv = document.getElementById('paymentStatus');
-    statusDiv.className = 'payment-status processing';
-    statusDiv.style.display = 'block';
-    statusDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing payment...';
-    
-    setTimeout(function() {
-        statusDiv.className = 'payment-status success';
-        statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Payment successful! Click "Confirm Payment" to complete.';
-        document.getElementById('proceedPaymentBtn').style.display = 'none';
-        document.getElementById('confirmPaymentBtn').style.display = 'flex';
-    }, 2000);
-});
-
-document.getElementById('confirmPaymentBtn').addEventListener('click', function() {
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    var bookingReference = '';
-    for (var i = 0; i < 10; i++) {
-        bookingReference += chars.charAt(Math.floor(Math.random() * chars.length));
+    // Check if dates are selected
+    var nights = getNights();
+    if (nights === 0) {
+        msgDiv.innerHTML = '<i class="fas fa-calendar-alt"></i> Please select check-in and check-out dates first'; 
+        msgDiv.className = 'discount-applied error'; 
+        msgDiv.style.display = 'flex'; 
+        setTimeout(function() { msgDiv.style.display = 'none'; }, 3000); 
+        return;
     }
     
-    var calc = calculateTotal();
+    // Check if user already has a different coupon applied
+    if (appliedCoupon && appliedCoupon !== couponCode) {
+        msgDiv.innerHTML = '<i class="fas fa-exchange-alt"></i> You already have a coupon applied. Remove it first to use another coupon.'; 
+        msgDiv.className = 'discount-applied error'; 
+        msgDiv.style.display = 'flex'; 
+        setTimeout(function() { msgDiv.style.display = 'none'; }, 3000); 
+        return;
+    }
+    
+    // Apply the coupon
+    appliedCoupon = couponCode;
+    
+    // CRITICAL: Mark this coupon as used immediately in localStorage
+    markCouponAsUsed(couponCode);
+    
+    msgDiv.innerHTML = '<i class="fas fa-check-circle"></i> ✅ ' + coupon.message + ' Applied Successfully!'; 
+    msgDiv.className = 'discount-applied success'; 
+    msgDiv.style.display = 'flex';
+    calculatePriceWithDiscount(); 
+    updateBookingSummary(); 
+    showToast('✅ ' + coupon.message + ' applied successfully!', 'success');
+    
+    setTimeout(function() { 
+        if (msgDiv.style.display === 'flex') msgDiv.style.display = 'none'; 
+    }, 4000);
+}
+
+function removeCoupon() { 
+    if (appliedCoupon) {
+        showToast('Coupon removed. This coupon cannot be used again as it has already been redeemed.', 'info');
+        appliedCoupon = null; 
+        document.getElementById('couponCode').value = ''; 
+        document.getElementById('discountMessage').style.display = 'none'; 
+        calculatePriceWithDiscount(); 
+        updateBookingSummary(); 
+    }
+}
+
+function addClearCouponButton() { 
+    var group = document.querySelector('.coupon-input-group'); 
+    if (group && !document.getElementById('clearCouponBtn')) { 
+        var btn = document.createElement('button'); 
+        btn.id = 'clearCouponBtn'; 
+        btn.className = 'btn btn-ghost btn-sm'; 
+        btn.innerHTML = '<i class="fas fa-times"></i>'; 
+        btn.onclick = removeCoupon; 
+        group.appendChild(btn); 
+    } 
+}
+
+document.getElementById('applyCouponBtn').addEventListener('click', applyCoupon);
+document.getElementById('couponCode').addEventListener('keypress', function(e) { if (e.key === 'Enter') applyCoupon(); });
+document.getElementById('prevMonthBtn').addEventListener('click', function() { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+document.getElementById('nextMonthBtn').addEventListener('click', function() { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+document.getElementById('guests').addEventListener('change', function() { calculatePriceWithDiscount(); updateBookingSummary(); });
+addClearCouponButton();
+
+// Enhanced Booking Modal Functions
+function showEnhancedBookingModal() {
+    var calc = calculatePriceWithDiscount();
     var options = { year: 'numeric', month: 'short', day: 'numeric' };
     
-    document.getElementById('bookingRef').innerHTML = 'HN-' + bookingReference;
-    document.getElementById('successDetails').innerHTML = 
-        '<p><strong>Property:</strong> Mountain View Homestay</p>' +
-        '<p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p>' +
-        '<p><strong>Guests:</strong> ' + document.getElementById('guests').value + '</p>' +
-        '<p><strong>Total Paid:</strong> NPR ' + calc.total.toLocaleString() + '</p>';
+    var bookingSummaryHtml = `
+        <div class="booking-summary-item">
+            <span><i class="fas fa-building"></i> Property</span>
+            <strong>🏔️ Mountain View Homestay</strong>
+        </div>
+        <div class="booking-summary-item">
+            <span><i class="fas fa-calendar-check"></i> Check-in</span>
+            <strong>${selectedCheckIn.toLocaleDateString('en-US', options)}</strong>
+        </div>
+        <div class="booking-summary-item">
+            <span><i class="fas fa-calendar-times"></i> Check-out</span>
+            <strong>${selectedCheckOut.toLocaleDateString('en-US', options)}</strong>
+        </div>
+        <div class="booking-summary-item">
+            <span><i class="fas fa-users"></i> Guests</span>
+            <strong>${document.getElementById('guests').value} ${parseInt(document.getElementById('guests').value) === 1 ? 'Guest' : 'Guests'}</strong>
+        </div>
+        <div class="booking-summary-item">
+            <span><i class="fas fa-clock"></i> Stay Duration</span>
+            <strong>${calc.nights} ${calc.nights === 1 ? 'Night' : 'Nights'}</strong>
+        </div>
+    `;
     
-    document.getElementById('bookingModal').classList.remove('active');
-    document.getElementById('successModal').classList.add('active');
+    var priceHtml = `
+        <div class="row">
+            <span><i class="fas fa-tag"></i> Nightly Rate</span>
+            <span>NPR ${pricePerNight.toLocaleString()} × ${calc.nights}</span>
+        </div>
+    `;
     
-    selectedCheckIn = null;
-    selectedCheckOut = null;
-    discountType = null;
-    document.getElementById('couponCode').value = '';
-    document.getElementById('discountMessage').innerHTML = '';
-    updateBookingSummary();
-    renderCalendar();
-    document.getElementById('confirmBookingBtn').disabled = true;
-    document.getElementById('confirmBookingBtn').textContent = 'Select Dates First';
+    if (appliedCoupon && availableCoupons[appliedCoupon]) {
+        var coupon = availableCoupons[appliedCoupon];
+        priceHtml += `
+            <div class="row" style="color: var(--teal);">
+                <span><i class="fas fa-ticket-alt"></i> Discount (${coupon.discount}${coupon.type === 'percentage' ? '% OFF' : ' OFF'})</span>
+                <span style="color: var(--teal);">-NPR ${calc.discount.toLocaleString()}</span>
+            </div>
+        `;
+    }
+    
+    priceHtml += `
+        <div class="row">
+            <span><i class="fas fa-wallet"></i> Subtotal</span>
+            <span>NPR ${calc.subtotal.toLocaleString()}</span>
+        </div>
+        <div class="row">
+            <span><i class="fas fa-receipt"></i> Tax & Fees</span>
+            <span>Included</span>
+        </div>
+        <div class="row" style="border-top: 2px solid var(--border); margin-top: 5px; padding-top: 12px;">
+            <span><i class="fas fa-credit-card"></i> <strong>Total Amount</strong></span>
+            <strong>NPR ${calc.total.toLocaleString()}</strong>
+        </div>
+    `;
+    
+    document.getElementById('bookingSummary').innerHTML = bookingSummaryHtml;
+    document.getElementById('priceBreakdown').innerHTML = priceHtml;
+}
+
+// Image viewer functions
+function openImageViewer(index) { var modal = document.getElementById('imageViewerModal'); if (!modal) { var html = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)"><div class="modal" style="max-width: 600px;"><div class="modal-header"><span class="modal-title">Room View</span><button class="modal-close" onclick="closeImageViewer()">✕</button></div><div style="text-align: center;"><img id="currentImageView" src="" style="width: 100%; border-radius: 12px;"></div></div></div>'; document.body.insertAdjacentHTML('beforeend', html); modal = document.getElementById('imageViewerModal'); } var img = document.getElementById('currentImageView'); if (img && bedroomImages[index]) img.src = bedroomImages[index]; if (modal) modal.classList.add('open'); }
+function closeImageViewer(e) { var modal = document.getElementById('imageViewerModal'); if (modal && (!e || e.target.id === 'imageViewerModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')))) modal.classList.remove('open'); }
+function openAllImages() { openImageViewer(0); }
+function showAllRules() { var modal = document.getElementById('rulesModal'); if (!modal) { var html = '<div class="modal-overlay" id="rulesModal" onclick="closeRulesModal(event)"><div class="modal" style="max-width: 550px;"><div class="modal-header"><span class="modal-title">All House Rules (18)</span><button class="modal-close" onclick="closeRulesModal()">✕</button></div><div style="max-height: 60vh; overflow-y: auto; padding: 8px;"><div style="display: flex; flex-direction: column; gap: 16px;"><div class="rule-item"><i class="fas fa-money-bill-wave"></i> <span>A prepayment of NPR 20,000 is required.</span></div><div class="rule-item"><i class="fas fa-calendar-times"></i> <span>Cancellations within 72 hours are non-refundable.</span></div><div class="rule-item"><i class="fas fa-clock"></i> <span>Check-out: By 12:00 Noon</span></div><div class="rule-item"><i class="fas fa-refund"></i> <span>Full refunds for cancellations 72+ hours before.</span></div><div class="rule-item"><i class="fas fa-clock"></i> <span>Check-in: After 3:00 PM</span></div><div class="rule-item"><i class="fas fa-utensils"></i> <span>Breakfast until 9:00 AM</span></div><div class="rule-item"><i class="fas fa-smoking-ban"></i> <span>No smoking inside</span></div><div class="rule-item"><i class="fas fa-paw"></i> <span>No pets allowed</span></div><div class="rule-item"><i class="fas fa-music"></i> <span>Quiet hours: 10 PM - 7 AM</span></div><div class="rule-item"><i class="fas fa-users"></i> <span>Max 4 guests</span></div><div class="rule-item"><i class="fas fa-glass-cheers"></i> <span>No parties or events</span></div><div class="rule-item"><i class="fas fa-camera"></i> <span>Commercial photography requires approval</span></div><div class="rule-item"><i class="fas fa-plug"></i> <span>Turn off lights/AC when leaving</span></div><div class="rule-item"><i class="fas fa-trash-alt"></i> <span>Dispose trash in bins</span></div><div class="rule-item"><i class="fas fa-door-open"></i> <span>Lock doors when leaving</span></div><div class="rule-item"><i class="fas fa-water"></i> <span>Conserve water</span></div><div class="rule-item"><i class="fas fa-child"></i> <span>Supervise children</span></div><div class="rule-item"><i class="fas fa-car"></i> <span>Park in designated areas</span></div></div></div></div></div>'; document.body.insertAdjacentHTML('beforeend', html); modal = document.getElementById('rulesModal'); } if (modal) modal.classList.add('open'); }
+function closeRulesModal(e) { var modal = document.getElementById('rulesModal'); if (modal && (!e || e.target.id === 'rulesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')))) modal.classList.remove('open'); }
+
+function copyBankText(elementId) { var text = document.getElementById(elementId).textContent; navigator.clipboard.writeText(text); showToast('Copied to clipboard!', 'success'); }
+function showToast(message, type) { var container = document.getElementById('toasts'); if (!container) { var c = document.createElement('div'); c.className = 'toast-container'; c.id = 'toasts'; document.body.appendChild(c); container = c; } var toast = document.createElement('div'); toast.className = 'toast ' + type; toast.innerHTML = '<span class="toast-icon">' + (type === 'success' ? '✓' : (type === 'error' ? '✕' : 'ℹ')) + '</span><span>' + message + '</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>'; container.appendChild(toast); setTimeout(function() { toast.remove(); }, 4000); }
+
+// Payment methods
+var paymentMethods = document.querySelectorAll('.payment-method-enhanced');
+for (var i = 0; i < paymentMethods.length; i++) { 
+    paymentMethods[i].addEventListener('click', function() { 
+        var methods = document.querySelectorAll('.payment-method-enhanced'); 
+        for (var j = 0; j < methods.length; j++) methods[j].classList.remove('active'); 
+        this.classList.add('active'); 
+        selectedPaymentMethod = this.getAttribute('data-method'); 
+        var calc = calculatePriceWithDiscount();
+        var qrSection = document.getElementById('qrSection'); 
+        var bankDetails = document.getElementById('bankDetails'); 
+        var qrImage = document.getElementById('qrImage'); 
+        qrSection.style.display = 'block'; 
+        if (selectedPaymentMethod === 'bank') { 
+            bankDetails.style.display = 'block'; 
+            qrImage.style.display = 'none'; 
+            document.getElementById('paymentAmount').textContent = 'NPR ' + calc.total.toLocaleString(); 
+        } else { 
+            bankDetails.style.display = 'none'; 
+            qrImage.style.display = 'block'; 
+            qrImage.src = getQRCodeUrl(calc.total, selectedPaymentMethod); 
+        } 
+    }); 
+}
+
+document.getElementById('confirmBookingBtn').addEventListener('click', function() { 
+    if (selectedCheckIn && selectedCheckOut) { 
+        showEnhancedBookingModal();
+        document.getElementById('bookingModal').classList.add('active'); 
+        document.getElementById('proceedPaymentBtn').style.display = 'flex'; 
+        document.getElementById('confirmPaymentBtn').style.display = 'none'; 
+        document.getElementById('paymentStatus').className = 'payment-status'; 
+        document.getElementById('paymentStatus').style.display = 'none'; 
+        document.getElementById('qrSection').style.display = 'none'; 
+        for (var j = 0; j < paymentMethods.length; j++) paymentMethods[j].classList.remove('active'); 
+        selectedPaymentMethod = null; 
+    } 
 });
 
-function closeBookingModal() {
-    document.getElementById('bookingModal').classList.remove('active');
-}
+document.getElementById('proceedPaymentBtn').addEventListener('click', function() { 
+    if (!selectedPaymentMethod) { 
+        showToast('Please select a payment method', 'error'); 
+        return; 
+    } 
+    var statusDiv = document.getElementById('paymentStatus'); 
+    statusDiv.className = 'payment-status processing'; 
+    statusDiv.style.display = 'block'; 
+    statusDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing payment...'; 
+    setTimeout(function() { 
+        statusDiv.className = 'payment-status success'; 
+        statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Payment successful! Click "Confirm Payment" to complete.'; 
+        document.getElementById('proceedPaymentBtn').style.display = 'none'; 
+        document.getElementById('confirmPaymentBtn').style.display = 'flex'; 
+    }, 2000); 
+});
 
-function closeSuccessModal() {
-    document.getElementById('successModal').classList.remove('active');
-}
+document.getElementById('confirmPaymentBtn').addEventListener('click', function() { 
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; 
+    var bookingReference = ''; 
+    for (var i = 0; i < 10; i++) bookingReference += chars.charAt(Math.floor(Math.random() * chars.length)); 
+    var calc = calculatePriceWithDiscount(); 
+    var options = { year: 'numeric', month: 'short', day: 'numeric' }; 
+    document.getElementById('bookingRef').innerHTML = 'MV-' + bookingReference; 
+    document.getElementById('successDetails').innerHTML = '<p><strong>Property:</strong> Mountain View Homestay</p><p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p><p><strong>Guests:</strong> ' + document.getElementById('guests').value + '</p><p><strong>Total Paid:</strong> NPR ' + calc.total.toLocaleString() + '</p>'; 
+    document.getElementById('bookingModal').classList.remove('active'); 
+    document.getElementById('successModal').classList.add('active'); 
+    selectedCheckIn = null; 
+    selectedCheckOut = null; 
+    appliedCoupon = null; 
+    document.getElementById('couponCode').value = ''; 
+    document.getElementById('discountMessage').style.display = 'none'; 
+    calculatePriceWithDiscount(); 
+    updateBookingSummary(); 
+    renderCalendar(); 
+});
 
-function redirectToBrowse() {
-    window.location.href = "{{ url_for('auth.browse') }}";
-}
+function closeBookingModal() { document.getElementById('bookingModal').classList.remove('active'); }
+function closeSuccessModal() { document.getElementById('successModal').classList.remove('active'); }
+function redirectToBrowse() { window.location.href = "{{ url_for('auth.browse') }}"; }
+function downloadInvoice() { showToast('Downloading invoice...', 'success'); }
 
-function downloadInvoice() {
-    showToast('Downloading invoice...', 'success');
-}
-
-function copyBankText(elementId) {
-    var text = document.getElementById(elementId).textContent;
-    navigator.clipboard.writeText(text);
-    showToast('Copied to clipboard!', 'success');
-}
-
-function showToast(message, type) {
-    var toastContainer = document.getElementById('toasts');
-    if (!toastContainer) {
-        var container = document.createElement('div');
-        container.className = 'toast-container';
-        container.id = 'toasts';
-        document.body.appendChild(container);
-        toastContainer = container;
-    }
-    var toast = document.createElement('div');
-    toast.className = 'toast ' + type;
-    var icon = type === 'success' ? '✓' : (type === 'error' ? '✕' : 'ℹ');
-    toast.innerHTML = '<span class="toast-icon">' + icon + '</span><span>' + message + '</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>';
-    toastContainer.appendChild(toast);
-    setTimeout(function() { toast.remove(); }, 4000);
-}
+// Log used coupons on load for debugging
+console.log('Currently used coupons from localStorage:', usedCoupons);
 
 renderCalendar();
-updateBookingSummary();
+calculatePriceWithDiscount();
 </script>
 {% endblock %}
