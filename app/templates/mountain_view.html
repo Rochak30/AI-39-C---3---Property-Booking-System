@@ -6,6 +6,18 @@
 <style>
     /* ========== COMPACT DESIGN OVERRIDES ========== */
     
+    /* FIXED: Remove left-side independent scrolling - use normal page scroll */
+    .property-main {
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
+    }
+    
+    /* Remove custom scrollbar from left section */
+    .property-main::-webkit-scrollbar {
+        display: none;
+    }
+    
     .hero-section {
         height: 45vh;
         min-height: 380px;
@@ -490,7 +502,7 @@
         color: var(--red);
     }
     
-    /* Hide available coupons section - REMOVED */
+    /* Hide available coupons section */
     .available-coupons {
         display: none;
     }
@@ -580,34 +592,16 @@
         color: var(--teal);
     }
     
+    /* FIXED: Remove left side scrolling */
     .property-main {
-        max-height: calc(100vh - 64px);
-        overflow-y: auto;
-        padding-right: 12px;
-    }
-    
-    .property-main::-webkit-scrollbar {
-        width: 5px;
-    }
-    
-    .property-main::-webkit-scrollbar-track {
-        background: var(--bg-700);
-        border-radius: 3px;
-    }
-    
-    .property-main::-webkit-scrollbar-thumb {
-        background: var(--teal);
-        border-radius: 3px;
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
     }
     
     @media (max-width: 992px) {
         .property-layout {
             grid-template-columns: 1fr;
-        }
-        .property-main {
-            max-height: none;
-            overflow-y: visible;
-            padding-right: 0;
         }
         .hero-title {
             font-size: 28px;
@@ -1155,6 +1149,11 @@
 
 {% block content %}
 
+<!-- ============================================ -->
+<!-- THE ENTIRE HTML CONTENT GOES HERE -->
+<!-- (Keep your existing hero, gallery, description, etc.) -->
+<!-- ============================================ -->
+
 <div class="property-container">
     <!-- Hero Section -->
     <div class="hero-section">
@@ -1174,9 +1173,9 @@
     </div>
 
     <div class="property-layout">
-        <!-- Left Column - Scrollable -->
+        <!-- Left Column - Now scrolls normally with page (FIXED) -->
         <div class="property-main">
-            <!-- Gallery Section with Your Images -->
+            <!-- Gallery Section -->
             <div class="gallery-section">
                 <div class="gallery-grid">
                     <div class="gallery-main">
@@ -1214,7 +1213,7 @@
                 </div>
             </div>
 
-            <!-- Where You'll Stay with Your Images -->
+            <!-- Where You'll Stay -->
             <div class="where-stay-section">
                 <h3><i class="fas fa-bed"></i> Where you'll stay</h3>
                 <div class="stay-grid">
@@ -1339,12 +1338,13 @@
             </div>
         </div>
 
-        <!-- Booking Sidebar -->
+        <!-- Booking Sidebar - Sticky on right -->
         <aside class="booking-sidebar" id="booking-panel">
             <div class="booking-card-sticky">
                 <div class="booking-price">NPR 2,500 <span class="per-night">/ night</span></div>
                 <div class="rating-summary"><i class="fas fa-star"></i> 4.8 · 42 reviews</div>
                 
+                <!-- CALENDAR SECTION - FULLY INTACT -->
                 <div class="calendar-container">
                     <div class="calendar-header">
                         <button class="calendar-nav-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
@@ -1375,7 +1375,7 @@
                         </select>
                     </div>
                     
-                    <!-- Coupon Section - Available coupons hidden -->
+                    <!-- Coupon Section -->
                     <div class="coupon-section">
                         <label><i class="fas fa-ticket-alt"></i> Coupon code (optional)</label>
                         <div class="coupon-input-group">
@@ -1465,7 +1465,11 @@
 </div>
 
 <script>
-// Bedroom images for viewer - Using your uploaded images
+// ============================================
+// FULL JAVASCRIPT CODE - CALENDAR FULLY INTACT
+// ============================================
+
+// Bedroom images for viewer
 var bedroomImages = [
     '{{ url_for("static", filename="images/mvh2.jpg") }}',
     '{{ url_for("static", filename="images/mvh3.jpg") }}',
@@ -1494,8 +1498,7 @@ var availableCoupons = {
     'FLAT500': { discount: 500, type: 'fixed', message: 'NPR 500 off!', description: 'NPR 500 discount applied' }
 };
 
-// ========== PERSISTENT COUPON TRACKING USING LOCALSTORAGE ==========
-// Load used coupons from localStorage
+// Persistent coupon tracking
 var usedCoupons = [];
 
 function loadUsedCouponsFromStorage() {
@@ -1503,12 +1506,10 @@ function loadUsedCouponsFromStorage() {
         var saved = localStorage.getItem('bookmandu_used_coupons');
         if (saved) {
             usedCoupons = JSON.parse(saved);
-            console.log('Loaded used coupons:', usedCoupons);
         } else {
             usedCoupons = [];
         }
     } catch(e) {
-        console.log('Error loading coupons:', e);
         usedCoupons = [];
     }
 }
@@ -1516,10 +1517,7 @@ function loadUsedCouponsFromStorage() {
 function saveUsedCouponsToStorage() {
     try {
         localStorage.setItem('bookmandu_used_coupons', JSON.stringify(usedCoupons));
-        console.log('Saved used coupons:', usedCoupons);
-    } catch(e) {
-        console.log('Error saving coupons:', e);
-    }
+    } catch(e) {}
 }
 
 function isCouponAlreadyUsed(couponCode) {
@@ -1530,13 +1528,11 @@ function markCouponAsUsed(couponCode) {
     if (!usedCoupons.includes(couponCode)) {
         usedCoupons.push(couponCode);
         saveUsedCouponsToStorage();
-        console.log('Coupon marked as used:', couponCode);
         return true;
     }
     return false;
 }
 
-// Load used coupons when page loads
 loadUsedCouponsFromStorage();
 
 function formatDate(year, month, day) { return year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0'); }
@@ -1622,12 +1618,6 @@ function updateBookingSummary() {
     else { document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-alt"></i> Select check-in and check-out dates'; }
 }
 
-// ========== UPDATED APPLY COUPON WITH ONE-TIME USE CHECK ==========
-function fillCoupon(code) { 
-    document.getElementById('couponCode').value = code; 
-    applyCoupon(); 
-}
-
 function applyCoupon() {
     var couponCode = document.getElementById('couponCode').value.trim().toUpperCase();
     var msgDiv = document.getElementById('discountMessage');
@@ -1640,10 +1630,9 @@ function applyCoupon() {
         return; 
     }
     
-    // Check if coupon exists
     var coupon = availableCoupons[couponCode];
     if (!coupon) { 
-        msgDiv.innerHTML = '<i class="fas fa-times-circle"></i> ❌ Invalid coupon code. Please check and try again.'; 
+        msgDiv.innerHTML = '<i class="fas fa-times-circle"></i> ❌ Invalid coupon code.'; 
         msgDiv.className = 'discount-applied error'; 
         msgDiv.style.display = 'flex'; 
         appliedCoupon = null; 
@@ -1653,9 +1642,8 @@ function applyCoupon() {
         return; 
     }
     
-    // CRITICAL: Check if coupon has already been used (from localStorage)
     if (isCouponAlreadyUsed(couponCode)) {
-        msgDiv.innerHTML = '<i class="fas fa-ban"></i> ❌ This coupon code has already been used! Each coupon can only be used once per device.'; 
+        msgDiv.innerHTML = '<i class="fas fa-ban"></i> ❌ This coupon has already been used!'; 
         msgDiv.className = 'discount-applied error'; 
         msgDiv.style.display = 'flex'; 
         appliedCoupon = null; 
@@ -1665,46 +1653,39 @@ function applyCoupon() {
         return;
     }
     
-    // Check if dates are selected
     var nights = getNights();
     if (nights === 0) {
-        msgDiv.innerHTML = '<i class="fas fa-calendar-alt"></i> Please select check-in and check-out dates first'; 
+        msgDiv.innerHTML = '<i class="fas fa-calendar-alt"></i> Please select dates first'; 
         msgDiv.className = 'discount-applied error'; 
         msgDiv.style.display = 'flex'; 
         setTimeout(function() { msgDiv.style.display = 'none'; }, 3000); 
         return;
     }
     
-    // Check if user already has a different coupon applied
     if (appliedCoupon && appliedCoupon !== couponCode) {
-        msgDiv.innerHTML = '<i class="fas fa-exchange-alt"></i> You already have a coupon applied. Remove it first to use another coupon.'; 
+        msgDiv.innerHTML = '<i class="fas fa-exchange-alt"></i> Remove current coupon first'; 
         msgDiv.className = 'discount-applied error'; 
         msgDiv.style.display = 'flex'; 
         setTimeout(function() { msgDiv.style.display = 'none'; }, 3000); 
         return;
     }
     
-    // Apply the coupon
     appliedCoupon = couponCode;
-    
-    // CRITICAL: Mark this coupon as used immediately in localStorage
     markCouponAsUsed(couponCode);
     
-    msgDiv.innerHTML = '<i class="fas fa-check-circle"></i> ✅ ' + coupon.message + ' Applied Successfully!'; 
+    msgDiv.innerHTML = '<i class="fas fa-check-circle"></i> ✅ ' + coupon.message + ' Applied!'; 
     msgDiv.className = 'discount-applied success'; 
     msgDiv.style.display = 'flex';
     calculatePriceWithDiscount(); 
     updateBookingSummary(); 
-    showToast('✅ ' + coupon.message + ' applied successfully!', 'success');
+    showToast('✅ ' + coupon.message + ' applied!', 'success');
     
-    setTimeout(function() { 
-        if (msgDiv.style.display === 'flex') msgDiv.style.display = 'none'; 
-    }, 4000);
+    setTimeout(function() { if (msgDiv.style.display === 'flex') msgDiv.style.display = 'none'; }, 4000);
 }
 
 function removeCoupon() { 
     if (appliedCoupon) {
-        showToast('Coupon removed. This coupon cannot be used again as it has already been redeemed.', 'info');
+        showToast('Coupon removed. Cannot be reused.', 'info');
         appliedCoupon = null; 
         document.getElementById('couponCode').value = ''; 
         document.getElementById('discountMessage').style.display = 'none'; 
@@ -1732,7 +1713,6 @@ document.getElementById('nextMonthBtn').addEventListener('click', function() { c
 document.getElementById('guests').addEventListener('change', function() { calculatePriceWithDiscount(); updateBookingSummary(); });
 addClearCouponButton();
 
-// Enhanced Booking Modal Functions
 function showEnhancedBookingModal() {
     var calc = calculatePriceWithDiscount();
     var options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -1796,7 +1776,6 @@ function showEnhancedBookingModal() {
     document.getElementById('priceBreakdown').innerHTML = priceHtml;
 }
 
-// Image viewer functions
 function openImageViewer(index) { var modal = document.getElementById('imageViewerModal'); if (!modal) { var html = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)"><div class="modal" style="max-width: 600px;"><div class="modal-header"><span class="modal-title">Room View</span><button class="modal-close" onclick="closeImageViewer()">✕</button></div><div style="text-align: center;"><img id="currentImageView" src="" style="width: 100%; border-radius: 12px;"></div></div></div>'; document.body.insertAdjacentHTML('beforeend', html); modal = document.getElementById('imageViewerModal'); } var img = document.getElementById('currentImageView'); if (img && bedroomImages[index]) img.src = bedroomImages[index]; if (modal) modal.classList.add('open'); }
 function closeImageViewer(e) { var modal = document.getElementById('imageViewerModal'); if (modal && (!e || e.target.id === 'imageViewerModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')))) modal.classList.remove('open'); }
 function openAllImages() { openImageViewer(0); }
@@ -1806,7 +1785,6 @@ function closeRulesModal(e) { var modal = document.getElementById('rulesModal');
 function copyBankText(elementId) { var text = document.getElementById(elementId).textContent; navigator.clipboard.writeText(text); showToast('Copied to clipboard!', 'success'); }
 function showToast(message, type) { var container = document.getElementById('toasts'); if (!container) { var c = document.createElement('div'); c.className = 'toast-container'; c.id = 'toasts'; document.body.appendChild(c); container = c; } var toast = document.createElement('div'); toast.className = 'toast ' + type; toast.innerHTML = '<span class="toast-icon">' + (type === 'success' ? '✓' : (type === 'error' ? '✕' : 'ℹ')) + '</span><span>' + message + '</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>'; container.appendChild(toast); setTimeout(function() { toast.remove(); }, 4000); }
 
-// Payment methods
 var paymentMethods = document.querySelectorAll('.payment-method-enhanced');
 for (var i = 0; i < paymentMethods.length; i++) { 
     paymentMethods[i].addEventListener('click', function() { 
@@ -1887,13 +1865,7 @@ function closeSuccessModal() { document.getElementById('successModal').classList
 function redirectToBrowse() { window.location.href = "{{ url_for('auth.browse') }}"; }
 function downloadInvoice() { showToast('Downloading invoice...', 'success'); }
 
-// Log used coupons on load for debugging
-console.log('Currently used coupons from localStorage:', usedCoupons);
-
-
-// lakpa
-
 renderCalendar();
 calculatePriceWithDiscount();
 </script>
-{% endblock %} 
+{% endblock %}
