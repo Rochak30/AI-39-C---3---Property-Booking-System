@@ -131,7 +131,6 @@ function getFilteredProps() {
     const typeOk = filterType === 'all' || p.type.toLowerCase().replace(/ /g,'-') === filterType;
     const priceOk = (!minPrice || p.price >= minPrice) && (!maxPrice || p.price <= maxPrice);
     const amenOk = !filterAmenity || p.amenities.map(a => a.toLowerCase()).some(a => a.includes(filterAmenity));
-    // Region filter from URL
     const regionParam = (new URLSearchParams(window.location.search)).get('region');
     const regionOk = !regionParam || regionParam === 'all' || p.region.toLowerCase() === regionParam.toLowerCase();
     return typeOk && priceOk && amenOk && regionOk;
@@ -220,3 +219,182 @@ function showAddPropertyModal() {
       <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="closeModal();showToast('Property submitted for admin review!','success')">Submit Listing</button>
     </div>`);
 }
+
+// ============================================================
+// IMAGE VIEWER FUNCTIONS - FULLY WORKING
+// ============================================================
+
+// Array of bedroom images
+var bedroomImages = [
+    'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800',
+    'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800',
+    'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800',
+    'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=800'
+];
+
+// Array of all gallery images
+var galleryAllImages = [
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
+    'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800',
+    'https://images.unsplash.com/photo-1468413253725-0d518109b803?w=800',
+    'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800',
+    'https://images.unsplash.com/photo-1580829732192-817f0fd9d7cf?w=800',
+    'https://images.unsplash.com/photo-1558798539-e7d702ca26a9?w=800'
+];
+
+function openImageViewer(index) {
+    var imageModal = document.getElementById('imageViewerModal');
+    if (!imageModal) {
+        var modalHtml = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)">' +
+            '<div class="modal" style="max-width: 600px;">' +
+            '<div class="modal-header">' +
+            '<span class="modal-title">Bedroom View</span>' +
+            '<button class="modal-close" onclick="closeImageViewer()">✕</button>' +
+            '</div>' +
+            '<div id="imageViewerBody" style="text-align: center;">' +
+            '<img id="currentImageView" src="" alt="Bedroom" style="width: 100%; border-radius: 12px;">' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        imageModal = document.getElementById('imageViewerModal');
+    }
+    var imgElement = document.getElementById('currentImageView');
+    if (imgElement && bedroomImages[index]) {
+        imgElement.src = bedroomImages[index];
+    }
+    if (imageModal) imageModal.classList.add('open');
+}
+
+function closeImageViewer(e) {
+    var modal = document.getElementById('imageViewerModal');
+    if (!e || e.target.id === 'imageViewerModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))) {
+        if (modal) modal.classList.remove('open');
+    }
+}
+
+function openAllImages() {
+    if (bedroomImages.length > 0) {
+        openImageViewer(0);
+    } else {
+        showToast('No images available', 'error');
+    }
+}
+
+function openFullGallery() {
+    var galleryModal = document.getElementById('galleryModal');
+    if (!galleryModal) {
+        var galleryHtml = '<div class="modal-overlay" id="galleryModal" onclick="closeGalleryModal(event)">' +
+            '<div class="modal" style="max-width: 700px;">' +
+            '<div class="modal-header">' +
+            '<span class="modal-title">Property Gallery</span>' +
+            '<button class="modal-close" onclick="closeGalleryModal()">✕</button>' +
+            '</div>' +
+            '<div id="galleryBody" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-height: 60vh; overflow-y: auto; padding: 8px;">' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+        document.body.insertAdjacentHTML('beforeend', galleryHtml);
+        galleryModal = document.getElementById('galleryModal');
+    }
+    var galleryBody = document.getElementById('galleryBody');
+    if (galleryBody) {
+        galleryBody.innerHTML = '';
+        for (var i = 0; i < galleryAllImages.length; i++) {
+            galleryBody.innerHTML += '<img src="' + galleryAllImages[i] + '" alt="Gallery image" style="width: 100%; border-radius: 12px; cursor: pointer; margin-bottom: 8px;" onclick="openFullImage(' + i + ')">';
+        }
+    }
+    if (galleryModal) galleryModal.classList.add('open');
+}
+
+function closeGalleryModal(e) {
+    var modal = document.getElementById('galleryModal');
+    if (!e || e.target.id === 'galleryModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))) {
+        if (modal) modal.classList.remove('open');
+    }
+}
+
+function openFullImage(index) {
+    closeGalleryModal();
+    if (galleryAllImages[index]) {
+        var tempModal = document.getElementById('imageViewerModal');
+        if (!tempModal) {
+            var modalHtml = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)">' +
+                '<div class="modal" style="max-width: 600px;">' +
+                '<div class="modal-header">' +
+                '<span class="modal-title">Photo View</span>' +
+                '<button class="modal-close" onclick="closeImageViewer()">✕</button>' +
+                '</div>' +
+                '<div id="imageViewerBody" style="text-align: center;">' +
+                '<img id="currentImageView" src="" alt="Photo" style="width: 100%; border-radius: 12px;">' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            tempModal = document.getElementById('imageViewerModal');
+        }
+        var imgElement = document.getElementById('currentImageView');
+        if (imgElement) imgElement.src = galleryAllImages[index];
+        if (tempModal) tempModal.classList.add('open');
+    }
+}
+
+// ============================================================
+// HOUSE RULES MODAL - FULLY WORKING
+// ============================================================
+
+function showAllRules() {
+    var rulesModal = document.getElementById('rulesModal');
+    if (!rulesModal) {
+        var modalHtml = '<div class="modal-overlay" id="rulesModal" onclick="closeRulesModal(event)">' +
+            '<div class="modal" style="max-width: 550px;">' +
+            '<div class="modal-header">' +
+            '<span class="modal-title">All House Rules (18)</span>' +
+            '<button class="modal-close" onclick="closeRulesModal()">✕</button>' +
+            '</div>' +
+            '<div id="rulesBody" style="max-height: 60vh; overflow-y: auto; padding: 8px;">' +
+            '<div style="display: flex; flex-direction: column; gap: 16px;">' +
+            '<div class="rule-item"><i class="fas fa-money-bill-wave"></i> <span>A prepayment of NPR 20,000 is required to confirm your booking.</span></div>' +
+            '<div class="rule-item"><i class="fas fa-calendar-times"></i> <span>Cancellations within 72 hours of arrival are non-refundable.</span></div>' +
+            '<div class="rule-item"><i class="fas fa-clock"></i> <span>Check-out: By 12:00 Noon</span></div>' +
+            '<div class="rule-item"><i class="fas fa-refund"></i> <span>Full prepayment refunds are available for cancellations made at least 72 hours before check-in.</span></div>' +
+            '<div class="rule-item"><i class="fas fa-clock"></i> <span>Check-in: After 3:00 PM</span></div>' +
+            '<div class="rule-item"><i class="fas fa-utensils"></i> <span>Breakfast is served until 9:00 AM; service concludes at 9:30 AM.</span></div>' +
+            '<div class="rule-item"><i class="fas fa-smoking-ban"></i> <span>No smoking inside the property</span></div>' +
+            '<div class="rule-item"><i class="fas fa-paw"></i> <span>Pets are not allowed</span></div>' +
+            '<div class="rule-item"><i class="fas fa-music"></i> <span>Quiet hours: 10 PM - 7 AM</span></div>' +
+            '<div class="rule-item"><i class="fas fa-users"></i> <span>Maximum 4 guests per booking</span></div>' +
+            '<div class="rule-item"><i class="fas fa-glass-cheers"></i> <span>No parties or events</span></div>' +
+            '<div class="rule-item"><i class="fas fa-camera"></i> <span>Commercial photography requires prior approval</span></div>' +
+            '<div class="rule-item"><i class="fas fa-plug"></i> <span>Please turn off lights and AC when leaving</span></div>' +
+            '<div class="rule-item"><i class="fas fa-trash-alt"></i> <span>Dispose of trash in designated bins</span></div>' +
+            '<div class="rule-item"><i class="fas fa-door-open"></i> <span>Always lock doors when leaving</span></div>' +
+            '<div class="rule-item"><i class="fas fa-water"></i> <span>Conserve water - report any leaks</span></div>' +
+            '<div class="rule-item"><i class="fas fa-child"></i> <span>Children must be supervised at all times</span></div>' +
+            '<div class="rule-item"><i class="fas fa-car"></i> <span>Park only in designated areas</span></div>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        rulesModal = document.getElementById('rulesModal');
+    }
+    if (rulesModal) rulesModal.classList.add('open');
+}
+
+function closeRulesModal(e) {
+    var modal = document.getElementById('rulesModal');
+    if (!e || e.target.id === 'rulesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))) {
+        if (modal) modal.classList.remove('open');
+    }
+}
+
+// Make functions globally available for onclick handlers
+window.openImageViewer = openImageViewer;
+window.closeImageViewer = closeImageViewer;
+window.openAllImages = openAllImages;
+window.openFullGallery = openFullGallery;
+window.closeGalleryModal = closeGalleryModal;
+window.openFullImage = openFullImage;
+window.showAllRules = showAllRules;
+window.closeRulesModal = closeRulesModal;

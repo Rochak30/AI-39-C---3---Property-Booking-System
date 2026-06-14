@@ -1,11 +1,66 @@
+import email
+
 from flask import render_template, request, flash, redirect, url_for, session
 from app.controllers.basecontroller import BaseController
 from app.models.usermodel import User
+from app.models.database import Database
+from app.services.email_service import send_reset_code
+import random
+import string
+from datetime import datetime, timedelta
 
 
 class AuthController(BaseController):
     def __init__(self):
         self.user_model = User()
+
+    # ── Helpers ──────────────────────────────────────────────────────────────
+
+    def _generate_code(self):
+        """Generate a random 6-digit numeric code."""
+        return ''.join(random.choices(string.digits, k=6))
+
+    def _save_reset_code(self, email, code):
+        """Store the code in password_resets, invalidating any previous ones."""
+        db = Database()
+        # Mark any existing unused codes for this email as used
+        db.execute(
+            "UPDATE password_resets SET used = TRUE WHERE email = %s AND used = FALSE",
+            (email,)
+        )
+        # Insert new code with 10-minute expiry
+        expires_at = datetime.now() + timedelta(minutes=10)
+        db.execute(
+            "INSERT INTO password_resets (email, code, expires_at) VALUES (%s, %s, %s)",
+            (email, code, expires_at)
+        )
+        db.close()
+
+    def _verify_code(self, email, code):
+        """
+        Check the code is valid, unused, and not expired.
+        Returns True/False.
+        """
+        db = Database()
+        row = db.fetch_one(
+            """SELECT * FROM password_resets
+               WHERE email = %s AND code = %s AND used = FALSE AND expires_at > NOW()
+               ORDER BY created_at DESC LIMIT 1""",
+            (email, code)
+        )
+        db.close()
+        return row is not None
+
+    def _mark_code_used(self, email, code):
+        """Mark the code as used after successful password reset."""
+        db = Database()
+        db.execute(
+            "UPDATE password_resets SET used = TRUE WHERE email = %s AND code = %s",
+            (email, code)
+        )
+        db.close()
+
+    # ── Auth Routes ──────────────────────────────────────────────────────────
 
     def login(self):
         if self.is_logged_in():
@@ -19,22 +74,18 @@ class AuthController(BaseController):
             print("PASSWORD:", password)
 
             user_data = self.user_model.find_by("email", email)
-
             print("USER DATA:", user_data)
 
             if user_data:
                 user = User.from_db(user_data)
                 result = user.check_password(password)
-
                 print("PASSWORD CHECK:", result)
 
                 if result:
                     print("LOGIN SUCCESS")
-
-                    session["user_id"] = user_data["id"]
+                    session["user_id"] = user_data["user_id"]
                     session["user_name"] = user_data["name"]
                     session["role"] = user_data["role"]
-
                     return redirect(url_for("auth.dashboard"))
 
             print("LOGIN FAILED")
@@ -43,8 +94,6 @@ class AuthController(BaseController):
         return render_template("login.html")
 
     def dashboard(self):
-        # if not self.is_logged_in():
-        #     return redirect(url_for("auth.login"))
         return render_template("dashboard.html")
 
     def register(self):
@@ -58,38 +107,46 @@ class AuthController(BaseController):
             name, email = self.get_form_data("name", "email")
             password = request.form.get("password", "")
 
-            print("NAME:", name)
-            print("EMAIL:", email)
-            print("PASSWORD:", password)
+            role = request.form.get("role", "user")
+            if role not in ("guest", "host"):
+                role = "user"
+
+            print("NAME:", name, "EMAIL:", email, "ROLE:", role)
 
             if not name or not email or not password:
-                print("FAILED: missing fields")
                 flash("All fields are required.", "danger")
                 return render_template("register.html")
-
             if len(name) > 100:
-                print("FAILED: name too long")
                 flash("Name must be under 100 characters.", "danger")
                 return render_template("register.html")
-
             if len(password) < 6:
-                print("FAILED: password too short")
                 flash("Password must be at least 6 characters.", "danger")
                 return render_template("register.html")
 
-            new_user = User(name=name, email=email, password=password, role="user")
-            print("USER CREATED:", new_user)
+            new_user = User(name=name, email=email, password=password, role=role)
 
-            print("CHECKING EMAIL...")
             if new_user.email_exists():
-                print("FAILED: email exists")
                 flash("Email already exists.", "danger")
                 return render_template("register.html")
 
-            print("SAVING USER...")
             try:
-                new_user.save()
-                print("SAVED SUCCESSFULLY")
+                user_id = new_user.save()
+                print("USER SAVED — user_id:", user_id)
+
+                if role == "host":
+                    id_type       = request.form.get("id_type", "")
+                    id_number     = request.form.get("id_number", "")
+                    property_type = request.form.get("property_type", "")
+                    payout_bank   = request.form.get("payout_bank", "")
+                    host_address  = request.form.get("host_address", "")
+                    consent       = request.form.get("consent") == "true"
+
+                    new_user.save_host_profile(
+                        user_id, id_type, id_number, property_type,
+                        payout_bank, host_address, consent
+                    )
+                    print("HOST PROFILE SAVED")
+
             except Exception as e:
                 print("SAVE ERROR:", e)
                 flash("Registration failed: " + str(e), "danger")
@@ -101,51 +158,141 @@ class AuthController(BaseController):
 
         return render_template("register.html")
 
+    # ── Password Reset — Step 1: Request code ────────────────────────────────
+
     def forgot_password(self):
-        """
-        GET  /forgot-password  — show the reset-request form
-        POST /forgot-password  — look up the email and (in production)
-                                 send a reset link; flash success either
-                                 way so we don't reveal whether the email
-                                 exists (security best practice).
-        """
         if self.is_logged_in():
             return redirect(url_for("auth.dashboard"))
 
         if request.method == "POST":
-            email = request.form.get("email", "").strip()
+            email = request.form.get("email", "").strip().lower()
 
             if not email:
                 flash("Please enter your email address.", "danger")
                 return render_template("password_reset.html")
 
-            # Look up the user (but don't reveal whether they exist)
+            # Always show success UI — don't reveal whether email exists
             user_data = self.user_model.find_by("email", email)
-
             if user_data:
-                # TODO: generate a signed token, store it, and email the link.
-                # Example (requires itsdangerous + an email utility):
-                #
-                #   token = generate_reset_token(email)
-                #   reset_url = url_for("auth.reset_password", token=token, _external=True)
-                #   send_reset_email(email, reset_url)
-                #
-                print(f"RESET REQUESTED for existing user: {email}")
-            else:
-                # Still succeed silently — never reveal missing accounts
-                print(f"RESET REQUESTED for unknown email: {email}")
+                code = self._generate_code()
+                self._save_reset_code(email, code)
+                sent = send_reset_code(email, code)
+                if not sent:
+                    flash("Failed to send email. Please try again.", "danger")
+                    return render_template("password_reset.html")
+                print(f"RESET CODE for {email}: {code}")  # visible in terminal for testing
 
-            # Always show the same success message
-            flash(
-                f"If an account exists for {email}, a reset link has been sent.",
-                "success",
-            )
-            return render_template("password_reset.html")
+            # Show success state regardless (security: don't leak which emails exist)
+            return render_template("password_reset.html", sent=True, email=email)
 
         return render_template("password_reset.html")
 
+    # ── Password Reset — Step 2: Verify code ─────────────────────────────────
+
+    def verify_code(self):
+        if self.is_logged_in():
+            return redirect(url_for("auth.dashboard"))
+
+        email = request.args.get("email", "") or request.form.get("email", "")
+        email = email.strip().lower()
+
+        if request.method == "POST":
+            code = request.form.get("code", "").strip()
+            print("VERIFY POST — email:", repr(email), "code:", repr(code))  # ADD THIS
+
+            if not code or len(code) != 6:
+                flash("Please enter the full 6-digit code.", "danger")
+                return render_template("verify_password.html", email=email)
+
+            result = self._verify_code(email, code)
+            print("VERIFY RESULT:", result)  # ADD THIS
+
+            if result:
+                return redirect(url_for("auth.reset_password", email=email, code=code))
+            else:
+                flash("Invalid or expired code. Please try again or request a new one.", "danger")
+                return render_template("verify_password.html", email=email)
+
+        return render_template("verify_password.html", email=email)
+
+    # ── Password Reset — Step 3: Set new password ─────────────────────────────
+
+    def reset_password(self):
+        if self.is_logged_in():
+            return redirect(url_for("auth.dashboard"))
+
+        email = request.args.get("email", "") or request.form.get("email", "")
+        code  = request.args.get("code", "")  or request.form.get("code", "")
+        email = email.strip().lower()
+
+        # If arriving via GET, re-verify code is still valid
+        if request.method == "GET":
+            if not self._verify_code(email, code):
+                flash("This reset link has expired. Please request a new code.", "danger")
+                return redirect(url_for("auth.forgot_password"))
+            return render_template("update_password.html", email=email, code=code)
+
+        if request.method == "POST":
+            password         = request.form.get("password", "")
+            confirm_password = request.form.get("confirm_password", "")
+
+            if not password or len(password) < 8:
+                flash("Password must be at least 8 characters.", "danger")
+                return render_template("update_password.html", email=email, code=code)
+
+            if password != confirm_password:
+                flash("Passwords do not match.", "danger")
+                return render_template("update_password.html", email=email, code=code)
+
+            # Final re-check the code hasn't expired between GET and POST
+            if not self._verify_code(email, code):
+                flash("Your reset code expired. Please request a new one.", "danger")
+                return redirect(url_for("auth.forgot_password"))
+
+            # Update password in DB
+            user_data = self.user_model.find_by("email", email)
+            if not user_data:
+                flash("Account not found.", "danger")
+                return redirect(url_for("auth.forgot_password"))
+
+            user = User.from_db(user_data)
+            user.set_password(password)
+            user.update(user_data["user_id"], update_password=True)
+
+            # Mark code as used so it can't be reused
+            self._mark_code_used(email, code)
+
+            print(f"PASSWORD RESET SUCCESS for {email}")
+            return self.flash_and_redirect(
+                "Password updated! Please log in with your new password.",
+                "success", "auth.login"
+            )
+
+    # ── Other Routes ──────────────────────────────────────────────────────────
+
     def about(self):
         return render_template("about.html")
+
+    def browse(self):
+        return render_template("browse.html")
+
+    def property_mountain_view(self):
+        return render_template("mountain_view.html")
+
+    def property_thamel_heritage(self):
+        return render_template("thamel_heritage.html")
+
+    def property_jungle_retreat(self):
+        return render_template("jungle_retreat.html")
+
+    def property_lumbini_peace(self):
+        return render_template("lumbini_peace.html")
+
+    def property_mustang_desert(self):
+        return render_template("mustang_desert.html")
+
+    def property_lakeside_comfort(self):
+        return render_template("lakeside_comfort.html")
 
     def faq(self):
         return render_template("faq.html")
@@ -159,13 +306,12 @@ class AuthController(BaseController):
     def product_form(self):
         if request.method == "POST":
             print(request.form)
-            name = request.form.get("name")
+            name        = request.form.get("name")
             description = request.form.get("description")
-            price = request.form.get("price")
-            category = request.form.get("category")
-            stock = request.form.get("stock")
+            price       = request.form.get("price")
+            category    = request.form.get("category")
+            stock       = request.form.get("stock")
             print(name, description, price, category, stock)
-
         return render_template("product_form.html")
 
     def logout(self):

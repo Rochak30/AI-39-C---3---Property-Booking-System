@@ -1,0 +1,1095 @@
+{% extends "base.html" %}
+{% block title %}Mountain View Homestay – Pokhara | Bookmandu{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/property_details.css') }}">
+<style>
+    /* ========== COMPACT DESIGN OVERRIDES ========== */
+    
+    /* Hero Section - Reduced Height */
+    .hero-section {
+        height: 45vh;
+        min-height: 380px;
+    }
+    
+    .hero-title {
+        font-size: 38px;
+        margin-bottom: 12px;
+    }
+    
+    .hero-overlay-content {
+        padding: 30px 40px;
+    }
+    
+    .hero-meta {
+        gap: 16px;
+        margin-bottom: 16px;
+        font-size: 14px;
+    }
+    
+    .hero-price-badge {
+        font-size: 26px;
+        margin-bottom: 16px;
+    }
+    
+    .btn-hero {
+        padding: 10px 28px;
+        font-size: 14px;
+    }
+    
+    /* Property Layout - Tighter */
+    .property-layout {
+        gap: 32px;
+        padding: 32px 24px;
+    }
+    
+    /* Gallery - Smaller */
+    .gallery-section {
+        margin-bottom: 28px;
+    }
+    
+    .gallery-main img {
+        height: 320px;
+    }
+    
+    .gallery-thumbs img {
+        height: 70px;
+    }
+    
+    /* Sections - Compact */
+    .description-section, .amenities-section, .host-section,
+    .highlights-section, .reviews-section, .location-section,
+    .similar-properties {
+        margin-bottom: 28px;
+    }
+    
+    .description-section h2 {
+        font-size: 22px;
+        margin-bottom: 12px;
+    }
+    
+    .description-section p {
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin-bottom: 10px;
+    }
+    
+    .amenities-section h3, .highlights-section h3,
+    .reviews-section h3, .location-section h3,
+    .similar-properties h3 {
+        font-size: 18px;
+        margin-bottom: 16px;
+    }
+    
+    .amenities-grid {
+        gap: 10px;
+    }
+    
+    .amenity-item {
+        padding: 8px 12px;
+    }
+    
+    .amenity-item i {
+        font-size: 16px;
+        width: 24px;
+    }
+    
+    .amenity-item span {
+        font-size: 13px;
+    }
+    
+    .host-section {
+        padding: 20px;
+        gap: 18px;
+    }
+    
+    .host-avatar img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .host-details h3 {
+        font-size: 18px;
+        margin-bottom: 6px;
+    }
+    
+    .host-stats {
+        gap: 16px;
+        font-size: 11px;
+        margin-bottom: 10px;
+    }
+    
+    .host-details p {
+        font-size: 13px;
+        line-height: 1.5;
+    }
+    
+    .highlights-grid {
+        gap: 16px;
+    }
+    
+    .highlight-card {
+        padding: 16px 12px;
+    }
+    
+    .highlight-card i {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+    
+    .highlight-card strong {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+    
+    .review-card {
+        padding: 14px;
+    }
+    
+    .review-header strong {
+        font-size: 14px;
+    }
+    
+    .stars {
+        font-size: 12px;
+    }
+    
+    .review-card p {
+        font-size: 13px;
+        line-height: 1.5;
+    }
+    
+    .map-placeholder iframe {
+        height: 200px;
+    }
+    
+    .place-item {
+        padding: 5px 12px;
+        font-size: 12px;
+    }
+    
+    .similar-card img {
+        height: 130px;
+    }
+    
+    .similar-info {
+        padding: 10px;
+    }
+    
+    .similar-info strong {
+        font-size: 13px;
+    }
+    
+    .similar-info span {
+        font-size: 11px;
+    }
+    
+    /* Booking Sidebar - Compact */
+    .booking-card-sticky {
+        padding: 18px;
+        top: 80px;
+    }
+    
+    .booking-price {
+        font-size: 26px;
+    }
+    
+    .calendar-container {
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .calendar-month {
+        font-size: 14px;
+    }
+    
+    .calendar-nav-btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+    
+    .calendar-weekdays {
+        font-size: 10px;
+    }
+    
+    .calendar-day {
+        font-size: 11px;
+    }
+    
+    .selected-dates-display {
+        padding: 8px;
+        margin: 10px 0;
+        font-size: 11px;
+    }
+    
+    .form-group label {
+        font-size: 11px;
+    }
+    
+    .form-select, .form-input {
+        padding: 7px 10px;
+        font-size: 13px;
+    }
+    
+    .coupon-section {
+        margin: 10px 0;
+    }
+    
+    .coupon-section label {
+        font-size: 11px;
+    }
+    
+    .total-price {
+        padding: 8px 0;
+    }
+    
+    .total-price strong {
+        font-size: 16px;
+    }
+    
+    .btn-block {
+        padding: 8px;
+        font-size: 13px;
+    }
+    
+    .secure-note {
+        font-size: 10px;
+    }
+    
+    .extra-info {
+        font-size: 11px;
+        padding: 8px;
+    }
+    
+    /* Scrollable Left Column */
+    .property-main {
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
+        padding-right: 12px;
+    }
+    
+    .property-main::-webkit-scrollbar {
+        width: 5px;
+    }
+    
+    .property-main::-webkit-scrollbar-track {
+        background: var(--bg-700);
+        border-radius: 3px;
+    }
+    
+    .property-main::-webkit-scrollbar-thumb {
+        background: var(--teal);
+        border-radius: 3px;
+    }
+    
+    /* Remove extra spacing on mobile */
+    @media (max-width: 992px) {
+        .property-main {
+            max-height: none;
+            overflow-y: visible;
+            padding-right: 0;
+        }
+        
+        .hero-title {
+            font-size: 28px;
+        }
+        
+        .hero-section {
+            height: 40vh;
+            min-height: 320px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 24px;
+        }
+        
+        .hero-overlay-content {
+            padding: 20px;
+        }
+        
+        .property-layout {
+            padding: 20px;
+            gap: 24px;
+        }
+        
+        .gallery-main img {
+            height: 220px;
+        }
+        
+        .gallery-thumbs img {
+            height: 50px;
+        }
+    }
+    
+    /* Payment Methods Modal - Keep functional */
+    .payment-methods {
+        gap: 12px;
+        margin: 16px 0;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .payment-method {
+        flex: 1;
+        min-width: 100px;
+        padding: 12px;
+        background: var(--bg-700);
+        border: 2px solid var(--border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .payment-method:hover {
+        border-color: var(--teal);
+        transform: translateY(-2px);
+    }
+    
+    .payment-method.active {
+        border-color: var(--teal);
+        background: var(--teal-glow);
+    }
+    
+    .payment-method img {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 8px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        transition: transform 0.3s ease;
+    }
+    
+    .payment-method:hover img {
+        transform: scale(1.1);
+    }
+    
+    .payment-method .method-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    .booking-modal {
+        padding: 20px;
+        max-height: 80vh;
+    }
+    
+    .booking-modal h3 {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+    
+    .booking-summary {
+        padding: 12px;
+        margin: 12px 0;
+    }
+    
+    .price-breakdown {
+        padding: 12px;
+        margin: 12px 0;
+    }
+    
+    /* Logo in success modal */
+    .success-icon {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .success-icon img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .success-modal h2 {
+        font-size: 22px;
+    }
+    
+    .booking-ref {
+        font-size: 14px;
+        padding: 10px;
+    }
+    
+    .success-details p {
+        font-size: 12px;
+        margin: 8px 0;
+    }
+    
+    .modal-buttons .btn {
+        padding: 8px;
+        font-size: 12px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="property-container">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-image" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600');">
+            <div class="hero-overlay-content">
+                <div class="hero-tagline">✨ Authentic Nepali Hospitality</div>
+                <h1 class="hero-title">Mountain View Homestay</h1>
+                <div class="hero-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> Pokhara, Lakeside</span>
+                    <span class="hero-type"><i class="fas fa-home"></i> Homestay</span>
+                    <span class="hero-rating"><i class="fas fa-star"></i> 4.8 (42 reviews)</span>
+                </div>
+                <div class="hero-price-badge">NPR 2,500 <span>/ night</span></div>
+                <a href="#booking-panel" class="btn btn-primary btn-hero">Book Now <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="property-layout">
+        <!-- Left Column - Scrollable -->
+        <div class="property-main">
+            <!-- Gallery -->
+            <div class="gallery-section">
+                <div class="gallery-grid">
+                    <div class="gallery-main"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800" alt="Mountain View Homestay"></div>
+                    <div class="gallery-thumbs">
+                        <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400" alt="View">
+                        <img src="https://images.unsplash.com/photo-1468413253725-0d518109b803?w=400" alt="Annapurna">
+                        <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400" alt="Room">
+                        <img src="https://images.unsplash.com/photo-1580829732192-817f0fd9d7cf?w=400" alt="Food">
+                        <img src="https://images.unsplash.com/photo-1558798539-e7d702ca26a9?w=400" alt="Exterior">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="description-section">
+                <h2>Welcome to Annapurna's doorstep</h2>
+                <p>Mountain View Homestay offers an unforgettable experience in the heart of Pokhara. Wake up to stunning sunrise over the Annapurna range and enjoy authentic Nepali hospitality. Our family has welcomed travelers for over a decade, sharing home-cooked dal bhat, cultural stories, and serene mountain vibes.</p>
+                <p>Each room is equipped with comfortable bedding, hot showers, and private balconies overlooking the Himalayas. Traditional decor meets modern comfort. Guests also love our rooftop meditation deck and free cultural performances in the evening.</p>
+            </div>
+
+            <!-- Premium Amenities -->
+            <div class="amenities-section">
+                <h3><i class="fas fa-star"></i> Premium Amenities</h3>
+                <div class="amenities-grid">
+                    <div class="amenity-item"><i class="fas fa-wind"></i> <span>Air Conditioning</span></div>
+                    <div class="amenity-item"><i class="fas fa-swimming-pool"></i> <span>Swimming Pool</span></div>
+                    <div class="amenity-item"><i class="fas fa-water"></i> <span>Infinity Swimming Pool</span></div>
+                    <div class="amenity-item"><i class="fas fa-crown"></i> <span>Luxury Suites</span></div>
+                    <div class="amenity-item"><i class="fas fa-fire"></i> <span>Fireplace</span></div>
+                    <div class="amenity-item"><i class="fas fa-drumstick-bite"></i> <span>BBQ Setup</span></div>
+                    <div class="amenity-item"><i class="fas fa-campground"></i> <span>Bonfire</span></div>
+                    <div class="amenity-item"><i class="fas fa-eye"></i> <span>Stunning Views</span></div>
+                </div>
+            </div>
+
+            <!-- Where You'll Stay -->
+            <div class="where-stay-section">
+                <h3><i class="fas fa-bed"></i> Where you'll stay</h3>
+                <div class="stay-grid">
+                    <div class="stay-card">
+                        <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400" alt="Bedroom 1">
+                        <div class="stay-info">
+                            <span class="stay-room">Bedroom 1</span>
+                            <button class="view-photos-btn" onclick="openImageViewer(0)">View photos</button>
+                        </div>
+                    </div>
+                    <div class="stay-card">
+                        <img src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=400" alt="Bedroom 2">
+                        <div class="stay-info">
+                            <span class="stay-room">Bedroom 2</span>
+                            <button class="view-photos-btn" onclick="openImageViewer(1)">View photos</button>
+                        </div>
+                    </div>
+                    <div class="stay-card">
+                        <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=400" alt="Bedroom 3">
+                        <div class="stay-info">
+                            <span class="stay-room">Bedroom 3</span>
+                            <button class="view-photos-btn" onclick="openImageViewer(2)">View photos</button>
+                        </div>
+                    </div>
+                    <div class="stay-card">
+                        <img src="https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=400" alt="Bedroom 4">
+                        <div class="stay-info">
+                            <span class="stay-room">Bedroom 4</span>
+                            <button class="view-photos-btn" onclick="openImageViewer(3)">View photos</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="view-all-link">
+                    <a href="#" onclick="openAllImages(); return false;"><i class="fas fa-images"></i> View all images</a>
+                </div>
+            </div>
+
+            <!-- Package Section -->
+            <div class="package-section">
+                <h3><i class="fas fa-gift"></i> PACKAGE</h3>
+                <p class="package-subtitle">Included in your stay</p>
+                <div class="included-items">
+                    <div class="included-item"><i class="fas fa-check-circle"></i> Breakfast</div>
+                    <div class="included-item"><i class="fas fa-check-circle"></i> Dinner</div>
+                </div>
+            </div>
+
+            <!-- House Rules -->
+            <div class="rules-section">
+                <h3><i class="fas fa-gavel"></i> BEFORE YOU BOOK</h3>
+                <p class="rules-subtitle">House rules</p>
+                <div class="rules-list">
+                    <div class="rule-item"><i class="fas fa-money-bill-wave"></i> <span>A prepayment of NPR 20,000 is required to confirm your booking.</span></div>
+                    <div class="rule-item"><i class="fas fa-calendar-times"></i> <span>Cancellations within 72 hours of arrival are non-refundable.</span></div>
+                    <div class="rule-item"><i class="fas fa-clock"></i> <span>Check-out: By 12:00 Noon</span></div>
+                    <div class="rule-item"><i class="fas fa-refund"></i> <span>Full prepayment refunds are available for cancellations made at least 72 hours before check-in.</span></div>
+                    <div class="rule-item"><i class="fas fa-clock"></i> <span>Check-in: After 3:00 PM</span></div>
+                    <div class="rule-item"><i class="fas fa-utensils"></i> <span>Breakfast is served until 9:00 AM; service concludes at 9:30 AM.</span></div>
+                </div>
+                <button class="show-all-rules-btn" onclick="showAllRules()"><i class="fas fa-chevron-down"></i> Show all 18 rules</button>
+            </div>
+
+            <!-- Host -->
+            <div class="host-section">
+                <div class="host-avatar"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Ram Shrestha"></div>
+                <div class="host-details">
+                    <h3>Hosted by Ram Shrestha</h3>
+                    <div class="host-stats">
+                        <span><i class="fas fa-check-circle"></i> Response rate: 100%</span>
+                        <span><i class="fas fa-clock"></i> Responds within 1 hour</span>
+                        <span><i class="fas fa-home"></i> Hosting for 8 years</span>
+                    </div>
+                    <p>Namaste! I'm Ram, born and raised in Pokhara. I love sharing our culture, trekking tips, and home-cooked meals.</p>
+                </div>
+            </div>
+
+            <!-- Highlights -->
+            <div class="highlights-section">
+                <h3>✨ Why guests love this property</h3>
+                <div class="highlights-grid">
+                    <div class="highlight-card"><i class="fas fa-mountain-sun"></i> <strong>Panoramic Himalayas</strong>Direct view of Annapurna</div>
+                    <div class="highlight-card"><i class="fas fa-drumstick-bite"></i> <strong>Authentic Dal Bhat</strong>Home-cooked organic meals</div>
+                    <div class="highlight-card"><i class="fas fa-hiking"></i> <strong>Trekking Assistance</strong>Guides & permits arranged</div>
+                    <div class="highlight-card"><i class="fas fa-chalkboard-user"></i> <strong>Cultural Evenings</strong>Traditional music & dance</div>
+                </div>
+            </div>
+
+            <!-- Reviews -->
+            <div class="reviews-section">
+                <h3><i class="fas fa-star"></i> Guest reviews · 4.8 average</h3>
+                <div class="reviews-list">
+                    <div class="review-card"><div class="review-header"><strong>Priya S.</strong> <div class="stars">★★★★★</div> <span>Mar 2026</span></div><p>"Absolutely magical stay. The dal bhat was the best meal of our trip."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>Michael L.</strong> <div class="stars">★★★★★</div> <span>Feb 2026</span></div><p>"Incredible hospitality, clean rooms, and stunning sunrise."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>Elena K.</strong> <div class="stars">★★★★☆</div> <span>Jan 2026</span></div><p>"Beautiful homestay with amazing food. I'd come back for the views."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>David Chen</strong> <div class="stars">★★★★★</div> <span>Dec 2025</span></div><p>"Ram helped us arrange a perfect trek to Poon Hill."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>Sophia M.</strong> <div class="stars">★★★★★</div> <span>Nov 2025</span></div><p>"Best homestay in Pokhara! Felt like family."</p></div>
+                </div>
+            </div>
+
+            <!-- Location -->
+            <div class="location-section">
+                <h3><i class="fas fa-map-pin"></i> Location & nearby attractions</h3>
+                <div class="map-placeholder">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.0278977785766!2d83.97240131506072!3d28.20945198262296!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3995943f2fc2939b%3A0x1d5c794f7ee8969d!2sPhewa%20Lake!5e0!3m2!1sen!2snp!4v1713234567890!5m2!1sen!2snp" width="100%" height="200" style="border:0; border-radius: 16px;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <div class="nearby-places">
+                    <div class="place-item"><i class="fas fa-water"></i> Fewa Lake — 1.2 km</div>
+                    <div class="place-item"><i class="fas fa-mountain"></i> World Peace Pagoda — 4 km</div>
+                    <div class="place-item"><i class="fas fa-church"></i> Tal Barahi Temple — 1.5 km</div>
+                    <div class="place-item"><i class="fas fa-hiking"></i> Sarangkot — 11 km</div>
+                </div>
+            </div>
+
+            <!-- Similar Properties -->
+            <div class="similar-properties">
+                <h3>Similar stays you might like</h3>
+                <div class="similar-grid">
+                    <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="similar-card"><img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400" alt="Lakeside"><div class="similar-info"><strong>Lakeside Comfort Inn</strong><span>Pokhara · NPR 2,200/night</span><div class="stars">★★★★☆ 4.4</div></div></a>
+                    <a href="{{ url_for('auth.property_thamel_heritage') }}" class="similar-card"><img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=400" alt="Thamel"><div class="similar-info"><strong>Thamel Heritage House</strong><span>Kathmandu · NPR 3,200/night</span><div class="stars">★★★★½ 4.5</div></div></a>
+                    <a href="{{ url_for('auth.property_mustang_desert') }}" class="similar-card"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400" alt="Mustang"><div class="similar-info"><strong>Mustang Desert Homestay</strong><span>Lo-Manthang · NPR 5,500/night</span><div class="stars">★★★★☆ 4.7</div></div></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Sidebar -->
+        <aside class="booking-sidebar" id="booking-panel">
+            <div class="booking-card-sticky">
+                <div class="booking-price">NPR 2,500 <span class="per-night">/ night</span></div>
+                <div class="rating-summary"><i class="fas fa-star"></i> 4.8 · 42 reviews</div>
+                
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button class="calendar-nav-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
+                        <span class="calendar-month" id="currentMonthYear">June 2026</span>
+                        <button class="calendar-nav-btn" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="calendar-weekdays"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+                    <div class="calendar-days" id="calendarDays"></div>
+                    <div class="calendar-legend">
+                        <div class="legend-item"><div class="legend-color available"></div><span>Available</span></div>
+                        <div class="legend-item"><div class="legend-color booked"></div><span>Booked</span></div>
+                        <div class="legend-item"><div class="legend-color selected"></div><span>Selected</span></div>
+                    </div>
+                </div>
+                
+                <div class="selected-dates-display" id="selectedDatesDisplay">
+                    <i class="fas fa-calendar-alt"></i> Select check-in and check-out dates
+                </div>
+                
+                <div class="booking-form">
+                    <div class="form-group">
+                        <label>Guests <span class="guest-max">(max 4)</span></label>
+                        <select id="guests" class="form-select">
+                            <option value="1">1 guest</option>
+                            <option value="2" selected>2 guests</option>
+                            <option value="3">3 guests</option>
+                            <option value="4">4 guests</option>
+                        </select>
+                    </div>
+                    
+                    <div class="coupon-section">
+                        <label>Coupon code (optional)</label>
+                        <div class="coupon-input-group">
+                            <input type="text" id="couponCode" class="form-input" placeholder="e.g. WELCOME10">
+                            <button type="button" id="applyCouponBtn" class="btn btn-outline btn-sm">Apply</button>
+                        </div>
+                        <div id="discountMessage" class="discount-applied"></div>
+                    </div>
+                    
+                    <div class="total-price">
+                        <span>NPR 2,500 × <span id="nightCount">0</span> nights</span>
+                        <strong id="subtotalAmount">NPR 0</strong>
+                    </div>
+                    <div class="total-price" style="border-top: none; padding-top: 0;">
+                        <span>Total</span>
+                        <strong id="totalAmount" style="font-size: 18px;">NPR 0</strong>
+                    </div>
+                    
+                    <button type="button" id="confirmBookingBtn" class="btn btn-primary btn-block" disabled>Select Dates First</button>
+                    <p class="secure-note"><i class="fas fa-lock"></i> Secure payment after confirmation</p>
+                </div>
+                <div class="extra-info">✓ Free cancellation up to 7 days before check-in</div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<!-- Booking Modal -->
+<div class="booking-modal-overlay" id="bookingModal">
+    <div class="booking-modal">
+        <button class="close-modal-btn" onclick="closeBookingModal()"><i class="fas fa-times"></i></button>
+        <h3><i class="fas fa-receipt"></i> Complete Your Booking</h3>
+        
+        <div class="booking-summary" id="bookingSummary"></div>
+        <div class="price-breakdown" id="priceBreakdown"></div>
+        
+        <h4><i class="fas fa-credit-card"></i> Select Payment Method</h4>
+        <div class="payment-methods">
+            <div class="payment-method" data-method="esewa">
+                <img src="{{ url_for('static', filename='images/esewa.png') }}" alt="eSewa">
+                <span class="method-name">eSewa</span>
+            </div>
+            <div class="payment-method" data-method="khalti">
+                <img src="{{ url_for('static', filename='images/khalti.png') }}" alt="Khalti">
+                <span class="method-name">Khalti</span>
+            </div>
+            <div class="payment-method" data-method="bank">
+                <img src="{{ url_for('static', filename='images/bank.png') }}" alt="Bank Transfer">
+                <span class="method-name">Bank Transfer</span>
+            </div>
+        </div>
+        
+        <div id="qrSection" style="display: none;">
+            <div class="qr-container">
+                <img id="qrImage" src="" alt="QR Code">
+                <p><i class="fas fa-qrcode"></i> Scan QR code to pay securely</p>
+            </div>
+            <div class="bank-details" id="bankDetails" style="display: none;">
+                <p><strong>Bank:</strong> <span id="bankName">Nepal Investment Bank</span> <button class="copy-btn" onclick="copyBankText('bankName')">Copy</button></p>
+                <p><strong>Account:</strong> <span id="accountName">Bookmandu Pvt. Ltd.</span> <button class="copy-btn" onclick="copyBankText('accountName')">Copy</button></p>
+                <p><strong>Number:</strong> <span id="accountNumber">0578010012345</span> <button class="copy-btn" onclick="copyBankText('accountNumber')">Copy</button></p>
+                <p><strong>Amount:</strong> <span id="paymentAmount"></span></p>
+            </div>
+        </div>
+        
+        <div class="payment-status" id="paymentStatus"></div>
+        
+        <div class="modal-buttons">
+            <button class="btn btn-ghost" onclick="closeBookingModal()">Cancel</button>
+            <button class="btn btn-primary" id="proceedPaymentBtn">Proceed to Pay</button>
+            <button class="btn btn-primary" id="confirmPaymentBtn" style="display: none;">Confirm Payment</button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="success-modal-overlay" id="successModal">
+    <div class="success-modal">
+        <button class="close-modal-btn" onclick="closeSuccessModal()"><i class="fas fa-times"></i></button>
+        <div class="success-icon">
+            <img src="{{ url_for('static', filename='images/wing.png') }}" alt="Logo">
+        </div>
+        <h2>Booking Confirmed!</h2>
+        <p>Your reservation has been confirmed.</p>
+        <div class="booking-ref" id="bookingRef"></div>
+        <div class="success-details" id="successDetails"></div>
+        <div class="modal-buttons">
+            <button class="btn btn-outline" onclick="downloadInvoice()"><i class="fas fa-download"></i> Download Invoice</button>
+            <button class="btn btn-primary" onclick="redirectToBrowse()"><i class="fas fa-search"></i> Browse More</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Booked dates
+var bookedDates = [
+    '2026-06-05', '2026-06-06', '2026-06-07',
+    '2026-06-12', '2026-06-13', '2026-06-14',
+    '2026-06-18', '2026-06-19', '2026-06-20',
+    '2026-06-25', '2026-06-26', '2026-06-27'
+];
+
+var currentDate = new Date(2026, 5);
+var selectedCheckIn = null;
+var selectedCheckOut = null;
+var discountType = null;
+var selectedPaymentMethod = null;
+
+var pricePerNight = 2500;
+var coupons = {
+    'WELCOME10': { discount: 10, type: 'percentage', message: '10% off!' },
+    'SAVE20': { discount: 20, type: 'percentage', message: '20% off!' },
+    'FLAT500': { discount: 500, type: 'fixed', message: 'NPR 500 off!' }
+};
+
+function formatDate(year, month, day) {
+    return year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+}
+
+function isDateBooked(year, month, day) {
+    var dateStr = formatDate(year, month, day);
+    return bookedDates.indexOf(dateStr) !== -1;
+}
+
+function getQRCodeUrl(amount, method) {
+    return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + method.toUpperCase() + ':PAY:' + amount + ':BOOKMANDU';
+}
+
+function renderCalendar() {
+    var year = currentDate.getFullYear();
+    var month = currentDate.getMonth();
+    var firstDay = new Date(year, month, 1);
+    var startWeekday = firstDay.getDay();
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    
+    document.getElementById('currentMonthYear').textContent = monthNames[month] + ' ' + year;
+    var calendarDays = document.getElementById('calendarDays');
+    calendarDays.innerHTML = '';
+    
+    for (var i = 0; i < startWeekday; i++) {
+        var emptyCell = document.createElement('div');
+        emptyCell.className = 'calendar-day disabled';
+        emptyCell.style.visibility = 'hidden';
+        calendarDays.appendChild(emptyCell);
+    }
+    
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    for (var day = 1; day <= daysInMonth; day++) {
+        var isBooked = isDateBooked(year, month, day);
+        var cellDate = new Date(year, month, day);
+        var isPast = cellDate < today;
+        
+        var dayCell = document.createElement('div');
+        dayCell.className = 'calendar-day';
+        dayCell.textContent = day;
+        
+        if (isPast && (year < 2026 || (year === 2026 && month < 5))) {
+            dayCell.classList.add('disabled');
+        } else if (isBooked) {
+            dayCell.classList.add('booked');
+        } else {
+            dayCell.classList.add('available');
+            if (selectedCheckIn && cellDate.getTime() === selectedCheckIn.getTime()) {
+                dayCell.classList.add('selected');
+            } else if (selectedCheckOut && cellDate.getTime() === selectedCheckOut.getTime()) {
+                dayCell.classList.add('selected');
+            } else if (selectedCheckIn && selectedCheckOut && cellDate > selectedCheckIn && cellDate < selectedCheckOut) {
+                dayCell.classList.add('selected-range');
+            }
+            dayCell.onclick = (function(y, m, d) {
+                return function() { selectDate(y, m, d); };
+            })(year, month, day);
+        }
+        calendarDays.appendChild(dayCell);
+    }
+}
+
+function selectDate(year, month, day) {
+    var selectedDate = new Date(year, month, day);
+    var dateStr = formatDate(year, month, day);
+    
+    if (bookedDates.indexOf(dateStr) !== -1) {
+        showToast('This date is already booked.', 'error');
+        return;
+    }
+    
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectedDate < today) {
+        showToast('Cannot select past dates.', 'error');
+        return;
+    }
+    
+    if (!selectedCheckIn) {
+        selectedCheckIn = selectedDate;
+        selectedCheckOut = null;
+        renderCalendar();
+        updateBookingSummary();
+        showToast('Check-in set', 'success');
+    } else if (selectedCheckIn && !selectedCheckOut) {
+        if (selectedDate <= selectedCheckIn) {
+            selectedCheckIn = selectedDate;
+            renderCalendar();
+            updateBookingSummary();
+            showToast('Check-in updated', 'success');
+        } else {
+            selectedCheckOut = selectedDate;
+            renderCalendar();
+            updateBookingSummary();
+            showToast('Check-out set', 'success');
+            document.getElementById('confirmBookingBtn').disabled = false;
+            document.getElementById('confirmBookingBtn').textContent = 'Confirm Booking';
+        }
+    } else {
+        selectedCheckIn = selectedDate;
+        selectedCheckOut = null;
+        renderCalendar();
+        updateBookingSummary();
+        document.getElementById('confirmBookingBtn').disabled = true;
+        document.getElementById('confirmBookingBtn').textContent = 'Select Check-out Date First';
+    }
+}
+
+function getNights() {
+    if (!selectedCheckIn || !selectedCheckOut) return 0;
+    var diffTime = Math.abs(selectedCheckOut - selectedCheckIn);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+function calculateTotal() {
+    var nights = getNights();
+    var subtotal = nights * pricePerNight;
+    var total = subtotal;
+    if (discountType && coupons[discountType]) {
+        var coupon = coupons[discountType];
+        if (coupon.type === 'percentage') {
+            total = subtotal * (1 - coupon.discount / 100);
+        } else {
+            total = Math.max(0, subtotal - coupon.discount);
+        }
+    }
+    return { nights: nights, subtotal: subtotal, total: total };
+}
+
+function updateBookingSummary() {
+    var calc = calculateTotal();
+    document.getElementById('nightCount').textContent = calc.nights;
+    document.getElementById('subtotalAmount').textContent = 'NPR ' + calc.subtotal.toLocaleString();
+    document.getElementById('totalAmount').textContent = 'NPR ' + calc.total.toLocaleString();
+    
+    if (selectedCheckIn && selectedCheckOut) {
+        var options = { year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-check"></i> ' + 
+            selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) +
+            '<br><small>' + calc.nights + ' nights · NPR ' + calc.total.toLocaleString() + '</small>';
+    } else if (selectedCheckIn) {
+        document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-day"></i> Check-in: ' + selectedCheckIn.toDateString();
+    }
+}
+
+document.getElementById('applyCouponBtn').addEventListener('click', function() {
+    var code = document.getElementById('couponCode').value.trim().toUpperCase();
+    if (coupons[code]) {
+        discountType = code;
+        document.getElementById('discountMessage').innerHTML = '<i class="fas fa-tag"></i> ' + coupons[code].message + ' Applied!';
+        updateBookingSummary();
+        showToast('Coupon applied!', 'success');
+    } else if (code === '') {
+        discountType = null;
+        document.getElementById('discountMessage').innerHTML = '';
+        updateBookingSummary();
+    } else {
+        showToast('Invalid coupon', 'error');
+    }
+});
+
+document.getElementById('prevMonthBtn').addEventListener('click', function() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+});
+
+document.getElementById('nextMonthBtn').addEventListener('click', function() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+});
+
+document.getElementById('guests').addEventListener('change', updateBookingSummary);
+
+// Payment method selection
+var paymentMethods = document.querySelectorAll('.payment-method');
+for (var i = 0; i < paymentMethods.length; i++) {
+    paymentMethods[i].addEventListener('click', function() {
+        var methods = document.querySelectorAll('.payment-method');
+        for (var j = 0; j < methods.length; j++) {
+            methods[j].classList.remove('active');
+        }
+        this.classList.add('active');
+        selectedPaymentMethod = this.getAttribute('data-method');
+        
+        var calc = calculateTotal();
+        var qrSection = document.getElementById('qrSection');
+        var bankDetails = document.getElementById('bankDetails');
+        var qrImage = document.getElementById('qrImage');
+        
+        qrSection.style.display = 'block';
+        
+        if (selectedPaymentMethod === 'bank') {
+            bankDetails.style.display = 'block';
+            qrImage.style.display = 'none';
+            document.getElementById('paymentAmount').textContent = 'NPR ' + calc.total.toLocaleString();
+        } else {
+            bankDetails.style.display = 'none';
+            qrImage.style.display = 'block';
+            var methodName = selectedPaymentMethod === 'esewa' ? 'eSewa' : 'Khalti';
+            qrImage.src = getQRCodeUrl(calc.total, methodName);
+        }
+    });
+}
+
+document.getElementById('confirmBookingBtn').addEventListener('click', function() {
+    if (selectedCheckIn && selectedCheckOut) {
+        var calc = calculateTotal();
+        var options = { year: 'numeric', month: 'short', day: 'numeric' };
+        
+        document.getElementById('bookingSummary').innerHTML = 
+            '<div class="booking-summary-item"><span>Property</span><strong>Mountain View Homestay</strong></div>' +
+            '<div class="booking-summary-item"><span>Check-in</span><strong>' + selectedCheckIn.toLocaleDateString('en-US', options) + '</strong></div>' +
+            '<div class="booking-summary-item"><span>Check-out</span><strong>' + selectedCheckOut.toLocaleDateString('en-US', options) + '</strong></div>' +
+            '<div class="booking-summary-item"><span>Guests</span><strong>' + document.getElementById('guests').value + '</strong></div>';
+        
+        var priceHtml = '<div class="row"><span>Nightly rate (x' + calc.nights + ')</span><span>NPR ' + pricePerNight.toLocaleString() + '</span></div>';
+        if (discountType && coupons[discountType]) {
+            priceHtml += '<div class="row"><span>Discount</span><span style="color: var(--teal);">-NPR ' + (calc.subtotal - calc.total).toLocaleString() + '</span></div>';
+        }
+        priceHtml += '<div class="row"><span>Total Amount</span><strong>NPR ' + calc.total.toLocaleString() + '</strong></div>';
+        document.getElementById('priceBreakdown').innerHTML = priceHtml;
+        
+        document.getElementById('bookingModal').classList.add('active');
+        document.getElementById('proceedPaymentBtn').style.display = 'flex';
+        document.getElementById('confirmPaymentBtn').style.display = 'none';
+        document.getElementById('paymentStatus').className = 'payment-status';
+        document.getElementById('paymentStatus').style.display = 'none';
+        document.getElementById('qrSection').style.display = 'none';
+        
+        var methods = document.querySelectorAll('.payment-method');
+        for (var j = 0; j < methods.length; j++) {
+            methods[j].classList.remove('active');
+        }
+        selectedPaymentMethod = null;
+    }
+});
+
+document.getElementById('proceedPaymentBtn').addEventListener('click', function() {
+    if (!selectedPaymentMethod) {
+        showToast('Please select a payment method', 'error');
+        return;
+    }
+    
+    var statusDiv = document.getElementById('paymentStatus');
+    statusDiv.className = 'payment-status processing';
+    statusDiv.style.display = 'block';
+    statusDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing payment...';
+    
+    setTimeout(function() {
+        statusDiv.className = 'payment-status success';
+        statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Payment successful! Click "Confirm Payment" to complete.';
+        document.getElementById('proceedPaymentBtn').style.display = 'none';
+        document.getElementById('confirmPaymentBtn').style.display = 'flex';
+    }, 2000);
+});
+
+document.getElementById('confirmPaymentBtn').addEventListener('click', function() {
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var bookingReference = '';
+    for (var i = 0; i < 10; i++) {
+        bookingReference += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    
+    var calc = calculateTotal();
+    var options = { year: 'numeric', month: 'short', day: 'numeric' };
+    
+    document.getElementById('bookingRef').innerHTML = 'HN-' + bookingReference;
+    document.getElementById('successDetails').innerHTML = 
+        '<p><strong>Property:</strong> Mountain View Homestay</p>' +
+        '<p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p>' +
+        '<p><strong>Guests:</strong> ' + document.getElementById('guests').value + '</p>' +
+        '<p><strong>Total Paid:</strong> NPR ' + calc.total.toLocaleString() + '</p>';
+    
+    document.getElementById('bookingModal').classList.remove('active');
+    document.getElementById('successModal').classList.add('active');
+    
+    selectedCheckIn = null;
+    selectedCheckOut = null;
+    discountType = null;
+    document.getElementById('couponCode').value = '';
+    document.getElementById('discountMessage').innerHTML = '';
+    updateBookingSummary();
+    renderCalendar();
+    document.getElementById('confirmBookingBtn').disabled = true;
+    document.getElementById('confirmBookingBtn').textContent = 'Select Dates First';
+});
+
+function closeBookingModal() {
+    document.getElementById('bookingModal').classList.remove('active');
+}
+
+function closeSuccessModal() {
+    document.getElementById('successModal').classList.remove('active');
+}
+
+function redirectToBrowse() {
+    window.location.href = "{{ url_for('auth.browse') }}";
+}
+
+function downloadInvoice() {
+    showToast('Downloading invoice...', 'success');
+}
+
+function copyBankText(elementId) {
+    var text = document.getElementById(elementId).textContent;
+    navigator.clipboard.writeText(text);
+    showToast('Copied to clipboard!', 'success');
+}
+
+function showToast(message, type) {
+    var toastContainer = document.getElementById('toasts');
+    if (!toastContainer) {
+        var container = document.createElement('div');
+        container.className = 'toast-container';
+        container.id = 'toasts';
+        document.body.appendChild(container);
+        toastContainer = container;
+    }
+    var toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    var icon = type === 'success' ? '✓' : (type === 'error' ? '✕' : 'ℹ');
+    toast.innerHTML = '<span class="toast-icon">' + icon + '</span><span>' + message + '</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>';
+    toastContainer.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 4000);
+}
+
+renderCalendar();
+updateBookingSummary();
+</script>
+{% endblock %}

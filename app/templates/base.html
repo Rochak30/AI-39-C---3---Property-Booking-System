@@ -3,10 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{% block title %}Bookmandu — Explore Nepal{% endblock %}</title>
+<title>{% block title %}Pahuna — Explore Nepal{% endblock %}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+
+<!-- ========== FONT AWESOME 6 (FREE ICONS) - ADDED ========== -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+  /* ── Pahuna brand colours ── */
+  :root {
+    --pahuna-navy:  #e7eaf2;
+    --pahuna-orange: #fffefc;
+    --pahuna-blue:  #fbfbfb;
+    --pahuna-pink:  #ffffff;
+  }
+
+  /* Logo container */
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+
+  /* Logo image sizing */
+  .nav-logo-img { width: 38px; height: 38px; flex-shrink: 0; object-fit: contain; }
+
+  /* Wordmark */
+  .nav-logo-wordmark {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .nav-logo-wordmark .w-p  { color: var(--pahuna-navy);   }
+  .nav-logo-wordmark .w-ah { color: var(--pahuna-navy);   }
+  .nav-logo-wordmark .w-u  { color: var(--pahuna-orange); }
+  .nav-logo-wordmark .w-na { color: var(--pahuna-blue);   }
+
+  /* Keep wordmark readable in light mode */
+  [data-theme="light"] .nav-logo-wordmark .w-p,
+  [data-theme="light"] .nav-logo-wordmark .w-ah { color: var(--pahuna-navy); }
+</style>
 {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -14,29 +50,47 @@
 <!-- NAV -->
 <nav class="nav">
   <div class="nav-inner">
+
+    <!-- ── Logo ── -->
     <a href="/" class="nav-logo">
-      <div class="nav-logo-icon">🏔</div>
-      <div class="nav-logo-text">Book<span>mandu</span></div>
+
+      <!-- Logo image -->
+      <img
+        src="{{ url_for('static', filename='images/logo.png') }}"
+        alt="Pahuna logo"
+        class="nav-logo-img"
+      />
+
+      <!-- Wordmark: Pahuna -->
+      <div class="nav-logo-wordmark">
+        <span class="w-p">P</span><span class="w-ah">ah</span><span class="w-u">u</span><span class="w-na">na</span>
+      </div>
     </a>
+
+    <!-- ── Nav links ── -->
     <div class="nav-links">
-      <a href="/" class="nav-link">Home</a>
-      <a href="/about" class="nav-link">Browse</a>
-      <a href="/contact" class="nav-link">Contact</a>
-      <a href="/faq" class="nav-link">FAQ</a>
+      <a href="/"       class="nav-link {{ 'active' if request.path == '/' }}">Home</a>
+      <a href="/browse" class="nav-link {{ 'active' if request.path == '/browse' }}">Browse</a>
+      <a href="/about"  class="nav-link {{ 'active' if request.path == '/about' }}">About</a>
+      <a href="/contact"class="nav-link {{ 'active' if request.path == '/contact' }}">Contact</a>
+      <a href="/faq"    class="nav-link {{ 'active' if request.path == '/faq' }}">FAQ</a>
     </div>
+
+    <!-- ── Nav actions ── -->
     <div class="nav-actions">
       {% if session.get('user_id') %}
         <div class="nav-role-badge">{{ session.get('role', 'user')|upper }} ✦</div>
         <span style="font-size:14px;color:var(--text-secondary)">{{ session.get('user_name', '') }}</span>
         <a href="/dashboard" class="btn btn-ghost btn-sm">Dashboard</a>
-        <a href="/logout" class="btn btn-ghost btn-sm">Logout</a>
+        <a href="/logout"    class="btn btn-ghost btn-sm">Logout</a>
       {% else %}
         <div class="nav-role-badge">GUEST ✦</div>
         <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme" id="theme-btn">🌙</button>
-        <a href="/login" class="btn btn-ghost btn-sm">Login</a>
+        <a href="/login"    class="btn btn-ghost btn-sm">Login</a>
         <a href="/register" class="btn btn-primary btn-sm">Register</a>
       {% endif %}
     </div>
+
   </div>
 </nav>
 
@@ -45,7 +99,7 @@
   {% if messages %}
     <div style="position:fixed;top:80px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;">
       {% for category, message in messages %}
-        <div class="toast {{ 'success' if category == 'success' else 'error' if category == 'danger' else 'info' }}" 
+        <div class="toast {{ 'success' if category == 'success' else 'error' if category == 'danger' else 'info' }}"
              style="opacity:1;animation:slideInRight 0.3s ease;">
           <span class="toast-icon">{{ '✓' if category == 'success' else '✕' if category == 'danger' else 'ℹ' }}</span>
           <span>{{ message }}</span>
@@ -54,14 +108,12 @@
       {% endfor %}
     </div>
     <script>
-      setTimeout(() => {
-        document.querySelectorAll('.toast').forEach(t => t.remove());
-      }, 4000);
+      setTimeout(() => { document.querySelectorAll('.toast').forEach(t => t.remove()); }, 4000);
     </script>
   {% endif %}
 {% endwith %}
 
-<!-- Toast Container (for JS toasts) -->
+<!-- Toast Container -->
 <div class="toast-container" id="toasts"></div>
 
 <!-- Modal -->
@@ -80,10 +132,10 @@
 <script>
 function toggleTheme() {
   const html = document.documentElement;
-  const current = html.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   html.setAttribute('data-theme', next);
-  document.getElementById('theme-btn').textContent = next === 'dark' ? '🌙' : '☀️';
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = next === 'dark' ? '🌙' : '☀️';
   localStorage.setItem('theme', next);
 }
 (function() {
@@ -96,10 +148,18 @@ function toggleTheme() {
 })();
 
 function showToast(msg, type='info') {
+  let toastContainer = document.getElementById('toasts');
+  if (!toastContainer) {
+    const container = document.createElement('div');
+    container.className = 'toast-container';
+    container.id = 'toasts';
+    document.body.appendChild(container);
+    toastContainer = container;
+  }
   const t = document.createElement('div');
   t.className = `toast ${type}`;
   t.innerHTML = `<span class="toast-icon">${type==='success'?'✓':type==='error'?'✕':'ℹ'}</span><span>${msg}</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
-  document.getElementById('toasts').appendChild(t);
+  toastContainer.appendChild(t);
   setTimeout(() => t.remove(), 4000);
 }
 

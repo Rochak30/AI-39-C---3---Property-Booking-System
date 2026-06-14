@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% block title %}Jungle Retreat Chitwan – Chitwan | Bookmandu{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/property_details.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="property-container">
+    <div class="hero-section">
+        <div class="hero-image" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600');">
+            <div class="hero-overlay-content">
+                <div class="hero-tagline">🐘 Wild Encounters & Jungle Adventures</div>
+                <h1 class="hero-title">Jungle Retreat Chitwan</h1>
+                <div class="hero-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> Sauraha, Chitwan</span>
+                    <span class="hero-type"><i class="fas fa-tree"></i> Entire Property</span>
+                    <span class="hero-rating"><i class="fas fa-star"></i> 4.9 (55 reviews)</span>
+                </div>
+                <div class="hero-price-badge">NPR 4,500 <span>/ night</span></div>
+                <a href="#booking-panel" class="btn btn-primary btn-hero">Book Now <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="property-layout">
+        <div class="property-main">
+            <!-- Gallery Section -->
+            <div class="gallery-section">
+                <div class="gallery-grid">
+                    <div class="gallery-main">
+                        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800" alt="Jungle Retreat Chitwan">
+                    </div>
+                    <div class="gallery-thumbs">
+                        <img src="https://images.unsplash.com/photo-1549366021-0f6c6eb9b6e3?w=400" alt="Elephant Safari">
+                        <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=400" alt="Jungle View">
+                        <img src="https://images.unsplash.com/photo-1564767655835-3d8b0d653cd5?w=400" alt="Cottage">
+                        <img src="https://images.unsplash.com/photo-1573486558410-d6970f2b4e3c?w=400" alt="Canoe Ride">
+                        <img src="https://images.unsplash.com/photo-1550684376-efcbd6e3f031?w=400" alt="Wildlife">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Section -->
+            <div class="description-section">
+                <h2>Immerse Yourself in the Wild Heart of Nepal</h2>
+                <p>Jungle Retreat Chitwan offers an unparalleled wildlife experience on the edge of Chitwan National Park, a UNESCO World Heritage Site. Our eco-friendly resort features private cottages surrounded by lush jungle, where you can wake up to the calls of exotic birds and spot rhinos from your porch.</p>
+                <p>We offer guided jungle safaris, elephant bathing experiences, canoe rides along the Rapti River, and authentic Tharu village tours. Our expert naturalists will help you spot Bengal tigers, one-horned rhinos, crocodiles, and over 500 species of birds. After a day of adventure, relax at our riverside restaurant with traditional Tharu cuisine and enjoy cultural dance performances under the stars.</p>
+            </div>
+
+            <!-- Amenities Section -->
+            <div class="amenities-section">
+                <h3><i class="fas fa-concierge-bell"></i> Amenities & Services</h3>
+                <div class="amenities-grid">
+                    <div class="amenity-item"><i class="fas fa-utensils"></i> <span>Breakfast Included</span></div>
+                    <div class="amenity-item"><i class="fas fa-parking"></i> <span>Free Parking</span></div>
+                    <div class="amenity-item"><i class="fas fa-hot-tub"></i> <span>Hot Water 24/7</span></div>
+                    <div class="amenity-item"><i class="fas fa-tree"></i> <span>Jungle Safari Tours</span></div>
+                    <div class="amenity-item"><i class="fas fa-water"></i> <span>Canoe Rides</span></div>
+                    <div class="amenity-item"><i class="fas fa-bicycle"></i> <span>Bicycle Rental</span></div>
+                    <div class="amenity-item"><i class="fas fa-fire"></i> <span>Bonfire Area</span></div>
+                    <div class="amenity-item"><i class="fas fa-wifi"></i> <span>Free WiFi</span></div>
+                    <div class="amenity-item"><i class="fas fa-camera"></i> <span>Photography Tours</span></div>
+                    <div class="amenity-item"><i class="fas fa-mask"></i> <span>Cultural Shows</span></div>
+                </div>
+            </div>
+
+            <!-- Host Section -->
+            <div class="host-section">
+                <div class="host-avatar"><img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Bikram Thapa"></div>
+                <div class="host-details">
+                    <h3>Hosted by Bikram Thapa</h3>
+                    <div class="host-stats">
+                        <span><i class="fas fa-check-circle"></i> Response rate: 100%</span>
+                        <span><i class="fas fa-clock"></i> Responds in 30 mins</span>
+                        <span><i class="fas fa-home"></i> Hosting for 10 years</span>
+                    </div>
+                    <p>Namaste! I'm Bikram, a certified naturalist born and raised in Chitwan. I know every trail in the national park and have been guiding wildlife safaris for over a decade. I'm passionate about conservation and love sharing my knowledge of the jungle, its animals, and local Tharu culture with guests from around the world.</p>
+                </div>
+            </div>
+
+            <!-- Highlights Section -->
+            <div class="highlights-section">
+                <h3>✨ Why guests love this property</h3>
+                <div class="highlights-grid">
+                    <div class="highlight-card"><i class="fas fa-paw"></i> <strong>Wildlife Safaris</strong>Expert-guided jeep & walking safaris</div>
+                    <div class="highlight-card"><i class="fas fa-binoculars"></i> <strong>Bird Watching</strong>Over 500 species recorded</div>
+                    <div class="highlight-card"><i class="fas fa-campground"></i> <strong>Cultural Nights</strong>Tharu stick dance performances</div>
+                    <div class="highlight-card"><i class="fas fa-camera"></i> <strong>Photography Tours</strong>Perfect for wildlife photographers</div>
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="reviews-section">
+                <h3><i class="fas fa-star"></i> Guest reviews · 4.9 average</h3>
+                <div class="reviews-list">
+                    <div class="review-card">
+                        <div class="review-header"><strong>Sarah Williams</strong> <div class="stars">★★★★★</div> <span>March 2026</span></div>
+                        <p>"Absolutely incredible! We saw rhinos, elephants, and even a tiger! Bikram is an amazing guide. The cottages are comfortable and the staff is wonderful. The evening cultural show was a highlight."</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header"><strong>James O'Connor</strong> <div class="stars">★★★★★</div> <span>February 2026</span></div>
+                        <p>"Best wildlife experience of my life. The jungle safari was well-organized, and the food was delicious. Highly recommend the canoe ride at sunrise - we saw so many crocodiles and birds!"</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header"><strong>Priya Patel</strong> <div class="stars">★★★★★</div> <span>January 2026</span></div>
+                        <p>"A perfect blend of adventure and comfort. The staff went above and beyond to make our stay special. Bikram's knowledge of the jungle is unmatched. Will definitely return!"</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header"><strong>Marco Rossi</strong> <div class="stars">★★★★★</div> <span>December 2025</span></div>
+                        <p>"Unforgettable! Bikram knows everything about the jungle. We learned so much and saw incredible wildlife including a rare Bengal tiger. The accommodation was clean, cozy, and eco-friendly."</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header"><strong>Emma Thompson</strong> <div class="stars">★★★★☆</div> <span>November 2025</span></div>
+                        <p>"Amazing location right next to the park. The safari was fantastic and we loved the Tharu cultural performance. Only small issue was WiFi connectivity in the rooms, but who needs internet in the jungle!"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location Section -->
+            <div class="location-section">
+                <h3><i class="fas fa-map-pin"></i> Location & nearby attractions</h3>
+                <div class="map-placeholder">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3538.1234!2d84.498765!3d27.567890!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3994f5b8b2b2b2b1%3A0x1a2b3c4d5e6f7g8h!2sSauraha%2C%20Chitwan!5e0!3m2!1sen!2snp!4v1713234567890!5m2!1sen!2snp" width="100%" height="280" style="border:0; border-radius: 20px;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <div class="nearby-places">
+                    <div class="place-item"><i class="fas fa-tree"></i> Chitwan National Park — 500 m</div>
+                    <div class="place-item"><i class="fas fa-water"></i> Rapti River — 300 m</div>
+                    <div class="place-item"><i class="fas fa-elephant"></i> Elephant Breeding Center — 2 km</div>
+                    <div class="place-item"><i class="fas fa-museum"></i> Tharu Cultural Museum — 1 km</div>
+                    <div class="place-item"><i class="fas fa-bird"></i> Bird Watching Tower — 1.5 km</div>
+                </div>
+            </div>
+
+            <!-- Similar Properties -->
+            <div class="similar-properties">
+                <h3>Similar stays you might like</h3>
+                <div class="similar-grid">
+                    <a href="{{ url_for('auth.property_mountain_view') }}" class="similar-card">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400" alt="Mountain View">
+                        <div class="similar-info">
+                            <strong>Mountain View Homestay</strong>
+                            <span>Pokhara · NPR 2,500/night</span>
+                            <div class="stars">★★★★★ 4.8</div>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('auth.property_lumbini_peace') }}" class="similar-card">
+                        <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400" alt="Lumbini">
+                        <div class="similar-info">
+                            <strong>Lumbini Peace Lodge</strong>
+                            <span>Lumbini · NPR 1,800/night</span>
+                            <div class="stars">★★★★☆ 4.3</div>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('auth.property_mustang_desert') }}" class="similar-card">
+                        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400" alt="Mustang">
+                        <div class="similar-info">
+                            <strong>Mustang Desert Homestay</strong>
+                            <span>Mustang · NPR 5,500/night</span>
+                            <div class="stars">★★★★☆ 4.7</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Sidebar -->
+        <aside class="booking-sidebar" id="booking-panel">
+            <div class="booking-card-sticky">
+                <div class="booking-price">NPR 4,500 <span class="per-night">/ night</span></div>
+                <div class="rating-summary"><i class="fas fa-star"></i> 4.9 · 55 reviews</div>
+                <form class="booking-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Check-in</label>
+                            <input type="date" id="checkin" class="form-input" value="2026-06-10">
+                        </div>
+                        <div class="form-group">
+                            <label>Check-out</label>
+                            <input type="date" id="checkout" class="form-input" value="2026-06-12">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Guests <span class="guest-max">(max 8)</span></label>
+                        <select id="guests" class="form-select">
+                            <option value="1">1 guest</option>
+                            <option value="2" selected>2 guests</option>
+                            <option value="3">3 guests</option>
+                            <option value="4">4 guests</option>
+                            <option value="5">5 guests</option>
+                            <option value="6">6 guests</option>
+                            <option value="7">7 guests</option>
+                            <option value="8">8 guests</option>
+                        </select>
+                    </div>
+                    <div class="total-price">
+                        <span>Total (with taxes & fees)</span>
+                        <strong id="totalAmount">NPR 9,000</strong>
+                    </div>
+                    <button type="button" id="bookNowBtn" class="btn btn-primary btn-block">Reserve Now</button>
+                    <p class="secure-note"><i class="fas fa-lock"></i> You won't be charged yet</p>
+                </form>
+                <div class="extra-info">✓ Free cancellation up to 7 days</div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    const checkinInput = document.getElementById('checkin');
+    const checkoutInput = document.getElementById('checkout');
+    const guestsSelect = document.getElementById('guests');
+    const totalSpan = document.getElementById('totalAmount');
+
+    function calculateTotal() {
+        const checkin = new Date(checkinInput.value);
+        const checkout = new Date(checkoutInput.value);
+        let nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+        if (nights <= 0 || isNaN(nights)) nights = 1;
+        const pricePerNight = 4500;
+        let total = nights * pricePerNight;
+        totalSpan.innerText = `NPR ${total.toLocaleString()}`;
+    }
+
+    checkinInput.addEventListener('change', calculateTotal);
+    checkoutInput.addEventListener('change', calculateTotal);
+    guestsSelect.addEventListener('change', calculateTotal);
+    calculateTotal();
+
+    document.getElementById('bookNowBtn').addEventListener('click', () => {
+        alert('Booking request received! (Demo) – In production, redirect to checkout / payment.');
+    });
+</script>
+{% endblock %}

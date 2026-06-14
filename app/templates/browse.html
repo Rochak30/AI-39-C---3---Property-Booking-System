@@ -1,0 +1,437 @@
+{% extends "base.html" %}
+{% block title %}Browse Properties — Bookmandu{% endblock %}
+
+{% block content %}
+<section class="browse-page">
+
+  <!-- Filter Panel -->
+  <div class="filter-panel">
+    <div class="container">
+      <div class="filter-search-row">
+        <div class="filter-search-wrap">
+          <span class="filter-search-icon">🔍</span>
+          <input type="text" id="searchInput" class="filter-search" placeholder="Search by name or location…">
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <span class="filter-label">REGION</span>
+        <div class="filter-chips" id="regionFilter">
+          <button class="chip active" data-value="all">All</button>
+          <button class="chip" data-value="Kathmandu">Kathmandu</button>
+          <button class="chip" data-value="Pokhara">Pokhara</button>
+          <button class="chip" data-value="Chitwan">Chitwan</button>
+          <button class="chip" data-value="Lumbini">Lumbini</button>
+          <button class="chip" data-value="Mustang">Mustang</button>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <span class="filter-label">TYPE</span>
+        <div class="filter-chips" id="typeFilter">
+          <button class="chip active" data-value="all">All</button>
+          <button class="chip" data-value="Homestay">Homestay</button>
+          <button class="chip" data-value="Guesthouse">Guesthouse</button>
+          <button class="chip" data-value="Private Room">Private Room</button>
+          <button class="chip" data-value="Entire Property">Entire Property</button>
+        </div>
+      </div>
+
+      <div class="filter-row filter-row-bottom">
+        <div class="filter-price-group">
+          <span class="filter-label">PRICE</span>
+          <input type="number" class="form-input price-input" id="priceMin" placeholder="Min">
+          <input type="number" class="form-input price-input" id="priceMax" placeholder="Max">
+        </div>
+
+        <div class="filter-amenity-group">
+          <span class="filter-label">AMENITIES</span>
+          <div class="filter-chips" id="amenityFilter">
+            <button class="chip" data-value="WiFi">WiFi</button>
+            <button class="chip" data-value="Parking">Parking</button>
+            <button class="chip" data-value="Breakfast Included">Breakfast Included</button>
+            <button class="chip" data-value="Hot Water">Hot Water</button>
+            <button class="chip" data-value="Kitchen Access">Kitchen Access</button>
+            <button class="chip" data-value="Mountain View">Mountain View</button>
+          </div>
+        </div>
+
+        <div class="filter-sort-group">
+          <span class="filter-label">SORT</span>
+          <select class="form-select" id="sortSelect">
+            <option value="default">Default</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+            <option value="bookings">Most Booked</option>
+          </select>
+        </div>
+
+        <button class="btn btn-ghost btn-sm clear-btn" id="clearFilters">Clear All Filters</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Grid -->
+  <div class="container browse-results">
+    <p class="results-count" id="resultsCount">6 properties found</p>
+
+    <div class="props-grid" id="propertiesGrid">
+
+      <!-- Card 1 - Mountain View Homestay -->
+      <a href="{{ url_for('auth.property_mountain_view') }}" class="prop-card"
+         data-region="Pokhara" data-type="Homestay" data-price="2500"
+         data-amenities="WiFi,Breakfast Included,Mountain View" data-rating="4.8" data-bookings="42" data-trending="true">
+        <div class="prop-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600'); background-size:cover; background-position:center;">
+          <div class="prop-badge-row">
+            <span class="prop-trending">🔥 Trending</span>
+          </div>
+          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="prop-body">
+          <p class="prop-location">📍 Pokhara · Homestay</p>
+          <h3 class="prop-title">Mountain View Homestay</h3>
+          <div class="prop-amenities">
+            <span class="amenity-tag">✓ WiFi</span>
+            <span class="amenity-tag">✓ Breakfast Included</span>
+            <span class="amenity-tag">✓ Mountain View</span>
+          </div>
+          <div class="prop-footer">
+            <div class="prop-price">
+              <span class="prop-price-amount">NPR 2,500</span>
+              <span class="prop-price-night">/night</span>
+            </div>
+            <div class="prop-rating">
+              <span class="prop-rating-star">★★★★★</span>
+              <span>4.8</span>
+              <span class="prop-rating-count">· 🔥 42</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">View Details</button>
+        </div>
+      </a>
+
+      <!-- Card 2 - Thamel Heritage House -->
+      <a href="{{ url_for('auth.property_thamel_heritage') }}" class="prop-card"
+         data-region="Kathmandu" data-type="Guesthouse" data-price="3200"
+         data-amenities="WiFi,Parking,Kitchen Access" data-rating="4.5" data-bookings="38" data-trending="true">
+        <div class="prop-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1548013146-72479768bada?w=600'); background-size:cover; background-position:center;">
+          <div class="prop-badge-row">
+            <span class="prop-trending">🔥 Trending</span>
+          </div>
+          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="prop-body">
+          <p class="prop-location">📍 Kathmandu · Guesthouse</p>
+          <h3 class="prop-title">Thamel Heritage House</h3>
+          <div class="prop-amenities">
+            <span class="amenity-tag">✓ WiFi</span>
+            <span class="amenity-tag">✓ Parking</span>
+            <span class="amenity-tag">✓ Kitchen Access</span>
+          </div>
+          <div class="prop-footer">
+            <div class="prop-price">
+              <span class="prop-price-amount">NPR 3,200</span>
+              <span class="prop-price-night">/night</span>
+            </div>
+            <div class="prop-rating">
+              <span class="prop-rating-star">★★★★★</span>
+              <span>4.5</span>
+              <span class="prop-rating-count">· 🔥 38</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">View Details</button>
+        </div>
+      </a>
+
+      <!-- Card 3 - Jungle Retreat Chitwan -->
+      <a href="{{ url_for('auth.property_jungle_retreat') }}" class="prop-card"
+         data-region="Chitwan" data-type="Entire Property" data-price="4500"
+         data-amenities="Breakfast Included,Parking,Hot Water" data-rating="4.9" data-bookings="55" data-trending="true">
+        <div class="prop-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600'); background-size:cover; background-position:center;">
+          <div class="prop-badge-row">
+            <span class="prop-trending">🔥 Trending</span>
+          </div>
+          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="prop-body">
+          <p class="prop-location">📍 Chitwan · Entire Property</p>
+          <h3 class="prop-title">Jungle Retreat Chitwan</h3>
+          <div class="prop-amenities">
+            <span class="amenity-tag">✓ Breakfast Included</span>
+            <span class="amenity-tag">✓ Parking</span>
+            <span class="amenity-tag">✓ Hot Water</span>
+          </div>
+          <div class="prop-footer">
+            <div class="prop-price">
+              <span class="prop-price-amount">NPR 4,500</span>
+              <span class="prop-price-night">/night</span>
+            </div>
+            <div class="prop-rating">
+              <span class="prop-rating-star">★★★★★</span>
+              <span>4.9</span>
+              <span class="prop-rating-count">· 🔥 55</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">View Details</button>
+        </div>
+      </a>
+
+      <!-- Card 4 - Lumbini Peace Lodge -->
+      <a href="{{ url_for('auth.property_lumbini_peace') }}" class="prop-card"
+         data-region="Lumbini" data-type="Private Room" data-price="1800"
+         data-amenities="WiFi,Hot Water" data-rating="4.3" data-bookings="19" data-trending="false">
+        <div class="prop-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600'); background-size:cover; background-position:center;">
+          <div class="prop-badge-row"></div>
+          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="prop-body">
+          <p class="prop-location">📍 Lumbini · Private Room</p>
+          <h3 class="prop-title">Lumbini Peace Lodge</h3>
+          <div class="prop-amenities">
+            <span class="amenity-tag">✓ WiFi</span>
+            <span class="amenity-tag">✓ Hot Water</span>
+          </div>
+          <div class="prop-footer">
+            <div class="prop-price">
+              <span class="prop-price-amount">NPR 1,800</span>
+              <span class="prop-price-night">/night</span>
+            </div>
+            <div class="prop-rating">
+              <span class="prop-rating-star">★★★★</span>
+              <span>4.3</span>
+              <span class="prop-rating-count">· 🔥 19</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">View Details</button>
+        </div>
+      </a>
+
+      <!-- Card 5 - Mustang Desert Homestay -->
+      <a href="{{ url_for('auth.property_mustang_desert') }}" class="prop-card"
+         data-region="Mustang" data-type="Homestay" data-price="5500"
+         data-amenities="Breakfast Included,Hot Water,Mountain View" data-rating="4.7" data-bookings="29" data-trending="false">
+        <div class="prop-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600'); background-size:cover; background-position:center;">
+          <div class="prop-badge-row"></div>
+          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="prop-body">
+          <p class="prop-location">📍 Lo-Manthang, Mustang · Homestay</p>
+          <h3 class="prop-title">Mustang Desert Homestay</h3>
+          <div class="prop-amenities">
+            <span class="amenity-tag">✓ Breakfast Included</span>
+            <span class="amenity-tag">✓ Hot Water</span>
+            <span class="amenity-tag">✓ Mountain View</span>
+          </div>
+          <div class="prop-footer">
+            <div class="prop-price">
+              <span class="prop-price-amount">NPR 5,500</span>
+              <span class="prop-price-night">/night</span>
+            </div>
+            <div class="prop-rating">
+              <span class="prop-rating-star">★★★★★</span>
+              <span>4.7</span>
+              <span class="prop-rating-count">· 🔥 29</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">View Details</button>
+        </div>
+      </a>
+
+      <!-- Card 6 - Lakeside Comfort Inn -->
+      <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="prop-card"
+         data-region="Pokhara" data-type="Guesthouse" data-price="2200"
+         data-amenities="WiFi,Parking,Kitchen Access" data-rating="4.4" data-bookings="31" data-trending="false">
+        <div class="prop-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600'); background-size:cover; background-position:center;">
+          <div class="prop-badge-row"></div>
+          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(this)">🤍</button>
+        </div>
+        <div class="prop-body">
+          <p class="prop-location">📍 Pokhara · Guesthouse</p>
+          <h3 class="prop-title">Lakeside Comfort Inn</h3>
+          <div class="prop-amenities">
+            <span class="amenity-tag">✓ WiFi</span>
+            <span class="amenity-tag">✓ Parking</span>
+            <span class="amenity-tag">✓ Kitchen Access</span>
+          </div>
+          <div class="prop-footer">
+            <div class="prop-price">
+              <span class="prop-price-amount">NPR 2,200</span>
+              <span class="prop-price-night">/night</span>
+            </div>
+            <div class="prop-rating">
+              <span class="prop-rating-star">★★★★</span>
+              <span>4.4</span>
+              <span class="prop-rating-count">· 🔥 31</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="width:100%; margin-top:14px; justify-content:center;">View Details</button>
+        </div>
+      </a>
+
+    </div>
+
+    <p class="no-results hidden" id="noResults">No properties match your filters.</p>
+  </div>
+
+</section>
+
+<style>
+/* Browse Page Specific Styles */
+.browse-page { padding-top: 80px; min-height: 100vh; }
+
+.filter-panel {
+  background: var(--bg-800);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 0;
+  position: sticky; top: 64px; z-index: 100;
+}
+
+.filter-search-row { margin-bottom: 18px; }
+.filter-search-wrap { position: relative; }
+.filter-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 14px; }
+.filter-search {
+  width: 100%; padding: 11px 14px 11px 38px;
+  background: var(--bg-700); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text-primary); font-size: 14px;
+  transition: var(--transition);
+}
+.filter-search:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); outline: none; }
+
+.filter-row { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+.filter-row-bottom { align-items: flex-start; gap: 24px; }
+.filter-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; min-width: 60px; }
+
+.filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
+  background: var(--bg-600); color: var(--text-secondary);
+  border: 1px solid var(--border); cursor: pointer; transition: var(--transition);
+}
+.chip:hover { color: var(--text-primary); background: var(--bg-500); }
+.chip.active { background: var(--teal); color: #051209; border-color: var(--teal); font-weight: 700; }
+
+.filter-price-group,
+.filter-amenity-group,
+.filter-sort-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.price-input { width: 90px; padding: 7px 10px; font-size: 13px; }
+
+.clear-btn { margin-left: auto; align-self: center; }
+
+.browse-results { padding: 32px 24px 80px; }
+.results-count { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; font-weight: 500; }
+
+.no-results { text-align: center; padding: 60px; color: var(--text-muted); font-size: 16px; }
+
+.hidden { display: none !important; }
+</style>
+
+<script>
+// Filter Logic
+const cards = document.querySelectorAll('.prop-card');
+const resultsCount = document.getElementById('resultsCount');
+const noResults = document.getElementById('noResults');
+
+let activeRegion = 'all';
+let activeType = 'all';
+let activeAmenities = [];
+let searchTerm = '';
+let sortBy = 'default';
+
+function setChipGroup(groupId, value) {
+  document.querySelectorAll(`#${groupId} .chip`).forEach(c => {
+    c.classList.toggle('active', c.dataset.value === value);
+  });
+}
+
+document.getElementById('regionFilter').addEventListener('click', e => {
+  if (!e.target.classList.contains('chip')) return;
+  activeRegion = e.target.dataset.value;
+  setChipGroup('regionFilter', activeRegion);
+  applyFilters();
+});
+
+document.getElementById('typeFilter').addEventListener('click', e => {
+  if (!e.target.classList.contains('chip')) return;
+  activeType = e.target.dataset.value;
+  setChipGroup('typeFilter', activeType);
+  applyFilters();
+});
+
+document.getElementById('amenityFilter').addEventListener('click', e => {
+  if (!e.target.classList.contains('chip')) return;
+  const val = e.target.dataset.value;
+  if (activeAmenities.includes(val)) {
+    activeAmenities = activeAmenities.filter(a => a !== val);
+    e.target.classList.remove('active');
+  } else {
+    activeAmenities.push(val);
+    e.target.classList.add('active');
+  }
+  applyFilters();
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase();
+  applyFilters();
+});
+
+document.getElementById('sortSelect').addEventListener('change', e => {
+  sortBy = e.target.value;
+  applyFilters();
+});
+
+document.getElementById('clearFilters').addEventListener('click', () => {
+  activeRegion = 'all'; activeType = 'all'; activeAmenities = []; searchTerm = ''; sortBy = 'default';
+  setChipGroup('regionFilter', 'all');
+  setChipGroup('typeFilter', 'all');
+  document.querySelectorAll('#amenityFilter .chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('searchInput').value = '';
+  document.getElementById('priceMin').value = '';
+  document.getElementById('priceMax').value = '';
+  document.getElementById('sortSelect').value = 'default';
+  applyFilters();
+});
+
+function applyFilters() {
+  const priceMin = parseInt(document.getElementById('priceMin').value) || 0;
+  const priceMax = parseInt(document.getElementById('priceMax').value) || Infinity;
+  const grid = document.getElementById('propertiesGrid');
+  const cardsArr = Array.from(cards);
+
+  let visible = cardsArr.filter(card => {
+    const region = card.dataset.region;
+    const type = card.dataset.type;
+    const price = parseInt(card.dataset.price);
+    const amenities = card.dataset.amenities.split(',');
+    const title = card.querySelector('.prop-title').textContent.toLowerCase();
+    const location = card.querySelector('.prop-location').textContent.toLowerCase();
+
+    if (activeRegion !== 'all' && region !== activeRegion) return false;
+    if (activeType !== 'all' && type !== activeType) return false;
+    if (price < priceMin || price > priceMax) return false;
+    if (activeAmenities.length && !activeAmenities.every(a => amenities.includes(a))) return false;
+    if (searchTerm && !title.includes(searchTerm) && !location.includes(searchTerm)) return false;
+    return true;
+  });
+
+  if (sortBy === 'price-asc') visible.sort((a, b) => a.dataset.price - b.dataset.price);
+  else if (sortBy === 'price-desc') visible.sort((a, b) => b.dataset.price - a.dataset.price);
+  else if (sortBy === 'rating') visible.sort((a, b) => b.dataset.rating - a.dataset.rating);
+  else if (sortBy === 'bookings') visible.sort((a, b) => b.dataset.bookings - a.dataset.bookings);
+
+  cardsArr.forEach(c => c.classList.add('hidden'));
+  visible.forEach(c => { c.classList.remove('hidden'); grid.appendChild(c); });
+
+  resultsCount.textContent = `${visible.length} propert${visible.length === 1 ? 'y' : 'ies'} found`;
+  noResults.classList.toggle('hidden', visible.length > 0);
+}
+
+function toggleWishlist(btn) {
+  btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
+}
+
+applyFilters();
+</script>
+{% endblock %}

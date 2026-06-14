@@ -1,6 +1,7 @@
 SECRET_KEY = "vCB9e87YPHkd1_"
 MYSQL_HOST = "localhost"
 MYSQL_USER = "root"
-MYSQL_PASSWORD = "Ce6656yXV6qZqyM7"
+MYSQL_PASSWORD = ""
 MYSQL_DATABASE = "Pahuna"
-
+GMAIL_ADDRESS = "pahunasupport@gmail.com"
+GMAIL_APP_PASSWORD = "vzfj pkvj xtgf jgob"
