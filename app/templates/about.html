@@ -1,603 +1,892 @@
-{% extends "base.html" %}
-{% block title %}Browse Properties — Bookmandu{% endblock %}
-
-{% block extra_css %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Bookmandu — Authentic Himalayan Homestays</title>
+<meta name="description" content="Learn about Bookmandu, our mission to connect travelers with local Nepali hosts, and the story behind our homestay platform.">
+<meta name="keywords" content="Nepal homestay, Bookmandu, authentic travel, Nepali hospitality, Himalayan stays, about us">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* ── Browse page layout ── */
-.browse-page { margin-top: 64px; min-height: 100vh; }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-/* ── Hero filter panel ── */
-.browse-hero {
-  background: var(--bg-800);
-  border-bottom: 1px solid var(--border);
-  padding: 36px 24px 28px;
-}
-.browse-hero-inner { max-width: 1280px; margin: 0 auto; }
-.browse-title {
-  font-family: var(--font-display); font-size: 28px; font-weight: 800;
-  margin-bottom: 4px;
-}
-.browse-sub { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; }
+  /* Theme Variables */
+  :root {
+    --bg-dark: #0a120e;
+    --bg-card: #0f1814;
+    --surface: #141c18;
+    --surface-hover: #1c2620;
+    --border: rgba(46, 204, 113, 0.1);
+    --border-hover: rgba(46, 204, 113, 0.25);
+    --text-primary: #e8f5e9;
+    --text-secondary: #b8d4b8;
+    --text-muted: #6b8c6e;
+    --green: #2ecc71;
+    --green-light: #58e88b;
+    --green-dark: #1a8a4a;
+    --green-glow: rgba(46, 204, 113, 0.12);
+    --green-dim: rgba(46, 204, 113, 0.06);
+    --gold: #f5b642;
+    --red: #e07a5f;
+    --teal: #5c9e7b;
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'Inter', sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    --transition-slow: 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
+  }
 
-/* ── Filter panel ── */
-.filter-panel {
-  background: var(--bg-700);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+  /* Light Theme */
+  [data-theme="light"] {
+    --bg-dark: #f5f7f0;
+    --bg-card: #ffffff;
+    --surface: #ffffff;
+    --surface-hover: #f8faf5;
+    --border: rgba(46, 204, 113, 0.2);
+    --border-hover: rgba(46, 204, 113, 0.4);
+    --text-primary: #1a2e1a;
+    --text-secondary: #4a6b4a;
+    --text-muted: #8ba88b;
+    --green: #2ecc71;
+    --green-dark: #1a8a4a;
+    --green-glow: rgba(46, 204, 113, 0.08);
+  }
 
-/* Search bar */
-.browse-search-row {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--bg-800); border: 1.5px solid var(--border);
-  border-radius: var(--radius-md); padding: 10px 16px;
-  transition: var(--transition);
-}
-.browse-search-row:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); }
-.browse-search-row input {
-  background: none; border: none; color: var(--text-primary);
-  font-size: 14px; flex: 1; outline: none;
-}
-.browse-search-row input::placeholder { color: var(--text-muted); }
-.browse-search-icon { color: var(--text-muted); font-size: 16px; }
+  body {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
 
-/* Filter rows */
-.filter-row {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-}
-.filter-row-label {
-  font-size: 12px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.08em; color: var(--text-muted);
-  min-width: 80px; flex-shrink: 0;
-}
-.filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
-.filter-pill {
-  padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 500;
-  background: var(--bg-600); border: 1.5px solid var(--border);
-  color: var(--text-secondary); cursor: pointer; transition: var(--transition);
-  white-space: nowrap; user-select: none;
-}
-.filter-pill:hover { border-color: var(--border-teal); color: var(--teal); background: var(--teal-glow); }
-.filter-pill.active {
-  background: var(--teal); color: var(--bg-900);
-  border-color: var(--teal); font-weight: 600;
-}
+  /* Scan line effect */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px);
+    z-index: 9999;
+    opacity: 0.3;
+  }
 
-/* Price inputs */
-.price-row { display: flex; align-items: center; gap: 8px; }
-.browse-price-input {
-  width: 110px; padding: 6px 12px;
-  background: var(--bg-800); border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm); color: var(--text-primary);
-  font-size: 13px; transition: var(--transition);
-}
-.browse-price-input:focus { border-color: var(--teal); box-shadow: 0 0 0 2px var(--teal-glow); outline: none; }
-.browse-price-input::placeholder { color: var(--text-muted); }
-.price-sep { color: var(--text-muted); }
+  [data-theme="light"] body::before {
+    opacity: 0.05;
+  }
 
-/* Sort row */
-.browse-sort-select {
-  padding: 6px 36px 6px 14px; background: var(--bg-800);
-  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-  color: var(--text-primary); font-size: 13px; appearance: none; cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238b949e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 12px center;
-  transition: var(--transition); outline: none;
-}
-.browse-sort-select:focus { border-color: var(--teal); }
+  /* Animated background orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    pointer-events: none;
+    z-index: 0;
+    animation: floatOrb 20s ease-in-out infinite alternate;
+  }
 
-.clear-filters-btn {
-  margin-left: auto; font-size: 13px; font-weight: 600;
-  color: var(--teal); background: none; border: none;
-  cursor: pointer; transition: var(--transition); padding: 4px 8px;
-  border-radius: var(--radius-sm);
-}
-.clear-filters-btn:hover { background: var(--teal-glow); }
+  @keyframes floatOrb {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(50px, 50px) scale(1.1); }
+  }
 
-/* ── Results body ── */
-.browse-body { max-width: 1280px; margin: 0 auto; padding: 28px 24px 60px; }
+  .orb-1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(46, 204, 113, 0.08) 0%, transparent 70%);
+    top: -200px;
+    right: -100px;
+  }
 
-.browse-results-meta {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 24px;
-}
-.results-count { font-size: 14px; color: var(--text-secondary); }
-.results-count strong { color: var(--text-primary); }
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(46, 204, 113, 0.05) 0%, transparent 70%);
+    bottom: -100px;
+    left: -150px;
+    animation-delay: -5s;
+  }
 
-/* ── Property grid ── */
-.props-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  [data-theme="light"] .orb-1 {
+    background: radial-gradient(circle, rgba(46, 204, 113, 0.04) 0%, transparent 70%);
+  }
 
-/* ── Enhanced property card (matches reference) ── */
-.prop-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); overflow: hidden;
-  transition: var(--transition); cursor: pointer; display: flex; flex-direction: column;
-}
-.prop-card:hover { border-color: var(--border-teal); transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.4), var(--shadow-teal); }
+  [data-theme="light"] .orb-2 {
+    background: radial-gradient(circle, rgba(46, 204, 113, 0.02) 0%, transparent 70%);
+  }
 
-.prop-img-wrap {
-  position: relative; width: 100%; height: 210px; overflow: hidden; flex-shrink: 0;
-}
-.prop-img-wrap img {
-  width: 100%; height: 100%; object-fit: cover;
-  transition: transform 0.4s ease;
-}
-.prop-card:hover .prop-img-wrap img { transform: scale(1.04); }
-.prop-img-placeholder-bg {
-  width: 100%; height: 100%;
-  background: linear-gradient(135deg, var(--bg-700), var(--bg-500));
-  display: flex; align-items: center; justify-content: center; font-size: 56px;
-}
+  /* Navigation */
+  .glass-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 18, 14, 0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    animation: slideDown 0.6s var(--transition-slow) forwards;
+    transition: background 0.3s ease;
+  }
 
-.prop-badge-row { position: absolute; top: 12px; left: 12px; z-index: 2; display: flex; gap: 6px; }
-.prop-trending-badge {
-  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
-  background: var(--amber); color: #000;
-}
-.prop-wishlist {
-  position: absolute; top: 12px; right: 12px; z-index: 2;
-  width: 34px; height: 34px; border-radius: 50%;
-  background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
-  display: flex; align-items: center; justify-content: center; font-size: 16px;
-  border: 1px solid rgba(255,255,255,0.1); transition: var(--transition); cursor: pointer;
-}
-.prop-wishlist:hover, .prop-wishlist.active { background: rgba(231,76,60,0.4); }
+  [data-theme="light"] .glass-nav {
+    background: rgba(255, 255, 255, 0.92);
+  }
 
-.prop-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
-.prop-location { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
-.prop-location span { color: var(--text-secondary); }
-.prop-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; margin-bottom: 10px; line-height: 1.3; }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-.prop-amenities { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-.amenity-tag {
-  padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
-  background: var(--teal-glow); color: var(--teal);
-  border: 1px solid var(--border-teal);
-}
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
 
-.prop-footer-row {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  margin-bottom: 14px; margin-top: auto;
-}
-.prop-price-amount { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--teal); }
-.prop-price-night { font-size: 12px; color: var(--text-muted); margin-left: 2px; }
-.prop-meta-right { text-align: right; }
-.prop-rating { display: flex; align-items: center; justify-content: flex-end; gap: 4px; font-size: 13px; margin-bottom: 2px; }
-.prop-rating-star { color: var(--amber); }
-.prop-bookings { font-size: 12px; color: var(--text-muted); }
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #0a120e;
+    box-shadow: 0 0 15px var(--green-glow);
+  }
 
-/* Book Now button on card */
-.prop-book-btn {
-  width: 100%; padding: 10px; border-radius: var(--radius-sm);
-  background: var(--teal); color: var(--bg-900);
-  font-size: 14px; font-weight: 700; border: none; cursor: pointer;
-  transition: var(--transition); font-family: var(--font-body);
-  letter-spacing: 0.01em;
-}
-.prop-book-btn:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: var(--shadow-teal); }
+  .logo-text {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
 
-/* ── Empty state ── */
-.browse-empty {
-  grid-column: 1/-1; text-align: center; padding: 80px 24px;
-  color: var(--text-muted);
-}
-.browse-empty-icon { font-size: 56px; margin-bottom: 16px; }
-.browse-empty-text { font-size: 16px; }
+  .logo-text span {
+    color: var(--green);
+  }
 
-/* ── Pagination ── */
-.pagination {
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px; margin-top: 48px; flex-wrap: wrap;
-}
-.page-btn {
-  min-width: 40px; height: 40px; padding: 0 14px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-700); border: 1.5px solid var(--border);
-  color: var(--text-secondary); font-size: 14px; font-weight: 600;
-  cursor: pointer; transition: var(--transition); font-family: var(--font-body);
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.page-btn:hover:not(:disabled) { background: var(--teal-glow); border-color: var(--border-teal); color: var(--teal); }
-.page-btn.active { background: var(--teal); border-color: var(--teal); color: var(--bg-900); font-weight: 700; }
-.page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-.page-info { font-size: 13px; color: var(--text-muted); padding: 0 8px; }
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
 
-/* ── Responsive ── */
-@media (max-width: 1024px) {
-  .props-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 768px) {
-  .browse-hero { padding: 24px 16px 20px; }
-  .filter-panel { padding: 16px; gap: 12px; }
-  .filter-row-label { min-width: 60px; font-size: 11px; }
-  .props-grid { grid-template-columns: 1fr; }
-  .browse-body { padding: 20px 16px 48px; }
-  .clear-filters-btn { margin-left: 0; }
-}
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+  }
+
+  .nav-links a:hover {
+    color: var(--green);
+  }
+
+  .nav-links .btn-outline-small {
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 0.4rem 1rem;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .nav-links .btn-outline-small:hover {
+    border-color: var(--green);
+    color: var(--green);
+    background: rgba(46, 204, 113, 0.08);
+  }
+
+  /* Theme Toggle Button */
+  .theme-toggle {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all var(--transition-fast);
+    color: var(--text-primary);
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--green);
+    transform: scale(1.05);
+  }
+
+  .theme-toggle i {
+    font-size: 1rem;
+  }
+
+  /* Container */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+  }
+
+  /* Hero Section */
+  .about-hero {
+    position: relative;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, #0a120e 0%, #143018 50%, #1a3a1f 100%);
+    overflow: hidden;
+    padding: 120px 20px 80px;
+    transition: background 0.3s ease;
+  }
+
+  [data-theme="light"] .about-hero {
+    background: linear-gradient(135deg, #e8f0e8 0%, #d4e8d4 50%, #c0e0c0 100%);
+  }
+
+  .hero-bg-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 5L55 20v20L30 55L5 40V20L30 5z' fill='none' stroke='rgba(46,204,113,0.03)' stroke-width='1'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(46, 204, 113, 0.12);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    border-radius: 40px;
+    padding: 6px 16px;
+    font-size: 0.75rem;
+    color: var(--green);
+    margin-bottom: 24px;
+    backdrop-filter: blur(8px);
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-family: var(--font-display);
+    font-weight: 800;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #ffffff, #2ecc71);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  [data-theme="light"] .hero-title {
+    background: linear-gradient(135deg, #1a2e1a, #2ecc71);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  [data-theme="light"] .hero-subtitle {
+    color: rgba(0,0,0,0.6);
+  }
+
+  /* Section Styles */
+  .section {
+    margin-bottom: 40px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--text-primary), var(--green));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .section-sub {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 48px;
+    font-size: 1rem;
+  }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    gap: 30px;
+  }
+
+  .grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: all var(--transition-base);
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: var(--green);
+    box-shadow: 0 20px 35px -12px rgba(46, 204, 113, 0.2);
+  }
+
+  .feature-card {
+    text-align: center;
+    padding: 32px 24px;
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: all var(--transition-base);
+  }
+
+  .feature-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--green);
+    background: var(--surface-hover);
+  }
+
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+
+  .feature-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+  }
+
+  .feature-card p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 0.85rem;
+  }
+
+  /* Quote Card */
+  .quote-card {
+    background: linear-gradient(135deg, var(--surface), var(--surface-hover));
+    border-radius: 24px;
+    padding: 32px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-base);
+  }
+
+  .quote-card:hover {
+    border-color: var(--green);
+    transform: translateY(-4px);
+  }
+
+  /* Stats Cards */
+  .stat-card {
+    text-align: center;
+    padding: 32px 20px;
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: all var(--transition-base);
+  }
+
+  .stat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--green);
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--green);
+    font-family: var(--font-display);
+  }
+
+  /* Team Cards */
+  .team-card {
+    text-align: center;
+    padding: 32px 20px;
+    background: var(--surface);
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    transition: all var(--transition-base);
+  }
+
+  .team-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--green);
+  }
+
+  .team-avatar {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 2.5rem;
+  }
+
+  /* Milestones */
+  .milestones {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .milestone-item {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 20px;
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    transition: all var(--transition-base);
+  }
+
+  .milestone-item:hover {
+    transform: translateX(10px);
+    border-color: var(--green);
+  }
+
+  .milestone-year {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--green);
+    font-family: var(--font-display);
+    min-width: 80px;
+  }
+
+  /* Values Grid */
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+  }
+
+  .value-card {
+    text-align: center;
+    padding: 28px 20px;
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: all var(--transition-base);
+  }
+
+  .value-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--green);
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    border: none;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    color: #0a120e;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  .btn-outline:hover {
+    background: rgba(46, 204, 113, 0.1);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  /* CTA Section */
+  .cta-section {
+    text-align: center;
+    padding: 48px 32px;
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.05), rgba(0,0,0,0));
+    border-radius: 32px;
+    border: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  /* Footer */
+  .footer {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    padding: 48px 20px 24px;
+    margin-top: 40px;
+    transition: background 0.3s ease;
+  }
+
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .footer-logo .logo-text {
+    font-size: 1.2rem;
+  }
+
+  .footer-links h4 {
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+    color: var(--green);
+  }
+
+  .footer-links a {
+    display: block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+    transition: color var(--transition-fast);
+  }
+
+  .footer-links a:hover {
+    color: var(--green);
+  }
+
+  .footer-bottom {
+    text-align: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  .footer-bottom i {
+    color: var(--green);
+  }
+
+  /* Theme transition */
+  * {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .glass-nav {
+      flex-direction: column;
+      gap: 16px;
+      padding: 12px 20px;
+    }
+    .nav-links {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .container {
+      padding: 40px 16px;
+    }
+    .milestone-item {
+      flex-direction: column;
+      text-align: center;
+    }
+    .milestone-year {
+      min-width: auto;
+    }
+    .grid-2, .grid-3, .grid-4 {
+      gap: 20px;
+    }
+  }
 </style>
-{% endblock %}
+</head>
+<body data-theme="dark">
 
-{% block content %}
-<div class="browse-page">
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
 
-  <!-- ── Filter Hero ── -->
-  <div class="browse-hero">
-    <div class="browse-hero-inner">
-      <h1 class="browse-title">Browse Properties</h1>
-      <p class="browse-sub">Find your perfect homestay across Nepal</p>
+<nav class="glass-nav">
+  <a href="index.html" class="logo">
+    <div class="logo-icon"><i class="fas fa-mountain"></i></div>
+    <div class="logo-text">Book<span>mandu</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="#">Properties</a>
+    <a href="#">Host</a>
+    <a href="about.html" style="color: var(--green);">About</a>
+    <a href="#">Contact</a>
+    <button class="theme-toggle" id="themeToggle">
+      <i class="fas fa-moon" id="themeIcon"></i>
+      <span id="themeText">Dark</span>
+    </button>
+    <a href="#" class="btn-outline-small"><i class="fas fa-user"></i> Sign In</a>
+  </div>
+</nav>
 
-      <div class="filter-panel">
+<!-- Hero Section -->
+<section class="about-hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✨ Since 2024</div>
+    <h1 class="hero-title">More Than a Stay,<br />It's an Experience</h1>
+    <p class="hero-subtitle">Bookmandu connects travelers with authentic Nepali hosts, creating meaningful connections and unforgettable journeys across the Himalayas.</p>
+  </div>
+</section>
 
-        <!-- Search -->
-        <div class="browse-search-row">
-          <span class="browse-search-icon">🔍</span>
-          <input type="text" id="search-input" placeholder="Search by name or location..."
-                 oninput="onSearchInput(this.value)">
-        </div>
-
-        <!-- Region -->
-        <div class="filter-row">
-          <span class="filter-row-label">Region</span>
-          <div class="filter-pills" id="region-pills">
-            <span class="filter-pill active" onclick="setRegion('all', this)">All</span>
-            <span class="filter-pill" onclick="setRegion('kathmandu', this)">Kathmandu</span>
-            <span class="filter-pill" onclick="setRegion('pokhara', this)">Pokhara</span>
-            <span class="filter-pill" onclick="setRegion('chitwan', this)">Chitwan</span>
-            <span class="filter-pill" onclick="setRegion('lumbini', this)">Lumbini</span>
-            <span class="filter-pill" onclick="setRegion('mustang', this)">Mustang</span>
+<div class="container">
+  
+  <!-- Our Story Section -->
+  <section class="section">
+    <div class="grid grid-2">
+      <div>
+        <div class="hero-badge" style="margin-bottom: 16px;">Our Story</div>
+        <h2 style="font-size: 2rem; font-family: var(--font-display); margin-bottom: 20px;">
+          Born in the<br />
+          <span style="color: var(--green)">Heart of Himalayas</span>
+        </h2>
+        <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
+          Founded in Kathmandu in 2024, Bookmandu was born from a simple idea: the best way to experience Nepal isn't from a hotel lobby — it's from a family kitchen in Pokhara, a farmhouse in Chitwan, or a teahouse on the trail to Annapurna.
+        </p>
+        <p style="color: var(--text-secondary); line-height: 1.8;">
+          We built Bookmandu to help travelers find those authentic moments, and to help Nepali families share their homes, culture, and hospitality with the world. Today, we're proud to be Nepal's fastest-growing homestay platform.
+        </p>
+      </div>
+      <div class="quote-card">
+        <i class="fas fa-quote-left" style="font-size: 2.5rem; color: var(--green); opacity: 0.5; margin-bottom: 16px; display: block;"></i>
+        <p style="font-size: 1.1rem; line-height: 1.7; font-style: italic; margin-bottom: 24px;">
+          "Every booking on Bookmandu is a story waiting to happen — a connection between a traveler and a host that goes beyond commerce."
+        </p>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="team-avatar" style="width: 48px; height: 48px; font-size: 1.2rem; margin: 0;">🙏</div>
+          <div>
+            <strong style="display: block;">Rijwan Miya</strong>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">Founder & CEO</span>
           </div>
         </div>
-
-        <!-- Type -->
-        <div class="filter-row">
-          <span class="filter-row-label">Type</span>
-          <div class="filter-pills" id="type-pills">
-            <span class="filter-pill active" onclick="applyFilter('type','all',this)">All</span>
-            <span class="filter-pill" onclick="applyFilter('type','homestay',this)">Homestay</span>
-            <span class="filter-pill" onclick="applyFilter('type','guesthouse',this)">Guesthouse</span>
-            <span class="filter-pill" onclick="applyFilter('type','private-room',this)">Private Room</span>
-            <span class="filter-pill" onclick="applyFilter('type','entire-property',this)">Entire Property</span>
-          </div>
-        </div>
-
-        <!-- Price -->
-        <div class="filter-row">
-          <span class="filter-row-label">Price</span>
-          <div class="price-row">
-            <input class="browse-price-input" type="number" placeholder="Min" id="price-min" oninput="applyPriceFilter()">
-            <span class="price-sep">–</span>
-            <input class="browse-price-input" type="number" placeholder="Max" id="price-max" oninput="applyPriceFilter()">
-          </div>
-        </div>
-
-        <!-- Amenities -->
-        <div class="filter-row">
-          <span class="filter-row-label">Amenities</span>
-          <div class="filter-pills">
-            <span class="filter-pill" onclick="applyFilter('amenity','wifi',this)">WiFi</span>
-            <span class="filter-pill" onclick="applyFilter('amenity','parking',this)">Parking</span>
-            <span class="filter-pill" onclick="applyFilter('amenity','breakfast',this)">Breakfast Included</span>
-            <span class="filter-pill" onclick="applyFilter('amenity','hot water',this)">Hot Water</span>
-            <span class="filter-pill" onclick="applyFilter('amenity','kitchen',this)">Kitchen Access</span>
-            <span class="filter-pill" onclick="applyFilter('amenity','mountain view',this)">Mountain View</span>
-          </div>
-        </div>
-
-        <!-- Sort + Clear -->
-        <div class="filter-row">
-          <span class="filter-row-label">Sort</span>
-          <select class="browse-sort-select" onchange="sortProperties(this.value)">
-            <option value="popular">Default</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-            <option value="rating">Highest Rated</option>
-          </select>
-          <button class="clear-filters-btn" onclick="clearAllFilters()">Clear All Filters</button>
-        </div>
-
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ── Results ── -->
-  <div class="browse-body">
-    <div class="browse-results-meta">
-      <span class="results-count" id="results-count"><strong>8</strong> properties found</span>
+  <!-- What We Do Section -->
+  <section class="section">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <div class="hero-badge">What We Do</div>
+      <h2 class="section-title">Connecting Travelers with<br /><span style="color: var(--green)">Authentic Nepal</span></h2>
     </div>
+    <div class="grid grid-3">
+      <div class="feature-card"><div class="feature-icon">🏔️</div><h3>Curated Homestays</h3><p>Every property is verified by our local team — no surprises, no fake listings.</p></div>
+      <div class="feature-card"><div class="feature-icon">🤝</div><h3>Fair to Hosts</h3><p>Lower commissions than global platforms, so more reaches the host.</p></div>
+      <div class="feature-card"><div class="feature-icon">🌱</div><h3>Sustainable Travel</h3><p>Promoting responsible tourism that benefits local communities.</p></div>
+      <div class="feature-card"><div class="feature-icon">🔒</div><h3>Secure Booking</h3><p>Your payments and data are protected with enterprise-grade security.</p></div>
+      <div class="feature-card"><div class="feature-icon">💬</div><h3>24/7 Support</h3><p>Our local team is always ready to help in English and Nepali.</p></div>
+      <div class="feature-card"><div class="feature-icon">📱</div><h3>Easy Platform</h3><p>Book from anywhere with our mobile-friendly design.</p></div>
+    </div>
+  </section>
 
-    <div class="props-grid" id="browse-grid"></div>
+  <!-- Our Values Section -->
+  <section class="section">
+    <div style="text-align: center; margin-bottom: 32px;">
+      <div class="hero-badge">Our Values</div>
+      <h2 class="section-title">What Guides Everything We Do</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card"><div style="font-size: 2rem; margin-bottom: 12px;">🏠</div><h3>Authenticity</h3><p style="color: var(--text-secondary); font-size: 0.85rem;">Real homes, real people, real Nepal — no staged experiences</p></div>
+      <div class="value-card"><div style="font-size: 2rem; margin-bottom: 12px;">🤝</div><h3>Trust</h3><p style="color: var(--text-secondary); font-size: 0.85rem;">Transparent pricing, verified reviews, no hidden fees</p></div>
+      <div class="value-card"><div style="font-size: 2rem; margin-bottom: 12px;">🌍</div><h3>Community</h3><p style="color: var(--text-secondary); font-size: 0.85rem;">Supporting local economies in every region we serve</p></div>
+      <div class="value-card"><div style="font-size: 2rem; margin-bottom: 12px;">📱</div><h3>Accessibility</h3><p style="color: var(--text-secondary); font-size: 0.85rem;">Bilingual support in English and नेपाली for all users</p></div>
+    </div>
+  </section>
 
-    <!-- Pagination -->
-    <div class="pagination" id="pagination"></div>
+  <!-- By the Numbers Section -->
+  <section class="section">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <div class="hero-badge">By the Numbers</div>
+      <h2 class="section-title">Bookmandu in Numbers</h2>
+    </div>
+    <div class="grid grid-4">
+      <div class="stat-card"><div class="feature-icon">🏔️</div><div class="stat-number">500+</div><p>Verified Homestays</p></div>
+      <div class="stat-card"><div class="feature-icon">🌟</div><div class="stat-number">25K+</div><p>Happy Travelers</p></div>
+      <div class="stat-card"><div class="feature-icon">🗺️</div><div class="stat-number">40+</div><p>Districts Covered</p></div>
+      <div class="stat-card"><div class="feature-icon">⭐</div><div class="stat-number">98%</div><p>Guest Satisfaction</p></div>
+    </div>
+  </section>
+
+  <!-- Our Journey Section -->
+  <section class="section">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <div class="hero-badge">Our Journey</div>
+      <h2 class="section-title">Milestones That Matter</h2>
+    </div>
+    <div class="milestones">
+      <div class="milestone-item"><div class="milestone-year">2024</div><div><strong>🚀 Founded in Kathmandu</strong><br><span style="color: var(--text-secondary);">Started with 50 homestays in Pokhara Valley</span></div></div>
+      <div class="milestone-item"><div class="milestone-year">2024</div><div><strong>🎉 First 1,000 Bookings</strong><br><span style="color: var(--text-secondary);">Reached milestone within 6 months</span></div></div>
+      <div class="milestone-item"><div class="milestone-year">2025</div><div><strong>🇳🇵 Expanded Nationwide</strong><br><span style="color: var(--text-secondary);">Now covering 40+ districts across Nepal</span></div></div>
+      <div class="milestone-item"><div class="milestone-year">2025</div><div><strong>🌱 Sustainability Initiative</strong><br><span style="color: var(--text-secondary);">Launched eco-certification for hosts</span></div></div>
+    </div>
+  </section>
+
+  <!-- Meet the Team Section -->
+  <section class="section">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <div class="hero-badge">The Team</div>
+      <h2 class="section-title">People Behind Bookmandu</h2>
+    </div>
+    <div class="grid grid-3">
+      <div class="team-card"><div class="team-avatar">👨‍💻</div><h3>Rijwan Miya</h3><p style="color: var(--green); font-size: 0.8rem;">Founder & CEO</p><p style="color: var(--text-secondary); font-size: 0.8rem;">Former trekking guide turned tech entrepreneur</p></div>
+      <div class="team-card"><div class="team-avatar">👩‍💼</div><h3>Sarita Gurung</h3><p style="color: var(--green); font-size: 0.8rem;">Head of Host Relations</p><p style="color: var(--text-secondary); font-size: 0.8rem;">10+ years in Nepali hospitality</p></div>
+      <div class="team-card"><div class="team-avatar">🤝</div><h3>Bikash Lama</h3><p style="color: var(--green); font-size: 0.8rem;">Community Manager</p><p style="color: var(--text-secondary); font-size: 0.8rem;">Connecting travelers with local experiences</p></div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <div class="cta-section">
+    <h2 style="font-size: 1.8rem; font-family: var(--font-display); margin-bottom: 16px;">Ready to Start Your Journey?</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 24px;">Join thousands of travelers who found their perfect stay with Bookmandu</p>
+    <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+      <a href="#" class="btn btn-primary">Browse Properties</a>
+      <a href="#" class="btn btn-outline">List Your Property</a>
+    </div>
   </div>
-
 </div>
 
 <!-- Footer -->
 <footer class="footer">
-  <div class="footer-grid">
-    <div>
-      <div class="footer-brand-logo">Book<span>mandu</span></div>
-      <p class="footer-desc">Nepal's dedicated accommodation booking platform.</p>
+  <div class="footer-content">
+    <div class="footer-logo">
+      <div class="logo-text" style="font-size: 1.2rem;">Book<span>mandu</span></div>
+      <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 12px;">Authentic Himalayan Hospitality</p>
     </div>
-    <div>
-      <div class="footer-heading">Explore</div>
-      <div class="footer-links">
-        <a href="/about" class="footer-link">Browse Properties</a>
-        <a href="/" class="footer-link">Home</a>
-      </div>
-    </div>
-    <div>
-      <div class="footer-heading">Account</div>
-      <div class="footer-links">
-        <a href="/register" class="footer-link">Register</a>
-        <a href="/login" class="footer-link">Sign In</a>
-      </div>
-    </div>
-    <div>
-      <div class="footer-heading">Support</div>
-      <div class="footer-links">
-        <a href="/faq" class="footer-link">FAQ</a>
-        <a href="/contact" class="footer-link">Contact Us</a>
-      </div>
-    </div>
+    <div class="footer-links"><h4>Company</h4><a href="about.html">About Us</a><a href="#">Careers</a><a href="#">Press</a><a href="#">Blog</a></div>
+    <div class="footer-links"><h4>Support</h4><a href="#">Help Center</a><a href="#">Contact Us</a><a href="#">Safety</a><a href="#">FAQs</a></div>
+    <div class="footer-links"><h4>Legal</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cancellation Policy</a></div>
   </div>
   <div class="footer-bottom">
-    <span class="footer-copy">© 2026 Bookmandu. All rights reserved. 🏔</span>
-    <div class="footer-bottom-links">
-      <span class="footer-bottom-link">EN / नेपाली</span>
-      <span class="footer-bottom-link">NPR ₨</span>
-    </div>
+    <p>© 2025 Bookmandu — Authentic Himalayan Hospitality. <i class="fas fa-heart"></i></p>
+    <p><small>Contact support: support@bookmandu.com | +977-1-1234567</small></p>
   </div>
 </footer>
-{% endblock %}
 
-{% block extra_js %}
 <script>
-/* ── Browse-specific state ── */
-let currentPage = 1;
-const PAGE_SIZE = 6;           /* 6 per page → 2 pages for 8 items (or raise to 8 for 1+) */
-let searchQuery = '';
-let regionFilter = 'all';
-
-/* ── Unsplash property images keyed by id ── */
-const PROP_IMAGES = {
-  1: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80',
-  2: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80',
-  3: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&q=80',
-  4: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80',
-  5: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',
-  6: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
-  7: 'https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=600&q=80',
-  8: 'https://images.unsplash.com/photo-1501183638710-841dd1904471?w=600&q=80',
-};
-
-/* ── Init ── */
-document.addEventListener('DOMContentLoaded', () => {
-  /* honour ?region= param */
-  const params = new URLSearchParams(window.location.search);
-  const region = params.get('region');
-  if (region && region !== 'all') {
-    regionFilter = region.toLowerCase();
-    /* highlight correct pill */
-    document.querySelectorAll('#region-pills .filter-pill').forEach(p => {
-      const isMatch = p.textContent.trim().toLowerCase() === regionFilter;
-      p.classList.toggle('active', isMatch);
-    });
+  // Theme Toggle Functionality
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = document.getElementById('themeIcon');
+  const themeText = document.getElementById('themeText');
+  
+  // Get saved theme from localStorage
+  const savedTheme = localStorage.getItem('bookmandu-theme');
+  if (savedTheme) {
+    document.body.setAttribute('data-theme', savedTheme);
+    updateThemeUI(savedTheme);
   }
-  renderBrowse();
-});
-
-/* ── Search ── */
-function onSearchInput(val) {
-  searchQuery = val.toLowerCase().trim();
-  currentPage = 1;
-  renderBrowse();
-}
-
-/* ── Region ── */
-function setRegion(val, el) {
-  regionFilter = val;
-  document.querySelectorAll('#region-pills .filter-pill').forEach(p => p.classList.remove('active'));
-  if (el) el.classList.add('active');
-  currentPage = 1;
-  renderBrowse();
-}
-
-/* ── Type filter (override global applyFilter to reset page) ── */
-const _origApplyFilter = typeof applyFilter === 'function' ? applyFilter : null;
-function applyFilter(type, val, el) {
-  if (type === 'type') {
-    filterType = val;
-    document.querySelectorAll('#type-pills .filter-pill').forEach(p => p.classList.remove('active'));
-    if (el) el.classList.add('active');
-  } else if (type === 'amenity') {
-    filterAmenity = filterAmenity === val ? null : val;
-    if (el) el.classList.toggle('active');
-  }
-  currentPage = 1;
-  renderBrowse();
-}
-
-/* ── Price filter ── */
-function applyPriceFilter() {
-  minPrice = +document.getElementById('price-min').value || null;
-  maxPrice = +document.getElementById('price-max').value || null;
-  currentPage = 1;
-  renderBrowse();
-}
-
-/* ── Sort ── */
-function sortProperties(val) {
-  sortBy = val;
-  currentPage = 1;
-  renderBrowse();
-}
-
-/* ── Clear all ── */
-function clearAllFilters() {
-  filterType = 'all'; filterAmenity = null;
-  minPrice = null; maxPrice = null; sortBy = 'popular';
-  regionFilter = 'all'; searchQuery = '';
-  currentPage = 1;
-
-  document.querySelectorAll('#type-pills .filter-pill').forEach((p,i) => p.classList.toggle('active', i===0));
-  document.querySelectorAll('#region-pills .filter-pill').forEach((p,i) => p.classList.toggle('active', i===0));
-  document.querySelectorAll('.filter-row .filter-pill').forEach(p => {
-    if (!p.closest('#type-pills') && !p.closest('#region-pills')) p.classList.remove('active');
-  });
-  document.getElementById('price-min').value = '';
-  document.getElementById('price-max').value = '';
-  document.getElementById('search-input').value = '';
-  document.querySelector('.browse-sort-select').value = 'popular';
-
-  renderBrowse();
-  showToast('All filters cleared', 'info');
-}
-
-/* ── Get filtered + search props ── */
-function getBrowseFiltered() {
-  return PROPERTIES.filter(p => {
-    const typeOk = filterType === 'all' || p.type.toLowerCase().replace(/ /g,'-') === filterType;
-    const priceOk = (!minPrice || p.price >= minPrice) && (!maxPrice || p.price <= maxPrice);
-    const amenOk = !filterAmenity || p.amenities.map(a => a.toLowerCase()).some(a => a.includes(filterAmenity));
-    const regionOk = regionFilter === 'all' || p.region.toLowerCase() === regionFilter;
-    const searchOk = !searchQuery ||
-      p.title.toLowerCase().includes(searchQuery) ||
-      p.region.toLowerCase().includes(searchQuery) ||
-      p.type.toLowerCase().includes(searchQuery);
-    return typeOk && priceOk && amenOk && regionOk && searchOk;
-  }).sort((a, b) => {
-    if (sortBy === 'price-asc') return a.price - b.price;
-    if (sortBy === 'price-desc') return b.price - a.price;
-    if (sortBy === 'rating') return b.rating - a.rating;
-    return b.bookings - a.bookings;
-  });
-}
-
-/* ── Render ── */
-function renderBrowse() {
-  const all = getBrowseFiltered();
-  const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
-  if (currentPage > totalPages) currentPage = totalPages;
-
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const pageProps = all.slice(start, start + PAGE_SIZE);
-
-  /* count */
-  document.getElementById('results-count').innerHTML =
-    `<strong>${all.length}</strong> propert${all.length === 1 ? 'y' : 'ies'} found`;
-
-  /* grid */
-  const grid = document.getElementById('browse-grid');
-  if (!all.length) {
-    grid.innerHTML = `<div class="browse-empty">
-      <div class="browse-empty-icon">🔍</div>
-      <div class="browse-empty-text">No properties found matching your filters.</div>
-    </div>`;
-  } else {
-    grid.innerHTML = pageProps.map(p => buildBrowseCard(p)).join('');
-  }
-
-  /* pagination */
-  renderPagination(totalPages);
-}
-
-/* ── Card builder ── */
-function buildBrowseCard(p) {
-  const inWL = wishlist.includes(p.id);
-  const imgSrc = PROP_IMAGES[p.id];
-  const imgHtml = imgSrc
-    ? `<img src="${imgSrc}" alt="${p.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'prop-img-placeholder-bg\'>${p.icon}</div>'">`
-    : `<div class="prop-img-placeholder-bg">${p.icon}</div>`;
-
-  return `
-  <div class="prop-card" onclick="window.location.href='/property/${p.id}'">
-    <div class="prop-img-wrap">
-      ${imgHtml}
-      <div class="prop-badge-row">
-        ${p.trending ? '<span class="prop-trending-badge">🔥 Trending</span>' : ''}
-      </div>
-      <div class="prop-wishlist ${inWL ? 'active' : ''}"
-           onclick="event.stopPropagation();toggleWishlist(${p.id},this)">
-        ${inWL ? '❤️' : '🤍'}
-      </div>
-    </div>
-    <div class="prop-body">
-      <div class="prop-location">📍 <span>${p.region}</span> · ${p.type}</div>
-      <div class="prop-title">${p.title}</div>
-      <div class="prop-amenities">
-        ${p.amenities.slice(0,3).map(a=>`<span class="amenity-tag">✓ ${a}</span>`).join('')}
-        ${p.amenities.length>3?`<span class="amenity-tag">+${p.amenities.length-3}</span>`:''}
-      </div>
-      <div class="prop-footer-row">
-        <div>
-          <span class="prop-price-amount">NPR ${p.price.toLocaleString()}</span>
-          <span class="prop-price-night">/night</span>
-        </div>
-        <div class="prop-meta-right">
-          <div class="prop-rating">
-            <span class="prop-rating-star">★</span>
-            ${p.rating}
-            <span style="color:var(--text-muted);font-size:12px">· 🔥 ${p.bookings}</span>
-          </div>
-        </div>
-      </div>
-      <button class="prop-book-btn" onclick="event.stopPropagation();window.location.href='/property/${p.id}'">
-        Book Now
-      </button>
-    </div>
-  </div>`;
-}
-
-/* ── Pagination ── */
-function renderPagination(totalPages) {
-  const el = document.getElementById('pagination');
-  if (totalPages <= 1) { el.innerHTML = ''; return; }
-
-  let html = '';
-
-  /* Prev */
-  html += `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>
-    ← Prev
-  </button>`;
-
-  /* Page numbers (show max 5) */
-  const range = getPaginationRange(currentPage, totalPages);
-  range.forEach(p => {
-    if (p === '…') {
-      html += `<span class="page-info">…</span>`;
+  
+  function updateThemeUI(theme) {
+    if (theme === 'light') {
+      themeIcon.className = 'fas fa-sun';
+      themeText.textContent = 'Light';
     } else {
-      html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+      themeIcon.className = 'fas fa-moon';
+      themeText.textContent = 'Dark';
     }
+  }
+  
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = document.body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('bookmandu-theme', newTheme);
+    updateThemeUI(newTheme);
   });
-
-  /* Next */
-  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>
-    Next →
-  </button>`;
-
-  el.innerHTML = html;
-}
-
-function getPaginationRange(cur, total) {
-  if (total <= 7) return Array.from({length:total}, (_,i)=>i+1);
-  if (cur <= 4) return [1,2,3,4,5,'…',total];
-  if (cur >= total-3) return [1,'…',total-4,total-3,total-2,total-1,total];
-  return [1,'…',cur-1,cur,cur+1,'…',total];
-}
-
-function goPage(n) {
-  const all = getBrowseFiltered();
-  const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
-  if (n < 1 || n > totalPages) return;
-  currentPage = n;
-  renderBrowse();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+  
+  // Intersection Observer for scroll animations
+  const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+  
+  document.querySelectorAll('.feature-card, .stat-card, .team-card, .value-card, .milestone-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
+    observer.observe(el);
+  });
 </script>
-{% endblock %}
+</body>
+</html>
