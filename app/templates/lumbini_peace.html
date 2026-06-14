@@ -8,8 +8,9 @@
 {% block content %}
 
 <div class="property-container">
+    <!-- Hero Section -->
     <div class="hero-section">
-        <div class="hero-image" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600');">
+        <div class="hero-image" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('https://images.pexels.com/photos/5409216/pexels-photo-5409216.jpeg?w=1600');">
             <div class="hero-overlay-content">
                 <div class="hero-tagline">🕊️ Serenity & Spiritual Awakening</div>
                 <h1 class="hero-title">Lumbini Peace Lodge</h1>
@@ -25,33 +26,34 @@
     </div>
 
     <div class="property-layout">
+        <!-- Left Column - Scrollable -->
         <div class="property-main">
             <!-- Gallery Section -->
             <div class="gallery-section">
                 <div class="gallery-grid">
                     <div class="gallery-main">
-                        <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800" alt="Lumbini Peace Lodge">
+                        <img src="https://images.pexels.com/photos/5409216/pexels-photo-5409216.jpeg?w=800" alt="Lumbini Peace Lodge Nepal">
                     </div>
                     <div class="gallery-thumbs">
-                        <img src="https://images.unsplash.com/photo-1528164344705-47542687000d?w=400" alt="Mayadevi Temple">
-                        <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400" alt="Peaceful Garden">
-                        <img src="https://images.unsplash.com/photo-1582653291997-079a1b04e6e2?w=400" alt="Meditation Hall">
-                        <img src="https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=400" alt="Monastery">
-                        <img src="https://images.unsplash.com/photo-1531835551805-16d864c8d311?w=400" alt="Peace Lodge Room">
+                        <img src="https://images.pexels.com/photos/5409216/pexels-photo-5409216.jpeg?w=400" alt="Mayadevi Temple Lumbini">
+                        <img src="https://images.pexels.com/photos/5409216/pexels-photo-5409216.jpeg?w=400" alt="Sacred Garden Lumbini">
+                        <img src="https://images.pexels.com/photos/2716242/pexels-photo-2716242.jpeg?w=400" alt="Peaceful Room">
+                        <img src="https://images.pexels.com/photos/5297813/pexels-photo-5297813.jpeg?w=400" alt="Vegetarian Meal">
+                        <img src="https://images.pexels.com/photos/4173448/pexels-photo-4173448.jpeg?w=400" alt="Meditation Garden">
                     </div>
                 </div>
             </div>
 
-            <!-- Description Section -->
+            <!-- Description -->
             <div class="description-section">
                 <h2>Find Inner Peace at the Birthplace of Buddha</h2>
                 <p>Lumbini Peace Lodge offers a tranquil retreat just steps away from the sacred Mayadevi Temple, the birthplace of Lord Buddha. Our lodge provides clean, comfortable rooms with a peaceful garden setting, perfect for pilgrims, meditators, and travelers seeking spiritual solace.</p>
                 <p>We are located within walking distance of the Lumbini Sacred Garden, where you can explore ancient ruins, monasteries from Buddhist nations worldwide, and the peaceful Pushkarini Sacred Pond. Our staff can arrange meditation sessions, monastery visits, and guided tours of this UNESCO World Heritage Site. Enjoy simple, wholesome vegetarian meals in our garden restaurant.</p>
             </div>
 
-            <!-- Amenities Section -->
+            <!-- Premium Amenities -->
             <div class="amenities-section">
-                <h3><i class="fas fa-concierge-bell"></i> Amenities & Services</h3>
+                <h3><i class="fas fa-star"></i> Amenities & Services</h3>
                 <div class="amenities-grid">
                     <div class="amenity-item"><i class="fas fa-wifi"></i> <span>Free WiFi</span></div>
                     <div class="amenity-item"><i class="fas fa-hot-tub"></i> <span>Hot Water 24/7</span></div>
@@ -64,21 +66,84 @@
                 </div>
             </div>
 
-            <!-- Host Section -->
+            <!-- Where You'll Stay -->
+            <div class="where-stay-section">
+                <h3><i class="fas fa-bed"></i> Where you'll stay</h3>
+                <div class="stay-grid">
+                    <div class="stay-card">
+                        <img src="https://images.pexels.com/photos/2716242/pexels-photo-2716242.jpeg?w=400" alt="Room 1">
+                        <div class="stay-info">
+                            <span class="stay-room">Peaceful Room 1</span>
+                            <button class="view-photos-btn" onclick="openImageViewer(0)">View photos</button>
+                        </div>
+                    </div>
+                    <div class="stay-card">
+                        <img src="https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?w=400" alt="Room 2">
+                        <div class="stay-info">
+                            <span class="stay-room">Peaceful Room 2</span>
+                            <button class="view-photos-btn" onclick="openImageViewer(1)">View photos</button>
+                        </div>
+                    </div>
+                    <div class="stay-card">
+                        <img src="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?w=400" alt="Room 3">
+                        <div class="stay-info">
+                            <span class="stay-room">Peaceful Room 3</span>
+                            <button class="view-photos-btn" onclick="openImageViewer(2)">View photos</button>
+                        </div>
+                    </div>
+                    <div class="stay-card">
+                        <img src="https://images.pexels.com/photos/2716241/pexels-photo-2716241.jpeg?w=400" alt="Room 4">
+                        <div class="stay-info">
+                            <span class="stay-room">Peaceful Room 4</span>
+                            <button class="view-photos-btn" onclick="openImageViewer(3)">View photos</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="view-all-link">
+                    <a href="#" onclick="openAllImages(); return false;"><i class="fas fa-images"></i> View all images</a>
+                </div>
+            </div>
+
+            <!-- Package Section -->
+            <div class="package-section">
+                <h3><i class="fas fa-gift"></i> PACKAGE</h3>
+                <p class="package-subtitle">Included in your stay</p>
+                <div class="included-items">
+                    <div class="included-item"><i class="fas fa-check-circle"></i> Breakfast</div>
+                    <div class="included-item"><i class="fas fa-check-circle"></i> Meditation Session</div>
+                </div>
+            </div>
+
+            <!-- House Rules -->
+            <div class="rules-section">
+                <h3><i class="fas fa-gavel"></i> BEFORE YOU BOOK</h3>
+                <p class="rules-subtitle">House rules</p>
+                <div class="rules-list">
+                    <div class="rule-item"><i class="fas fa-money-bill-wave"></i> <span>A prepayment of NPR 10,000 is required to confirm your booking.</span></div>
+                    <div class="rule-item"><i class="fas fa-calendar-times"></i> <span>Cancellations within 48 hours of arrival are non-refundable.</span></div>
+                    <div class="rule-item"><i class="fas fa-clock"></i> <span>Check-out: By 11:00 AM</span></div>
+                    <div class="rule-item"><i class="fas fa-refund"></i> <span>Full prepayment refunds are available for cancellations made at least 48 hours before check-in.</span></div>
+                    <div class="rule-item"><i class="fas fa-clock"></i> <span>Check-in: After 1:00 PM</span></div>
+                    <div class="rule-item"><i class="fas fa-utensils"></i> <span>Breakfast is served until 9:00 AM; service concludes at 9:30 AM.</span></div>
+                </div>
+                <button class="show-all-rules-btn" onclick="showAllRules()"><i class="fas fa-chevron-down"></i> Show all 18 rules</button>
+            </div>
+
+            <!-- Host -->
             <div class="host-section">
                 <div class="host-avatar"><img src="https://randomuser.me/api/portraits/men/52.jpg" alt="Manoj Sharma"></div>
                 <div class="host-details">
                     <h3>Hosted by Manoj Sharma</h3>
                     <div class="host-stats">
                         <span><i class="fas fa-check-circle"></i> Response rate: 95%</span>
-                        <span><i class="fas fa-clock"></i> Responds in 1 hour</span>
+                        <span><i class="fas fa-clock"></i> Responds within 1 hour</span>
                         <span><i class="fas fa-home"></i> Hosting for 5 years</span>
                     </div>
                     <p>Namaste! I'm Manoj, a local from Lumbini who grew up in the shadow of the sacred garden. I'm passionate about sharing the spiritual heritage of my homeland. Whether you're here for pilgrimage, meditation, or cultural exploration, I'll ensure your stay is peaceful and meaningful.</p>
                 </div>
             </div>
 
-            <!-- Highlights Section -->
+            <!-- Highlights -->
             <div class="highlights-section">
                 <h3>✨ Why guests love this property</h3>
                 <div class="highlights-grid">
@@ -89,38 +154,23 @@
                 </div>
             </div>
 
-            <!-- Reviews Section -->
+            <!-- Reviews -->
             <div class="reviews-section">
                 <h3><i class="fas fa-star"></i> Guest reviews · 4.3 average</h3>
                 <div class="reviews-list">
-                    <div class="review-card">
-                        <div class="review-header"><strong>Tenzin Wangmo</strong> <div class="stars">★★★★★</div> <span>March 2026</span></div>
-                        <p>"A truly peaceful place close to the sacred garden. The owners are incredibly kind and helpful. Simple but clean rooms. Perfect for pilgrims and those seeking quiet contemplation."</p>
-                    </div>
-                    <div class="review-card">
-                        <div class="review-header"><strong>David Goldberg</strong> <div class="stars">★★★★☆</div> <span>February 2026</span></div>
-                        <p>"Great value for money. Location is excellent - walking distance to all major sites. The garden is beautiful for morning meditation. Would stay again."</p>
-                    </div>
-                    <div class="review-card">
-                        <div class="review-header"><strong>Anita Desai</strong> <div class="stars">★★★★★</div> <span>January 2026</span></div>
-                        <p>"Manoj is a wonderful host who went out of his way to help us arrange monastery visits. The vegetarian food was delicious and freshly prepared. Highly recommend for spiritual travelers."</p>
-                    </div>
-                    <div class="review-card">
-                        <div class="review-header"><strong>Michael Chen</strong> <div class="stars">★★★★☆</div> <span>December 2025</span></div>
-                        <p>"Basic but comfortable accommodation. The hot water worked well and room was clean. Very close to the temple complex. Great for budget travelers."</p>
-                    </div>
-                    <div class="review-card">
-                        <div class="review-header"><strong>Sarah Jones</strong> <div class="stars">★★★☆☆</div> <span>November 2025</span></div>
-                        <p>"Good location but rooms are quite basic. WiFi was slow. However, the peaceful atmosphere and kind staff made up for it. Bring your own toiletries."</p>
-                    </div>
+                    <div class="review-card"><div class="review-header"><strong>Tenzin Wangmo</strong> <div class="stars">★★★★★</div> <span>Mar 2026</span></div><p>"A truly peaceful place close to the sacred garden. The owners are incredibly kind and helpful. Simple but clean rooms. Perfect for pilgrims and those seeking quiet contemplation."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>David Goldberg</strong> <div class="stars">★★★★☆</div> <span>Feb 2026</span></div><p>"Great value for money. Location is excellent - walking distance to all major sites. The garden is beautiful for morning meditation. Would stay again."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>Anita Desai</strong> <div class="stars">★★★★★</div> <span>Jan 2026</span></div><p>"Manoj is a wonderful host who went out of his way to help us arrange monastery visits. The vegetarian food was delicious and freshly prepared. Highly recommend for spiritual travelers."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>Michael Chen</strong> <div class="stars">★★★★☆</div> <span>Dec 2025</span></div><p>"Basic but comfortable accommodation. The hot water worked well and room was clean. Very close to the temple complex. Great for budget travelers."</p></div>
+                    <div class="review-card"><div class="review-header"><strong>Sarah Jones</strong> <div class="stars">★★★☆☆</div> <span>Nov 2025</span></div><p>"Good location but rooms are quite basic. WiFi was slow. However, the peaceful atmosphere and kind staff made up for it. Bring your own toiletries."</p></div>
                 </div>
             </div>
 
-            <!-- Location Section -->
+            <!-- Location -->
             <div class="location-section">
                 <h3><i class="fas fa-map-pin"></i> Location & nearby attractions</h3>
                 <div class="map-placeholder">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3530.4567!2d83.012345!3d27.468888!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3996e1a7b2b2b2b1%3A0x1a2b3c4d5e6f7g8h!2sLumbini%20Sacred%20Garden!5e0!3m2!1sen!2snp!4v1713234567890!5m2!1sen!2snp" width="100%" height="280" style="border:0; border-radius: 20px;" allowfullscreen="" loading="lazy"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3530.4567!2d83.012345!3d27.468888!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3996e1a7b2b2b2b1%3A0x1a2b3c4d5e6f7g8h!2sLumbini%20Sacred%20Garden!5e0!3m2!1sen!2snp!4v1713234567890!5m2!1sen!2snp" width="100%" height="200" style="border:0; border-radius: 16px;" allowfullscreen="" loading="lazy"></iframe>
                 </div>
                 <div class="nearby-places">
                     <div class="place-item"><i class="fas fa-temple"></i> Mayadevi Temple — 200 m</div>
@@ -135,30 +185,9 @@
             <div class="similar-properties">
                 <h3>Similar stays you might like</h3>
                 <div class="similar-grid">
-                    <a href="{{ url_for('auth.property_mountain_view') }}" class="similar-card">
-                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400" alt="Mountain View">
-                        <div class="similar-info">
-                            <strong>Mountain View Homestay</strong>
-                            <span>Pokhara · NPR 2,500/night</span>
-                            <div class="stars">★★★★★ 4.8</div>
-                        </div>
-                    </a>
-                    <a href="{{ url_for('auth.property_thamel_heritage') }}" class="similar-card">
-                        <img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=400" alt="Thamel">
-                        <div class="similar-info">
-                            <strong>Thamel Heritage House</strong>
-                            <span>Kathmandu · NPR 3,200/night</span>
-                            <div class="stars">★★★★½ 4.5</div>
-                        </div>
-                    </a>
-                    <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="similar-card">
-                        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400" alt="Lakeside">
-                        <div class="similar-info">
-                            <strong>Lakeside Comfort Inn</strong>
-                            <span>Pokhara · NPR 2,200/night</span>
-                            <div class="stars">★★★★☆ 4.4</div>
-                        </div>
-                    </a>
+                    <a href="{{ url_for('auth.property_mountain_view') }}" class="similar-card"><img src="https://images.pexels.com/photos/3795512/pexels-photo-3795512.jpeg?w=400" alt="Mountain View"><div class="similar-info"><strong>Mountain View Homestay</strong><span>Pokhara · NPR 2,500/night</span><div class="stars">★★★★★ 4.8</div></div></a>
+                    <a href="{{ url_for('auth.property_thamel_heritage') }}" class="similar-card"><img src="https://images.pexels.com/photos/3490509/pexels-photo-3490509.jpeg?w=400" alt="Thamel"><div class="similar-info"><strong>Thamel Heritage House</strong><span>Kathmandu · NPR 3,200/night</span><div class="stars">★★★★½ 4.5</div></div></a>
+                    <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="similar-card"><img src="https://images.pexels.com/photos/10154183/pexels-photo-10154183.jpeg?w=400" alt="Lakeside"><div class="similar-info"><strong>Lakeside Comfort Inn</strong><span>Pokhara · NPR 2,200/night</span><div class="stars">★★★★☆ 4.4</div></div></a>
                 </div>
             </div>
         </div>
@@ -168,17 +197,27 @@
             <div class="booking-card-sticky">
                 <div class="booking-price">NPR 1,800 <span class="per-night">/ night</span></div>
                 <div class="rating-summary"><i class="fas fa-star"></i> 4.3 · 19 reviews</div>
-                <form class="booking-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Check-in</label>
-                            <input type="date" id="checkin" class="form-input" value="2026-06-10">
-                        </div>
-                        <div class="form-group">
-                            <label>Check-out</label>
-                            <input type="date" id="checkout" class="form-input" value="2026-06-12">
-                        </div>
+                
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button class="calendar-nav-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
+                        <span class="calendar-month" id="currentMonthYear">June 2026</span>
+                        <button class="calendar-nav-btn" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
                     </div>
+                    <div class="calendar-weekdays"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+                    <div class="calendar-days" id="calendarDays"></div>
+                    <div class="calendar-legend">
+                        <div class="legend-item"><div class="legend-color available"></div><span>Available</span></div>
+                        <div class="legend-item"><div class="legend-color booked"></div><span>Booked</span></div>
+                        <div class="legend-item"><div class="legend-color selected"></div><span>Selected</span></div>
+                    </div>
+                </div>
+                
+                <div class="selected-dates-display" id="selectedDatesDisplay">
+                    <i class="fas fa-calendar-alt"></i> Select check-in and check-out dates
+                </div>
+                
+                <div class="booking-form">
                     <div class="form-group">
                         <label>Guests <span class="guest-max">(max 3)</span></label>
                         <select id="guests" class="form-select">
@@ -187,42 +226,569 @@
                             <option value="3">3 guests</option>
                         </select>
                     </div>
-                    <div class="total-price">
-                        <span>Total (with taxes & fees)</span>
-                        <strong id="totalAmount">NPR 3,600</strong>
+                    
+                    <div class="coupon-section">
+                        <label>Coupon code (optional)</label>
+                        <div class="coupon-input-group">
+                            <input type="text" id="couponCode" class="form-input" placeholder="e.g. WELCOME10, SAVE20">
+                            <button type="button" id="applyCouponBtn" class="btn btn-outline btn-sm">Apply</button>
+                        </div>
+                        <div id="discountMessage" class="discount-applied"></div>
                     </div>
-                    <button type="button" id="bookNowBtn" class="btn btn-primary btn-block">Reserve Now</button>
-                    <p class="secure-note"><i class="fas fa-lock"></i> You won't be charged yet</p>
-                </form>
-                <div class="extra-info">✓ Free cancellation up to 7 days</div>
+                    
+                    <div class="price-details">
+                        <div class="price-row">
+                            <span>Subtotal (<span id="nightCount">0</span> nights × NPR 1,800)</span>
+                            <span id="subtotalAmount">NPR 0</span>
+                        </div>
+                        <div class="price-row discount-row" id="discountRow" style="display: none;">
+                            <span>Discount <span id="discountPercent"></span></span>
+                            <span id="discountAmount">-NPR 0</span>
+                        </div>
+                        <div class="total-price">
+                            <span>Total</span>
+                            <strong id="totalAmount">NPR 0</strong>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="confirmBookingBtn" class="btn btn-primary btn-block" disabled>Select Dates First</button>
+                    <p class="secure-note"><i class="fas fa-lock"></i> Secure payment after confirmation</p>
+                </div>
+                <div class="extra-info">✓ Free cancellation up to 7 days before check-in</div>
             </div>
         </aside>
     </div>
 </div>
 
+<!-- Booking Modal -->
+<div class="booking-modal-overlay" id="bookingModal">
+    <div class="booking-modal">
+        <button class="close-modal-btn" onclick="closeBookingModal()"><i class="fas fa-times"></i></button>
+        <h3><i class="fas fa-receipt"></i> Complete Your Booking</h3>
+        <div id="bookingSummary"></div>
+        <div id="priceBreakdown"></div>
+        
+        <h4><i class="fas fa-credit-card"></i> Select Payment Method</h4>
+        <div class="payment-methods">
+            <div class="payment-method" data-method="esewa"><img src="{{ url_for('static', filename='images/esewa.png') }}" alt="eSewa"><span class="method-name">eSewa</span></div>
+            <div class="payment-method" data-method="khalti"><img src="{{ url_for('static', filename='images/khalti.png') }}" alt="Khalti"><span class="method-name">Khalti</span></div>
+            <div class="payment-method" data-method="bank"><img src="{{ url_for('static', filename='images/bank.png') }}" alt="Bank"><span class="method-name">Bank Transfer</span></div>
+        </div>
+        
+        <div id="qrSection" style="display: none;">
+            <div class="qr-container"><img id="qrImage" src="" alt="QR Code"><p>Scan QR code to pay</p></div>
+            <div class="bank-details" id="bankDetails" style="display: none;">
+                <p><strong>Bank:</strong> <span id="bankName">Nepal Investment Bank</span> <button class="copy-btn" onclick="copyBankText('bankName')">Copy</button></p>
+                <p><strong>Account:</strong> <span id="accountName">Bookmandu Pvt. Ltd.</span> <button class="copy-btn" onclick="copyBankText('accountName')">Copy</button></p>
+                <p><strong>Number:</strong> <span id="accountNumber">0578010012345</span> <button class="copy-btn" onclick="copyBankText('accountNumber')">Copy</button></p>
+                <p><strong>Amount:</strong> <span id="paymentAmount"></span></p>
+            </div>
+        </div>
+        
+        <div id="paymentStatus"></div>
+        
+        <div class="modal-buttons">
+            <button class="btn btn-ghost" onclick="closeBookingModal()">Cancel</button>
+            <button class="btn btn-primary" id="proceedPaymentBtn">Proceed to Pay</button>
+            <button class="btn btn-primary" id="confirmPaymentBtn" style="display: none;">Confirm Payment</button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="success-modal-overlay" id="successModal">
+    <div class="success-modal">
+        <button class="close-modal-btn" onclick="closeSuccessModal()"><i class="fas fa-times"></i></button>
+        <div class="success-icon"><img src="{{ url_for('static', filename='images/wing.png') }}" alt="Logo"></div>
+        <h2>Booking Confirmed!</h2>
+        <p>Your reservation has been confirmed.</p>
+        <div class="booking-ref" id="bookingRef"></div>
+        <div id="successDetails"></div>
+        <div class="modal-buttons">
+            <button class="btn btn-outline" onclick="downloadInvoice()">Download Invoice</button>
+            <button class="btn btn-primary" onclick="redirectToBrowse()">Browse More</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    const checkinInput = document.getElementById('checkin');
-    const checkoutInput = document.getElementById('checkout');
-    const guestsSelect = document.getElementById('guests');
-    const totalSpan = document.getElementById('totalAmount');
+// Room images for viewer
+var roomImages = [
+    'https://images.pexels.com/photos/2716242/pexels-photo-2716242.jpeg?w=800',
+    'https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?w=800',
+    'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?w=800',
+    'https://images.pexels.com/photos/2716241/pexels-photo-2716241.jpeg?w=800'
+];
 
-    function calculateTotal() {
-        const checkin = new Date(checkinInput.value);
-        const checkout = new Date(checkoutInput.value);
-        let nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
-        if (nights <= 0 || isNaN(nights)) nights = 1;
-        const pricePerNight = 1800;
-        let total = nights * pricePerNight;
-        totalSpan.innerText = `NPR ${total.toLocaleString()}`;
+// Booked dates for Lumbini Peace Lodge
+var bookedDates = [
+    '2026-06-05', '2026-06-06', '2026-06-07',
+    '2026-06-12', '2026-06-13', '2026-06-14',
+    '2026-06-18', '2026-06-19', '2026-06-20',
+    '2026-06-25', '2026-06-26', '2026-06-27'
+];
+
+var currentDate = new Date(2026, 5);
+var selectedCheckIn = null;
+var selectedCheckOut = null;
+var appliedCoupon = null;
+var selectedPaymentMethod = null;
+
+var pricePerNight = 1800;
+var availableCoupons = {
+    'WELCOME10': { discount: 10, type: 'percentage', message: '10% off!', description: '10% discount applied' },
+    'SAVE20': { discount: 20, type: 'percentage', message: '20% off!', description: '20% discount applied' },
+    'FLAT500': { discount: 500, type: 'fixed', message: 'NPR 500 off!', description: 'NPR 500 discount applied' }
+};
+
+function formatDate(year, month, day) {
+    return year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+}
+
+function isDateBooked(year, month, day) {
+    var dateStr = formatDate(year, month, day);
+    return bookedDates.indexOf(dateStr) !== -1;
+}
+
+function getQRCodeUrl(amount, method) {
+    return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + method.toUpperCase() + ':PAY:' + amount + ':BOOKMANDU';
+}
+
+function getNights() {
+    if (!selectedCheckIn || !selectedCheckOut) return 0;
+    var diffTime = Math.abs(selectedCheckOut - selectedCheckIn);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+function calculatePriceWithDiscount() {
+    var nights = getNights();
+    if (nights === 0) {
+        document.getElementById('nightCount').textContent = '0';
+        document.getElementById('subtotalAmount').textContent = 'NPR 0';
+        document.getElementById('totalAmount').textContent = 'NPR 0';
+        document.getElementById('discountRow').style.display = 'none';
+        return { nights: 0, subtotal: 0, discount: 0, total: 0 };
     }
+    
+    var subtotal = nights * pricePerNight;
+    var discountAmount = 0;
+    var discountPercentText = '';
+    
+    if (appliedCoupon && availableCoupons[appliedCoupon]) {
+        var coupon = availableCoupons[appliedCoupon];
+        if (coupon.type === 'percentage') {
+            discountAmount = subtotal * (coupon.discount / 100);
+            discountPercentText = '(' + coupon.discount + '% off)';
+        } else if (coupon.type === 'fixed') {
+            discountAmount = Math.min(coupon.discount, subtotal);
+            discountPercentText = '(NPR ' + coupon.discount + ' off)';
+        }
+    }
+    
+    var total = subtotal - discountAmount;
+    
+    document.getElementById('nightCount').textContent = nights;
+    document.getElementById('subtotalAmount').textContent = 'NPR ' + subtotal.toLocaleString();
+    document.getElementById('totalAmount').textContent = 'NPR ' + total.toLocaleString();
+    
+    if (discountAmount > 0) {
+        document.getElementById('discountRow').style.display = 'flex';
+        document.getElementById('discountPercent').innerHTML = discountPercentText;
+        document.getElementById('discountAmount').innerHTML = '-NPR ' + discountAmount.toLocaleString();
+    } else {
+        document.getElementById('discountRow').style.display = 'none';
+    }
+    
+    var confirmBtn = document.getElementById('confirmBookingBtn');
+    if (nights > 0 && selectedCheckIn && selectedCheckOut) {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'Confirm Booking · NPR ' + total.toLocaleString();
+    } else {
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'Select Dates First';
+    }
+    
+    return { nights: nights, subtotal: subtotal, discount: discountAmount, total: total };
+}
 
-    checkinInput.addEventListener('change', calculateTotal);
-    checkoutInput.addEventListener('change', calculateTotal);
-    guestsSelect.addEventListener('change', calculateTotal);
-    calculateTotal();
+function renderCalendar() {
+    var year = currentDate.getFullYear();
+    var month = currentDate.getMonth();
+    var firstDay = new Date(year, month, 1);
+    var startWeekday = firstDay.getDay();
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    
+    document.getElementById('currentMonthYear').textContent = monthNames[month] + ' ' + year;
+    var calendarDays = document.getElementById('calendarDays');
+    calendarDays.innerHTML = '';
+    
+    for (var i = 0; i < startWeekday; i++) {
+        var emptyCell = document.createElement('div');
+        emptyCell.className = 'calendar-day disabled';
+        emptyCell.style.visibility = 'hidden';
+        calendarDays.appendChild(emptyCell);
+    }
+    
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    for (var day = 1; day <= daysInMonth; day++) {
+        var isBooked = isDateBooked(year, month, day);
+        var cellDate = new Date(year, month, day);
+        var isPast = cellDate < today;
+        
+        var dayCell = document.createElement('div');
+        dayCell.className = 'calendar-day';
+        dayCell.textContent = day;
+        
+        if (isPast && (year < 2026 || (year === 2026 && month < 5))) {
+            dayCell.classList.add('disabled');
+        } else if (isBooked) {
+            dayCell.classList.add('booked');
+        } else {
+            dayCell.classList.add('available');
+            if (selectedCheckIn && cellDate.getTime() === selectedCheckIn.getTime()) {
+                dayCell.classList.add('selected');
+            } else if (selectedCheckOut && cellDate.getTime() === selectedCheckOut.getTime()) {
+                dayCell.classList.add('selected');
+            } else if (selectedCheckIn && selectedCheckOut && cellDate > selectedCheckIn && cellDate < selectedCheckOut) {
+                dayCell.classList.add('selected-range');
+            }
+            dayCell.onclick = (function(y, m, d) {
+                return function() { selectDate(y, m, d); };
+            })(year, month, day);
+        }
+        calendarDays.appendChild(dayCell);
+    }
+}
 
-    document.getElementById('bookNowBtn').addEventListener('click', () => {
-        alert('Booking request received! (Demo) – In production, redirect to checkout / payment.');
+function selectDate(year, month, day) {
+    var selectedDate = new Date(year, month, day);
+    var dateStr = formatDate(year, month, day);
+    
+    if (bookedDates.indexOf(dateStr) !== -1) {
+        showToast('This date is already booked.', 'error');
+        return;
+    }
+    
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectedDate < today) {
+        showToast('Cannot select past dates.', 'error');
+        return;
+    }
+    
+    if (!selectedCheckIn) {
+        selectedCheckIn = selectedDate;
+        selectedCheckOut = null;
+        renderCalendar();
+        updateBookingSummary();
+        showToast('Check-in set', 'success');
+    } else if (selectedCheckIn && !selectedCheckOut) {
+        if (selectedDate <= selectedCheckIn) {
+            selectedCheckIn = selectedDate;
+            renderCalendar();
+            updateBookingSummary();
+            showToast('Check-in updated', 'success');
+        } else {
+            selectedCheckOut = selectedDate;
+            renderCalendar();
+            updateBookingSummary();
+            showToast('Check-out set', 'success');
+        }
+    } else {
+        selectedCheckIn = selectedDate;
+        selectedCheckOut = null;
+        renderCalendar();
+        updateBookingSummary();
+        showToast('Check-in reset', 'info');
+    }
+}
+
+function updateBookingSummary() {
+    var calc = calculatePriceWithDiscount();
+    
+    if (selectedCheckIn && selectedCheckOut) {
+        var options = { year: 'numeric', month: 'short', day: 'numeric' };
+        var nights = getNights();
+        var subtotal = nights * pricePerNight;
+        var finalTotal = appliedCoupon ? (subtotal - calc.discount) : subtotal;
+        
+        document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-check"></i> ' + 
+            selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) +
+            '<br><small>' + nights + ' nights · ' + 
+            (appliedCoupon ? '<span style="text-decoration: line-through; opacity: 0.6;">NPR ' + subtotal.toLocaleString() + '</span> → ' : '') +
+            'NPR ' + finalTotal.toLocaleString() + '</small>';
+    } else if (selectedCheckIn) {
+        document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-day"></i> Check-in: ' + selectedCheckIn.toDateString() +
+            '<br><small>Select check-out date</small>';
+    } else {
+        document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-alt"></i> Select check-in and check-out dates';
+    }
+}
+
+function applyCoupon() {
+    var couponCode = document.getElementById('couponCode').value.trim().toUpperCase();
+    var discountMessageDiv = document.getElementById('discountMessage');
+    
+    if (!couponCode) {
+        discountMessageDiv.innerHTML = '<i class="fas fa-info-circle"></i> Please enter a coupon code';
+        discountMessageDiv.style.color = 'var(--text-muted)';
+        return;
+    }
+    
+    var coupon = availableCoupons[couponCode];
+    if (!coupon) {
+        discountMessageDiv.innerHTML = '<i class="fas fa-times-circle"></i> Invalid coupon code. Try: WELCOME10, SAVE20, FLAT500';
+        discountMessageDiv.style.color = '#e74c3c';
+        appliedCoupon = null;
+        calculatePriceWithDiscount();
+        updateBookingSummary();
+        return;
+    }
+    
+    appliedCoupon = couponCode;
+    discountMessageDiv.innerHTML = '<i class="fas fa-check-circle"></i> ' + coupon.message + ' Applied!';
+    discountMessageDiv.style.color = 'var(--teal)';
+    
+    calculatePriceWithDiscount();
+    updateBookingSummary();
+    showToast(coupon.message + ' applied successfully!', 'success');
+}
+
+function removeCoupon() {
+    appliedCoupon = null;
+    document.getElementById('couponCode').value = '';
+    document.getElementById('discountMessage').innerHTML = '';
+    calculatePriceWithDiscount();
+    updateBookingSummary();
+    showToast('Coupon removed', 'info');
+}
+
+function addClearCouponButton() {
+    var couponGroup = document.querySelector('.coupon-input-group');
+    if (couponGroup && !document.getElementById('clearCouponBtn')) {
+        var clearBtn = document.createElement('button');
+        clearBtn.id = 'clearCouponBtn';
+        clearBtn.className = 'btn btn-ghost btn-sm';
+        clearBtn.innerHTML = '<i class="fas fa-times"></i>';
+        clearBtn.onclick = function() { removeCoupon(); };
+        couponGroup.appendChild(clearBtn);
+    }
+}
+
+// Initialize event listeners
+document.getElementById('applyCouponBtn').addEventListener('click', applyCoupon);
+document.getElementById('couponCode').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') applyCoupon();
+});
+document.getElementById('prevMonthBtn').addEventListener('click', function() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+});
+document.getElementById('nextMonthBtn').addEventListener('click', function() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+});
+document.getElementById('guests').addEventListener('change', function() {
+    calculatePriceWithDiscount();
+    updateBookingSummary();
+});
+
+addClearCouponButton();
+
+// Image viewer functions
+function openImageViewer(index) {
+    var modal = document.getElementById('imageViewerModal');
+    if (!modal) {
+        var html = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)">' +
+            '<div class="modal" style="max-width: 600px;">' +
+            '<div class="modal-header"><span class="modal-title">Room View</span><button class="modal-close" onclick="closeImageViewer()">✕</button></div>' +
+            '<div style="text-align: center;"><img id="currentImageView" src="" style="width: 100%; border-radius: 12px;"></div>' +
+            '</div></div>';
+        document.body.insertAdjacentHTML('beforeend', html);
+        modal = document.getElementById('imageViewerModal');
+    }
+    var img = document.getElementById('currentImageView');
+    if (img && roomImages[index]) img.src = roomImages[index];
+    if (modal) modal.classList.add('open');
+}
+
+function closeImageViewer(e) {
+    var modal = document.getElementById('imageViewerModal');
+    if (modal && (!e || e.target.id === 'imageViewerModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')))) {
+        modal.classList.remove('open');
+    }
+}
+
+function openAllImages() { openImageViewer(0); }
+
+function showAllRules() {
+    var modal = document.getElementById('rulesModal');
+    if (!modal) {
+        var html = '<div class="modal-overlay" id="rulesModal" onclick="closeRulesModal(event)">' +
+            '<div class="modal" style="max-width: 550px;">' +
+            '<div class="modal-header"><span class="modal-title">All House Rules (18)</span><button class="modal-close" onclick="closeRulesModal()">✕</button></div>' +
+            '<div style="max-height: 60vh; overflow-y: auto; padding: 8px;">' +
+            '<div style="display: flex; flex-direction: column; gap: 16px;">' +
+            '<div class="rule-item"><i class="fas fa-money-bill-wave"></i> <span>A prepayment of NPR 10,000 is required.</span></div>' +
+            '<div class="rule-item"><i class="fas fa-calendar-times"></i> <span>Cancellations within 48 hours are non-refundable.</span></div>' +
+            '<div class="rule-item"><i class="fas fa-clock"></i> <span>Check-out: By 11:00 AM</span></div>' +
+            '<div class="rule-item"><i class="fas fa-refund"></i> <span>Full refunds for cancellations 48+ hours before.</span></div>' +
+            '<div class="rule-item"><i class="fas fa-clock"></i> <span>Check-in: After 1:00 PM</span></div>' +
+            '<div class="rule-item"><i class="fas fa-utensils"></i> <span>Breakfast until 9:00 AM</span></div>' +
+            '<div class="rule-item"><i class="fas fa-smoking-ban"></i> <span>No smoking inside</span></div>' +
+            '<div class="rule-item"><i class="fas fa-paw"></i> <span>No pets allowed</span></div>' +
+            '<div class="rule-item"><i class="fas fa-music"></i> <span>Quiet hours: 10 PM - 7 AM</span></div>' +
+            '<div class="rule-item"><i class="fas fa-users"></i> <span>Max 3 guests</span></div>' +
+            '<div class="rule-item"><i class="fas fa-glass-cheers"></i> <span>No parties or events</span></div>' +
+            '<div class="rule-item"><i class="fas fa-camera"></i> <span>Commercial photography requires approval</span></div>' +
+            '<div class="rule-item"><i class="fas fa-plug"></i> <span>Turn off lights/AC when leaving</span></div>' +
+            '<div class="rule-item"><i class="fas fa-trash-alt"></i> <span>Dispose trash in bins</span></div>' +
+            '<div class="rule-item"><i class="fas fa-door-open"></i> <span>Lock doors when leaving</span></div>' +
+            '<div class="rule-item"><i class="fas fa-water"></i> <span>Conserve water</span></div>' +
+            '<div class="rule-item"><i class="fas fa-child"></i> <span>Supervise children</span></div>' +
+            '<div class="rule-item"><i class="fas fa-car"></i> <span>Park in designated areas</span></div>' +
+            '</div></div></div></div>';
+        document.body.insertAdjacentHTML('beforeend', html);
+        modal = document.getElementById('rulesModal');
+    }
+    if (modal) modal.classList.add('open');
+}
+
+function closeRulesModal(e) {
+    var modal = document.getElementById('rulesModal');
+    if (modal && (!e || e.target.id === 'rulesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')))) {
+        modal.classList.remove('open');
+    }
+}
+
+// Payment method selection
+var paymentMethods = document.querySelectorAll('.payment-method');
+for (var i = 0; i < paymentMethods.length; i++) {
+    paymentMethods[i].addEventListener('click', function() {
+        var methods = document.querySelectorAll('.payment-method');
+        for (var j = 0; j < methods.length; j++) methods[j].classList.remove('active');
+        this.classList.add('active');
+        selectedPaymentMethod = this.getAttribute('data-method');
+        
+        var calc = { total: calculatePriceWithDiscount().total };
+        var qrSection = document.getElementById('qrSection');
+        var bankDetails = document.getElementById('bankDetails');
+        var qrImage = document.getElementById('qrImage');
+        
+        qrSection.style.display = 'block';
+        
+        if (selectedPaymentMethod === 'bank') {
+            bankDetails.style.display = 'block';
+            qrImage.style.display = 'none';
+            document.getElementById('paymentAmount').textContent = 'NPR ' + calc.total.toLocaleString();
+        } else {
+            bankDetails.style.display = 'none';
+            qrImage.style.display = 'block';
+            qrImage.src = getQRCodeUrl(calc.total, selectedPaymentMethod);
+        }
     });
+}
+
+document.getElementById('confirmBookingBtn').addEventListener('click', function() {
+    if (selectedCheckIn && selectedCheckOut) {
+        var calc = calculatePriceWithDiscount();
+        var options = { year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('bookingSummary').innerHTML = 
+            '<div class="booking-summary-item"><span>Property</span><strong>Lumbini Peace Lodge</strong></div>' +
+            '<div class="booking-summary-item"><span>Check-in</span><strong>' + selectedCheckIn.toLocaleDateString('en-US', options) + '</strong></div>' +
+            '<div class="booking-summary-item"><span>Check-out</span><strong>' + selectedCheckOut.toLocaleDateString('en-US', options) + '</strong></div>' +
+            '<div class="booking-summary-item"><span>Guests</span><strong>' + document.getElementById('guests').value + '</strong></div>';
+        
+        var priceHtml = '<div class="row"><span>Nightly rate (x' + calc.nights + ')</span><span>NPR ' + pricePerNight.toLocaleString() + '</span></div>';
+        if (appliedCoupon && availableCoupons[appliedCoupon]) {
+            priceHtml += '<div class="row"><span>Discount</span><span style="color: var(--teal);">-NPR ' + calc.discount.toLocaleString() + '</span></div>';
+        }
+        priceHtml += '<div class="row"><span>Total Amount</span><strong>NPR ' + calc.total.toLocaleString() + '</strong></div>';
+        document.getElementById('priceBreakdown').innerHTML = priceHtml;
+        
+        document.getElementById('bookingModal').classList.add('active');
+        document.getElementById('proceedPaymentBtn').style.display = 'flex';
+        document.getElementById('confirmPaymentBtn').style.display = 'none';
+        document.getElementById('paymentStatus').className = 'payment-status';
+        document.getElementById('paymentStatus').style.display = 'none';
+        document.getElementById('qrSection').style.display = 'none';
+        
+        for (var j = 0; j < paymentMethods.length; j++) paymentMethods[j].classList.remove('active');
+        selectedPaymentMethod = null;
+    }
+});
+
+document.getElementById('proceedPaymentBtn').addEventListener('click', function() {
+    if (!selectedPaymentMethod) {
+        showToast('Please select a payment method', 'error');
+        return;
+    }
+    var statusDiv = document.getElementById('paymentStatus');
+    statusDiv.className = 'payment-status processing';
+    statusDiv.style.display = 'block';
+    statusDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing payment...';
+    setTimeout(function() {
+        statusDiv.className = 'payment-status success';
+        statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Payment successful! Click "Confirm Payment" to complete.';
+        document.getElementById('proceedPaymentBtn').style.display = 'none';
+        document.getElementById('confirmPaymentBtn').style.display = 'flex';
+    }, 2000);
+});
+
+document.getElementById('confirmPaymentBtn').addEventListener('click', function() {
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var bookingReference = '';
+    for (var i = 0; i < 10; i++) bookingReference += chars.charAt(Math.floor(Math.random() * chars.length));
+    var calc = calculatePriceWithDiscount();
+    var options = { year: 'numeric', month: 'short', day: 'numeric' };
+    document.getElementById('bookingRef').innerHTML = 'LP-' + bookingReference;
+    document.getElementById('successDetails').innerHTML = 
+        '<p><strong>Property:</strong> Lumbini Peace Lodge</p>' +
+        '<p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p>' +
+        '<p><strong>Guests:</strong> ' + document.getElementById('guests').value + '</p>' +
+        '<p><strong>Total Paid:</strong> NPR ' + calc.total.toLocaleString() + '</p>';
+    document.getElementById('bookingModal').classList.remove('active');
+    document.getElementById('successModal').classList.add('active');
+    selectedCheckIn = null;
+    selectedCheckOut = null;
+    appliedCoupon = null;
+    document.getElementById('couponCode').value = '';
+    document.getElementById('discountMessage').innerHTML = '';
+    calculatePriceWithDiscount();
+    updateBookingSummary();
+    renderCalendar();
+});
+
+function closeBookingModal() { document.getElementById('bookingModal').classList.remove('active'); }
+function closeSuccessModal() { document.getElementById('successModal').classList.remove('active'); }
+function redirectToBrowse() { window.location.href = "{{ url_for('auth.browse') }}"; }
+function downloadInvoice() { showToast('Downloading invoice...', 'success'); }
+function copyBankText(elementId) {
+    var text = document.getElementById(elementId).textContent;
+    navigator.clipboard.writeText(text);
+    showToast('Copied to clipboard!', 'success');
+}
+
+function showToast(message, type) {
+    var container = document.getElementById('toasts');
+    if (!container) {
+        var c = document.createElement('div');
+        c.className = 'toast-container';
+        c.id = 'toasts';
+        document.body.appendChild(c);
+        container = c;
+    }
+    var toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.innerHTML = '<span class="toast-icon">' + (type === 'success' ? '✓' : (type === 'error' ? '✕' : 'ℹ')) + '</span><span>' + message + '</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>';
+    container.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 4000);
+}
+
+renderCalendar();
+calculatePriceWithDiscount();
 </script>
 {% endblock %}
