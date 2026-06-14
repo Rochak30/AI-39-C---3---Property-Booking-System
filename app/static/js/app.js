@@ -33,6 +33,17 @@ let filterAmenity = null;
 let minPrice = null, maxPrice = null;
 let sortBy = 'popular';
 
+// Global variables for booking (will be set by property page)
+window.selectedCheckIn = null;
+window.selectedCheckOut = null;
+window.appliedCoupon = null;
+window.pricePerNight = 2500;
+window.availableCoupons = {
+    'WELCOME10': { discount: 10, type: 'percentage', message: '10% off!', description: '10% discount applied' },
+    'SAVE20': { discount: 20, type: 'percentage', message: '20% off!', description: '20% discount applied' },
+    'FLAT500': { discount: 500, type: 'fixed', message: 'NPR 500 off!', description: 'NPR 500 discount applied' }
+};
+
 // ============================================================
 // THEME
 // ============================================================
@@ -66,8 +77,14 @@ function showToast(msg, type = 'info') {
   const t = document.createElement('div');
   t.className = `toast ${type}`;
   t.innerHTML = `<span class="toast-icon">${icons[type] || 'ℹ'}</span><span>${msg}</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
-  const container = document.getElementById('toasts');
-  if (container) container.appendChild(t);
+  let container = document.getElementById('toasts');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toasts';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+  container.appendChild(t);
   setTimeout(() => t.remove(), 4000);
 }
 
@@ -75,18 +92,36 @@ function showToast(msg, type = 'info') {
 // MODAL
 // ============================================================
 function openModal(title, body) {
+  let modalOverlay = document.getElementById('modal-overlay');
+  if (!modalOverlay) {
+    const modalHtml = `
+      <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+        <div class="modal">
+          <div class="modal-header">
+            <span class="modal-title" id="modal-title"></span>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+          </div>
+          <div id="modal-body"></div>
+        </div>
+      </div>`;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    modalOverlay = document.getElementById('modal-overlay');
+  }
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-body').innerHTML = body;
-  document.getElementById('modal-overlay').classList.add('open');
+  modalOverlay.classList.add('open');
 }
+
 function closeModal(e) {
-  if (!e || e.target.id === 'modal-overlay' || e.target.classList.contains('modal-close')) {
-    document.getElementById('modal-overlay').classList.remove('open');
+  const modalOverlay = document.getElementById('modal-overlay');
+  if (!modalOverlay) return;
+  if (!e || e.target.id === 'modal-overlay' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))) {
+    modalOverlay.classList.remove('open');
   }
 }
 
 // ============================================================
-// PROPERTY CARD BUILDER (used on home + browse)
+// PROPERTY CARD BUILDER
 // ============================================================
 function buildCard(p) {
   const inWishlist = wishlist.includes(p.id);
@@ -183,7 +218,7 @@ function toggleWishlist(id, btn) {
 }
 
 // ============================================================
-// CANCEL BOOKING MODAL (guest dashboard)
+// CANCEL BOOKING MODAL
 // ============================================================
 function cancelBooking(ref) {
   openModal('Cancel Booking', `
@@ -199,7 +234,7 @@ function cancelBooking(ref) {
 }
 
 // ============================================================
-// ADD PROPERTY MODAL (host dashboard)
+// ADD PROPERTY MODAL
 // ============================================================
 function showAddPropertyModal() {
   openModal('Add New Property', `
@@ -221,45 +256,124 @@ function showAddPropertyModal() {
 }
 
 // ============================================================
-// IMAGE VIEWER FUNCTIONS - FULLY WORKING
+// ENHANCED BOOKING MODAL FUNCTIONS
 // ============================================================
 
-// Array of bedroom images
+// Function to show enhanced booking modal with beautiful styling
+function showEnhancedBookingModal(selectedCheckIn, selectedCheckOut, guests, pricePerNight, nights, subtotal, discount, total, appliedCoupon, availableCoupons) {
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    
+    const bookingSummaryHtml = `
+        <div class="booking-summary-item">
+            <span><i class="fas fa-building"></i> Property</span>
+            <strong>🏔️ Mountain View Homestay</strong>
+        </div>
+        <div class="booking-summary-item">
+            <span><i class="fas fa-calendar-check"></i> Check-in</span>
+            <strong>${selectedCheckIn.toLocaleDateString('en-US', options)}</strong>
+        </div>
+        <div class="booking-summary-item">
+            <span><i class="fas fa-calendar-times"></i> Check-out</span>
+            <strong>${selectedCheckOut.toLocaleDateString('en-US', options)}</strong>
+        </div>
+        <div class="booking-summary-item">
+            <span><i class="fas fa-users"></i> Guests</span>
+            <strong>${guests} ${parseInt(guests) === 1 ? 'Guest' : 'Guests'}</strong>
+        </div>
+        <div class="booking-summary-item">
+            <span><i class="fas fa-clock"></i> Stay Duration</span>
+            <strong>${nights} ${nights === 1 ? 'Night' : 'Nights'}</strong>
+        </div>
+    `;
+    
+    let priceHtml = `
+        <div class="row">
+            <span><i class="fas fa-tag"></i> Nightly Rate</span>
+            <span>NPR ${pricePerNight.toLocaleString()} × ${nights}</span>
+        </div>
+    `;
+    
+    if (appliedCoupon && availableCoupons && availableCoupons[appliedCoupon]) {
+        const coupon = availableCoupons[appliedCoupon];
+        priceHtml += `
+            <div class="row" style="color: var(--teal);">
+                <span><i class="fas fa-ticket-alt"></i> Discount (${coupon.discount}${coupon.type === 'percentage' ? '% OFF' : ' OFF'})</span>
+                <span style="color: var(--teal);">-NPR ${discount.toLocaleString()}</span>
+            </div>
+        `;
+    }
+    
+    priceHtml += `
+        <div class="row">
+            <span><i class="fas fa-wallet"></i> Subtotal</span>
+            <span>NPR ${subtotal.toLocaleString()}</span>
+        </div>
+        <div class="row">
+            <span><i class="fas fa-receipt"></i> Tax & Fees</span>
+            <span>Included</span>
+        </div>
+        <div class="row" style="border-top: 2px solid var(--border); margin-top: 5px; padding-top: 12px;">
+            <span><i class="fas fa-credit-card"></i> <strong>Total Amount</strong></span>
+            <strong>NPR ${total.toLocaleString()}</strong>
+        </div>
+    `;
+    
+    const summaryDiv = document.getElementById('bookingSummary');
+    const priceDiv = document.getElementById('priceBreakdown');
+    if (summaryDiv) summaryDiv.innerHTML = bookingSummaryHtml;
+    if (priceDiv) priceDiv.innerHTML = priceHtml;
+}
+
+// Function to get QR code URL
+function getQRCodeUrl(amount, method) {
+    return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + method.toUpperCase() + ':PAY:' + amount + ':BOOKMANDU';
+}
+
+// Function to copy text to clipboard
+function copyBankText(elementId) {
+    const text = document.getElementById(elementId).textContent;
+    navigator.clipboard.writeText(text);
+    showToast('Copied to clipboard!', 'success');
+}
+
+// ============================================================
+// IMAGE VIEWER FUNCTIONS
+// ============================================================
+
 var bedroomImages = [
-    'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800',
-    'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800',
-    'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800',
-    'https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?w=800'
+    'https://images.pexels.com/photos/2716242/pexels-photo-2716242.jpeg?w=800',
+    'https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?w=800',
+    'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?w=800',
+    'https://images.pexels.com/photos/2716241/pexels-photo-2716241.jpeg?w=800'
 ];
 
-// Array of all gallery images
 var galleryAllImages = [
-    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
-    'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800',
-    'https://images.unsplash.com/photo-1468413253725-0d518109b803?w=800',
-    'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800',
-    'https://images.unsplash.com/photo-1580829732192-817f0fd9d7cf?w=800',
-    'https://images.unsplash.com/photo-1558798539-e7d702ca26a9?w=800'
+    'https://images.pexels.com/photos/3795512/pexels-photo-3795512.jpeg?w=800',
+    'https://images.pexels.com/photos/10154183/pexels-photo-10154183.jpeg?w=800',
+    'https://images.pexels.com/photos/733745/pexels-photo-733745.jpeg?w=800',
+    'https://images.pexels.com/photos/2716242/pexels-photo-2716242.jpeg?w=800',
+    'https://images.pexels.com/photos/5297813/pexels-photo-5297813.jpeg?w=800',
+    'https://images.pexels.com/photos/4173448/pexels-photo-4173448.jpeg?w=800'
 ];
 
 function openImageViewer(index) {
-    var imageModal = document.getElementById('imageViewerModal');
+    let imageModal = document.getElementById('imageViewerModal');
     if (!imageModal) {
-        var modalHtml = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)">' +
+        const modalHtml = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)">' +
             '<div class="modal" style="max-width: 600px;">' +
             '<div class="modal-header">' +
-            '<span class="modal-title">Bedroom View</span>' +
+            '<span class="modal-title">Room View</span>' +
             '<button class="modal-close" onclick="closeImageViewer()">✕</button>' +
             '</div>' +
             '<div id="imageViewerBody" style="text-align: center;">' +
-            '<img id="currentImageView" src="" alt="Bedroom" style="width: 100%; border-radius: 12px;">' +
+            '<img id="currentImageView" src="" alt="Room" style="width: 100%; border-radius: 12px;">' +
             '</div>' +
             '</div>' +
             '</div>';
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         imageModal = document.getElementById('imageViewerModal');
     }
-    var imgElement = document.getElementById('currentImageView');
+    const imgElement = document.getElementById('currentImageView');
     if (imgElement && bedroomImages[index]) {
         imgElement.src = bedroomImages[index];
     }
@@ -267,9 +381,10 @@ function openImageViewer(index) {
 }
 
 function closeImageViewer(e) {
-    var modal = document.getElementById('imageViewerModal');
+    const modal = document.getElementById('imageViewerModal');
+    if (!modal) return;
     if (!e || e.target.id === 'imageViewerModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))) {
-        if (modal) modal.classList.remove('open');
+        modal.classList.remove('open');
     }
 }
 
@@ -282,9 +397,9 @@ function openAllImages() {
 }
 
 function openFullGallery() {
-    var galleryModal = document.getElementById('galleryModal');
+    let galleryModal = document.getElementById('galleryModal');
     if (!galleryModal) {
-        var galleryHtml = '<div class="modal-overlay" id="galleryModal" onclick="closeGalleryModal(event)">' +
+        const galleryHtml = '<div class="modal-overlay" id="galleryModal" onclick="closeGalleryModal(event)">' +
             '<div class="modal" style="max-width: 700px;">' +
             '<div class="modal-header">' +
             '<span class="modal-title">Property Gallery</span>' +
@@ -297,10 +412,10 @@ function openFullGallery() {
         document.body.insertAdjacentHTML('beforeend', galleryHtml);
         galleryModal = document.getElementById('galleryModal');
     }
-    var galleryBody = document.getElementById('galleryBody');
+    const galleryBody = document.getElementById('galleryBody');
     if (galleryBody) {
         galleryBody.innerHTML = '';
-        for (var i = 0; i < galleryAllImages.length; i++) {
+        for (let i = 0; i < galleryAllImages.length; i++) {
             galleryBody.innerHTML += '<img src="' + galleryAllImages[i] + '" alt="Gallery image" style="width: 100%; border-radius: 12px; cursor: pointer; margin-bottom: 8px;" onclick="openFullImage(' + i + ')">';
         }
     }
@@ -308,18 +423,19 @@ function openFullGallery() {
 }
 
 function closeGalleryModal(e) {
-    var modal = document.getElementById('galleryModal');
+    const modal = document.getElementById('galleryModal');
+    if (!modal) return;
     if (!e || e.target.id === 'galleryModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))) {
-        if (modal) modal.classList.remove('open');
+        modal.classList.remove('open');
     }
 }
 
 function openFullImage(index) {
     closeGalleryModal();
     if (galleryAllImages[index]) {
-        var tempModal = document.getElementById('imageViewerModal');
+        let tempModal = document.getElementById('imageViewerModal');
         if (!tempModal) {
-            var modalHtml = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)">' +
+            const modalHtml = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)">' +
                 '<div class="modal" style="max-width: 600px;">' +
                 '<div class="modal-header">' +
                 '<span class="modal-title">Photo View</span>' +
@@ -333,20 +449,20 @@ function openFullImage(index) {
             document.body.insertAdjacentHTML('beforeend', modalHtml);
             tempModal = document.getElementById('imageViewerModal');
         }
-        var imgElement = document.getElementById('currentImageView');
+        const imgElement = document.getElementById('currentImageView');
         if (imgElement) imgElement.src = galleryAllImages[index];
         if (tempModal) tempModal.classList.add('open');
     }
 }
 
 // ============================================================
-// HOUSE RULES MODAL - FULLY WORKING
+// HOUSE RULES MODAL
 // ============================================================
 
 function showAllRules() {
-    var rulesModal = document.getElementById('rulesModal');
+    let rulesModal = document.getElementById('rulesModal');
     if (!rulesModal) {
-        var modalHtml = '<div class="modal-overlay" id="rulesModal" onclick="closeRulesModal(event)">' +
+        const modalHtml = '<div class="modal-overlay" id="rulesModal" onclick="closeRulesModal(event)">' +
             '<div class="modal" style="max-width: 550px;">' +
             '<div class="modal-header">' +
             '<span class="modal-title">All House Rules (18)</span>' +
@@ -383,13 +499,321 @@ function showAllRules() {
 }
 
 function closeRulesModal(e) {
-    var modal = document.getElementById('rulesModal');
+    const modal = document.getElementById('rulesModal');
+    if (!modal) return;
     if (!e || e.target.id === 'rulesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))) {
-        if (modal) modal.classList.remove('open');
+        modal.classList.remove('open');
     }
 }
 
-// Make functions globally available for onclick handlers
+// ============================================================
+// COUPON SYSTEM FUNCTIONS
+// ============================================================
+
+function applyCouponCode(couponCode, pricePerNight, selectedCheckIn, selectedCheckOut, guests, updateCallback) {
+    const code = couponCode.trim().toUpperCase();
+    
+    if (!code) {
+        return { success: false, message: 'Please enter a coupon code' };
+    }
+    
+    const coupon = window.availableCoupons[code];
+    if (!coupon) {
+        return { success: false, message: 'Invalid coupon code. Try: WELCOME10, SAVE20, FLAT500' };
+    }
+    
+    const nights = getNightsFromDates(selectedCheckIn, selectedCheckOut);
+    if (nights === 0) {
+        return { success: false, message: 'Please select check-in and check-out dates first' };
+    }
+    
+    window.appliedCoupon = code;
+    const subtotal = nights * pricePerNight;
+    let discountAmount = 0;
+    
+    if (coupon.type === 'percentage') {
+        discountAmount = subtotal * (coupon.discount / 100);
+    } else if (coupon.type === 'fixed') {
+        discountAmount = Math.min(coupon.discount, subtotal);
+    }
+    
+    window.currentDiscountValue = discountAmount;
+    const total = subtotal - discountAmount;
+    
+    return { 
+        success: true, 
+        message: coupon.message + ' Applied! ' + coupon.description,
+        discountAmount: discountAmount,
+        subtotal: subtotal,
+        total: total,
+        couponCode: code,
+        discountPercent: coupon.type === 'percentage' ? coupon.discount + '% off' : 'NPR ' + coupon.discount + ' off'
+    };
+}
+
+function removeAppliedCoupon() {
+    window.appliedCoupon = null;
+    window.currentDiscountValue = 0;
+    return { success: true, message: 'Coupon removed' };
+}
+
+function getNightsFromDates(checkIn, checkOut) {
+    if (!checkIn || !checkOut) return 0;
+    const diffTime = Math.abs(checkOut - checkIn);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+function getCurrentAppliedCoupon() {
+    return window.appliedCoupon;
+}
+
+function getCurrentDiscountValue() {
+    return window.currentDiscountValue;
+}
+
+// ============================================================
+// GLOBAL EVENT LISTENERS SETUP
+// ============================================================
+
+function setupGlobalEventListeners() {
+    // Confirm Booking Button
+    const confirmBtn = document.getElementById('confirmBookingBtn');
+    if (confirmBtn) {
+        // Remove old listeners by cloning
+        const newBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+        
+        newBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Confirm booking clicked');
+            
+            if (window.selectedCheckIn && window.selectedCheckOut) {
+                // Get values from the page
+                const guests = document.getElementById('guests') ? document.getElementById('guests').value : 2;
+                const nights = getNightsFromDates(window.selectedCheckIn, window.selectedCheckOut);
+                const subtotal = nights * window.pricePerNight;
+                let discount = 0;
+                
+                if (window.appliedCoupon && window.availableCoupons[window.appliedCoupon]) {
+                    const coupon = window.availableCoupons[window.appliedCoupon];
+                    if (coupon.type === 'percentage') {
+                        discount = subtotal * (coupon.discount / 100);
+                    } else {
+                        discount = Math.min(coupon.discount, subtotal);
+                    }
+                }
+                const total = subtotal - discount;
+                
+                // Show enhanced modal
+                showEnhancedBookingModal(
+                    window.selectedCheckIn, 
+                    window.selectedCheckOut, 
+                    guests, 
+                    window.pricePerNight, 
+                    nights, 
+                    subtotal, 
+                    discount, 
+                    total, 
+                    window.appliedCoupon, 
+                    window.availableCoupons
+                );
+                
+                // Open the modal
+                const modal = document.getElementById('bookingModal');
+                if (modal) {
+                    modal.classList.add('active');
+                    // Reset payment related elements
+                    const qrSection = document.getElementById('qrSection');
+                    const paymentStatus = document.getElementById('paymentStatus');
+                    const proceedBtn = document.getElementById('proceedPaymentBtn');
+                    const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
+                    
+                    if (qrSection) qrSection.style.display = 'none';
+                    if (paymentStatus) {
+                        paymentStatus.className = 'payment-status';
+                        paymentStatus.style.display = 'none';
+                    }
+                    if (proceedBtn) proceedBtn.style.display = 'flex';
+                    if (confirmPaymentBtn) confirmPaymentBtn.style.display = 'none';
+                    
+                    // Reset payment method selection
+                    const paymentMethods = document.querySelectorAll('.payment-method-enhanced');
+                    paymentMethods.forEach(m => m.classList.remove('active'));
+                    window.selectedPaymentMethod = null;
+                } else {
+                    showToast('Error opening booking modal', 'error');
+                }
+            } else {
+                showToast('Please select check-in and check-out dates first', 'error');
+            }
+        });
+    }
+    
+    // Payment Methods
+    const paymentMethods = document.querySelectorAll('.payment-method-enhanced');
+    paymentMethods.forEach(method => {
+        const newMethod = method.cloneNode(true);
+        method.parentNode.replaceChild(newMethod, method);
+        
+        newMethod.addEventListener('click', function() {
+            document.querySelectorAll('.payment-method-enhanced').forEach(m => m.classList.remove('active'));
+            this.classList.add('active');
+            window.selectedPaymentMethod = this.getAttribute('data-method');
+            
+            const calc = { total: 0 };
+            if (window.selectedCheckIn && window.selectedCheckOut) {
+                const nights = getNightsFromDates(window.selectedCheckIn, window.selectedCheckOut);
+                const subtotal = nights * window.pricePerNight;
+                let discount = 0;
+                if (window.appliedCoupon && window.availableCoupons[window.appliedCoupon]) {
+                    const coupon = window.availableCoupons[window.appliedCoupon];
+                    if (coupon.type === 'percentage') {
+                        discount = subtotal * (coupon.discount / 100);
+                    } else {
+                        discount = Math.min(coupon.discount, subtotal);
+                    }
+                }
+                calc.total = subtotal - discount;
+            }
+            
+            const qrSection = document.getElementById('qrSection');
+            const bankDetails = document.getElementById('bankDetails');
+            const qrImage = document.getElementById('qrImage');
+            
+            if (qrSection) qrSection.style.display = 'block';
+            if (window.selectedPaymentMethod === 'bank') {
+                if (bankDetails) bankDetails.style.display = 'block';
+                if (qrImage) qrImage.style.display = 'none';
+                const paymentAmount = document.getElementById('paymentAmount');
+                if (paymentAmount) paymentAmount.textContent = 'NPR ' + calc.total.toLocaleString();
+            } else {
+                if (bankDetails) bankDetails.style.display = 'none';
+                if (qrImage) {
+                    qrImage.style.display = 'block';
+                    qrImage.src = getQRCodeUrl(calc.total, window.selectedPaymentMethod);
+                }
+            }
+        });
+    });
+    
+    // Proceed Payment Button
+    const proceedBtn = document.getElementById('proceedPaymentBtn');
+    if (proceedBtn) {
+        const newBtn = proceedBtn.cloneNode(true);
+        proceedBtn.parentNode.replaceChild(newBtn, proceedBtn);
+        
+        newBtn.addEventListener('click', function() {
+            if (!window.selectedPaymentMethod) {
+                showToast('Please select a payment method', 'error');
+                return;
+            }
+            const statusDiv = document.getElementById('paymentStatus');
+            if (statusDiv) {
+                statusDiv.className = 'payment-status processing';
+                statusDiv.style.display = 'block';
+                statusDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing payment...';
+            }
+            setTimeout(function() {
+                if (statusDiv) {
+                    statusDiv.className = 'payment-status success';
+                    statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Payment successful! Click "Confirm Payment" to complete.';
+                }
+                const proceedBtnEl = document.getElementById('proceedPaymentBtn');
+                const confirmBtnEl = document.getElementById('confirmPaymentBtn');
+                if (proceedBtnEl) proceedBtnEl.style.display = 'none';
+                if (confirmBtnEl) confirmBtnEl.style.display = 'flex';
+            }, 2000);
+        });
+    }
+    
+    // Confirm Payment Button
+    const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
+    if (confirmPaymentBtn) {
+        const newBtn = confirmPaymentBtn.cloneNode(true);
+        confirmPaymentBtn.parentNode.replaceChild(newBtn, confirmPaymentBtn);
+        
+        newBtn.addEventListener('click', function() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let bookingReference = '';
+            for (let i = 0; i < 10; i++) bookingReference += chars.charAt(Math.floor(Math.random() * chars.length));
+            
+            let total = 0;
+            if (window.selectedCheckIn && window.selectedCheckOut) {
+                const nights = getNightsFromDates(window.selectedCheckIn, window.selectedCheckOut);
+                const subtotal = nights * window.pricePerNight;
+                let discount = 0;
+                if (window.appliedCoupon && window.availableCoupons[window.appliedCoupon]) {
+                    const coupon = window.availableCoupons[window.appliedCoupon];
+                    if (coupon.type === 'percentage') {
+                        discount = subtotal * (coupon.discount / 100);
+                    } else {
+                        discount = Math.min(coupon.discount, subtotal);
+                    }
+                }
+                total = subtotal - discount;
+            }
+            
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            const bookingRefEl = document.getElementById('bookingRef');
+            const successDetailsEl = document.getElementById('successDetails');
+            const bookingModal = document.getElementById('bookingModal');
+            const successModal = document.getElementById('successModal');
+            
+            if (bookingRefEl) bookingRefEl.innerHTML = 'MV-' + bookingReference;
+            if (successDetailsEl) {
+                successDetailsEl.innerHTML = '<p><strong>Property:</strong> Mountain View Homestay</p><p><strong>Dates:</strong> ' + 
+                    window.selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + 
+                    window.selectedCheckOut.toLocaleDateString('en-US', options) + 
+                    '</p><p><strong>Guests:</strong> ' + (document.getElementById('guests') ? document.getElementById('guests').value : '2') + 
+                    '</p><p><strong>Total Paid:</strong> NPR ' + total.toLocaleString() + '</p>';
+            }
+            if (bookingModal) bookingModal.classList.remove('active');
+            if (successModal) successModal.classList.add('active');
+            
+            // Reset booking data
+            window.selectedCheckIn = null;
+            window.selectedCheckOut = null;
+            window.appliedCoupon = null;
+            if (document.getElementById('couponCode')) document.getElementById('couponCode').value = '';
+            const discountMsg = document.getElementById('discountMessage');
+            if (discountMsg) discountMsg.style.display = 'none';
+            
+            // Trigger refresh if functions exist on page
+            if (typeof calculatePriceWithDiscount === 'function') calculatePriceWithDiscount();
+            if (typeof updateBookingSummary === 'function') updateBookingSummary();
+            if (typeof renderCalendar === 'function') renderCalendar();
+        });
+    }
+}
+
+// Close modal functions
+function closeBookingModal() { 
+    const modal = document.getElementById('bookingModal');
+    if (modal) modal.classList.remove('active');
+}
+
+function closeSuccessModal() { 
+    const modal = document.getElementById('successModal');
+    if (modal) modal.classList.remove('active');
+}
+
+function redirectToBrowse() { 
+    window.location.href = "/browse"; 
+}
+
+function downloadInvoice() { 
+    showToast('Downloading invoice...', 'success'); 
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('App.js DOM loaded, setting up event listeners');
+    setupGlobalEventListeners();
+});
+
+// ============================================================
+// MAKE FUNCTIONS GLOBALLY AVAILABLE
+// ============================================================
 window.openImageViewer = openImageViewer;
 window.closeImageViewer = closeImageViewer;
 window.openAllImages = openAllImages;
@@ -398,3 +822,24 @@ window.closeGalleryModal = closeGalleryModal;
 window.openFullImage = openFullImage;
 window.showAllRules = showAllRules;
 window.closeRulesModal = closeRulesModal;
+window.applyCouponCode = applyCouponCode;
+window.removeAppliedCoupon = removeAppliedCoupon;
+window.getCurrentAppliedCoupon = getCurrentAppliedCoupon;
+window.getCurrentDiscountValue = getCurrentDiscountValue;
+window.toggleTheme = toggleTheme;
+window.showToast = showToast;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.toggleWishlist = toggleWishlist;
+window.cancelBooking = cancelBooking;
+window.showAddPropertyModal = showAddPropertyModal;
+window.showEnhancedBookingModal = showEnhancedBookingModal;
+window.getQRCodeUrl = getQRCodeUrl;
+window.copyBankText = copyBankText;
+window.closeBookingModal = closeBookingModal;
+window.closeSuccessModal = closeSuccessModal;
+window.redirectToBrowse = redirectToBrowse;
+window.downloadInvoice = downloadInvoice;
+window.getNightsFromDates = getNightsFromDates;
+
+console.log('Bookmandu app.js loaded successfully with event handlers!');
