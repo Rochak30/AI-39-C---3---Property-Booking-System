@@ -1,0 +1,4 @@
+'WELCOME10'- Gives 10% discount
+'SAVE20'- Gives 20% discount
+'FLAT500'- Flat Npr500 discount
+'SPECIAL50'- Special 50% off (limited edition)
