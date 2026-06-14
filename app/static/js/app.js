@@ -39,10 +39,70 @@ window.selectedCheckOut = null;
 window.appliedCoupon = null;
 window.pricePerNight = 2500;
 window.availableCoupons = {
-    'WELCOME10': { discount: 10, type: 'percentage', message: '10% off!', description: '10% discount applied' },
-    'SAVE20': { discount: 20, type: 'percentage', message: '20% off!', description: '20% discount applied' },
-    'FLAT500': { discount: 500, type: 'fixed', message: 'NPR 500 off!', description: 'NPR 500 discount applied' }
+    'WELCOME10': { discount: 10, type: 'percentage', message: '10% off!', description: '10% discount applied', code: 'WELCOME10' },
+    'SAVE20': { discount: 20, type: 'percentage', message: '20% off!', description: '20% discount applied', code: 'SAVE20' },
+    'FLAT500': { discount: 500, type: 'fixed', message: 'NPR 500 off!', description: 'NPR 500 discount applied', code: 'FLAT500' }
 };
+
+// Track used coupons - stored in localStorage for persistence across page refreshes
+let usedCoupons = [];
+
+// Load used coupons from localStorage (persists even after page refresh)
+function loadUsedCoupons() {
+    try {
+        const savedUsedCoupons = localStorage.getItem('bookmandu_used_coupons');
+        if (savedUsedCoupons) {
+            usedCoupons = JSON.parse(savedUsedCoupons);
+            console.log('Loaded used coupons from storage:', usedCoupons);
+        } else {
+            usedCoupons = [];
+        }
+    } catch(e) {
+        console.log('Error loading used coupons:', e);
+        usedCoupons = [];
+    }
+}
+
+// Save used coupons to localStorage
+function saveUsedCoupons() {
+    try {
+        localStorage.setItem('bookmandu_used_coupons', JSON.stringify(usedCoupons));
+        console.log('Saved used coupons to storage:', usedCoupons);
+    } catch(e) {
+        console.log('Error saving used coupons:', e);
+    }
+}
+
+// Check if coupon has been used already
+function isCouponUsed(couponCode) {
+    const isUsed = usedCoupons.includes(couponCode);
+    console.log(`Checking coupon ${couponCode}: ${isUsed ? 'ALREADY USED' : 'NOT USED YET'}`);
+    return isUsed;
+}
+
+// Mark coupon as used and save immediately
+function markCouponUsed(couponCode) {
+    if (!usedCoupons.includes(couponCode)) {
+        usedCoupons.push(couponCode);
+        saveUsedCoupons();
+        console.log('Coupon marked as used and saved:', couponCode);
+        console.log('All used coupons:', usedCoupons);
+        return true;
+    }
+    console.log('Coupon already in used list:', couponCode);
+    return false;
+}
+
+// Clear all used coupons (for testing/debugging)
+function clearUsedCoupons() {
+    usedCoupons = [];
+    localStorage.removeItem('bookmandu_used_coupons');
+    showToast('All coupon records cleared', 'info');
+    console.log('All used coupons cleared');
+}
+
+// Initialize - load used coupons on script load
+loadUsedCoupons();
 
 // ============================================================
 // THEME
@@ -337,6 +397,96 @@ function copyBankText(elementId) {
 }
 
 // ============================================================
+// COUPON APPLICATION WITH ONE-TIME USE (PERSISTENT)
+// ============================================================
+
+function applyCouponCode(couponCode, pricePerNight, selectedCheckIn, selectedCheckOut, guests, updateCallback) {
+    const code = couponCode.trim().toUpperCase();
+    
+    if (!code) {
+        return { success: false, message: 'Please enter a coupon code' };
+    }
+    
+    // Check if coupon exists
+    const coupon = window.availableCoupons[code];
+    if (!coupon) {
+        return { success: false, message: '❌ Invalid coupon code. Please check and try again.' };
+    }
+    
+    // Check if dates are selected
+    const nights = getNightsFromDates(selectedCheckIn, selectedCheckOut);
+    if (nights === 0) {
+        return { success: false, message: '📅 Please select check-in and check-out dates first' };
+    }
+    
+    // CRITICAL: Check if coupon has already been used (from localStorage)
+    if (isCouponUsed(code)) {
+        return { 
+            success: false, 
+            message: '❌ This coupon code has already been used! Each coupon can only be used once per user/device.' 
+        };
+    }
+    
+    // Check if user already has a different coupon applied
+    if (window.appliedCoupon && window.appliedCoupon !== code) {
+        return { success: false, message: 'You already have a coupon applied. Remove it first to use another coupon.' };
+    }
+    
+    window.appliedCoupon = code;
+    const subtotal = nights * pricePerNight;
+    let discountAmount = 0;
+    
+    if (coupon.type === 'percentage') {
+        discountAmount = subtotal * (coupon.discount / 100);
+    } else if (coupon.type === 'fixed') {
+        discountAmount = Math.min(coupon.discount, subtotal);
+    }
+    
+    window.currentDiscountValue = discountAmount;
+    const total = subtotal - discountAmount;
+    
+    // CRITICAL: Mark this coupon as used immediately and save to localStorage
+    markCouponUsed(code);
+    
+    return { 
+        success: true, 
+        message: '✅ ' + coupon.message + ' Applied Successfully!',
+        discountAmount: discountAmount,
+        subtotal: subtotal,
+        total: total,
+        couponCode: code,
+        discountPercent: coupon.type === 'percentage' ? coupon.discount + '% off' : 'NPR ' + coupon.discount + ' off'
+    };
+}
+
+function removeAppliedCoupon() {
+    if (window.appliedCoupon) {
+        // Note: Even after removal, the coupon remains in usedCoupons (localStorage)
+        // This prevents reusing the same coupon after removal
+        const removedCode = window.appliedCoupon;
+        window.appliedCoupon = null;
+        window.currentDiscountValue = 0;
+        showToast('Coupon removed. This coupon cannot be used again as it has already been redeemed.', 'info');
+        return { success: true, message: 'Coupon removed', removedCode: removedCode };
+    }
+    return { success: false, message: 'No coupon to remove' };
+}
+
+function getNightsFromDates(checkIn, checkOut) {
+    if (!checkIn || !checkOut) return 0;
+    const diffTime = Math.abs(checkOut - checkIn);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+function getCurrentAppliedCoupon() {
+    return window.appliedCoupon;
+}
+
+function getCurrentDiscountValue() {
+    return window.currentDiscountValue;
+}
+
+// ============================================================
 // IMAGE VIEWER FUNCTIONS
 // ============================================================
 
@@ -507,71 +657,6 @@ function closeRulesModal(e) {
 }
 
 // ============================================================
-// COUPON SYSTEM FUNCTIONS
-// ============================================================
-
-function applyCouponCode(couponCode, pricePerNight, selectedCheckIn, selectedCheckOut, guests, updateCallback) {
-    const code = couponCode.trim().toUpperCase();
-    
-    if (!code) {
-        return { success: false, message: 'Please enter a coupon code' };
-    }
-    
-    const coupon = window.availableCoupons[code];
-    if (!coupon) {
-        return { success: false, message: 'Invalid coupon code. Try: WELCOME10, SAVE20, FLAT500' };
-    }
-    
-    const nights = getNightsFromDates(selectedCheckIn, selectedCheckOut);
-    if (nights === 0) {
-        return { success: false, message: 'Please select check-in and check-out dates first' };
-    }
-    
-    window.appliedCoupon = code;
-    const subtotal = nights * pricePerNight;
-    let discountAmount = 0;
-    
-    if (coupon.type === 'percentage') {
-        discountAmount = subtotal * (coupon.discount / 100);
-    } else if (coupon.type === 'fixed') {
-        discountAmount = Math.min(coupon.discount, subtotal);
-    }
-    
-    window.currentDiscountValue = discountAmount;
-    const total = subtotal - discountAmount;
-    
-    return { 
-        success: true, 
-        message: coupon.message + ' Applied! ' + coupon.description,
-        discountAmount: discountAmount,
-        subtotal: subtotal,
-        total: total,
-        couponCode: code,
-        discountPercent: coupon.type === 'percentage' ? coupon.discount + '% off' : 'NPR ' + coupon.discount + ' off'
-    };
-}
-
-function removeAppliedCoupon() {
-    window.appliedCoupon = null;
-    window.currentDiscountValue = 0;
-    return { success: true, message: 'Coupon removed' };
-}
-
-function getNightsFromDates(checkIn, checkOut) {
-    if (!checkIn || !checkOut) return 0;
-    const diffTime = Math.abs(checkOut - checkIn);
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-}
-
-function getCurrentAppliedCoupon() {
-    return window.appliedCoupon;
-}
-
-function getCurrentDiscountValue() {
-    return window.currentDiscountValue;
-}
-
-// ============================================================
 // GLOBAL EVENT LISTENERS SETUP
 // ============================================================
 
@@ -579,7 +664,6 @@ function setupGlobalEventListeners() {
     // Confirm Booking Button
     const confirmBtn = document.getElementById('confirmBookingBtn');
     if (confirmBtn) {
-        // Remove old listeners by cloning
         const newBtn = confirmBtn.cloneNode(true);
         confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
         
@@ -588,7 +672,6 @@ function setupGlobalEventListeners() {
             console.log('Confirm booking clicked');
             
             if (window.selectedCheckIn && window.selectedCheckOut) {
-                // Get values from the page
                 const guests = document.getElementById('guests') ? document.getElementById('guests').value : 2;
                 const nights = getNightsFromDates(window.selectedCheckIn, window.selectedCheckOut);
                 const subtotal = nights * window.pricePerNight;
@@ -604,7 +687,6 @@ function setupGlobalEventListeners() {
                 }
                 const total = subtotal - discount;
                 
-                // Show enhanced modal
                 showEnhancedBookingModal(
                     window.selectedCheckIn, 
                     window.selectedCheckOut, 
@@ -618,11 +700,9 @@ function setupGlobalEventListeners() {
                     window.availableCoupons
                 );
                 
-                // Open the modal
                 const modal = document.getElementById('bookingModal');
                 if (modal) {
                     modal.classList.add('active');
-                    // Reset payment related elements
                     const qrSection = document.getElementById('qrSection');
                     const paymentStatus = document.getElementById('paymentStatus');
                     const proceedBtn = document.getElementById('proceedPaymentBtn');
@@ -636,7 +716,6 @@ function setupGlobalEventListeners() {
                     if (proceedBtn) proceedBtn.style.display = 'flex';
                     if (confirmPaymentBtn) confirmPaymentBtn.style.display = 'none';
                     
-                    // Reset payment method selection
                     const paymentMethods = document.querySelectorAll('.payment-method-enhanced');
                     paymentMethods.forEach(m => m.classList.remove('active'));
                     window.selectedPaymentMethod = null;
@@ -726,7 +805,7 @@ function setupGlobalEventListeners() {
         });
     }
     
-    // Confirm Payment Button
+    // Confirm Payment Button - This is where we need to ensure coupon stays marked as used
     const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
     if (confirmPaymentBtn) {
         const newBtn = confirmPaymentBtn.cloneNode(true);
@@ -738,11 +817,13 @@ function setupGlobalEventListeners() {
             for (let i = 0; i < 10; i++) bookingReference += chars.charAt(Math.floor(Math.random() * chars.length));
             
             let total = 0;
+            let usedCouponCode = null;
             if (window.selectedCheckIn && window.selectedCheckOut) {
                 const nights = getNightsFromDates(window.selectedCheckIn, window.selectedCheckOut);
                 const subtotal = nights * window.pricePerNight;
                 let discount = 0;
                 if (window.appliedCoupon && window.availableCoupons[window.appliedCoupon]) {
+                    usedCouponCode = window.appliedCoupon;
                     const coupon = window.availableCoupons[window.appliedCoupon];
                     if (coupon.type === 'percentage') {
                         discount = subtotal * (coupon.discount / 100);
@@ -751,6 +832,13 @@ function setupGlobalEventListeners() {
                     }
                 }
                 total = subtotal - discount;
+            }
+            
+            // CRITICAL: Ensure the coupon is marked as used in localStorage
+            // This persists even after page refresh
+            if (usedCouponCode && !isCouponUsed(usedCouponCode)) {
+                markCouponUsed(usedCouponCode);
+                console.log('Coupon marked as used during booking confirmation:', usedCouponCode);
             }
             
             const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -770,7 +858,7 @@ function setupGlobalEventListeners() {
             if (bookingModal) bookingModal.classList.remove('active');
             if (successModal) successModal.classList.add('active');
             
-            // Reset booking data
+            // Reset booking data but KEEP the used coupons in localStorage
             window.selectedCheckIn = null;
             window.selectedCheckOut = null;
             window.appliedCoupon = null;
@@ -778,10 +866,14 @@ function setupGlobalEventListeners() {
             const discountMsg = document.getElementById('discountMessage');
             if (discountMsg) discountMsg.style.display = 'none';
             
-            // Trigger refresh if functions exist on page
             if (typeof calculatePriceWithDiscount === 'function') calculatePriceWithDiscount();
             if (typeof updateBookingSummary === 'function') updateBookingSummary();
             if (typeof renderCalendar === 'function') renderCalendar();
+            
+            // Show confirmation that coupon is permanently used
+            if (usedCouponCode) {
+                showToast('✅ Booking confirmed! Your coupon has been permanently redeemed.', 'success');
+            }
         });
     }
 }
@@ -808,6 +900,7 @@ function downloadInvoice() {
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     console.log('App.js DOM loaded, setting up event listeners');
+    console.log('Currently used coupons from storage:', usedCoupons);
     setupGlobalEventListeners();
 });
 
@@ -841,5 +934,11 @@ window.closeSuccessModal = closeSuccessModal;
 window.redirectToBrowse = redirectToBrowse;
 window.downloadInvoice = downloadInvoice;
 window.getNightsFromDates = getNightsFromDates;
+window.isCouponUsed = isCouponUsed;
+window.markCouponUsed = markCouponUsed;
+window.clearUsedCoupons = clearUsedCoupons;
+window.loadUsedCoupons = loadUsedCoupons;
+window.saveUsedCoupons = saveUsedCoupons;
 
-console.log('Bookmandu app.js loaded successfully with event handlers!');
+console.log('Bookmandu app.js loaded successfully with PERSISTENT one-time coupon system!');
+console.log('Used coupons will survive page refreshes via localStorage');
