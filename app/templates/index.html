@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About Bookmandu — Authentic Himalayan Homestays</title>
-<meta name="description" content="Learn about Bookmandu, our mission to connect travelers with local Nepali hosts, and the story behind our homestay platform.">
-<meta name="keywords" content="Nepal homestay, Bookmandu, authentic travel, Nepali hospitality, Himalayan stays, about us">
+<title>Bookmandu — Authentic Himalayan Homestays</title>
+<meta name="description" content="Book authentic homestays across Nepal. Connect with local hosts, experience Nepali culture, and find your perfect Himalayan retreat.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -15,7 +14,7 @@
     box-sizing: border-box;
   }
 
-  /* Theme Variables */
+  /* Light Theme Variables */
   :root {
     --bg-dark: #0a120e;
     --bg-card: #0f1814;
@@ -69,7 +68,7 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* Scan line effect */
+  /* Scan line effect - reduced in light mode */
   body::before {
     content: '';
     position: fixed;
@@ -81,7 +80,7 @@
   }
 
   [data-theme="light"] body::before {
-    opacity: 0.05;
+    opacity: 0.1;
   }
 
   /* Animated background orbs */
@@ -102,7 +101,7 @@
   .orb-1 {
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(46, 204, 113, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(46, 204, 113, 0.1) 0%, transparent 70%);
     top: -200px;
     right: -100px;
   }
@@ -110,18 +109,18 @@
   .orb-2 {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(46, 204, 113, 0.05) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(46, 204, 113, 0.06) 0%, transparent 70%);
     bottom: -100px;
     left: -150px;
     animation-delay: -5s;
   }
 
   [data-theme="light"] .orb-1 {
-    background: radial-gradient(circle, rgba(46, 204, 113, 0.04) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(46, 204, 113, 0.06) 0%, transparent 70%);
   }
 
   [data-theme="light"] .orb-2 {
-    background: radial-gradient(circle, rgba(46, 204, 113, 0.02) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(46, 204, 113, 0.03) 0%, transparent 70%);
   }
 
   /* Navigation */
@@ -240,17 +239,10 @@
     font-size: 1rem;
   }
 
-  /* Container */
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 60px 20px;
-  }
-
   /* Hero Section */
-  .about-hero {
+  .hero {
     position: relative;
-    min-height: 60vh;
+    min-height: 85vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -261,7 +253,7 @@
     transition: background 0.3s ease;
   }
 
-  [data-theme="light"] .about-hero {
+  [data-theme="light"] .hero {
     background: linear-gradient(135deg, #e8f0e8 0%, #d4e8d4 50%, #c0e0c0 100%);
   }
 
@@ -271,6 +263,23 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 5L55 20v20L30 55L5 40V20L30 5z' fill='none' stroke='rgba(46,204,113,0.03)' stroke-width='1'/%3E%3C/svg%3E");
     opacity: 0.4;
     pointer-events: none;
+  }
+
+  [data-theme="light"] .hero-bg-pattern {
+    opacity: 0.1;
+  }
+
+  .hero-bg-animation {
+    position: absolute;
+    inset: 0;
+    opacity: 0.3;
+    background: radial-gradient(circle at 30% 40%, rgba(46, 204, 113, 0.12) 0%, transparent 60%);
+    animation: pulseBg 8s ease-in-out infinite;
+  }
+
+  @keyframes pulseBg {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.05); }
   }
 
   .hero-content {
@@ -298,7 +307,7 @@
   }
 
   .hero-title {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-size: clamp(3rem, 7vw, 5rem);
     font-family: var(--font-display);
     font-weight: 800;
     margin-bottom: 20px;
@@ -327,213 +336,29 @@
     color: rgba(0,0,0,0.6);
   }
 
-  /* Section Styles */
-  .section {
-    margin-bottom: 40px;
-  }
-
-  .section-title {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 12px;
-    background: linear-gradient(135deg, var(--text-primary), var(--green));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .section-sub {
-    text-align: center;
-    color: var(--text-secondary);
-    margin-bottom: 48px;
-    font-size: 1rem;
-  }
-
-  /* Grid */
-  .grid {
-    display: grid;
-    gap: 30px;
-  }
-
-  .grid-2 {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  }
-
-  .grid-3 {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  }
-
-  .grid-4 {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  }
-
-  /* Cards */
-  .card {
-    background: var(--surface);
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-    transition: all var(--transition-base);
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    position: relative;
-  }
-
-  .card:hover {
-    transform: translateY(-6px);
-    border-color: var(--green);
-    box-shadow: 0 20px 35px -12px rgba(46, 204, 113, 0.2);
-  }
-
-  .feature-card {
-    text-align: center;
-    padding: 32px 24px;
-    background: var(--surface);
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    transition: all var(--transition-base);
-  }
-
-  .feature-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--green);
-    background: var(--surface-hover);
-  }
-
-  .feature-icon {
-    font-size: 2.5rem;
-    margin-bottom: 16px;
-  }
-
-  .feature-card h3 {
-    font-size: 1.2rem;
-    margin-bottom: 12px;
-  }
-
-  .feature-card p {
-    color: var(--text-secondary);
-    line-height: 1.6;
-    font-size: 0.85rem;
-  }
-
-  /* Quote Card */
-  .quote-card {
-    background: linear-gradient(135deg, var(--surface), var(--surface-hover));
-    border-radius: 24px;
-    padding: 32px;
-    border: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-    transition: all var(--transition-base);
-  }
-
-  .quote-card:hover {
-    border-color: var(--green);
-    transform: translateY(-4px);
-  }
-
-  /* Stats Cards */
-  .stat-card {
-    text-align: center;
-    padding: 32px 20px;
-    background: var(--surface);
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    transition: all var(--transition-base);
-  }
-
-  .stat-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--green);
-  }
-
-  .stat-number {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--green);
-    font-family: var(--font-display);
-  }
-
-  /* Team Cards */
-  .team-card {
-    text-align: center;
-    padding: 32px 20px;
-    background: var(--surface);
-    border-radius: 24px;
-    border: 1px solid var(--border);
-    transition: all var(--transition-base);
-  }
-
-  .team-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--green);
-  }
-
-  .team-avatar {
-    width: 100px;
-    height: 100px;
-    background: linear-gradient(135deg, var(--green), var(--green-dark));
-    border-radius: 50%;
+  .hero-stats {
     display: flex;
-    align-items: center;
     justify-content: center;
-    margin: 0 auto 16px;
-    font-size: 2.5rem;
+    gap: 40px;
+    margin-top: 40px;
+    flex-wrap: wrap;
   }
 
-  /* Milestones */
-  .milestones {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  .hero-stat {
+    text-align: center;
   }
 
-  .milestone-item {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    padding: 20px;
-    background: var(--surface);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    transition: all var(--transition-base);
-  }
-
-  .milestone-item:hover {
-    transform: translateX(10px);
-    border-color: var(--green);
-  }
-
-  .milestone-year {
-    font-size: 1.5rem;
-    font-weight: 800;
+  .hero-stat .number {
+    font-size: 1.8rem;
+    font-weight: 700;
     color: var(--green);
     font-family: var(--font-display);
-    min-width: 80px;
   }
 
-  /* Values Grid */
-  .values-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
-    margin-top: 32px;
-  }
-
-  .value-card {
-    text-align: center;
-    padding: 28px 20px;
-    background: var(--surface);
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    transition: all var(--transition-base);
-  }
-
-  .value-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--green);
+  .hero-stat .label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
   }
 
   /* Buttons */
@@ -574,14 +399,224 @@
     color: var(--green);
   }
 
-  /* CTA Section */
-  .cta-section {
+  .btn-lg {
+    padding: 14px 36px;
+    font-size: 1rem;
+  }
+
+  /* Container */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+  }
+
+  /* Section Styles */
+  .section {
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
     text-align: center;
-    padding: 48px 32px;
-    background: linear-gradient(135deg, rgba(46, 204, 113, 0.05), rgba(0,0,0,0));
-    border-radius: 32px;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--text-primary), var(--green));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .section-sub {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 48px;
+    font-size: 1rem;
+  }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    gap: 30px;
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border-radius: 20px;
     border: 1px solid var(--border);
-    margin-top: 40px;
+    overflow: hidden;
+    transition: all var(--transition-base);
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: var(--green);
+    box-shadow: 0 20px 35px -12px rgba(46, 204, 113, 0.2);
+  }
+
+  .feature-card {
+    text-align: center;
+    padding: 32px 24px;
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: all var(--transition-base);
+  }
+
+  .feature-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--green);
+    background: var(--surface-hover);
+  }
+
+  .feature-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+  }
+
+  .feature-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+  }
+
+  .feature-card p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 0.9rem;
+  }
+
+  /* Property Card */
+  .card-rel {
+    position: relative;
+  }
+
+  .ribbon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, var(--gold), #b8860b);
+    color: #0a120e;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    z-index: 2;
+  }
+
+  .card-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .card:hover .card-img {
+    transform: scale(1.02);
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-family: var(--font-display);
+  }
+
+  .card-loc {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .card-loc i {
+    font-size: 0.7rem;
+    color: var(--green);
+  }
+
+  .row-gap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+  }
+
+  .pill {
+    background: rgba(46, 204, 113, 0.1);
+    border: 1px solid rgba(46, 204, 113, 0.2);
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+  }
+
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .stars {
+    color: var(--gold);
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+  }
+
+  /* Floating CTA */
+  .floating-cta {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    animation: floatUp 0.5s ease-out 1s backwards;
+  }
+
+  @keyframes floatUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .floating-btn {
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    color: #0a120e;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .floating-btn:hover {
+    transform: scale(1.1);
   }
 
   /* Footer */
@@ -654,17 +689,19 @@
       justify-content: center;
       gap: 1rem;
     }
+    .hero-stats {
+      gap: 20px;
+    }
+    .hero-stat .number {
+      font-size: 1.2rem;
+    }
+    .hero-stat .label {
+      font-size: 0.65rem;
+    }
     .container {
       padding: 40px 16px;
     }
-    .milestone-item {
-      flex-direction: column;
-      text-align: center;
-    }
-    .milestone-year {
-      min-width: auto;
-    }
-    .grid-2, .grid-3, .grid-4 {
+    .grid-3 {
       gap: 20px;
     }
   }
@@ -676,15 +713,15 @@
 <div class="orb orb-2"></div>
 
 <nav class="glass-nav">
-  <a href="index.html" class="logo">
+  <a href="#" class="logo">
     <div class="logo-icon"><i class="fas fa-mountain"></i></div>
     <div class="logo-text">Book<span>mandu</span></div>
   </a>
   <div class="nav-links">
-    <a href="index.html">Home</a>
+    <a href="#">Home</a>
     <a href="#">Properties</a>
     <a href="#">Host</a>
-    <a href="about.html" style="color: var(--green);">About</a>
+    <a href="about.html">About</a>
     <a href="#">Contact</a>
     <button class="theme-toggle" id="themeToggle">
       <i class="fas fa-moon" id="themeIcon"></i>
@@ -695,122 +732,102 @@
 </nav>
 
 <!-- Hero Section -->
-<section class="about-hero">
+<section class="hero">
   <div class="hero-bg-pattern"></div>
+  <div class="hero-bg-animation"></div>
   <div class="hero-content">
-    <div class="hero-badge">✨ Since 2024</div>
-    <h1 class="hero-title">More Than a Stay,<br />It's an Experience</h1>
-    <p class="hero-subtitle">Bookmandu connects travelers with authentic Nepali hosts, creating meaningful connections and unforgettable journeys across the Himalayas.</p>
+    <div class="hero-badge">🏔️ Authentic Himalayan Hospitality</div>
+    <h1 class="hero-title">Stay with Locals,<br />Experience the Real Nepal</h1>
+    <p class="hero-subtitle">Book unique homestays, connect with Nepali families, and create memories that last a lifetime.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="number">500+</div><div class="label">VERIFIED HOMESTAYS</div></div>
+      <div class="hero-stat"><div class="number">25K+</div><div class="label">HAPPY TRAVELERS</div></div>
+      <div class="hero-stat"><div class="number">40+</div><div class="label">DISTRICTS</div></div>
+    </div>
+    <div style="margin-top: 32px;">
+      <a href="#" class="btn btn-primary btn-lg"><i class="fas fa-search"></i> Explore Properties</a>
+    </div>
   </div>
 </section>
 
-<div class="container">
-  
-  <!-- Our Story Section -->
-  <section class="section">
-    <div class="grid grid-2">
-      <div>
-        <div class="hero-badge" style="margin-bottom: 16px;">Our Story</div>
-        <h2 style="font-size: 2rem; font-family: var(--font-display); margin-bottom: 20px;">
-          Born in the<br />
-          <span style="color: var(--green)">Heart of Himalayas</span>
-        </h2>
-        <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
-          Founded in Kathmandu in 2024, Bookmandu was born from a simple idea: the best way to experience Nepal isn't from a hotel lobby — it's from a family kitchen in Pokhara, a farmhouse in Chitwan, or a teahouse on the trail to Annapurna.
-        </p>
-        <p style="color: var(--text-secondary); line-height: 1.8;">
-          We built Bookmandu to help travelers find those authentic moments, and to help Nepali families share their homes, culture, and hospitality with the world. Today, we're proud to be Nepal's fastest-growing homestay platform.
-        </p>
+<!-- How It Works Section -->
+<section class="section container">
+  <h2 class="section-title">How It Works</h2>
+  <p class="section-sub">Three simple steps to your perfect Nepali stay</p>
+  <div class="grid grid-3">
+    <div class="feature-card"><div class="feature-icon">🔍</div><h3>Search</h3><p>Filter by region, price, amenities and find your ideal homestay.</p></div>
+    <div class="feature-card"><div class="feature-icon">📅</div><h3>Book</h3><p>Pick your dates, apply a coupon, and confirm in just a few clicks.</p></div>
+    <div class="feature-card"><div class="feature-icon">🏡</div><h3>Stay</h3><p>Meet your host, experience the culture, and leave a review.</p></div>
+  </div>
+</section>
+
+<!-- Featured Properties Section -->
+<section class="section container">
+  <h2 class="section-title">Featured Properties</h2>
+  <p class="section-sub">Most loved by our guests this season</p>
+  <div class="grid grid-3">
+    <a href="#" class="card card-rel">
+      <span class="ribbon">🔥 Trending</span>
+      <img class="card-img" src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&h=300&fit=crop" alt="Pokhara Lake Hotel">
+      <div class="card-body">
+        <h3 class="card-title">Pokhara Lake Hotel</h3>
+        <div class="card-loc"><i class="fas fa-map-marker-alt"></i> Pokhara, Nepal</div>
+        <div class="row-gap"><span class="pill">WiFi</span><span class="pill">Breakfast</span><span class="pill">Lake View</span></div>
+        <div class="card-meta"><span class="card-price">NPR 4,500<small style="color: var(--text-muted); font-weight: 400;">/night</small></span><span class="stars">★★★★☆ 4.8 · 🔥 342</span></div>
       </div>
-      <div class="quote-card">
-        <i class="fas fa-quote-left" style="font-size: 2.5rem; color: var(--green); opacity: 0.5; margin-bottom: 16px; display: block;"></i>
-        <p style="font-size: 1.1rem; line-height: 1.7; font-style: italic; margin-bottom: 24px;">
-          "Every booking on Bookmandu is a story waiting to happen — a connection between a traveler and a host that goes beyond commerce."
-        </p>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div class="team-avatar" style="width: 48px; height: 48px; font-size: 1.2rem; margin: 0;">🙏</div>
-          <div>
-            <strong style="display: block;">Rijwan Miya</strong>
-            <span style="font-size: 0.8rem; color: var(--text-secondary);">Founder & CEO</span>
-          </div>
-        </div>
+    </a>
+    <a href="#" class="card card-rel">
+      <span class="ribbon">🔥 Trending</span>
+      <img class="card-img" src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500&h=300&fit=crop" alt="Kathmandu Heritage Home">
+      <div class="card-body">
+        <h3 class="card-title">Kathmandu Heritage Home</h3>
+        <div class="card-loc"><i class="fas fa-map-marker-alt"></i> Kathmandu, Nepal</div>
+        <div class="row-gap"><span class="pill">WiFi</span><span class="pill">Traditional</span><span class="pill">Homestay</span></div>
+        <div class="card-meta"><span class="card-price">NPR 2,500<small style="color: var(--text-muted); font-weight: 400;">/night</small></span><span class="stars">★★★★☆ 4.6 · 🔥 289</span></div>
       </div>
-    </div>
-  </section>
+    </a>
+    <a href="#" class="card card-rel">
+      <span class="ribbon">🔥 Trending</span>
+      <img class="card-img" src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=500&h=300&fit=crop" alt="Mustang Mountain Lodge">
+      <div class="card-body">
+        <h3 class="card-title">Mustang Mountain Lodge</h3>
+        <div class="card-loc"><i class="fas fa-map-marker-alt"></i> Mustang, Nepal</div>
+        <div class="row-gap"><span class="pill">Mountain View</span><span class="pill">Luxury</span><span class="pill">Private</span></div>
+        <div class="card-meta"><span class="card-price">NPR 9,200<small style="color: var(--text-muted); font-weight: 400;">/night</small></span><span class="stars">★★★★★ 5.0 · 🔥 178</span></div>
+      </div>
+    </a>
+  </div>
+  <div style="text-align: center; margin-top: 40px;">
+    <a href="#" class="btn btn-outline">See all properties →</a>
+  </div>
+</section>
 
-  <!-- What We Do Section -->
-  <section class="section">
-    <div style="text-align: center; margin-bottom: 48px;">
-      <div class="hero-badge">What We Do</div>
-      <h2 class="section-title">Connecting Travelers with<br /><span style="color: var(--green)">Authentic Nepal</span></h2>
+<!-- Testimonials Section -->
+<section class="section container">
+  <h2 class="section-title">What Travelers Say</h2>
+  <p class="section-sub">Real stories from real guests</p>
+  <div class="grid grid-3">
+    <div class="feature-card" style="text-align: left;">
+      <div style="color: var(--gold); margin-bottom: 12px;">★★★★★</div>
+      <p style="color: var(--text-secondary); font-style: italic;">"An unforgettable experience! The host family treated us like their own. Best way to experience Nepal."</p>
+      <div style="margin-top: 16px;"><strong>— Sarah from Australia</strong></div>
     </div>
-    <div class="grid grid-3">
-      <div class="feature-card"><div class="feature-icon">🏔️</div><h3>Curated Homestays</h3><p>Every property is verified by our local team — no surprises, no fake listings.</p></div>
-      <div class="feature-card"><div class="feature-icon">🤝</div><h3>Fair to Hosts</h3><p>Lower commissions than global platforms, so more reaches the host.</p></div>
-      <div class="feature-card"><div class="feature-icon">🌱</div><h3>Sustainable Travel</h3><p>Promoting responsible tourism that benefits local communities.</p></div>
-      <div class="feature-card"><div class="feature-icon">🔒</div><h3>Secure Booking</h3><p>Your payments and data are protected with enterprise-grade security.</p></div>
-      <div class="feature-card"><div class="feature-icon">💬</div><h3>24/7 Support</h3><p>Our local team is always ready to help in English and Nepali.</p></div>
-      <div class="feature-card"><div class="feature-icon">📱</div><h3>Easy Platform</h3><p>Book from anywhere with our mobile-friendly design.</p></div>
+    <div class="feature-card" style="text-align: left;">
+      <div style="color: var(--gold); margin-bottom: 12px;">★★★★★</div>
+      <p style="color: var(--text-secondary); font-style: italic;">"Bookmandu made finding authentic homestays so easy. The views from our room were breathtaking!"</p>
+      <div style="margin-top: 16px;"><strong>— David from Canada</strong></div>
     </div>
-  </section>
+    <div class="feature-card" style="text-align: left;">
+      <div style="color: var(--gold); margin-bottom: 12px;">★★★★★</div>
+      <p style="color: var(--text-secondary); font-style: italic;">"Great platform, amazing hosts, and the food was incredible. Will definitely book again!"</p>
+      <div style="margin-top: 16px;"><strong>— Priya from India</strong></div>
+    </div>
+  </div>
+</section>
 
-  <!-- Our Values Section -->
-  <section class="section">
-    <div style="text-align: center; margin-bottom: 32px;">
-      <div class="hero-badge">Our Values</div>
-      <h2 class="section-title">What Guides Everything We Do</h2>
-    </div>
-    <div class="values-grid">
-      <div class="value-card"><div style="font-size: 2rem; margin-bottom: 12px;">🏠</div><h3>Authenticity</h3><p style="color: var(--text-secondary); font-size: 0.85rem;">Real homes, real people, real Nepal — no staged experiences</p></div>
-      <div class="value-card"><div style="font-size: 2rem; margin-bottom: 12px;">🤝</div><h3>Trust</h3><p style="color: var(--text-secondary); font-size: 0.85rem;">Transparent pricing, verified reviews, no hidden fees</p></div>
-      <div class="value-card"><div style="font-size: 2rem; margin-bottom: 12px;">🌍</div><h3>Community</h3><p style="color: var(--text-secondary); font-size: 0.85rem;">Supporting local economies in every region we serve</p></div>
-      <div class="value-card"><div style="font-size: 2rem; margin-bottom: 12px;">📱</div><h3>Accessibility</h3><p style="color: var(--text-secondary); font-size: 0.85rem;">Bilingual support in English and नेपाली for all users</p></div>
-    </div>
-  </section>
-
-  <!-- By the Numbers Section -->
-  <section class="section">
-    <div style="text-align: center; margin-bottom: 48px;">
-      <div class="hero-badge">By the Numbers</div>
-      <h2 class="section-title">Bookmandu in Numbers</h2>
-    </div>
-    <div class="grid grid-4">
-      <div class="stat-card"><div class="feature-icon">🏔️</div><div class="stat-number">500+</div><p>Verified Homestays</p></div>
-      <div class="stat-card"><div class="feature-icon">🌟</div><div class="stat-number">25K+</div><p>Happy Travelers</p></div>
-      <div class="stat-card"><div class="feature-icon">🗺️</div><div class="stat-number">40+</div><p>Districts Covered</p></div>
-      <div class="stat-card"><div class="feature-icon">⭐</div><div class="stat-number">98%</div><p>Guest Satisfaction</p></div>
-    </div>
-  </section>
-
-  <!-- Our Journey Section -->
-  <section class="section">
-    <div style="text-align: center; margin-bottom: 48px;">
-      <div class="hero-badge">Our Journey</div>
-      <h2 class="section-title">Milestones That Matter</h2>
-    </div>
-    <div class="milestones">
-      <div class="milestone-item"><div class="milestone-year">2024</div><div><strong>🚀 Founded in Kathmandu</strong><br><span style="color: var(--text-secondary);">Started with 50 homestays in Pokhara Valley</span></div></div>
-      <div class="milestone-item"><div class="milestone-year">2024</div><div><strong>🎉 First 1,000 Bookings</strong><br><span style="color: var(--text-secondary);">Reached milestone within 6 months</span></div></div>
-      <div class="milestone-item"><div class="milestone-year">2025</div><div><strong>🇳🇵 Expanded Nationwide</strong><br><span style="color: var(--text-secondary);">Now covering 40+ districts across Nepal</span></div></div>
-      <div class="milestone-item"><div class="milestone-year">2025</div><div><strong>🌱 Sustainability Initiative</strong><br><span style="color: var(--text-secondary);">Launched eco-certification for hosts</span></div></div>
-    </div>
-  </section>
-
-  <!-- Meet the Team Section -->
-  <section class="section">
-    <div style="text-align: center; margin-bottom: 48px;">
-      <div class="hero-badge">The Team</div>
-      <h2 class="section-title">People Behind Bookmandu</h2>
-    </div>
-    <div class="grid grid-3">
-      <div class="team-card"><div class="team-avatar">👨‍💻</div><h3>Rijwan Miya</h3><p style="color: var(--green); font-size: 0.8rem;">Founder & CEO</p><p style="color: var(--text-secondary); font-size: 0.8rem;">Former trekking guide turned tech entrepreneur</p></div>
-      <div class="team-card"><div class="team-avatar">👩‍💼</div><h3>Sarita Gurung</h3><p style="color: var(--green); font-size: 0.8rem;">Head of Host Relations</p><p style="color: var(--text-secondary); font-size: 0.8rem;">10+ years in Nepali hospitality</p></div>
-      <div class="team-card"><div class="team-avatar">🤝</div><h3>Bikash Lama</h3><p style="color: var(--green); font-size: 0.8rem;">Community Manager</p><p style="color: var(--text-secondary); font-size: 0.8rem;">Connecting travelers with local experiences</p></div>
-    </div>
-  </section>
-
-  <!-- CTA Section -->
-  <div class="cta-section">
+<!-- CTA Section -->
+<section class="section container">
+  <div style="text-align: center; padding: 48px 32px; background: linear-gradient(135deg, rgba(46, 204, 113, 0.05), rgba(0,0,0,0)); border-radius: 32px; border: 1px solid var(--border);">
     <h2 style="font-size: 1.8rem; font-family: var(--font-display); margin-bottom: 16px;">Ready to Start Your Journey?</h2>
     <p style="color: var(--text-secondary); margin-bottom: 24px;">Join thousands of travelers who found their perfect stay with Bookmandu</p>
     <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
@@ -818,6 +835,13 @@
       <a href="#" class="btn btn-outline">List Your Property</a>
     </div>
   </div>
+</section>
+
+<!-- Floating CTA -->
+<div class="floating-cta">
+  <button class="floating-btn" onclick="alert('📞 Contact us: +977-1-1234567 or support@bookmandu.com')">
+    <i class="fas fa-headset"></i>
+  </button>
 </div>
 
 <!-- Footer -->
@@ -827,7 +851,7 @@
       <div class="logo-text" style="font-size: 1.2rem;">Book<span>mandu</span></div>
       <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 12px;">Authentic Himalayan Hospitality</p>
     </div>
-    <div class="footer-links"><h4>Company</h4><a href="about.html">About Us</a><a href="#">Careers</a><a href="#">Press</a><a href="#">Blog</a></div>
+    <div class="footer-links"><h4>Company</h4><a href="#">About Us</a><a href="#">Careers</a><a href="#">Press</a><a href="#">Blog</a></div>
     <div class="footer-links"><h4>Support</h4><a href="#">Help Center</a><a href="#">Contact Us</a><a href="#">Safety</a><a href="#">FAQs</a></div>
     <div class="footer-links"><h4>Legal</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cancellation Policy</a></div>
   </div>
@@ -881,7 +905,7 @@
     });
   }, observerOptions);
   
-  document.querySelectorAll('.feature-card, .stat-card, .team-card, .value-card, .milestone-item').forEach(el => {
+  document.querySelectorAll('.feature-card, .card').forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(20px)';
     el.style.transition = 'all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
