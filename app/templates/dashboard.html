@@ -3,130 +3,813 @@
 
 {% block extra_css %}
 <style>
-.dashboard-layout { max-width: 1280px; margin: 0 auto; padding: 40px 24px; display: grid; grid-template-columns: 260px 1fr; gap: 32px; margin-top: 64px; }
-.sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; height: fit-content; position: sticky; top: 84px; }
-.sidebar-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--cyan)); display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 14px; }
-.sidebar-name { font-family: var(--font-display); font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 4px; }
-.sidebar-role { font-size: 12px; font-weight: 700; text-align: center; margin-bottom: 24px; }
-.sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
-.sidebar-link { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: var(--transition); text-decoration: none; }
-.sidebar-link:hover { background: var(--bg-600); color: var(--text-primary); }
-.sidebar-link.active { background: var(--teal-glow); color: var(--teal); border-left: 3px solid var(--teal); margin-left: -3px; }
-.sidebar-icon { font-size: 18px; width: 20px; }
-.dash-greeting { margin-bottom: 32px; }
-.dash-greeting h2 { font-family: var(--font-display); font-size: 28px; font-weight: 800; margin-bottom: 6px; }
-.dash-greeting p { color: var(--text-secondary); font-size: 15px; }
-.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
-.stat-card { padding: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); text-align: center; transition: var(--transition); }
+/* ── Layout ── */
+.dash-wrap {
+  max-width: 1280px; margin: 0 auto; padding: 88px 24px 48px;
+  display: grid; grid-template-columns: 240px 1fr; gap: 28px; min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+.dash-sidebar {
+  position: sticky; top: 80px; height: fit-content;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.dash-profile {
+  padding: 24px 20px; border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+.dash-avatar {
+  width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 12px;
+  background: linear-gradient(135deg, var(--teal), var(--cyan));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 800; color: #051209;
+  font-family: var(--font-display);
+}
+.dash-uname {
+  font-family: var(--font-display); font-size: 16px; font-weight: 700;
+  margin-bottom: 4px; color: var(--text-primary);
+}
+.dash-role-chip {
+  display: inline-block; padding: 3px 12px; border-radius: 20px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.role-guest  { background: rgba(0,201,122,0.12); color: var(--teal); border: 1px solid var(--border-teal); }
+.role-host   { background: rgba(240,165,0,0.12); color: var(--amber); border: 1px solid rgba(240,165,0,0.3); }
+.role-admin  { background: rgba(231,76,60,0.12); color: var(--red); border: 1px solid rgba(231,76,60,0.3); }
+
+.dash-nav { padding: 12px 10px; }
+.dash-nav-section {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted); padding: 8px 10px 4px; margin-top: 4px;
+}
+.dash-nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 500; color: var(--text-secondary);
+  cursor: pointer; transition: var(--transition); border: none; background: none;
+  width: 100%; text-align: left; text-decoration: none;
+}
+.dash-nav-link:hover { background: var(--bg-600); color: var(--text-primary); }
+.dash-nav-link.active {
+  background: var(--teal-glow); color: var(--teal);
+  border-left: 2px solid var(--teal); margin-left: -2px; padding-left: 14px;
+}
+.dash-nav-link .nav-icon { font-size: 16px; width: 18px; flex-shrink: 0; }
+.dash-nav-divider { border: none; border-top: 1px solid var(--border); margin: 8px 10px; }
+
+/* ── Main content ── */
+.dash-main { min-width: 0; }
+.dash-tab { display: none; }
+.dash-tab.active { display: block; }
+
+/* ── Page header ── */
+.dash-header { margin-bottom: 28px; }
+.dash-header h1 {
+  font-family: var(--font-display); font-size: 26px; font-weight: 800;
+  margin-bottom: 4px;
+}
+.dash-header p { color: var(--text-secondary); font-size: 14px; }
+
+/* ── Stat cards ── */
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 20px 22px;
+  transition: var(--transition);
+}
 .stat-card:hover { border-color: var(--border-teal); }
-.stat-value { font-family: var(--font-display); font-size: 32px; font-weight: 800; color: var(--teal); }
-.stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
-.empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
-.empty-state-icon { font-size: 48px; margin-bottom: 16px; }
-.empty-state p { font-size: 15px; margin-bottom: 20px; }
-@media (max-width: 768px) { .dashboard-layout { grid-template-columns: 1fr; } .sidebar { position: static; } .stats-row { grid-template-columns: 1fr; } }
+.stat-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.stat-icon {
+  width: 38px; height: 38px; border-radius: var(--radius-sm);
+  background: var(--teal-glow); border: 1px solid var(--border-teal);
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+}
+.stat-trend { font-size: 12px; color: var(--teal); font-weight: 600; }
+.stat-value {
+  font-family: var(--font-display); font-size: 28px; font-weight: 800;
+  color: var(--text-primary); margin-bottom: 2px;
+}
+.stat-label { font-size: 13px; color: var(--text-muted); }
+
+/* ── Section card ── */
+.dash-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 20px;
+}
+.dash-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px; border-bottom: 1px solid var(--border);
+}
+.dash-card-title {
+  font-family: var(--font-display); font-size: 16px; font-weight: 700;
+}
+.dash-card-body { padding: 20px 22px; }
+
+/* ── Booking rows ── */
+.booking-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 0; border-bottom: 1px solid var(--border);
+}
+.booking-row:last-child { border-bottom: none; padding-bottom: 0; }
+.booking-img {
+  width: 56px; height: 44px; border-radius: 8px; object-fit: cover;
+  background: var(--bg-600); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.booking-info { flex: 1; min-width: 0; }
+.booking-name {
+  font-size: 14px; font-weight: 700; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.booking-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.booking-ref { font-size: 11px; color: var(--text-muted); font-family: monospace; margin-top: 2px; }
+.booking-right { text-align: right; flex-shrink: 0; }
+.booking-price { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--teal); }
+.booking-actions { display: flex; gap: 6px; margin-top: 6px; justify-content: flex-end; }
+
+/* ── Property cards (host) ── */
+.prop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.host-prop-card {
+  background: var(--bg-700); border: 1px solid var(--border);
+  border-radius: var(--radius-md); overflow: hidden; transition: var(--transition);
+}
+.host-prop-card:hover { border-color: var(--border-teal); }
+.host-prop-img {
+  width: 100%; height: 140px; background: var(--bg-600);
+  display: flex; align-items: center; justify-content: center; font-size: 40px;
+  position: relative;
+}
+.host-prop-status {
+  position: absolute; top: 10px; right: 10px;
+}
+.host-prop-body { padding: 14px; }
+.host-prop-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.host-prop-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+.host-prop-actions { display: flex; gap: 8px; }
+
+/* ── Admin table ── */
+.admin-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.admin-table th {
+  text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--text-muted); padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.admin-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--text-primary); }
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: var(--bg-700); }
+.admin-search {
+  width: 100%; background: var(--bg-700); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 9px 14px; color: var(--text-primary);
+  font-size: 14px; margin-bottom: 16px;
+}
+.admin-search:focus { border-color: var(--teal); outline: none; }
+
+/* ── Profile form ── */
+.profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.profile-grid .full { grid-column: span 2; }
+
+/* ── Wishlist grid ── */
+.wishlist-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.wish-card {
+  background: var(--bg-700); border: 1px solid var(--border);
+  border-radius: var(--radius-md); overflow: hidden; transition: var(--transition);
+}
+.wish-card:hover { border-color: var(--border-teal); transform: translateY(-2px); }
+.wish-img {
+  width: 100%; height: 100px; background: var(--bg-600);
+  display: flex; align-items: center; justify-content: center; font-size: 32px;
+}
+.wish-body { padding: 12px; }
+.wish-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.wish-price { font-size: 12px; color: var(--teal); font-weight: 600; }
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center; padding: 52px 20px; color: var(--text-muted);
+}
+.empty-icon { font-size: 44px; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; margin-bottom: 18px; color: var(--text-secondary); }
+
+/* ── Earnings row ── */
+.earnings-bar {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+}
+.earnings-month { font-size: 13px; color: var(--text-muted); width: 36px; }
+.earnings-track {
+  flex: 1; height: 6px; background: var(--bg-500); border-radius: 6px; overflow: hidden;
+}
+.earnings-fill { height: 100%; background: var(--teal); border-radius: 6px; }
+.earnings-amount { font-size: 13px; font-weight: 700; color: var(--text-primary); width: 80px; text-align: right; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .dash-wrap { grid-template-columns: 1fr; }
+  .dash-sidebar { position: static; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .prop-grid { grid-template-columns: 1fr; }
+  .wishlist-grid { grid-template-columns: repeat(2, 1fr); }
+  .profile-grid { grid-template-columns: 1fr; }
+  .profile-grid .full { grid-column: span 1; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .wishlist-grid { grid-template-columns: 1fr; }
+}
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-layout">
-  <aside class="sidebar">
-    <div class="sidebar-avatar">👤</div>
-    <div class="sidebar-name">{{ session.get('user_name', 'User') }}</div>
-    <div class="sidebar-role">
-      <span class="badge badge-teal">{{ session.get('role', 'user')|upper }}</span>
+{% set role = session.get('role', 'guest') %}
+{% set uname = session.get('user_name', 'User') %}
+{% set initial = uname[0].upper() if uname else 'U' %}
+
+<div class="dash-wrap">
+
+  <!-- ══════════════════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════════════════ -->
+  <aside class="dash-sidebar">
+    <div class="dash-profile">
+      <div class="dash-avatar">{{ initial }}</div>
+      <div class="dash-uname">{{ uname }}</div>
+      <span class="dash-role-chip role-{{ role }}">{{ role }}</span>
     </div>
-    <nav class="sidebar-nav">
-      <a href="#" class="sidebar-link active" onclick="showTab('overview', this); return false">
-        <span class="sidebar-icon">📊</span>Overview
-      </a>
-      <a href="#" class="sidebar-link" onclick="showTab('profile', this); return false">
-        <span class="sidebar-icon">⚙️</span>My Profile
-      </a>
-      {% if session.get('role') == 'admin' %}
-      <a href="#" class="sidebar-link" onclick="showTab('admin', this); return false">
-        <span class="sidebar-icon">🛡️</span>Admin Panel
-      </a>
+
+    <nav class="dash-nav">
+
+      {% if role == 'guest' %}
+        <div class="dash-nav-section">Guest</div>
+        <button class="dash-nav-link active" onclick="showTab('bookings', this)">
+          <span class="nav-icon">🏨</span> My Bookings
+        </button>
+        <button class="dash-nav-link" onclick="showTab('wishlist', this)">
+          <span class="nav-icon">❤️</span> My Wishlist
+        </button>
+        <button class="dash-nav-link" onclick="showTab('profile', this)">
+          <span class="nav-icon">👤</span> My Profile
+        </button>
+
+      {% elif role == 'host' %}
+        <div class="dash-nav-section">Host</div>
+        <button class="dash-nav-link active" onclick="showTab('properties', this)">
+          <span class="nav-icon">🏠</span> My Properties
+        </button>
+        <button class="dash-nav-link" onclick="showTab('host-bookings', this)">
+          <span class="nav-icon">📋</span> Bookings
+        </button>
+        <button class="dash-nav-link" onclick="showTab('earnings', this)">
+          <span class="nav-icon">💰</span> Earnings
+        </button>
+        <button class="dash-nav-link" onclick="showTab('profile', this)">
+          <span class="nav-icon">👤</span> My Profile
+        </button>
+
+      {% elif role == 'admin' %}
+        <div class="dash-nav-section">Admin</div>
+        <button class="dash-nav-link active" onclick="showTab('admin-users', this)">
+          <span class="nav-icon">👥</span> Users
+        </button>
+        <button class="dash-nav-link" onclick="showTab('admin-listings', this)">
+          <span class="nav-icon">🏘️</span> Listings
+        </button>
+        <button class="dash-nav-link" onclick="showTab('admin-bookings', this)">
+          <span class="nav-icon">📋</span> Bookings
+        </button>
+        <button class="dash-nav-link" onclick="showTab('admin-queries', this)">
+          <span class="nav-icon">💬</span> Queries
+        </button>
+        <button class="dash-nav-link" onclick="showTab('profile', this)">
+          <span class="nav-icon">👤</span> My Profile
+        </button>
       {% endif %}
-      <a href="/logout" class="sidebar-link" style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
-        <span class="sidebar-icon">🚪</span>Sign Out
+
+      <hr class="dash-nav-divider">
+      <a href="/logout" class="dash-nav-link" style="color:var(--red)">
+        <span class="nav-icon">🚪</span> Sign Out
       </a>
     </nav>
   </aside>
 
-  <main>
-    <!-- Overview Tab -->
-    <div id="tab-overview">
-      <div class="dash-greeting">
-        <h2>Welcome back, <span class="text-teal">{{ session.get('user_name', 'User') }}</span>! 👋</h2>
-        <p>You're logged in as <strong>{{ session.get('role', 'user') }}</strong>. Manage your account from here.</p>
+  <!-- ══════════════════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════════════════ -->
+  <main class="dash-main">
+
+    <!-- ────────────────────────────────────────────────
+         GUEST: My Bookings
+    ──────────────────────────────────────────────── -->
+    {% if role == 'guest' %}
+    <div id="tab-bookings" class="dash-tab active">
+      <div class="dash-header">
+        <h1>My <span class="text-teal">Bookings</span></h1>
+        <p>All your past and upcoming stays in one place.</p>
       </div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Total Bookings</div></div>
-        <div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Upcoming Stays</div></div>
-        <div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Saved Properties</div></div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div class="stat-icon">🏨</div>
+            <span class="stat-trend">All time</span>
+          </div>
+          <div class="stat-value">3</div>
+          <div class="stat-label">Total Bookings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div class="stat-icon">📅</div>
+            <span class="stat-trend">Soon</span>
+          </div>
+          <div class="stat-value">1</div>
+          <div class="stat-label">Upcoming Stay</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div class="stat-icon">💸</div>
+            <span class="stat-trend">Spent</span>
+          </div>
+          <div class="stat-value">NPR 20.5k</div>
+          <div class="stat-label">Total Spent</div>
+        </div>
       </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;">
-        <h3 style="font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:16px">Recent Activity</h3>
-        <div class="empty-state">
-          <div class="empty-state-icon">🏔</div>
-          <p>No activity yet. Start exploring properties!</p>
-          <a href="/" class="btn btn-primary">Browse Properties</a>
+
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <span class="dash-card-title">All Bookings</span>
+          <a href="/browse" class="btn btn-sm btn-primary">+ Book a Stay</a>
+        </div>
+        <div class="dash-card-body" style="padding: 0 22px;">
+
+          <!-- Booking 1 -->
+          <div class="booking-row">
+            <div class="booking-img">🏔</div>
+            <div class="booking-info">
+              <div class="booking-name">Mountain View Homestay</div>
+              <div class="booking-meta">Jun 10 → Jun 13, 2026 · 2 guests</div>
+              <div class="booking-ref">Ref: HN-A1B2C3D4</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-price">NPR 7,500</div>
+              <span class="badge badge-green">Confirmed</span>
+              <div class="booking-actions">
+                <button class="btn btn-sm btn-ghost">Cancel</button>
+                <button class="btn btn-sm btn-outline">Invoice</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking 2 -->
+          <div class="booking-row">
+            <div class="booking-img">🛕</div>
+            <div class="booking-info">
+              <div class="booking-name">Thamel Heritage House</div>
+              <div class="booking-meta">Apr 1 → Apr 3, 2026 · 3 guests</div>
+              <div class="booking-ref">Ref: HN-X9Y8Z7W6</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-price">NPR 6,400</div>
+              <span class="badge badge-red">Cancelled</span>
+              <div class="booking-actions">
+                <button class="btn btn-sm btn-outline">Invoice</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking 3 -->
+          <div class="booking-row">
+            <div class="booking-img">🌊</div>
+            <div class="booking-info">
+              <div class="booking-name">Lakeside Comfort Inn</div>
+              <div class="booking-meta">Mar 15 → Mar 18, 2026 · 2 guests</div>
+              <div class="booking-ref">Ref: HN-M3N4O5P6</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-price">NPR 6,600</div>
+              <span class="badge badge-green">Confirmed</span>
+              <div class="booking-actions">
+                <button class="btn btn-sm btn-ghost">Cancel</button>
+                <button class="btn btn-sm btn-outline" style="color:var(--teal);border-color:var(--teal)">Review</button>
+                <button class="btn btn-sm btn-outline">Invoice</button>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
 
-    <!-- Profile Tab -->
-    <div id="tab-profile" class="hidden">
-      <div class="dash-greeting">
-        <h2>My <span class="text-teal">Profile</span></h2>
-        <p>Update your personal information.</p>
+    <!-- ── GUEST: Wishlist ── -->
+    <div id="tab-wishlist" class="dash-tab">
+      <div class="dash-header">
+        <h1>My <span class="text-teal">Wishlist</span></h1>
+        <p>Properties you've saved to revisit later.</p>
       </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:500px">
-        <form style="display:flex;flex-direction:column;gap:16px" onsubmit="saveProfile(event)">
-          <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input type="text" class="form-input" value="{{ session.get('user_name', '') }}">
+      <div class="wishlist-grid">
+        <div class="wish-card">
+          <div class="wish-img">🏔</div>
+          <div class="wish-body">
+            <div class="wish-title">Mountain View Homestay</div>
+            <div class="wish-price">NPR 2,500 / night</div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Role</label>
-            <input type="text" class="form-input" value="{{ session.get('role', 'user') }}" disabled style="opacity:0.6">
+        </div>
+        <div class="wish-card">
+          <div class="wish-img">🌿</div>
+          <div class="wish-body">
+            <div class="wish-title">Jungle Retreat Chitwan</div>
+            <div class="wish-price">NPR 3,200 / night</div>
           </div>
-          <button type="submit" class="btn btn-primary">Save Changes</button>
-        </form>
+        </div>
+        <div class="wish-card">
+          <div class="wish-img">🏜</div>
+          <div class="wish-body">
+            <div class="wish-title">Mustang Desert Homestay</div>
+            <div class="wish-price">NPR 4,100 / night</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    {% if session.get('role') == 'admin' %}
-    <!-- Admin Tab -->
-    <div id="tab-admin" class="hidden">
-      <div class="dash-greeting">
-        <h2>Admin <span class="text-teal">Panel</span></h2>
-        <p>Manage users and platform settings.</p>
+    <!-- ────────────────────────────────────────────────
+         HOST TABS
+    ──────────────────────────────────────────────── -->
+    {% elif role == 'host' %}
+    <div id="tab-properties" class="dash-tab active">
+      <div class="dash-header">
+        <h1>My <span class="text-teal">Properties</span></h1>
+        <p>Manage your listings and see how they're performing.</p>
       </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;">
-        <div class="empty-state">
-          <div class="empty-state-icon">🛡️</div>
-          <p>Admin tools coming soon.</p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-top"><div class="stat-icon">🏠</div><span class="stat-trend">Active</span></div>
+          <div class="stat-value">2</div>
+          <div class="stat-label">Total Listings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top"><div class="stat-icon">📋</div><span class="stat-trend">This month</span></div>
+          <div class="stat-value">42</div>
+          <div class="stat-label">Total Bookings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top"><div class="stat-icon">💰</div><span class="stat-trend">Earned</span></div>
+          <div class="stat-value">NPR 1.05L</div>
+          <div class="stat-label">Total Earnings</div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <span class="dash-card-title">Your Listings</span>
+          <button class="btn btn-sm btn-primary">+ Add Property</button>
+        </div>
+        <div class="dash-card-body">
+          <div class="prop-grid">
+
+            <div class="host-prop-card">
+              <div class="host-prop-img">
+                🏔
+                <div class="host-prop-status"><span class="badge badge-green">Active</span></div>
+              </div>
+              <div class="host-prop-body">
+                <div class="host-prop-title">Mountain View Homestay</div>
+                <div class="host-prop-meta">42 bookings · NPR 1,05,000 earned</div>
+                <div class="host-prop-actions">
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <button class="btn btn-sm btn-danger">Delete</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="host-prop-card">
+              <div class="host-prop-img">
+                🏞
+                <div class="host-prop-status"><span class="badge badge-amber">Pending</span></div>
+              </div>
+              <div class="host-prop-body">
+                <div class="host-prop-title">Pokhara Valley Cottage</div>
+                <div class="host-prop-meta">0 bookings · NPR 0 earned</div>
+                <div class="host-prop-actions">
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <button class="btn btn-sm btn-danger">Delete</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-host-bookings" class="dash-tab">
+      <div class="dash-header">
+        <h1>Guest <span class="text-teal">Bookings</span></h1>
+        <p>Bookings made at your properties.</p>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-body" style="padding:0 22px;">
+          <div class="booking-row">
+            <div class="booking-img">👤</div>
+            <div class="booking-info">
+              <div class="booking-name">Priya Sharma</div>
+              <div class="booking-meta">Mountain View Homestay · Jun 10 → Jun 13</div>
+              <div class="booking-ref">Ref: HN-A1B2C3D4 · 2 guests</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-price">NPR 7,500</div>
+              <span class="badge badge-green">Confirmed</span>
+            </div>
+          </div>
+          <div class="booking-row">
+            <div class="booking-img">👤</div>
+            <div class="booking-info">
+              <div class="booking-name">James Miller</div>
+              <div class="booking-meta">Mountain View Homestay · May 5 → May 8</div>
+              <div class="booking-ref">Ref: HN-Q1W2E3R4 · 1 guest</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-price">NPR 7,500</div>
+              <span class="badge badge-green">Confirmed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-earnings" class="dash-tab">
+      <div class="dash-header">
+        <h1>My <span class="text-teal">Earnings</span></h1>
+        <p>Track your monthly income across all properties.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-top"><div class="stat-icon">📅</div><span class="stat-trend">June</span></div>
+          <div class="stat-value">NPR 22.5k</div>
+          <div class="stat-label">This Month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top"><div class="stat-icon">📈</div><span class="stat-trend">+12%</span></div>
+          <div class="stat-value">NPR 1.05L</div>
+          <div class="stat-label">Total Earned</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top"><div class="stat-icon">⏳</div><span class="stat-trend">Processing</span></div>
+          <div class="stat-value">NPR 8,400</div>
+          <div class="stat-label">Pending Payout</div>
+        </div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <span class="dash-card-title">Monthly Earnings</span>
+        </div>
+        <div class="dash-card-body">
+          {% set months = [('Jan','35'),('Feb','55'),('Mar','40'),('Apr','70'),('May','80'),('Jun','45')] %}
+          {% for m, pct in months %}
+          <div class="earnings-bar">
+            <span class="earnings-month">{{ m }}</span>
+            <div class="earnings-track">
+              <div class="earnings-fill" style="width:{{ pct }}%"></div>
+            </div>
+            <span class="earnings-amount">NPR {{ (pct|int * 420)|string }}+</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────────────────────────────
+         ADMIN TABS
+    ──────────────────────────────────────────────── -->
+    {% elif role == 'admin' %}
+    <div id="tab-admin-users" class="dash-tab active">
+      <div class="dash-header">
+        <h1>User <span class="text-teal">Management</span></h1>
+        <p>All registered accounts on Bookmandu.</p>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-body">
+          <input class="admin-search" placeholder="🔍  Search users by name or email..." oninput="filterTable(this, 'users-table')">
+          <table class="admin-table" id="users-table">
+            <thead>
+              <tr>
+                <th>Name</th><th>Email</th><th>Role</th><th>Registered</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Priya Sharma</td><td>guest@test.com</td>
+                <td><span class="badge badge-green">Guest</span></td>
+                <td>2026-01-12</td>
+                <td><button class="btn btn-sm btn-danger">Remove</button></td>
+              </tr>
+              <tr>
+                <td>Ram Shrestha</td><td>host@test.com</td>
+                <td><span class="badge badge-amber">Host</span></td>
+                <td>2025-11-03</td>
+                <td><button class="btn btn-sm btn-danger">Remove</button></td>
+              </tr>
+              <tr>
+                <td>Sita Tamang</td><td>sita@test.com</td>
+                <td><span class="badge badge-amber">Host</span></td>
+                <td>2025-12-21</td>
+                <td><button class="btn btn-sm btn-danger">Remove</button></td>
+              </tr>
+              <tr>
+                <td>James Miller</td><td>james@test.com</td>
+                <td><span class="badge badge-green">Guest</span></td>
+                <td>2026-02-09</td>
+                <td><button class="btn btn-sm btn-danger">Remove</button></td>
+              </tr>
+              <tr>
+                <td>Admin</td><td>admin@admin.com</td>
+                <td><span class="badge badge-red">Admin</span></td>
+                <td>2025-09-01</td>
+                <td><span style="font-size:12px;color:var(--text-muted)">Protected</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-admin-listings" class="dash-tab">
+      <div class="dash-header">
+        <h1>Property <span class="text-teal">Listings</span></h1>
+        <p>All properties on the platform. Approve or remove listings.</p>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-body">
+          <table class="admin-table">
+            <thead>
+              <tr><th>Property</th><th>Host</th><th>Region</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mountain View Homestay</td><td>Ram Shrestha</td><td>Kathmandu</td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td><button class="btn btn-sm btn-danger">Remove</button></td>
+              </tr>
+              <tr>
+                <td>Pokhara Valley Cottage</td><td>Sita Tamang</td><td>Pokhara</td>
+                <td><span class="badge badge-amber">Pending</span></td>
+                <td>
+                  <button class="btn btn-sm btn-primary" style="margin-right:6px">Approve</button>
+                  <button class="btn btn-sm btn-danger">Reject</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-admin-bookings" class="dash-tab">
+      <div class="dash-header">
+        <h1>All <span class="text-teal">Bookings</span></h1>
+        <p>Platform-wide booking activity.</p>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-body" style="padding:0 22px;">
+          <div class="booking-row">
+            <div class="booking-img">🏔</div>
+            <div class="booking-info">
+              <div class="booking-name">Mountain View Homestay</div>
+              <div class="booking-meta">Priya Sharma · Jun 10 → Jun 13</div>
+              <div class="booking-ref">Ref: HN-A1B2C3D4</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-price">NPR 7,500</div>
+              <span class="badge badge-green">Confirmed</span>
+            </div>
+          </div>
+          <div class="booking-row">
+            <div class="booking-img">🛕</div>
+            <div class="booking-info">
+              <div class="booking-name">Thamel Heritage House</div>
+              <div class="booking-meta">James Miller · Apr 1 → Apr 3</div>
+              <div class="booking-ref">Ref: HN-X9Y8Z7W6</div>
+            </div>
+            <div class="booking-right">
+              <div class="booking-price">NPR 6,400</div>
+              <span class="badge badge-red">Cancelled</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-admin-queries" class="dash-tab">
+      <div class="dash-header">
+        <h1>Support <span class="text-teal">Queries</span></h1>
+        <p>Messages from users that need a response.</p>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-body">
+          <table class="admin-table">
+            <thead>
+              <tr><th>From</th><th>Subject</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>guest@test.com</td>
+                <td>Cannot cancel booking HN-A1B2C3D4</td>
+                <td><span class="badge badge-amber">Open</span></td>
+                <td><button class="btn btn-sm btn-primary">Respond</button></td>
+              </tr>
+              <tr>
+                <td>host@test.com</td>
+                <td>Payout not received for May</td>
+                <td><span class="badge badge-amber">Open</span></td>
+                <td><button class="btn btn-sm btn-primary">Respond</button></td>
+              </tr>
+              <tr>
+                <td>james@test.com</td>
+                <td>How do I change my check-in date?</td>
+                <td><span class="badge badge-green">Resolved</span></td>
+                <td><button class="btn btn-sm btn-ghost">View</button></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
     {% endif %}
+
+    <!-- ── SHARED: Profile tab (all roles) ── -->
+    <div id="tab-profile" class="dash-tab">
+      <div class="dash-header">
+        <h1>My <span class="text-teal">Profile</span></h1>
+        <p>Update your personal information and password.</p>
+      </div>
+      <div class="dash-card" style="max-width:600px">
+        <div class="dash-card-header">
+          <span class="dash-card-title">Account Details</span>
+        </div>
+        <div class="dash-card-body">
+          <form style="display:flex;flex-direction:column;gap:16px" onsubmit="handleProfileSave(event)">
+            <div class="profile-grid">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-input" value="{{ uname }}" name="name">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Role</label>
+                <input type="text" class="form-input" value="{{ role }}" disabled style="opacity:0.5">
+              </div>
+              <div class="form-group full">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" placeholder="your@email.com" name="email">
+              </div>
+            </div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:4px 0">
+            <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em">
+              Change Password
+            </div>
+            <div class="profile-grid">
+              <div class="form-group">
+                <label class="form-label">New Password</label>
+                <input type="password" class="form-input" placeholder="Min. 8 characters" name="password">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" class="form-input" placeholder="Repeat password" name="confirm">
+              </div>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-function showTab(tab, el) {
-  document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.add('hidden'));
-  document.getElementById('tab-' + tab)?.classList.remove('hidden');
-  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-  if (el) el.classList.add('active');
-}
-function saveProfile(e) {
-  e.preventDefault();
-  showToast('Profile updated!', 'success');
-}
+  // ── Tab switching ──
+  function showTab(id, el) {
+    document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.dash-nav-link').forEach(l => l.classList.remove('active'));
+    const tab = document.getElementById('tab-' + id);
+    if (tab) tab.classList.add('active');
+    if (el) el.classList.add('active');
+  }
+
+  // ── Admin search filter ──
+  function filterTable(input, tableId) {
+    const q = input.value.toLowerCase();
+    document.querySelectorAll('#' + tableId + ' tbody tr').forEach(row => {
+      row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  }
+
+  // ── Profile save (stub — wire to backend later) ──
+  function handleProfileSave(e) {
+    e.preventDefault();
+    if (typeof showToast === 'function') showToast('Profile updated!', 'success');
+    else alert('Profile updated!');
+  }
 </script>
 {% endblock %}
