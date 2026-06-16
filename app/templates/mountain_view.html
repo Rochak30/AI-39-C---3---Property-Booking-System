@@ -4,6 +4,16 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/property_details.css') }}">
 <style>
+
+    /* Premium Amenities - Change star icon to white */
+    .amenities-section h3 i {
+        color: #ffffff !important;
+    }  
+    
+    /* Where you'll stay - Change bed icon to white */
+    .where-stay-section h3 i {
+        color: #ffffff !important;
+    }
     /* ========== COMPACT DESIGN OVERRIDES ========== */
     
     /* FIXED: Remove left-side independent scrolling - use normal page scroll */
@@ -296,90 +306,408 @@
         border-bottom: 1px solid var(--border);
     }
     
+    /* ============================================================
+       AESTHETIC CALENDAR ANIMATIONS - PREMIUM DESIGN
+       ============================================================ */
+
+    /* Calendar Container - Smooth transitions */
     .calendar-container {
         background: var(--bg-700);
-        border-radius: 12px;
-        padding: 12px;
-        margin-bottom: 16px;
+        border-radius: 20px;
+        padding: 16px;
+        margin-bottom: 20px;
+        border: 1px solid var(--border-teal);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
-    
+
+    .calendar-container:hover {
+        box-shadow: 0 8px 25px rgba(0, 201, 122, 0.15);
+        border-color: var(--teal);
+    }
+
+    /* Calendar Header Animation */
     .calendar-header {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        margin-bottom: 12px;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+        animation: slideInDown 0.5s ease;
     }
-    
-    .calendar-month {
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--teal);
+
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
-    
+
+    /* Month Navigation Buttons Animation */
     .calendar-nav-btn {
         background: var(--bg-600);
         border: none;
-        padding: 4px 8px;
-        border-radius: 6px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
         cursor: pointer;
+        color: var(--text-primary);
+        font-size: 12px;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    
+
+    .calendar-nav-btn:hover {
+        background: var(--teal);
+        color: #051209;
+        transform: scale(1.1) rotate(360deg);
+        box-shadow: 0 0 15px rgba(0, 201, 122, 0.4);
+    }
+
+    .calendar-nav-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* Month Text Animation */
+    .calendar-month {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--teal);
+        font-family: var(--font-display);
+        letter-spacing: 1px;
+        position: relative;
+        animation: glowPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+        0%, 100% {
+            text-shadow: 0 0 0px rgba(0, 201, 122, 0);
+        }
+        50% {
+            text-shadow: 0 0 10px rgba(0, 201, 122, 0.5);
+        }
+    }
+
+    /* Weekday Labels Animation */
     .calendar-weekdays {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
         text-align: center;
-        font-size: 10px;
-        margin-bottom: 8px;
+        margin-bottom: 12px;
+        font-weight: 600;
+        font-size: 11px;
         color: var(--text-muted);
+        animation: fadeInUp 0.6s ease;
     }
-    
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .calendar-weekdays span {
+        padding: 8px 0;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .calendar-weekdays span:hover {
+        color: var(--teal);
+        transform: translateY(-2px);
+    }
+
+    /* Calendar Days Grid */
     .calendar-days {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 4px;
+        gap: 6px;
+        animation: fadeInScale 0.7s ease;
     }
-    
+
+    @keyframes fadeInScale {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Individual Day Cell */
     .calendar-day {
         aspect-ratio: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 11px;
-        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        border-radius: 12px;
         cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         background: var(--bg-600);
+        color: var(--text-primary);
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    /* Ripple effect on click */
+    .calendar-day::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(0, 201, 122, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.4s, height 0.4s;
+    }
+
+    .calendar-day:active::after {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Available Date Animation */
     .calendar-day.available {
-        background: rgba(46, 204, 113, 0.2);
+        background: rgba(46, 204, 113, 0.15);
         color: var(--green);
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
     }
-    
+
+    .calendar-day.available:hover {
+        background: var(--teal);
+        color: #051209;
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 201, 122, 0.3);
+    }
+
+    /* Booked Date Style */
     .calendar-day.booked {
         background: rgba(231, 76, 60, 0.2);
         color: var(--red);
-        text-decoration: line-through;
         cursor: not-allowed;
+        text-decoration: line-through;
+        opacity: 0.6;
+        position: relative;
     }
-    
+
+    /* Selected Date (Check-in or Check-out) */
     .calendar-day.selected {
-        background: var(--teal);
+        background: linear-gradient(135deg, var(--teal), var(--teal-dark));
         color: #051209;
+        font-weight: 700;
+        box-shadow: 0 0 20px rgba(0, 201, 122, 0.6);
+        animation: selectPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        position: relative;
+        z-index: 2;
     }
-    
+
+    @keyframes selectPop {
+        0% {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    /* Selected date glow effect */
+    .calendar-day.selected::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--teal), var(--cyan));
+        z-index: -1;
+        animation: borderGlow 1.5s ease-in-out infinite;
+    }
+
+    @keyframes borderGlow {
+        0%, 100% {
+            opacity: 0.5;
+        }
+        50% {
+            opacity: 1;
+        }
+    }
+
+    /* Selected Range (Dates between check-in and check-out) */
+    .calendar-day.selected-range {
+        background: linear-gradient(90deg, rgba(0, 201, 122, 0.2), rgba(0, 229, 204, 0.2));
+        color: var(--text-primary);
+        position: relative;
+        animation: rangeGlow 0.4s ease;
+    }
+
+    @keyframes rangeGlow {
+        from {
+            background: rgba(0, 201, 122, 0);
+        }
+        to {
+            background: linear-gradient(90deg, rgba(0, 201, 122, 0.2), rgba(0, 229, 204, 0.2));
+        }
+    }
+
+    /* Range hover effect */
+    .calendar-day.selected-range:hover {
+        background: linear-gradient(90deg, rgba(0, 201, 122, 0.35), rgba(0, 229, 204, 0.35));
+        transform: translateY(-2px);
+    }
+
+    /* Disabled dates */
+    .calendar-day.disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        filter: grayscale(0.3);
+    }
+
+    /* Legend Items Animation */
     .calendar-legend {
         display: flex;
-        gap: 12px;
-        margin-top: 10px;
+        gap: 16px;
+        margin-top: 15px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
         font-size: 10px;
+        animation: fadeInUp 0.8s ease;
     }
-    
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .legend-item:hover {
+        transform: translateY(-2px);
+        background: var(--bg-600);
+    }
+
     .legend-color {
-        width: 10px;
-        height: 10px;
-        border-radius: 2px;
-        display: inline-block;
-        margin-right: 4px;
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        transition: all 0.3s ease;
+    }
+
+    .legend-color.available {
+        background: var(--green);
+        box-shadow: 0 0 5px var(--green);
+        animation: legendPulse 2s ease-in-out infinite;
+    }
+
+    .legend-color.booked {
+        background: var(--red);
+        box-shadow: 0 0 5px var(--red);
+    }
+
+    .legend-color.selected {
+        background: var(--teal);
+        box-shadow: 0 0 5px var(--teal);
+    }
+
+    @keyframes legendPulse {
+        0%, 100% {
+            opacity: 0.7;
+        }
+        50% {
+            opacity: 1;
+            box-shadow: 0 0 10px var(--green);
+        }
+    }
+
+    /* Selected Dates Display Animation */
+    .selected-dates-display {
+        background: linear-gradient(135deg, var(--teal-glow), transparent);
+        padding: 12px;
+        border-radius: 14px;
+        margin: 12px 0;
+        font-size: 12px;
+        text-align: center;
+        border: 1px solid var(--border-teal);
+        font-weight: 500;
+        transition: all 0.4s ease;
+        animation: slideInUp 0.5s ease;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .selected-dates-display:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(0, 201, 122, 0.2);
+        border-color: var(--teal);
+    }
+
+    /* Calendar refresh animation when month changes */
+    .calendar-days {
+        animation: calendarFlip 0.4s ease-out;
+    }
+
+    @keyframes calendarFlip {
+        0% {
+            opacity: 0;
+            transform: rotateX(30deg) scale(0.95);
+        }
+        100% {
+            opacity: 1;
+            transform: rotateX(0) scale(1);
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+        .calendar-day {
+            font-size: 10px;
+            border-radius: 8px;
+        }
+        
+        .calendar-nav-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 10px;
+        }
+        
+        .calendar-weekdays span {
+            font-size: 9px;
+            padding: 4px 0;
+        }
     }
     
     .selected-dates-display {
@@ -796,7 +1124,7 @@
     .package-section h3 {
         font-size: 18px;
         margin-bottom: 4px;
-        color: var(--teal);
+        color: #ffffff;
     }
     
     .package-subtitle {
@@ -836,7 +1164,7 @@
     }
     
     .rules-section h3 i {
-        color: var(--teal);
+        color: #ffffff;
     }
     
     .rules-subtitle {
@@ -1144,6 +1472,71 @@
         background: rgba(46, 204, 113, 0.2);
         color: var(--green);
     }
+
+    /* Footer Styles */
+    .footer {
+        background: var(--bg-800);
+        border-top: 1px solid var(--border);
+        padding: 60px 0 32px;
+        margin-top: 40px;
+    }
+    
+    .footer-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+    
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 48px;
+        margin-bottom: 48px;
+    }
+    
+    .footer-brand { max-width: 320px; }
+    .footer-logo { display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 800; margin-bottom: 16px; }
+    .footer-logo i { font-size: 28px; color: var(--teal); }
+    .footer-logo span { color: var(--text-primary); }
+    .footer-description { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; }
+    .footer-social { display: flex; gap: 12px; }
+    .social-link {
+        width: 36px; height: 36px; border-radius: 50%; background: var(--bg-700);
+        border: 1px solid var(--border); display: flex; align-items: center;
+        justify-content: center; color: var(--text-secondary); transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    .social-link:hover { background: var(--teal); color: #051209; transform: translateY(-3px); border-color: var(--teal); }
+    
+    .footer-column h4 { font-size: 12px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px; }
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 13px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
+    .footer-links a i { font-size: 12px; width: 20px; color: var(--teal); transition: transform 0.2s ease; }
+    .footer-links a:hover { color: var(--teal); transform: translateX(5px); }
+    .footer-links a:hover i { transform: translateX(3px); }
+    
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
+    .footer-copyright { font-size: 12px; color: var(--text-muted); }
+    .footer-lang-currency { display: flex; gap: 16px; }
+    .lang-btn, .currency-btn {
+        background: transparent; border: 1px solid var(--border); padding: 6px 14px;
+        border-radius: 30px; font-size: 12px; color: var(--text-secondary);
+        cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .lang-btn:hover, .currency-btn:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
+    
+    @media (max-width: 992px) {
+        .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+        .footer-brand { grid-column: span 2; max-width: 100%; }
+    }
+    
+    @media (max-width: 768px) {
+        .footer-grid { grid-template-columns: 1fr; }
+        .footer-brand { grid-column: span 1; }
+        .footer-bottom { flex-direction: column; text-align: center; }
+        .footer-lang-currency { justify-content: center; }
+    }
 </style>
 {% endblock %}
 
@@ -1151,7 +1544,6 @@
 
 <!-- ============================================ -->
 <!-- THE ENTIRE HTML CONTENT GOES HERE -->
-<!-- (Keep your existing hero, gallery, description, etc.) -->
 <!-- ============================================ -->
 
 <div class="property-container">
@@ -1173,7 +1565,7 @@
     </div>
 
     <div class="property-layout">
-        <!-- Left Column - Now scrolls normally with page (FIXED) -->
+        <!-- Left Column -->
         <div class="property-main">
             <!-- Gallery Section -->
             <div class="gallery-section">
@@ -1266,14 +1658,13 @@
                 <h3><i class="fas fa-gavel"></i> BEFORE YOU BOOK</h3>
                 <p class="rules-subtitle">House rules</p>
                 <div class="rules-list">
-                    <div class="rule-item"><i class="fas fa-money-bill-wave"></i> <span>A prepayment of NPR 20,000 is required to confirm your booking.</span></div>
+                    <div class="rule-item"><i class="fas fa-money-bill-wave"></i> <span>A prepayment of NPR 2000 is required to confirm your booking.</span></div>
                     <div class="rule-item"><i class="fas fa-calendar-times"></i> <span>Cancellations within 72 hours of arrival are non-refundable.</span></div>
                     <div class="rule-item"><i class="fas fa-clock"></i> <span>Check-out: By 12:00 Noon</span></div>
-                    <div class="rule-item"><i class="fas fa-refund"></i> <span>Full prepayment refunds are available for cancellations made at least 72 hours before check-in.</span></div>
                     <div class="rule-item"><i class="fas fa-clock"></i> <span>Check-in: After 3:00 PM</span></div>
                     <div class="rule-item"><i class="fas fa-utensils"></i> <span>Breakfast is served until 9:00 AM; service concludes at 9:30 AM.</span></div>
                 </div>
-                <button class="show-all-rules-btn" onclick="showAllRules()"><i class="fas fa-chevron-down"></i> Show all 18 rules</button>
+                <button class="show-all-rules-btn" onclick="showAllRules()"><i class="fas fa-chevron-down"></i> Show all 17 rules</button>
             </div>
 
             <!-- Host -->
@@ -1294,7 +1685,7 @@
             <div class="highlights-section">
                 <h3>✨ Why guests love this property</h3>
                 <div class="highlights-grid">
-                    <div class="highlight-card"><i class="fas fa-mountain-sun"></i> <strong>Panoramic Himalayas</strong>Direct view of Annapurna</div>
+                    <div class="highlight-card"><i class="fas fa-mountain"></i> <strong>Panoramic Himalayas</strong>Direct view of Annapurna</div>
                     <div class="highlight-card"><i class="fas fa-drumstick-bite"></i> <strong>Authentic Dal Bhat</strong>Home-cooked organic meals</div>
                     <div class="highlight-card"><i class="fas fa-hiking"></i> <strong>Trekking Assistance</strong>Guides & permits arranged</div>
                     <div class="highlight-card"><i class="fas fa-chalkboard-user"></i> <strong>Cultural Evenings</strong>Traditional music & dance</div>
@@ -1331,9 +1722,9 @@
             <div class="similar-properties">
                 <h3>Similar stays you might like</h3>
                 <div class="similar-grid">
-                    <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="similar-card"><img src="{{ url_for('static', filename='images/mvh2.jpg') }}" alt="Lakeside"><div class="similar-info"><strong>Lakeside Comfort Inn</strong><span>Pokhara · NPR 2,200/night</span><div class="stars">★★★★☆ 4.4</div></div></a>
-                    <a href="{{ url_for('auth.property_thamel_heritage') }}" class="similar-card"><img src="{{ url_for('static', filename='images/mvh3.jpg') }}" alt="Thamel"><div class="similar-info"><strong>Thamel Heritage House</strong><span>Kathmandu · NPR 3,200/night</span><div class="stars">★★★★½ 4.5</div></div></a>
-                    <a href="{{ url_for('auth.property_mustang_desert') }}" class="similar-card"><img src="{{ url_for('static', filename='images/mvh4.jpg') }}" alt="Mustang"><div class="similar-info"><strong>Mustang Desert Homestay</strong><span>Mustang · NPR 5,500/night</span><div class="stars">★★★★☆ 4.7</div></div></a>
+                    <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="similar-card"><img src="{{ url_for('static', filename='images/lc1.jpg') }}" alt="Lakeside"><div class="similar-info"><strong>Lakeside Comfort Inn</strong><span>Pokhara · NPR 2,200/night</span><div class="stars">★★★★☆ 4.4</div></div></a>
+                    <a href="{{ url_for('auth.property_thamel_heritage') }}" class="similar-card"><img src="{{ url_for('static', filename='images/th1.jpg') }}" alt="Thamel"><div class="similar-info"><strong>Thamel Heritage House</strong><span>Kathmandu · NPR 3,200/night</span><div class="stars">★★★★½ 4.5</div></div></a>
+                    <a href="{{ url_for('auth.property_mustang_desert') }}" class="similar-card"><img src="{{ url_for('static', filename='images/md3.jpg') }}" alt="Mustang"><div class="similar-info"><strong>Mustang Desert Homestay</strong><span>Mustang · NPR 5,500/night</span><div class="stars">★★★★☆ 4.7</div></div></a>
                 </div>
             </div>
         </div>
@@ -1344,7 +1735,7 @@
                 <div class="booking-price">NPR 2,500 <span class="per-night">/ night</span></div>
                 <div class="rating-summary"><i class="fas fa-star"></i> 4.8 · 42 reviews</div>
                 
-                <!-- CALENDAR SECTION - FULLY INTACT -->
+                <!-- CALENDAR SECTION - ENHANCED WITH ANIMATIONS -->
                 <div class="calendar-container">
                     <div class="calendar-header">
                         <button class="calendar-nav-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
@@ -1468,6 +1859,16 @@
 // ============================================
 // FULL JAVASCRIPT CODE - CALENDAR FULLY INTACT
 // ============================================
+
+// All gallery images for the "View all images" feature - USING YOUR ACTUAL IMAGES
+var galleryAllImages = [
+    '{{ url_for("static", filename="images/mvh1.jpg") }}',
+    '{{ url_for("static", filename="images/mvh2.jpg") }}',
+    '{{ url_for("static", filename="images/mvh3.jpg") }}',
+    '{{ url_for("static", filename="images/mvh4.jpg") }}',
+    '{{ url_for("static", filename="images/mvh5.jpg") }}',
+    '{{ url_for("static", filename="images/mvh6.jpg") }}'
+];
 
 // Bedroom images for viewer
 var bedroomImages = [
@@ -1776,14 +2177,134 @@ function showEnhancedBookingModal() {
     document.getElementById('priceBreakdown').innerHTML = priceHtml;
 }
 
-function openImageViewer(index) { var modal = document.getElementById('imageViewerModal'); if (!modal) { var html = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)"><div class="modal" style="max-width: 600px;"><div class="modal-header"><span class="modal-title">Room View</span><button class="modal-close" onclick="closeImageViewer()">✕</button></div><div style="text-align: center;"><img id="currentImageView" src="" style="width: 100%; border-radius: 12px;"></div></div></div>'; document.body.insertAdjacentHTML('beforeend', html); modal = document.getElementById('imageViewerModal'); } var img = document.getElementById('currentImageView'); if (img && bedroomImages[index]) img.src = bedroomImages[index]; if (modal) modal.classList.add('open'); }
-function closeImageViewer(e) { var modal = document.getElementById('imageViewerModal'); if (modal && (!e || e.target.id === 'imageViewerModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')))) modal.classList.remove('open'); }
-function openAllImages() { openImageViewer(0); }
-function showAllRules() { var modal = document.getElementById('rulesModal'); if (!modal) { var html = '<div class="modal-overlay" id="rulesModal" onclick="closeRulesModal(event)"><div class="modal" style="max-width: 550px;"><div class="modal-header"><span class="modal-title">All House Rules (18)</span><button class="modal-close" onclick="closeRulesModal()">✕</button></div><div style="max-height: 60vh; overflow-y: auto; padding: 8px;"><div style="display: flex; flex-direction: column; gap: 16px;"><div class="rule-item"><i class="fas fa-money-bill-wave"></i> <span>A prepayment of NPR 20,000 is required.</span></div><div class="rule-item"><i class="fas fa-calendar-times"></i> <span>Cancellations within 72 hours are non-refundable.</span></div><div class="rule-item"><i class="fas fa-clock"></i> <span>Check-out: By 12:00 Noon</span></div><div class="rule-item"><i class="fas fa-refund"></i> <span>Full refunds for cancellations 72+ hours before.</span></div><div class="rule-item"><i class="fas fa-clock"></i> <span>Check-in: After 3:00 PM</span></div><div class="rule-item"><i class="fas fa-utensils"></i> <span>Breakfast until 9:00 AM</span></div><div class="rule-item"><i class="fas fa-smoking-ban"></i> <span>No smoking inside</span></div><div class="rule-item"><i class="fas fa-paw"></i> <span>No pets allowed</span></div><div class="rule-item"><i class="fas fa-music"></i> <span>Quiet hours: 10 PM - 7 AM</span></div><div class="rule-item"><i class="fas fa-users"></i> <span>Max 4 guests</span></div><div class="rule-item"><i class="fas fa-glass-cheers"></i> <span>No parties or events</span></div><div class="rule-item"><i class="fas fa-camera"></i> <span>Commercial photography requires approval</span></div><div class="rule-item"><i class="fas fa-plug"></i> <span>Turn off lights/AC when leaving</span></div><div class="rule-item"><i class="fas fa-trash-alt"></i> <span>Dispose trash in bins</span></div><div class="rule-item"><i class="fas fa-door-open"></i> <span>Lock doors when leaving</span></div><div class="rule-item"><i class="fas fa-water"></i> <span>Conserve water</span></div><div class="rule-item"><i class="fas fa-child"></i> <span>Supervise children</span></div><div class="rule-item"><i class="fas fa-car"></i> <span>Park in designated areas</span></div></div></div></div></div>'; document.body.insertAdjacentHTML('beforeend', html); modal = document.getElementById('rulesModal'); } if (modal) modal.classList.add('open'); }
-function closeRulesModal(e) { var modal = document.getElementById('rulesModal'); if (modal && (!e || e.target.id === 'rulesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')))) modal.classList.remove('open'); }
+// ========== SINGLE IMAGE VIEWER ==========
+function openImageViewer(index) { 
+    var modal = document.getElementById('imageViewerModal'); 
+    if (!modal) { 
+        var html = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)">' +
+            '<div class="modal" style="max-width: 600px;">' +
+            '<div class="modal-header">' +
+            '<span class="modal-title">Room View</span>' +
+            '<button class="modal-close" onclick="closeImageViewer()">✕</button>' +
+            '</div>' +
+            '<div style="text-align: center;">' +
+            '<img id="currentImageView" src="" style="width: 100%; border-radius: 12px;">' +
+            '</div>' +
+            '</div>' +
+            '</div>'; 
+        document.body.insertAdjacentHTML('beforeend', html); 
+        modal = document.getElementById('imageViewerModal');
+    } 
+    var img = document.getElementById('currentImageView'); 
+    if (img && bedroomImages[index]) img.src = bedroomImages[index]; 
+    if (modal) modal.classList.add('open'); 
+}
 
-function copyBankText(elementId) { var text = document.getElementById(elementId).textContent; navigator.clipboard.writeText(text); showToast('Copied to clipboard!', 'success'); }
-function showToast(message, type) { var container = document.getElementById('toasts'); if (!container) { var c = document.createElement('div'); c.className = 'toast-container'; c.id = 'toasts'; document.body.appendChild(c); container = c; } var toast = document.createElement('div'); toast.className = 'toast ' + type; toast.innerHTML = '<span class="toast-icon">' + (type === 'success' ? '✓' : (type === 'error' ? '✕' : 'ℹ')) + '</span><span>' + message + '</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>'; container.appendChild(toast); setTimeout(function() { toast.remove(); }, 4000); }
+function closeImageViewer(e) { 
+    var modal = document.getElementById('imageViewerModal'); 
+    if (modal && (!e || e.target.id === 'imageViewerModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')))) 
+        modal.classList.remove('open'); 
+}
+
+// ========== VIEW ALL IMAGES - SHOWS ALL 6 IMAGES IN A GRID ==========
+function openAllImages() {
+    var galleryModal = document.getElementById('allImagesModal');
+    
+    if (!galleryModal) {
+        var modalHtml = `
+        <div class="modal-overlay" id="allImagesModal" onclick="closeAllImagesModal(event)">
+            <div class="modal" style="max-width: 900px; width: 90%;">
+                <div class="modal-header">
+                    <span class="modal-title" style="font-size: 20px;">
+                        <i class="fas fa-images"></i> All Property Images (${galleryAllImages.length} photos)
+                    </span>
+                    <button class="modal-close" onclick="closeAllImagesModal()">✕</button>
+                </div>
+                <div id="allImagesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; max-height: 60vh; overflow-y: auto; padding: 15px;">
+                </div>
+                <div class="modal-buttons" style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="closeAllImagesModal()" style="width: 100%;">Close Gallery</button>
+                </div>
+            </div>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        galleryModal = document.getElementById('allImagesModal');
+    }
+    
+    var imagesGrid = document.getElementById('allImagesGrid');
+    if (imagesGrid) {
+        imagesGrid.innerHTML = '';
+        
+        for (var i = 0; i < galleryAllImages.length; i++) {
+            var imgSrc = galleryAllImages[i];
+            var imgDiv = document.createElement('div');
+            imgDiv.style.cssText = 'cursor: pointer; border-radius: 12px; overflow: hidden; transition: all 0.2s ease; background: var(--bg-700);';
+            imgDiv.innerHTML = `
+                <img src="${imgSrc}" alt="Property image ${i + 1}" 
+                     style="width: 100%; height: 160px; object-fit: cover; border-radius: 12px 12px 0 0;">
+                <p style="text-align: center; margin: 8px 0; padding: 6px; font-size: 12px; color: var(--text-secondary);">
+                    <i class="fas fa-image"></i> Image ${i + 1}
+                </p>
+            `;
+            imgDiv.addEventListener('click', (function(imgIndex) {
+                return function() {
+                    closeAllImagesModal();
+                    openImageViewer(imgIndex < bedroomImages.length ? imgIndex : 0);
+                };
+            })(i));
+            
+            imagesGrid.appendChild(imgDiv);
+        }
+    }
+    
+    if (galleryModal) galleryModal.classList.add('open');
+}
+
+function closeAllImagesModal(e) {
+    var modal = document.getElementById('allImagesModal');
+    if (!modal) return;
+    if (!e || e.target.id === 'allImagesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')) || (e.target && e.target.classList && e.target.classList.contains('btn-primary'))) {
+        modal.classList.remove('open');
+    }
+}
+
+function showAllRules() { 
+    var modal = document.getElementById('rulesModal'); 
+    if (!modal) { 
+        var html = '<div class="modal-overlay" id="rulesModal" onclick="closeRulesModal(event)"><div class="modal" style="max-width: 550px;"><div class="modal-header"><span class="modal-title">All House Rules (17)</span><button class="modal-close" onclick="closeRulesModal()">✕</button></div><div style="max-height: 60vh; overflow-y: auto; padding: 8px;"><div style="display: flex; flex-direction: column; gap: 16px;"><div class="rule-item"><i class="fas fa-money-bill-wave"></i> <span>A prepayment of NPR 20,000 is required.</span></div><div class="rule-item"><i class="fas fa-calendar-times"></i> <span>Cancellations within 72 hours are non-refundable.</span></div><div class="rule-item"><i class="fas fa-clock"></i> <span>Check-out: By 12:00 Noon</span></div><div class="rule-item"><i class="fas fa-clock"></i> <span>Check-in: After 3:00 PM</span></div><div class="rule-item"><i class="fas fa-utensils"></i> <span>Breakfast until 9:00 AM</span></div><div class="rule-item"><i class="fas fa-smoking-ban"></i> <span>No smoking inside</span></div><div class="rule-item"><i class="fas fa-paw"></i> <span>No pets allowed</span></div><div class="rule-item"><i class="fas fa-music"></i> <span>Quiet hours: 10 PM - 7 AM</span></div><div class="rule-item"><i class="fas fa-users"></i> <span>Max 4 guests</span></div><div class="rule-item"><i class="fas fa-glass-cheers"></i> <span>No parties or events</span></div><div class="rule-item"><i class="fas fa-camera"></i> <span>Commercial photography requires approval</span></div><div class="rule-item"><i class="fas fa-plug"></i> <span>Turn off lights/AC when leaving</span></div><div class="rule-item"><i class="fas fa-trash-alt"></i> <span>Dispose trash in bins</span></div><div class="rule-item"><i class="fas fa-door-open"></i> <span>Lock doors when leaving</span></div><div class="rule-item"><i class="fas fa-water"></i> <span>Conserve water</span></div><div class="rule-item"><i class="fas fa-child"></i> <span>Supervise children</span></div><div class="rule-item"><i class="fas fa-car"></i> <span>Park in designated areas</span></div></div></div></div></div>'; 
+        document.body.insertAdjacentHTML('beforeend', html); 
+        modal = document.getElementById('rulesModal'); 
+    } 
+    if (modal) modal.classList.add('open'); 
+}
+
+function closeRulesModal(e) { 
+    var modal = document.getElementById('rulesModal'); 
+    if (modal && (!e || e.target.id === 'rulesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')))) 
+        modal.classList.remove('open'); 
+}
+
+function copyBankText(elementId) { 
+    var text = document.getElementById(elementId).textContent; 
+    navigator.clipboard.writeText(text); 
+    showToast('Copied to clipboard!', 'success'); 
+}
+
+function showToast(message, type) { 
+    var container = document.getElementById('toasts'); 
+    if (!container) { 
+        var c = document.createElement('div'); 
+        c.className = 'toast-container'; 
+        c.id = 'toasts'; 
+        document.body.appendChild(c); 
+        container = c; 
+    } 
+    var toast = document.createElement('div'); 
+    toast.className = 'toast ' + type; 
+    toast.innerHTML = '<span class="toast-icon">' + (type === 'success' ? '✓' : (type === 'error' ? '✕' : 'ℹ')) + '</span><span>' + message + '</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>'; 
+    container.appendChild(toast); 
+    setTimeout(function() { toast.remove(); }, 4000); 
+}
 
 var paymentMethods = document.querySelectorAll('.payment-method-enhanced');
 for (var i = 0; i < paymentMethods.length; i++) { 
@@ -1864,8 +2385,76 @@ function closeBookingModal() { document.getElementById('bookingModal').classList
 function closeSuccessModal() { document.getElementById('successModal').classList.remove('active'); }
 function redirectToBrowse() { window.location.href = "{{ url_for('auth.browse') }}"; }
 function downloadInvoice() { showToast('Downloading invoice...', 'success'); }
+function switchLanguage() { showToast('Language switcher coming soon!', 'info'); }
 
 renderCalendar();
 calculatePriceWithDiscount();
 </script>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-grid">
+            
+            <!-- Brand Column -->
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <i class="fas fa-home"></i>
+                    <span>Pahuna</span>
+                </div>
+                <p class="footer-description">
+                    Nepal's dedicated accommodation booking platform. Connect with authentic homestays, guesthouses, and unique stays across the Himalayas.
+                </p>
+                <div class="footer-social">
+                    <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <!-- Explore Column -->
+            <div class="footer-column">
+                <h4 class="footer-heading">EXPLORE</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('auth.browse') }}"><i class="fas fa-compass"></i> Browse Properties</a></li>
+                    <li><a href="{{ url_for('auth.home') }}"><i class="fas fa-home"></i> Home</a></li>
+                </ul>
+            </div>
+
+            <!-- Account Column -->
+            <div class="footer-column">
+                <h4 class="footer-heading">ACCOUNT</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('auth.register') }}"><i class="fas fa-user-plus"></i> Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
+                </ul>
+            </div>
+
+            <!-- Support Column -->
+            <div class="footer-column">
+                <h4 class="footer-heading">SUPPORT</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('auth.faq') }}"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                    <li><a href="{{ url_for('auth.contact') }}"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="footer-copyright">
+                © 2026 Pahuna. All rights reserved.
+            </div>
+            <div class="footer-lang-currency">
+                <button class="lang-btn" onclick="switchLanguage()">
+                    <i class="fas fa-globe"></i> EN / नेपाली
+                </button>
+                <button class="currency-btn">
+                    <i class="fas fa-rupee-sign"></i> NPR Rs
+                </button>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- ========== END FOOTER ========== -->
+
 {% endblock %}
