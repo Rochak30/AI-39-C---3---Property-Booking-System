@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Add Property — Pahuna{% endblock %}
+
+{% block content %}
+<!-- Check if user is host -->
+{% if session.get('role') != 'host' %}
+<div style="max-width: 600px; margin: 120px auto; text-align: center; padding: 40px;">
+    <div style="font-size: 64px; margin-bottom: 20px;">🚫</div>
+    <h1 style="font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 16px;">
+        Access Denied
+    </h1>
+    <p style="color: var(--text-secondary); font-size: 16px; margin-bottom: 24px;">
+        Only registered hosts can add properties.
+    </p>
+    <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+        <a href="{{ url_for('auth.browse') }}" class="btn btn-primary" style="padding: 12px 32px;">
+            <i class="fas fa-arrow-left"></i> Browse Properties
+        </a>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-ghost" style="padding: 12px 32px;">
+            <i class="fas fa-user-plus"></i> Register as Host
+        </a>
+    </div>
+</div>
+{% else %}
+<!-- The actual add property form -->
+<div class="add-property-page">
+    <!-- ... rest of your add property form ... -->
+</div>
+{% endif %}
+{% endblock %}
