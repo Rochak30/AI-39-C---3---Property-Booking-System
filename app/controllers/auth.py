@@ -314,6 +314,69 @@ class AuthController(BaseController):
             print(name, description, price, category, stock)
         return render_template("product_form.html")
 
+    # ========== ADD PROPERTY ROUTE - HOST ONLY ==========
+    def add_property(self):
+        """Route for adding a new property - HOSTS ONLY."""
+        # Check if user is logged in
+        if not self.is_logged_in():
+            flash("Please login to add a property.", "warning")
+            return redirect(url_for("auth.login"))
+        
+        # Check if user is a host - STRICT HOST ONLY
+        if session.get('role') != 'host':
+            flash("⚠️ Only hosts can add properties. Please register as a host.", "warning")
+            return redirect(url_for("auth.browse"))
+        
+        if request.method == "POST":
+            # Get form data
+            property_name = request.form.get("property_name")
+            property_type = request.form.get("property_type")
+            region = request.form.get("region")
+            address = request.form.get("address")
+            description = request.form.get("description")
+            price_per_night = request.form.get("price_per_night")
+            amenities = request.form.getlist("amenities")
+            max_guests = request.form.get("max_guests")
+            bedrooms = request.form.get("bedrooms")
+            bathrooms = request.form.get("bathrooms")
+            
+            # Validate required fields
+            if not all([property_name, property_type, region, address, description, price_per_night]):
+                flash("All required fields must be filled.", "danger")
+                return render_template("add_property.html")
+            
+            try:
+                # Insert property into database
+                db = Database()
+                user_id = session.get("user_id")
+                
+                # Convert amenities list to comma-separated string
+                amenities_str = ','.join(amenities) if amenities else ''
+                
+                query = """
+                    INSERT INTO properties 
+                    (user_id, property_name, property_type, region, address, description, 
+                     price_per_night, amenities, max_guests, bedrooms, bathrooms, created_at)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+                """
+                
+                db.execute(query, (
+                    user_id, property_name, property_type, region, address, description,
+                    price_per_night, amenities_str, max_guests or 2, bedrooms or 1, bathrooms or 1
+                ))
+                db.close()
+                
+                flash("✅ Property added successfully! It will be reviewed by our team.", "success")
+                return redirect(url_for("auth.browse"))
+                
+            except Exception as e:
+                print("ERROR adding property:", e)
+                flash(f"Error adding property: {str(e)}", "danger")
+                return render_template("add_property.html")
+        
+        # GET request - show the form
+        return render_template("add_property.html")
+
     def logout(self):
         session.pop("user_id", None)
         session.pop("user_name", None)
