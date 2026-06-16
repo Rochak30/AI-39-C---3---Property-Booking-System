@@ -1,36 +1,302 @@
 {% extends "base.html" %}
-{% block title %}FAQ — Bookmandu{% endblock %}
+{% block title %}FAQ — Pahuna{% endblock %}
 
 {% block extra_css %}
 <style>
-.faq-page { max-width: 800px; margin: 0 auto; padding: 100px 24px 60px; }
-.faq-header { text-align: center; margin-bottom: 48px; }
+.faq-page { 
+  max-width: 900px; 
+  margin: 0 auto; 
+  padding: 100px 24px 60px; 
+}
+
+/* Section Header Enhancement */
+.faq-header { 
+  text-align: center; 
+  margin-bottom: 48px; 
+}
+
+.faq-header .section-label {
+  display: inline-block;
+  padding: 6px 16px;
+  background: linear-gradient(135deg, var(--teal-glow), transparent);
+  border: 1px solid var(--border-teal);
+  border-radius: 40px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+}
+
+.faq-header .section-title {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--text-primary), var(--teal));
+  -webkit-background-clip: text;
+  -webkit-text-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+}
+
+.faq-header .section-sub {
+  color: var(--text-secondary);
+  font-size: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Search Bar Enhancement */
 .faq-search {
-  display: flex; align-items: center; gap: 12px; padding: 12px 20px;
-  background: var(--bg-800); border: 1.5px solid var(--border);
-  border-radius: var(--radius-xl); margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  background: var(--bg-800);
+  border: 1.5px solid var(--border);
+  border-radius: 60px;
+  margin-bottom: 48px;
+  max-width: 550px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.3s ease;
 }
-.faq-search:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); }
-.faq-search input { background: none; border: none; color: var(--text-primary); font-size: 15px; flex: 1; outline: none; }
-.faq-category { margin-bottom: 36px; }
+
+.faq-search:focus-within { 
+  border-color: var(--teal); 
+  box-shadow: 0 0 0 4px var(--teal-glow);
+  transform: translateY(-2px);
+}
+
+.faq-search span { 
+  font-size: 20px; 
+  transition: transform 0.3s ease;
+}
+
+.faq-search:focus-within span {
+  transform: scale(1.1);
+}
+
+.faq-search input { 
+  background: none; 
+  border: none; 
+  color: var(--text-primary); 
+  font-size: 15px; 
+  flex: 1; 
+  outline: none; 
+}
+
+.faq-search input::placeholder {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* Category Section */
+.faq-category { 
+  margin-bottom: 48px; 
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .faq-category-title {
-  font-family: var(--font-display); font-size: 18px; font-weight: 700;
-  color: var(--teal); margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-teal);
+  position: relative;
 }
+
+.faq-category-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--cyan));
+}
+
+.faq-category-title i {
+  font-size: 24px;
+}
+
+/* FAQ Items */
 .faq-item {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-md); margin-bottom: 8px; overflow: hidden; transition: var(--transition);
+  background: linear-gradient(135deg, var(--surface), var(--bg-700));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
-.faq-item:hover { border-color: var(--border-teal); }
+
+.faq-item:hover {
+  border-color: var(--border-teal);
+  transform: translateX(6px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
 .faq-question {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 20px; cursor: pointer; font-weight: 600; font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
 }
-.faq-chevron { transition: transform 0.3s; font-size: 16px; color: var(--text-muted); }
-.faq-item.open .faq-chevron { transform: rotate(180deg); }
-.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-.faq-item.open .faq-answer { max-height: 300px; }
-.faq-answer-inner { padding: 0 20px 18px; font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+.faq-item:hover .faq-question {
+  color: var(--teal);
+}
+
+.faq-chevron { 
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+  font-size: 18px; 
+  color: var(--text-muted);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg-600);
+}
+
+.faq-item.open .faq-chevron { 
+  transform: rotate(180deg);
+  background: var(--teal);
+  color: #051209;
+}
+
+.faq-answer { 
+  max-height: 0; 
+  overflow: hidden; 
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+.faq-item.open .faq-answer { 
+  max-height: 300px; 
+}
+
+.faq-answer-inner { 
+  padding: 0 24px 20px 24px; 
+  font-size: 14px; 
+  color: var(--text-secondary); 
+  line-height: 1.7;
+  border-top: 1px dashed var(--border);
+  margin-top: 8px;
+  padding-top: 16px;
+}
+
+/* No Results Message */
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  background: var(--bg-700);
+  border-radius: 24px;
+  border: 1px solid var(--border);
+}
+
+.no-results i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.no-results p {
+  font-size: 16px;
+}
+
+/* Footer Styles */
+.footer {
+  background: var(--bg-800);
+  border-top: 1px solid var(--border);
+  padding: 60px 0 32px;
+  margin-top: 40px;
+}
+
+.footer-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand { max-width: 320px; }
+.footer-logo { display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 800; margin-bottom: 16px; }
+.footer-logo i { font-size: 28px; color: var(--teal); }
+.footer-logo span { color: var(--text-primary); }
+.footer-logo .accent { color: var(--teal); }
+.footer-description { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; }
+.footer-social { display: flex; gap: 12px; }
+.social-link {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--bg-700);
+  border: 1px solid var(--border); display: flex; align-items: center;
+  justify-content: center; color: var(--text-secondary); transition: all 0.3s ease;
+  text-decoration: none;
+}
+.social-link:hover { background: var(--teal); color: #051209; transform: translateY(-3px); border-color: var(--teal); }
+
+.footer-column h4 { font-size: 12px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px; }
+.footer-links { list-style: none; padding: 0; margin: 0; }
+.footer-links li { margin-bottom: 12px; }
+.footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 13px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
+.footer-links a i { font-size: 12px; width: 20px; color: var(--teal); transition: transform 0.2s ease; }
+.footer-links a:hover { color: var(--teal); transform: translateX(5px); }
+.footer-links a:hover i { transform: translateX(3px); }
+
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
+.footer-copyright { font-size: 12px; color: var(--text-muted); }
+.footer-lang-currency { display: flex; gap: 16px; }
+.lang-btn, .currency-btn {
+  background: transparent; border: 1px solid var(--border); padding: 6px 14px;
+  border-radius: 30px; font-size: 12px; color: var(--text-secondary);
+  cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px;
+}
+.lang-btn:hover, .currency-btn:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
+
+@media (max-width: 992px) {
+  .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+  .footer-brand { grid-column: span 2; max-width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-brand { grid-column: span 1; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .footer-lang-currency { justify-content: center; }
+  .faq-header .section-title { font-size: 32px; }
+  .faq-question { padding: 16px 20px; font-size: 14px; }
+  .faq-answer-inner { padding: 0 20px 16px 20px; }
+}
 </style>
 {% endblock %}
 
@@ -39,11 +305,11 @@
   <div class="faq-header">
     <div class="section-label">Help Centre</div>
     <h1 class="section-title">Frequently Asked Questions</h1>
-    <p class="section-sub">Find answers to common questions about Bookmandu</p>
+    <p class="section-sub">Find answers to common questions about Pahuna</p>
   </div>
 
   <div class="faq-search">
-    <span style="font-size:18px;color:var(--text-muted)">🔍</span>
+    <span>🔍</span>
     <input type="text" placeholder="Search frequently asked questions..." id="faq-search-input" oninput="searchFAQ(this.value)">
   </div>
 
@@ -52,38 +318,60 @@
 
 <!-- Footer -->
 <footer class="footer">
-  <div class="footer-grid">
-    <div>
-      <div class="footer-brand-logo">Book<span>mandu</span></div>
-      <p class="footer-desc">Nepal's dedicated accommodation booking platform.</p>
-    </div>
-    <div>
-      <div class="footer-heading">Explore</div>
-      <div class="footer-links">
-        <a href="/browse" class="footer-link">Browse Properties</a>
-        <a href="/" class="footer-link">Home</a>
+  <div class="footer-container">
+    <div class="footer-grid">
+      
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <i class="fas fa-home"></i>
+          <span>Pahuna</span>
+        </div>
+        <p class="footer-description">
+          Nepal's dedicated accommodation booking platform. Connect with authentic homestays, guesthouses, and unique stays across the Himalayas.
+        </p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-column">
+        <h4 class="footer-heading">EXPLORE</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('auth.browse') }}"><i class="fas fa-compass"></i> Browse Properties</a></li>
+          <li><a href="{{ url_for('auth.home') }}"><i class="fas fa-home"></i> Home</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4 class="footer-heading">ACCOUNT</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('auth.register') }}"><i class="fas fa-user-plus"></i> Register</a></li>
+          <li><a href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4 class="footer-heading">SUPPORT</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('auth.faq') }}"><i class="fas fa-question-circle"></i> FAQ</a></li>
+          <li><a href="{{ url_for('auth.contact') }}"><i class="fas fa-envelope"></i> Contact Us</a></li>
+        </ul>
       </div>
     </div>
-    <div>
-      <div class="footer-heading">Account</div>
-      <div class="footer-links">
-        <a href="/register" class="footer-link">Register</a>
-        <a href="/login" class="footer-link">Sign In</a>
+
+    <div class="footer-bottom">
+      <div class="footer-copyright">
+        © 2026 Pahuna. All rights reserved.
       </div>
-    </div>
-    <div>
-      <div class="footer-heading">Support</div>
-      <div class="footer-links">
-        <a href="/faq" class="footer-link">FAQ</a>
-        <a href="/contact" class="footer-link">Contact Us</a>
+      <div class="footer-lang-currency">
+        <button class="lang-btn" onclick="switchLanguage()">
+          <i class="fas fa-globe"></i> EN / नेपाली
+        </button>
+        <button class="currency-btn">
+          <i class="fas fa-rupee-sign"></i> NPR Rs
+        </button>
       </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span class="footer-copy">© 2026 Bookmandu. All rights reserved. 🏔</span>
-    <div class="footer-bottom-links">
-      <span class="footer-bottom-link">EN / नेपाली</span>
-      <span class="footer-bottom-link">NPR ₨</span>
     </div>
   </div>
 </footer>
@@ -98,7 +386,7 @@ const FAQ_DATA = [
     { q:"What does 'Pending Cancellation' mean?", a:"This means you've submitted a cancellation request and the host is reviewing it. If the host doesn't respond within 5 days, the case is automatically escalated to our admin team." },
   ]},
   { category:"Payments", icon:"💳", items:[
-    { q:"What currency are prices shown in?", a:"All prices on Bookmandu are shown exclusively in Nepali Rupees (NPR). This ensures transparency for both local and international travellers." },
+    { q:"What currency are prices shown in?", a:"All prices on Pahuna are shown exclusively in Nepali Rupees (NPR). This ensures transparency for both local and international travellers." },
     { q:"Can I use a coupon code?", a:"Yes! Enter your coupon code in the booking form before confirming. Valid codes apply a percentage or fixed NPR discount. Try WELCOME10 for 10% off your first booking." },
     { q:"How is the total price calculated?", a:"Total = Number of nights × Price per night. Any applicable coupon discount is deducted from this total. The breakdown is shown clearly before you confirm." },
   ]},
@@ -117,28 +405,138 @@ document.addEventListener('DOMContentLoaded', renderFAQ);
 
 function renderFAQ() {
   const content = document.getElementById('faq-content');
-  content.innerHTML = FAQ_DATA.map(cat => `
-    <div class="faq-category">
-      <div class="faq-category-title">${cat.icon} ${cat.category}</div>
-      ${cat.items.map(item => `
-        <div class="faq-item" onclick="toggleFAQ(this)">
-          <div class="faq-question">${item.q}<span class="faq-chevron">▾</span></div>
+  content.innerHTML = FAQ_DATA.map((cat, catIndex) => `
+    <div class="faq-category" data-category="${cat.category}">
+      <div class="faq-category-title">
+        <i>${cat.icon}</i> ${cat.category}
+      </div>
+      ${cat.items.map((item, itemIndex) => `
+        <div class="faq-item" data-question="${item.q.toLowerCase()}" data-answer="${item.a.toLowerCase()}" onclick="toggleFAQ(this)">
+          <div class="faq-question">${item.q}<span class="faq-chevron">▼</span></div>
           <div class="faq-answer"><div class="faq-answer-inner">${item.a}</div></div>
-        </div>`).join('')}
-    </div>`).join('');
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
 }
 
-function toggleFAQ(el) { el.classList.toggle('open'); }
+function toggleFAQ(el) { 
+  el.classList.toggle('open'); 
+}
 
 function searchFAQ(q) {
-  const lq = q.toLowerCase();
-  document.querySelectorAll('.faq-item').forEach(item => {
-    item.style.display = !q || item.textContent.toLowerCase().includes(lq) ? '' : 'none';
+  const searchTerm = q.toLowerCase().trim();
+  const faqItems = document.querySelectorAll('.faq-item');
+  const faqCategories = document.querySelectorAll('.faq-category');
+  let hasVisibleItems = false;
+  
+  if (!searchTerm) {
+    // Show all items and reset
+    faqItems.forEach(item => {
+      item.style.display = '';
+      item.classList.remove('open');
+    });
+    faqCategories.forEach(cat => cat.style.display = '');
+    return;
+  }
+  
+  faqItems.forEach(item => {
+    const question = item.getAttribute('data-question') || '';
+    const answer = item.getAttribute('data-answer') || '';
+    const isMatch = question.includes(searchTerm) || answer.includes(searchTerm);
+    
+    if (isMatch) {
+      item.style.display = '';
+      item.classList.add('open');
+      hasVisibleItems = true;
+    } else {
+      item.style.display = 'none';
+      item.classList.remove('open');
+    }
   });
-  document.querySelectorAll('.faq-category').forEach(cat => {
-    const visible = [...cat.querySelectorAll('.faq-item')].some(i => i.style.display !== 'none');
-    cat.style.display = visible ? '' : 'none';
+  
+  // Hide empty categories
+  faqCategories.forEach(cat => {
+    const visibleItems = cat.querySelectorAll('.faq-item[style="display: none;"]');
+    const totalItems = cat.querySelectorAll('.faq-item').length;
+    const allHidden = visibleItems.length === totalItems;
+    cat.style.display = allHidden ? 'none' : '';
   });
+  
+  // Show no results message if needed
+  let noResultsMsg = document.getElementById('no-results-message');
+  if (!hasVisibleItems && searchTerm) {
+    if (!noResultsMsg) {
+      const content = document.getElementById('faq-content');
+      const msgDiv = document.createElement('div');
+      msgDiv.id = 'no-results-message';
+      msgDiv.className = 'no-results';
+      msgDiv.innerHTML = '<i class="fas fa-search"></i><p>No questions found matching "<strong>' + searchTerm + '</strong>"</p><small>Try searching with different keywords</small>';
+      content.appendChild(msgDiv);
+    } else {
+      noResultsMsg.style.display = 'block';
+      noResultsMsg.innerHTML = '<i class="fas fa-search"></i><p>No questions found matching "<strong>' + searchTerm + '</strong>"</p><small>Try searching with different keywords</small>';
+    }
+  } else if (noResultsMsg) {
+    noResultsMsg.style.display = 'none';
+  }
+}
+
+function switchLanguage() {
+  showToast('Language switcher coming soon!', 'info');
+}
+
+function showToast(message, type) {
+  let container = document.getElementById('toasts');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'toast-container';
+    container.id = 'toasts';
+    document.body.appendChild(container);
+  }
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  const icon = type === 'success' ? '✓' : (type === 'error' ? '✕' : 'ℹ');
+  toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
 }
 </script>
+
+<style>
+/* Toast styles */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: var(--bg-800);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 260px;
+  animation: slideInRight 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.toast.success { border-left: 3px solid var(--teal); }
+.toast.error { border-left: 3px solid var(--red); }
+.toast.info { border-left: 3px solid var(--cyan); }
+.toast-icon { font-size: 18px; }
+.toast-close { margin-left: auto; cursor: pointer; opacity: 0.7; transition: opacity 0.2s; }
+.toast-close:hover { opacity: 1; }
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+</style>
 {% endblock %}
