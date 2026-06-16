@@ -11,7 +11,7 @@ class AuthRoutes:
         self.controller = AuthController()
  
     def register(self):
-        self.bp.route("/", endpoint="index")(self.controller.login)
+        self.bp.route("/", endpoint="index")(self.controller.home)
         
         self.bp.route("/browse", methods=["GET"])(self.controller.browse)
 
