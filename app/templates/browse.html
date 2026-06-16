@@ -303,6 +303,29 @@
     </p>
   </div>
 
+    <!-- ============================================================
+       ADD PROPERTY SECTION - ONLY VISIBLE TO HOSTS
+       ============================================================ -->
+  {% if session.get('role') == 'host' %}
+  <div class="add-property-section">
+      <div class="add-property-wrapper">
+          <div class="add-property-content">
+              <div class="add-property-icon-wrap">
+                  <i class="fas fa-plus"></i>
+              </div>
+              <div class="add-property-text">
+                  <h4>List Your Homestay</h4>
+                  <p>Share your unique place with travelers from around the world</p>
+              </div>
+          </div>
+          <a href="{{ url_for('auth.add_property') }}" class="btn-add-property">
+              <span class="plus-icon">+</span> Add Property
+              <i class="fas fa-arrow-right"></i>
+          </a>
+      </div>
+  </div>
+  {% endif %}
+
     <!-- Footer -->
   <footer class="footer">
     <div class="footer-container">
@@ -880,6 +903,151 @@
 .no-results { text-align: center; padding: 60px; color: var(--text-muted); font-size: 16px; }
 .hidden { display: none !important; }
 
+/* ============================================================
+   ADD PROPERTY SECTION - PREMIUM STYLING
+   ============================================================ */
+.add-property-section {
+    padding: 40px 24px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.add-property-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    background: linear-gradient(135deg, var(--bg-700), var(--bg-600));
+    border: 1px solid var(--border-teal);
+    border-radius: 20px;
+    padding: 20px 32px;
+    width: 100%;
+    max-width: 900px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.add-property-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(0, 201, 122, 0.05), transparent 60%);
+    animation: shimmer 8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0%, 100% { transform: translate(-10%, -10%) scale(1); }
+    50% { transform: translate(10%, 10%) scale(1.1); }
+}
+
+.add-property-wrapper:hover {
+    border-color: var(--teal);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0, 201, 122, 0.15);
+}
+
+.add-property-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+}
+
+.add-property-icon-wrap {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0, 201, 122, 0.3);
+    transition: all 0.4s ease;
+}
+
+.add-property-wrapper:hover .add-property-icon-wrap {
+    transform: scale(1.05) rotate(-5deg);
+    box-shadow: 0 6px 30px rgba(0, 201, 122, 0.5);
+}
+
+.add-property-icon-wrap i {
+    font-size: 24px;
+    color: #051209;
+}
+
+.add-property-text h4 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    font-family: var(--font-display);
+}
+
+.add-property-text p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.btn-add-property {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 32px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    color: #051209;
+    border: none;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    white-space: nowrap;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 4px 20px rgba(0, 201, 122, 0.25);
+}
+
+.btn-add-property:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 35px rgba(0, 201, 122, 0.4);
+    color: #051209;
+}
+
+.btn-add-property:active {
+    transform: scale(0.97);
+}
+
+.btn-add-property i {
+    font-size: 16px;
+    transition: transform 0.3s ease;
+}
+
+.btn-add-property:hover i {
+    transform: rotate(90deg) scale(1.1);
+}
+
+.btn-add-property .plus-icon {
+    display: inline-block;
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.btn-add-property:hover .plus-icon {
+    transform: rotate(180deg);
+}
+
 /* Footer Styles */
 .footer {
   background: var(--bg-800);
@@ -942,6 +1110,66 @@
   .footer-brand { grid-column: span 1; }
   .footer-bottom { flex-direction: column; text-align: center; }
   .footer-lang-currency { justify-content: center; }
+}
+
+/* Responsive for Add Property Section */
+@media (max-width: 768px) {
+    .add-property-wrapper {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px 20px;
+        gap: 16px;
+    }
+
+    .add-property-content {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .add-property-icon-wrap {
+        width: 48px;
+        height: 48px;
+    }
+
+    .add-property-icon-wrap i {
+        font-size: 20px;
+    }
+
+    .add-property-text h4 {
+        font-size: 16px;
+    }
+
+    .btn-add-property {
+        width: 100%;
+        justify-content: center;
+        padding: 14px 24px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .add-property-section {
+        padding: 24px 16px 12px;
+    }
+
+    .add-property-wrapper {
+        padding: 20px 16px;
+        border-radius: 16px;
+    }
+
+    .add-property-text h4 {
+        font-size: 15px;
+    }
+
+    .add-property-text p {
+        font-size: 12px;
+    }
+
+    .btn-add-property {
+        font-size: 13px;
+        padding: 12px 20px;
+    }
 }
 
 /* Toast styles */
