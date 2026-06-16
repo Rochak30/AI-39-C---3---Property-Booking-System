@@ -487,41 +487,79 @@ function getCurrentDiscountValue() {
 }
 
 // ============================================================
-// IMAGE VIEWER FUNCTIONS
+// IMAGE VIEWER FUNCTIONS - COMPLETELY FIXED
 // ============================================================
 
+// Use your actual image URLs from your server
 var bedroomImages = [
-    'https://images.pexels.com/photos/2716242/pexels-photo-2716242.jpeg?w=800',
-    'https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?w=800',
-    'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?w=800',
-    'https://images.pexels.com/photos/2716241/pexels-photo-2716241.jpeg?w=800'
+    '{{ url_for("static", filename="images/mvh2.jpg") }}',
+    '{{ url_for("static", filename="images/mvh3.jpg") }}',
+    '{{ url_for("static", filename="images/mvh4.jpg") }}',
+    '{{ url_for("static", filename="images/mvh5.jpg") }}'
 ];
 
 var galleryAllImages = [
-    'https://images.pexels.com/photos/3795512/pexels-photo-3795512.jpeg?w=800',
-    'https://images.pexels.com/photos/10154183/pexels-photo-10154183.jpeg?w=800',
-    'https://images.pexels.com/photos/733745/pexels-photo-733745.jpeg?w=800',
-    'https://images.pexels.com/photos/2716242/pexels-photo-2716242.jpeg?w=800',
-    'https://images.pexels.com/photos/5297813/pexels-photo-5297813.jpeg?w=800',
-    'https://images.pexels.com/photos/4173448/pexels-photo-4173448.jpeg?w=800'
+    '{{ url_for("static", filename="images/mvh1.jpg") }}',
+    '{{ url_for("static", filename="images/mvh2.jpg") }}',
+    '{{ url_for("static", filename="images/mvh3.jpg") }}',
+    '{{ url_for("static", filename="images/mvh4.jpg") }}',
+    '{{ url_for("static", filename="images/mvh5.jpg") }}',
+    '{{ url_for("static", filename="images/mvh6.jpg") }}'
 ];
 
+// Single image viewer with navigation
 function openImageViewer(index) {
     let imageModal = document.getElementById('imageViewerModal');
     if (!imageModal) {
-        const modalHtml = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)">' +
-            '<div class="modal" style="max-width: 600px;">' +
-            '<div class="modal-header">' +
-            '<span class="modal-title">Room View</span>' +
-            '<button class="modal-close" onclick="closeImageViewer()">✕</button>' +
-            '</div>' +
-            '<div id="imageViewerBody" style="text-align: center;">' +
-            '<img id="currentImageView" src="" alt="Room" style="width: 100%; border-radius: 12px;">' +
-            '</div>' +
-            '</div>' +
-            '</div>';
+        const modalHtml = `<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)">
+            <div class="modal" style="max-width: 600px;">
+                <div class="modal-header">
+                    <span class="modal-title">Room View</span>
+                    <button class="modal-close" onclick="closeImageViewer()">✕</button>
+                </div>
+                <div style="text-align: center;">
+                    <img id="currentImageView" src="" alt="Room" style="width: 100%; border-radius: 12px;">
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                    <button id="prevImageBtn" style="background: var(--bg-600); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; color: var(--text-primary); font-weight: 600;">❮ Previous</button>
+                    <button id="nextImageBtn" style="background: var(--bg-600); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; color: var(--text-primary); font-weight: 600;">Next ❯</button>
+                </div>
+            </div>
+        </div>`;
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         imageModal = document.getElementById('imageViewerModal');
+        
+        // Add navigation functionality
+        const prevBtn = document.getElementById('prevImageBtn');
+        const nextBtn = document.getElementById('nextImageBtn');
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function() {
+                let currentSrc = document.getElementById('currentImageView').src;
+                let currentIndex = bedroomImages.findIndex(img => currentSrc.includes(img.split('/').pop()));
+                if (currentIndex === -1) currentIndex = 0;
+                let newIndex = currentIndex - 1;
+                if (newIndex >= 0) {
+                    openImageViewer(newIndex);
+                } else {
+                    showToast('This is the first image', 'info');
+                }
+            });
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function() {
+                let currentSrc = document.getElementById('currentImageView').src;
+                let currentIndex = bedroomImages.findIndex(img => currentSrc.includes(img.split('/').pop()));
+                if (currentIndex === -1) currentIndex = 0;
+                let newIndex = currentIndex + 1;
+                if (newIndex < bedroomImages.length) {
+                    openImageViewer(newIndex);
+                } else {
+                    showToast('This is the last image', 'info');
+                }
+            });
+        }
     }
     const imgElement = document.getElementById('currentImageView');
     if (imgElement && bedroomImages[index]) {
@@ -538,114 +576,185 @@ function closeImageViewer(e) {
     }
 }
 
+// ========== VIEW ALL IMAGES - SHOWS GRID GALLERY ==========
 function openAllImages() {
-    if (bedroomImages.length > 0) {
-        openImageViewer(0);
-    } else {
-        showToast('No images available', 'error');
-    }
-}
-
-function openFullGallery() {
-    let galleryModal = document.getElementById('galleryModal');
+    // Close any existing modal first
+    closeAllImagesModal();
+    
+    // Create the gallery modal if it doesn't exist
+    let galleryModal = document.getElementById('allImagesModal');
+    
     if (!galleryModal) {
-        const galleryHtml = '<div class="modal-overlay" id="galleryModal" onclick="closeGalleryModal(event)">' +
-            '<div class="modal" style="max-width: 700px;">' +
-            '<div class="modal-header">' +
-            '<span class="modal-title">Property Gallery</span>' +
-            '<button class="modal-close" onclick="closeGalleryModal()">✕</button>' +
-            '</div>' +
-            '<div id="galleryBody" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-height: 60vh; overflow-y: auto; padding: 8px;">' +
-            '</div>' +
-            '</div>' +
-            '</div>';
-        document.body.insertAdjacentHTML('beforeend', galleryHtml);
-        galleryModal = document.getElementById('galleryModal');
+        const modalHtml = `
+        <div class="modal-overlay" id="allImagesModal" onclick="closeAllImagesModal(event)">
+            <div class="modal" style="max-width: 900px; width: 90%;">
+                <div class="modal-header">
+                    <span class="modal-title" style="font-size: 20px;">
+                        <i class="fas fa-images"></i> All Property Images (${galleryAllImages.length} photos)
+                    </span>
+                    <button class="modal-close" onclick="closeAllImagesModal()">✕</button>
+                </div>
+                <div id="allImagesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; max-height: 60vh; overflow-y: auto; padding: 15px;">
+                    <!-- Images will be loaded here -->
+                </div>
+                <div class="modal-buttons" style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="closeAllImagesModal()" style="width: 100%;">Close Gallery</button>
+                </div>
+            </div>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        galleryModal = document.getElementById('allImagesModal');
     }
-    const galleryBody = document.getElementById('galleryBody');
-    if (galleryBody) {
-        galleryBody.innerHTML = '';
-        for (let i = 0; i < galleryAllImages.length; i++) {
-            galleryBody.innerHTML += '<img src="' + galleryAllImages[i] + '" alt="Gallery image" style="width: 100%; border-radius: 12px; cursor: pointer; margin-bottom: 8px;" onclick="openFullImage(' + i + ')">';
-        }
+    
+    // Populate the grid with ALL images
+    const imagesGrid = document.getElementById('allImagesGrid');
+    if (imagesGrid) {
+        imagesGrid.innerHTML = '';
+        
+        // Add all gallery images (use the actual images from your property)
+        galleryAllImages.forEach((imgSrc, idx) => {
+            const imgDiv = document.createElement('div');
+            imgDiv.style.cssText = 'cursor: pointer; border-radius: 12px; overflow: hidden; transition: all 0.2s ease; background: var(--bg-700);';
+            imgDiv.className = 'gallery-grid-item';
+            imgDiv.innerHTML = `
+                <img src="${imgSrc}" alt="Property image ${idx + 1}" 
+                     style="width: 100%; height: 160px; object-fit: cover; border-radius: 12px 12px 0 0;">
+                <p style="text-align: center; margin: 8px 0; padding: 6px; font-size: 12px; color: var(--text-secondary);">
+                    <i class="fas fa-image"></i> Image ${idx + 1}
+                </p>
+            `;
+            imgDiv.addEventListener('click', (function(i) {
+                return function() {
+                    // Close gallery and open full image viewer
+                    closeAllImagesModal();
+                    // For bedroom images (first 4), use bedroom viewer, otherwise use gallery viewer
+                    if (i < bedroomImages.length) {
+                        openImageViewer(i);
+                    } else {
+                        openFullImageViewer(galleryAllImages[i], i);
+                    }
+                };
+            })(idx));
+            
+            // Hover effect
+            imgDiv.addEventListener('mouseenter', () => {
+                imgDiv.style.transform = 'translateY(-5px)';
+                imgDiv.style.boxShadow = '0 8px 20px rgba(0,201,122,0.2)';
+            });
+            imgDiv.addEventListener('mouseleave', () => {
+                imgDiv.style.transform = 'translateY(0)';
+                imgDiv.style.boxShadow = 'none';
+            });
+            
+            imagesGrid.appendChild(imgDiv);
+        });
     }
+    
     if (galleryModal) galleryModal.classList.add('open');
 }
 
-function closeGalleryModal(e) {
-    const modal = document.getElementById('galleryModal');
+// Separate full image viewer for gallery images
+function openFullImageViewer(imageSrc, index) {
+    let fullImageModal = document.getElementById('fullImageModal');
+    
+    if (!fullImageModal) {
+        const modalHtml = `<div class="modal-overlay" id="fullImageModal" onclick="closeFullImageViewer(event)">
+            <div class="modal" style="max-width: 650px;">
+                <div class="modal-header">
+                    <span class="modal-title"><i class="fas fa-image"></i> Full View</span>
+                    <button class="modal-close" onclick="closeFullImageViewer()">✕</button>
+                </div>
+                <div style="text-align: center;">
+                    <img id="fullImageView" src="" alt="Full view" style="width: 100%; border-radius: 12px;">
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                    <button id="prevFullBtn" style="background: var(--bg-600); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; color: var(--text-primary); font-weight: 600;">❮ Previous</button>
+                    <button id="nextFullBtn" style="background: var(--bg-600); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; color: var(--text-primary); font-weight: 600;">Next ❯</button>
+                </div>
+            </div>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        fullImageModal = document.getElementById('fullImageModal');
+        
+        // Add navigation
+        const prevBtn = document.getElementById('prevFullBtn');
+        const nextBtn = document.getElementById('nextFullBtn');
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function() {
+                let currentSrc = document.getElementById('fullImageView').src;
+                let currentIndex = galleryAllImages.findIndex(img => currentSrc.includes(img.split('/').pop()));
+                let newIndex = currentIndex - 1;
+                if (newIndex >= 0) {
+                    openFullImageViewer(galleryAllImages[newIndex], newIndex);
+                } else {
+                    showToast('This is the first image', 'info');
+                }
+            });
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function() {
+                let currentSrc = document.getElementById('fullImageView').src;
+                let currentIndex = galleryAllImages.findIndex(img => currentSrc.includes(img.split('/').pop()));
+                let newIndex = currentIndex + 1;
+                if (newIndex < galleryAllImages.length) {
+                    openFullImageViewer(galleryAllImages[newIndex], newIndex);
+                } else {
+                    showToast('This is the last image', 'info');
+                }
+            });
+        }
+    }
+    
+    const imgElement = document.getElementById('fullImageView');
+    if (imgElement) imgElement.src = imageSrc;
+    if (fullImageModal) fullImageModal.classList.add('open');
+}
+
+function closeFullImageViewer(e) {
+    const modal = document.getElementById('fullImageModal');
     if (!modal) return;
-    if (!e || e.target.id === 'galleryModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))) {
+    if (!e || e.target.id === 'fullImageModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))) {
         modal.classList.remove('open');
     }
 }
 
+function closeAllImagesModal(e) {
+    const modal = document.getElementById('allImagesModal');
+    if (!modal) return;
+    if (!e || e.target.id === 'allImagesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')) || (e.target && e.target.classList && e.target.classList.contains('btn-primary'))) {
+        modal.classList.remove('open');
+    }
+}
+
+// Keep the original function names for compatibility
+function openFullGallery() {
+    openAllImages();
+}
+
+function closeGalleryModal(e) {
+    closeAllImagesModal(e);
+}
+
 function openFullImage(index) {
-    closeGalleryModal();
     if (galleryAllImages[index]) {
-        let tempModal = document.getElementById('imageViewerModal');
-        if (!tempModal) {
-            const modalHtml = '<div class="modal-overlay" id="imageViewerModal" onclick="closeImageViewer(event)">' +
-                '<div class="modal" style="max-width: 600px;">' +
-                '<div class="modal-header">' +
-                '<span class="modal-title">Photo View</span>' +
-                '<button class="modal-close" onclick="closeImageViewer()">✕</button>' +
-                '</div>' +
-                '<div id="imageViewerBody" style="text-align: center;">' +
-                '<img id="currentImageView" src="" alt="Photo" style="width: 100%; border-radius: 12px;">' +
-                '</div>' +
-                '</div>' +
-                '</div>';
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-            tempModal = document.getElementById('imageViewerModal');
-        }
-        const imgElement = document.getElementById('currentImageView');
-        if (imgElement) imgElement.src = galleryAllImages[index];
-        if (tempModal) tempModal.classList.add('open');
+        openFullImageViewer(galleryAllImages[index], index);
     }
 }
 
 // ============================================================
-// HOUSE RULES MODAL
+// HOUSE RULES MODAL - UPDATED (REMOVED THE REFUND RULE)
 // ============================================================
 
-function showAllRules() {
-    let rulesModal = document.getElementById('rulesModal');
-    if (!rulesModal) {
-        const modalHtml = '<div class="modal-overlay" id="rulesModal" onclick="closeRulesModal(event)">' +
-            '<div class="modal" style="max-width: 550px;">' +
-            '<div class="modal-header">' +
-            '<span class="modal-title">All House Rules (18)</span>' +
-            '<button class="modal-close" onclick="closeRulesModal()">✕</button>' +
-            '</div>' +
-            '<div id="rulesBody" style="max-height: 60vh; overflow-y: auto; padding: 8px;">' +
-            '<div style="display: flex; flex-direction: column; gap: 16px;">' +
-            '<div class="rule-item"><i class="fas fa-money-bill-wave"></i> <span>A prepayment of NPR 20,000 is required to confirm your booking.</span></div>' +
-            '<div class="rule-item"><i class="fas fa-calendar-times"></i> <span>Cancellations within 72 hours of arrival are non-refundable.</span></div>' +
-            '<div class="rule-item"><i class="fas fa-clock"></i> <span>Check-out: By 12:00 Noon</span></div>' +
-            '<div class="rule-item"><i class="fas fa-refund"></i> <span>Full prepayment refunds are available for cancellations made at least 72 hours before check-in.</span></div>' +
-            '<div class="rule-item"><i class="fas fa-clock"></i> <span>Check-in: After 3:00 PM</span></div>' +
-            '<div class="rule-item"><i class="fas fa-utensils"></i> <span>Breakfast is served until 9:00 AM; service concludes at 9:30 AM.</span></div>' +
-            '<div class="rule-item"><i class="fas fa-smoking-ban"></i> <span>No smoking inside the property</span></div>' +
-            '<div class="rule-item"><i class="fas fa-paw"></i> <span>Pets are not allowed</span></div>' +
-            '<div class="rule-item"><i class="fas fa-music"></i> <span>Quiet hours: 10 PM - 7 AM</span></div>' +
-            '<div class="rule-item"><i class="fas fa-users"></i> <span>Maximum 4 guests per booking</span></div>' +
-            '<div class="rule-item"><i class="fas fa-glass-cheers"></i> <span>No parties or events</span></div>' +
-            '<div class="rule-item"><i class="fas fa-camera"></i> <span>Commercial photography requires prior approval</span></div>' +
-            '<div class="rule-item"><i class="fas fa-plug"></i> <span>Please turn off lights and AC when leaving</span></div>' +
-            '<div class="rule-item"><i class="fas fa-trash-alt"></i> <span>Dispose of trash in designated bins</span></div>' +
-            '<div class="rule-item"><i class="fas fa-door-open"></i> <span>Always lock doors when leaving</span></div>' +
-            '<div class="rule-item"><i class="fas fa-water"></i> <span>Conserve water - report any leaks</span></div>' +
-            '<div class="rule-item"><i class="fas fa-child"></i> <span>Children must be supervised at all times</span></div>' +
-            '<div class="rule-item"><i class="fas fa-car"></i> <span>Park only in designated areas</span></div>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>';
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        rulesModal = document.getElementById('rulesModal');
-    }
-    if (rulesModal) rulesModal.classList.add('open');
+function showAllRules() { 
+    var modal = document.getElementById('rulesModal'); 
+    if (!modal) { 
+        var html = '<div class="modal-overlay" id="rulesModal" onclick="closeRulesModal(event)"><div class="modal" style="max-width: 550px;"><div class="modal-header"><span class="modal-title">All House Rules (17)</span><button class="modal-close" onclick="closeRulesModal()">✕</button></div><div style="max-height: 60vh; overflow-y: auto; padding: 8px;"><div style="display: flex; flex-direction: column; gap: 16px;"><div class="rule-item"><i class="fas fa-money-bill-wave"></i> <span>A prepayment of NPR 20,000 is required.</span></div><div class="rule-item"><i class="fas fa-calendar-times"></i> <span>Cancellations within 72 hours are non-refundable.</span></div><div class="rule-item"><i class="fas fa-clock"></i> <span>Check-out: By 12:00 Noon</span></div><div class="rule-item"><i class="fas fa-clock"></i> <span>Check-in: After 3:00 PM</span></div><div class="rule-item"><i class="fas fa-utensils"></i> <span>Breakfast until 9:00 AM</span></div><div class="rule-item"><i class="fas fa-smoking-ban"></i> <span>No smoking inside</span></div><div class="rule-item"><i class="fas fa-paw"></i> <span>No pets allowed</span></div><div class="rule-item"><i class="fas fa-music"></i> <span>Quiet hours: 10 PM - 7 AM</span></div><div class="rule-item"><i class="fas fa-users"></i> <span>Max 4 guests</span></div><div class="rule-item"><i class="fas fa-glass-cheers"></i> <span>No parties or events</span></div><div class="rule-item"><i class="fas fa-camera"></i> <span>Commercial photography requires approval</span></div><div class="rule-item"><i class="fas fa-plug"></i> <span>Turn off lights/AC when leaving</span></div><div class="rule-item"><i class="fas fa-trash-alt"></i> <span>Dispose trash in bins</span></div><div class="rule-item"><i class="fas fa-door-open"></i> <span>Lock doors when leaving</span></div><div class="rule-item"><i class="fas fa-water"></i> <span>Conserve water</span></div><div class="rule-item"><i class="fas fa-child"></i> <span>Supervise children</span></div><div class="rule-item"><i class="fas fa-car"></i> <span>Park in designated areas</span></div></div></div></div></div>'; 
+        document.body.insertAdjacentHTML('beforeend', html); 
+        modal = document.getElementById('rulesModal'); 
+    } 
+    if (modal) modal.classList.add('open'); 
 }
 
 function closeRulesModal(e) {
