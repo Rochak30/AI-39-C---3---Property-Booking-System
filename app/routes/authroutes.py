@@ -1,4 +1,3 @@
-
 from flask import Blueprint
  
 from app.controllers.auth import AuthController
@@ -52,5 +51,7 @@ class AuthRoutes:
 
         self.bp.route("/reset-password", methods=["GET", "POST"])(self.controller.reset_password)
 
+        # ========== ADD PROPERTY ROUTE ==========
+        self.bp.route("/add-property", methods=["GET", "POST"])(self.controller.add_property)
+
         return self.bp
- 
