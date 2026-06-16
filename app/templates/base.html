@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <!-- ========== CACHE CONTROL META TAGS - FORCE FRESH LOAD ========== -->
@@ -8,7 +10,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Pahuna — Explore Nepal{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- ========== UPDATED FONTS: Syne + Alata ========== -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Alata&display=swap" rel="stylesheet">
 
   <!-- ========== DANCING SCRIPT FONT FOR PAHUNA LOGO ========== -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,6 +29,11 @@
       --pahuna-orange: #fffefc;
       --pahuna-blue:  #fbfbfb;
       --pahuna-pink:  #ffffff;
+    }
+
+    /* Apply Alata as the main body font */
+    body {
+      font-family: 'Alata', sans-serif;
     }
 
     /* Logo container */
@@ -57,6 +67,16 @@
     [data-theme="light"] .nav-logo-wordmark {
       color: #1a1a2e;
     }
+
+    /* Apply Alata to navigation and other elements */
+    .nav-link, 
+    .btn, 
+    .nav-actions, 
+    .modal-title, 
+    .toast,
+    .nav-role-badge {
+      font-family: 'Alata', sans-serif;
+    }
   </style>
   {% block extra_css %}{% endblock %}
 </head>
@@ -66,21 +86,19 @@
 <nav class="nav">
   <div class="nav-inner">
 
-  <!-- ── Logo ── -->
-<a href="/" class="nav-logo">
-
-  <!-- Logo image -->
-  <img
-    src="{{ url_for('static', filename='images/logo.png') }}"
-    alt="Pahuna logo"
-    class="nav-logo-img"
-  />
-
-  <!-- Wordmark: Pahuna in Dancing Script -->
-  <div class="nav-logo-wordmark">
-    Pahuna
-  </div>
-</a>
+    <!-- ── Logo ── -->
+    <a href="/" class="nav-logo">
+      <!-- Logo image -->
+      <img
+        src="{{ url_for('static', filename='images/logo.png') }}"
+        alt="Pahuna logo"
+        class="nav-logo-img"
+      />
+      <!-- Wordmark: Pahuna in Dancing Script -->
+      <div class="nav-logo-wordmark">
+        Pahuna
+      </div>
+    </a>
 
     <!-- ── Nav links ── -->
     <div class="nav-links">
