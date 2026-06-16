@@ -1,892 +1,1049 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About Bookmandu — Authentic Himalayan Homestays</title>
-<meta name="description" content="Learn about Bookmandu, our mission to connect travelers with local Nepali hosts, and the story behind our homestay platform.">
-<meta name="keywords" content="Nepal homestay, Bookmandu, authentic travel, Nepali hospitality, Himalayan stays, about us">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+{% extends "base.html" %}
+{% block title %}About Pahuna — Nepal's Homestay Platform{% endblock %}
+
+{% block extra_css %}
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+/* ============================================================
+   ABOUT PAGE STYLES
+   ============================================================ */
 
-  /* Theme Variables */
-  :root {
-    --bg-dark: #0a120e;
-    --bg-card: #0f1814;
-    --surface: #141c18;
-    --surface-hover: #1c2620;
-    --border: rgba(46, 204, 113, 0.1);
-    --border-hover: rgba(46, 204, 113, 0.25);
-    --text-primary: #e8f5e9;
-    --text-secondary: #b8d4b8;
-    --text-muted: #6b8c6e;
-    --green: #2ecc71;
-    --green-light: #58e88b;
-    --green-dark: #1a8a4a;
-    --green-glow: rgba(46, 204, 113, 0.12);
-    --green-dim: rgba(46, 204, 113, 0.06);
-    --gold: #f5b642;
-    --red: #e07a5f;
-    --teal: #5c9e7b;
-    --font-display: 'Playfair Display', serif;
-    --font-body: 'Inter', sans-serif;
-    --radius-sm: 8px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
-    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-base: 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    --transition-slow: 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
-  }
+.about-page {
+  padding-top: 80px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-  /* Light Theme */
-  [data-theme="light"] {
-    --bg-dark: #f5f7f0;
-    --bg-card: #ffffff;
-    --surface: #ffffff;
-    --surface-hover: #f8faf5;
-    --border: rgba(46, 204, 113, 0.2);
-    --border-hover: rgba(46, 204, 113, 0.4);
-    --text-primary: #1a2e1a;
-    --text-secondary: #4a6b4a;
-    --text-muted: #8ba88b;
-    --green: #2ecc71;
-    --green-dark: #1a8a4a;
-    --green-glow: rgba(46, 204, 113, 0.08);
-  }
+/* ── Hero Section ── */
+.about-hero {
+  position: relative;
+  padding: 80px 24px 100px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--bg-800), var(--bg-700));
+  overflow: hidden;
+}
 
-  body {
-    background: var(--bg-dark);
-    color: var(--text-primary);
-    font-family: var(--font-body);
-    line-height: 1.5;
-    overflow-x: hidden;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
+.about-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 201, 122, 0.08), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
 
-  /* Scan line effect */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px);
-    z-index: 9999;
-    opacity: 0.3;
-  }
+.about-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(0, 229, 204, 0.06), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
 
-  [data-theme="light"] body::before {
-    opacity: 0.05;
-  }
+.about-hero-badge {
+  display: inline-block;
+  padding: 6px 20px;
+  background: var(--teal-glow);
+  border: 1px solid var(--border-teal);
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teal);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+  animation: fadeInDown 0.6s ease;
+}
 
-  /* Animated background orbs */
-  .orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(100px);
-    pointer-events: none;
-    z-index: 0;
-    animation: floatOrb 20s ease-in-out infinite alternate;
-  }
+.about-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 8vw, 72px);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.8s ease;
+}
 
-  @keyframes floatOrb {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(50px, 50px) scale(1.1); }
-  }
+.about-hero h1 .highlight {
+  background: linear-gradient(135deg, var(--teal), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  .orb-1 {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(46, 204, 113, 0.08) 0%, transparent 70%);
-    top: -200px;
-    right: -100px;
-  }
+.about-hero p {
+  max-width: 640px;
+  margin: 0 auto;
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 1s ease;
+}
 
-  .orb-2 {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(46, 204, 113, 0.05) 0%, transparent 70%);
-    bottom: -100px;
-    left: -150px;
-    animation-delay: -5s;
-  }
+.about-hero .hero-ornament {
+  margin-top: 32px;
+  font-size: 28px;
+  opacity: 0.3;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 1.2s ease;
+}
 
-  [data-theme="light"] .orb-1 {
-    background: radial-gradient(circle, rgba(46, 204, 113, 0.04) 0%, transparent 70%);
-  }
+/* ── Section Common ── */
+.section-padding {
+  padding: 80px 24px;
+}
 
-  [data-theme="light"] .orb-2 {
-    background: radial-gradient(circle, rgba(46, 204, 113, 0.02) 0%, transparent 70%);
-  }
+.section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
-  /* Navigation */
-  .glass-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: rgba(10, 18, 14, 0.92);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-    padding: 0.8rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 100;
-    animation: slideDown 0.6s var(--transition-slow) forwards;
-    transition: background 0.3s ease;
-  }
+.section-label {
+  display: inline-block;
+  padding: 4px 16px;
+  background: var(--teal-glow);
+  border: 1px solid var(--border-teal);
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+}
 
-  [data-theme="light"] .glass-nav {
-    background: rgba(255, 255, 255, 0.92);
-  }
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 44px);
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
 
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+.section-subtitle {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 600px;
+  line-height: 1.6;
+}
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-  }
+/* ── Story Section - REDESIGNED ── */
+.story-section {
+  background: var(--bg-700);
+  position: relative;
+  padding: 80px 24px;
+  overflow: hidden;
+}
 
-  .logo-icon {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--green), var(--green-dark));
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    color: #0a120e;
-    box-shadow: 0 0 15px var(--green-glow);
-  }
+.story-section::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0, 201, 122, 0.04), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
 
-  .logo-text {
-    font-family: var(--font-display);
-    font-size: 1.4rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: var(--text-primary);
-    text-decoration: none;
-  }
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
-  .logo-text span {
-    color: var(--green);
-  }
+/* ── Left Side: Story Content ── */
+.story-content {
+  position: relative;
+}
 
-  .nav-links {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
-  }
+.story-content .section-label {
+  margin-bottom: 12px;
+}
 
-  .nav-links a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: color var(--transition-fast);
-  }
+.story-content h2 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
 
-  .nav-links a:hover {
-    color: var(--green);
-  }
+.story-content h2 .highlight {
+  background: linear-gradient(135deg, var(--teal), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  .nav-links .btn-outline-small {
-    background: transparent;
-    border: 1px solid var(--border);
-    padding: 0.4rem 1rem;
-    border-radius: 40px;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-  }
+.story-content p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
 
-  .nav-links .btn-outline-small:hover {
-    border-color: var(--green);
-    color: var(--green);
-    background: rgba(46, 204, 113, 0.08);
-  }
+.story-content .year-badge {
+  display: inline-block;
+  padding: 10px 28px;
+  background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+  border-radius: 40px;
+  color: #051209;
+  font-weight: 700;
+  font-size: 18px;
+  margin-top: 12px;
+  box-shadow: 0 4px 20px rgba(0, 201, 122, 0.3);
+  transition: all 0.3s ease;
+}
 
-  /* Theme Toggle Button */
-  .theme-toggle {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 40px;
-    padding: 0.4rem 0.8rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all var(--transition-fast);
-    color: var(--text-primary);
-  }
+.story-content .year-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 201, 122, 0.4);
+}
 
-  .theme-toggle:hover {
-    border-color: var(--green);
-    transform: scale(1.05);
-  }
+/* ── Right Side: Numbered Image Grid - BARGRAPH STYLE ── */
+.story-images {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: end;
+  position: relative;
+  min-height: 450px;
+}
 
-  .theme-toggle i {
-    font-size: 1rem;
-  }
+/* Main image (01) - Larger, taller */
+.story-images .image-card.main {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--bg-600);
+  border: 1px solid var(--border);
+  height: 420px;
+  align-self: stretch;
+}
 
-  /* Container */
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 60px 20px;
-  }
+/* Secondary image (02) - Smaller, downside (bottom aligned) */
+.story-images .image-card.secondary {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--bg-600);
+  border: 1px solid var(--border);
+  height: 200px;
+  align-self: flex-end;
+  margin-bottom: 0;
+}
 
-  /* Hero Section */
-  .about-hero {
-    position: relative;
-    min-height: 60vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background: linear-gradient(135deg, #0a120e 0%, #143018 50%, #1a3a1f 100%);
-    overflow: hidden;
-    padding: 120px 20px 80px;
-    transition: background 0.3s ease;
-  }
+.story-images .image-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--border-teal);
+  box-shadow: 0 12px 30px rgba(0, 201, 122, 0.15);
+}
 
-  [data-theme="light"] .about-hero {
-    background: linear-gradient(135deg, #e8f0e8 0%, #d4e8d4 50%, #c0e0c0 100%);
-  }
+.story-images .image-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
 
-  .hero-bg-pattern {
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 5L55 20v20L30 55L5 40V20L30 5z' fill='none' stroke='rgba(46,204,113,0.03)' stroke-width='1'/%3E%3C/svg%3E");
-    opacity: 0.4;
-    pointer-events: none;
-  }
+.story-images .image-card:hover img {
+  transform: scale(1.05);
+}
 
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 800px;
-    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
-  }
+/* Dark gradient overlay for better text readability */
+.story-images .image-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 40%);
+  z-index: 1;
+  pointer-events: none;
+}
 
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+/* ── Number Badge - TOP LEFT (head side) ── */
+.story-images .image-card .number-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  font-size: 42px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  z-index: 2;
+  line-height: 1;
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+  transition: all 0.3s ease;
+}
 
-  .hero-badge {
-    display: inline-block;
-    background: rgba(46, 204, 113, 0.12);
-    border: 1px solid rgba(46, 204, 113, 0.3);
-    border-radius: 40px;
-    padding: 6px 16px;
-    font-size: 0.75rem;
-    color: var(--green);
-    margin-bottom: 24px;
-    backdrop-filter: blur(8px);
-  }
+.story-images .image-card .number-badge small {
+  font-size: 16px;
+  font-weight: 400;
+  opacity: 0.6;
+  margin-left: 4px;
+}
 
-  .hero-title {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    font-family: var(--font-display);
-    font-weight: 800;
-    margin-bottom: 20px;
-    background: linear-gradient(135deg, #ffffff, #2ecc71);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
+.story-images .image-card:hover .number-badge {
+  transform: scale(1.05);
+  color: var(--teal);
+}
 
-  [data-theme="light"] .hero-title {
-    background: linear-gradient(135deg, #1a2e1a, #2ecc71);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
+/* ── Rating Badge - Top Right ── */
+.story-images .image-card .rating-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 13px;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 4px 12px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
+}
 
-  .hero-subtitle {
-    font-size: 1.1rem;
-    color: rgba(255,255,255,0.7);
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.7;
-  }
+.story-images .image-card .rating-badge .star {
+  color: #f0a500;
+}
 
-  [data-theme="light"] .hero-subtitle {
-    color: rgba(0,0,0,0.6);
-  }
+/* ── Destination Overlay - Bottom Right ── */
+.story-images .image-card .destination-overlay {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2;
+  text-align: right;
+}
 
-  /* Section Styles */
-  .section {
-    margin-bottom: 40px;
-  }
+.story-images .image-card .destination-overlay .name {
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  display: block;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
 
-  .section-title {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 12px;
-    background: linear-gradient(135deg, var(--text-primary), var(--green));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
+.story-images .image-card .destination-overlay .sub {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
 
-  .section-sub {
-    text-align: center;
-    color: var(--text-secondary);
-    margin-bottom: 48px;
-    font-size: 1rem;
-  }
+/* ── Click Hint ── */
+.story-images .image-card .click-hint {
+  position: absolute;
+  bottom: 70px;
+  right: 20px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 4px 10px;
+  border-radius: 20px;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
 
-  /* Grid */
-  .grid {
-    display: grid;
-    gap: 30px;
-  }
+.story-images .image-card:hover .click-hint {
+  opacity: 1;
+}
 
-  .grid-2 {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  }
+/* ── What We Do ── */
+.what-section {
+  background: var(--bg-800);
+}
 
-  .grid-3 {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  }
+.what-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 48px;
+}
 
-  .grid-4 {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  }
+.what-card {
+  background: var(--bg-700);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px 28px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
 
-  /* Cards */
-  .card {
-    background: var(--surface);
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-    transition: all var(--transition-base);
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    position: relative;
-  }
+.what-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--teal), var(--cyan));
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+}
 
-  .card:hover {
-    transform: translateY(-6px);
-    border-color: var(--green);
-    box-shadow: 0 20px 35px -12px rgba(46, 204, 113, 0.2);
-  }
+.what-card:hover::before {
+  transform: scaleX(1);
+}
 
-  .feature-card {
-    text-align: center;
-    padding: 32px 24px;
-    background: var(--surface);
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    transition: all var(--transition-base);
-  }
+.what-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--border-teal);
+  box-shadow: 0 12px 30px rgba(0, 201, 122, 0.1);
+}
 
-  .feature-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--green);
-    background: var(--surface-hover);
-  }
+.what-card .icon {
+  font-size: 40px;
+  margin-bottom: 20px;
+  display: block;
+}
 
-  .feature-icon {
-    font-size: 2.5rem;
-    margin-bottom: 16px;
-  }
+.what-card h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
 
-  .feature-card h3 {
-    font-size: 1.2rem;
-    margin-bottom: 12px;
-  }
+.what-card p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.7;
+}
 
-  .feature-card p {
-    color: var(--text-secondary);
-    line-height: 1.6;
-    font-size: 0.85rem;
-  }
+/* ── Values Section ── */
+.values-section {
+  background: var(--bg-700);
+}
 
-  /* Quote Card */
-  .quote-card {
-    background: linear-gradient(135deg, var(--surface), var(--surface-hover));
-    border-radius: 24px;
-    padding: 32px;
-    border: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-    transition: all var(--transition-base);
-  }
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  margin-top: 48px;
+}
 
-  .quote-card:hover {
-    border-color: var(--green);
-    transform: translateY(-4px);
-  }
+.value-item {
+  text-align: center;
+  padding: 32px 20px;
+  background: var(--bg-600);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
 
-  /* Stats Cards */
-  .stat-card {
-    text-align: center;
-    padding: 32px 20px;
-    background: var(--surface);
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    transition: all var(--transition-base);
-  }
+.value-item:hover {
+  border-color: var(--border-teal);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 201, 122, 0.08);
+}
 
-  .stat-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--green);
-  }
+.value-item .emoji {
+  font-size: 36px;
+  margin-bottom: 16px;
+  display: block;
+}
 
-  .stat-number {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--green);
-    font-family: var(--font-display);
-  }
+.value-item h4 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
 
-  /* Team Cards */
-  .team-card {
-    text-align: center;
-    padding: 32px 20px;
-    background: var(--surface);
-    border-radius: 24px;
-    border: 1px solid var(--border);
-    transition: all var(--transition-base);
-  }
+.value-item p {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
 
-  .team-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--green);
-  }
+/* ── Numbers Section ── */
+.numbers-section {
+  background: linear-gradient(135deg, var(--bg-800), var(--bg-700));
+  position: relative;
+  overflow: hidden;
+}
 
-  .team-avatar {
-    width: 100px;
-    height: 100px;
-    background: linear-gradient(135deg, var(--green), var(--green-dark));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 16px;
-    font-size: 2.5rem;
-  }
+.numbers-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(0, 201, 122, 0.05), transparent 70%);
+  pointer-events: none;
+}
 
-  /* Milestones */
-  .milestones {
-    display: flex;
-    flex-direction: column;
+.numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  margin-top: 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.number-item {
+  text-align: center;
+  padding: 32px 20px;
+  background: var(--bg-600);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  transition: all 0.4s ease;
+}
+
+.number-item:hover {
+  border-color: var(--teal);
+  transform: scale(1.02);
+  box-shadow: 0 8px 30px rgba(0, 201, 122, 0.1);
+}
+
+.number-item .number {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--teal), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.number-item .label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+/* ── CTA Section ── */
+.cta-section {
+  background: linear-gradient(135deg, var(--teal-glow), var(--bg-700));
+  padding: 80px 24px;
+  text-align: center;
+  border-top: 1px solid var(--border-teal);
+}
+
+.cta-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4vw, 44px);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.cta-section p {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-buttons .btn {
+  padding: 14px 36px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 40px;
+}
+
+.cta-buttons .btn-primary {
+  background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+  color: #051209;
+  border: none;
+}
+
+.cta-buttons .btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 201, 122, 0.3);
+}
+
+.cta-buttons .btn-outline {
+  background: transparent;
+  border: 2px solid var(--border-teal);
+  color: var(--text-primary);
+}
+
+.cta-buttons .btn-outline:hover {
+  background: var(--teal);
+  color: #051209;
+  transform: translateY(-3px);
+}
+
+/* ── Footer ── */
+.footer {
+  background: var(--bg-800);
+  border-top: 1px solid var(--border);
+  padding: 60px 0 32px;
+}
+
+.footer-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand { max-width: 320px; }
+.footer-logo { display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 800; margin-bottom: 16px; }
+.footer-logo i { font-size: 28px; color: var(--teal); }
+.footer-logo span { color: var(--text-primary); }
+.footer-description { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; }
+.footer-social { display: flex; gap: 12px; }
+.social-link {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--bg-700);
+  border: 1px solid var(--border); display: flex; align-items: center;
+  justify-content: center; color: var(--text-secondary); transition: all 0.3s ease;
+  text-decoration: none;
+}
+.social-link:hover { background: var(--teal); color: #051209; transform: translateY(-3px); border-color: var(--teal); }
+
+.footer-column h4 { font-size: 12px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px; }
+.footer-links { list-style: none; padding: 0; margin: 0; }
+.footer-links li { margin-bottom: 12px; }
+.footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 13px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
+.footer-links a i { font-size: 12px; width: 20px; color: var(--teal); transition: transform 0.2s ease; }
+.footer-links a:hover { color: var(--teal); transform: translateX(5px); }
+.footer-links a:hover i { transform: translateX(3px); }
+
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
+.footer-copyright { font-size: 12px; color: var(--text-muted); }
+.footer-lang-currency { display: flex; gap: 16px; }
+.lang-btn, .currency-btn {
+  background: transparent; border: 1px solid var(--border); padding: 6px 14px;
+  border-radius: 30px; font-size: 12px; color: var(--text-secondary);
+  cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px;
+}
+.lang-btn:hover, .currency-btn:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
+
+/* ── Animations ── */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 992px) {
+  .story-grid {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+  
+  .story-images {
+    min-height: auto;
     gap: 20px;
   }
-
-  .milestone-item {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    padding: 20px;
-    background: var(--surface);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    transition: all var(--transition-base);
-  }
-
-  .milestone-item:hover {
-    transform: translateX(10px);
-    border-color: var(--green);
-  }
-
-  .milestone-year {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--green);
-    font-family: var(--font-display);
-    min-width: 80px;
-  }
-
-  /* Values Grid */
-  .values-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
-    margin-top: 32px;
-  }
-
-  .value-card {
-    text-align: center;
-    padding: 28px 20px;
-    background: var(--surface);
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    transition: all var(--transition-base);
-  }
-
-  .value-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--green);
-  }
-
-  /* Buttons */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px 28px;
-    border-radius: 40px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    text-decoration: none;
-    border: none;
-  }
-
-  .btn-primary {
-    background: linear-gradient(135deg, var(--green), var(--green-dark));
-    color: #0a120e;
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
-  }
-
-  .btn-outline {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-  }
-
-  .btn-outline:hover {
-    background: rgba(46, 204, 113, 0.1);
-    border-color: var(--green);
-    color: var(--green);
-  }
-
-  /* CTA Section */
-  .cta-section {
-    text-align: center;
-    padding: 48px 32px;
-    background: linear-gradient(135deg, rgba(46, 204, 113, 0.05), rgba(0,0,0,0));
-    border-radius: 32px;
-    border: 1px solid var(--border);
-    margin-top: 40px;
-  }
-
-  /* Footer */
-  .footer {
-    background: var(--bg-card);
-    border-top: 1px solid var(--border);
-    padding: 48px 20px 24px;
-    margin-top: 40px;
-    transition: background 0.3s ease;
-  }
-
-  .footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
-    margin-bottom: 40px;
-  }
-
-  .footer-logo .logo-text {
-    font-size: 1.2rem;
-  }
-
-  .footer-links h4 {
-    margin-bottom: 16px;
-    font-size: 0.9rem;
-    color: var(--green);
-  }
-
-  .footer-links a {
-    display: block;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.8rem;
-    margin-bottom: 8px;
-    transition: color var(--transition-fast);
-  }
-
-  .footer-links a:hover {
-    color: var(--green);
-  }
-
-  .footer-bottom {
-    text-align: center;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    color: var(--text-muted);
-    font-size: 0.75rem;
-  }
-
-  .footer-bottom i {
-    color: var(--green);
-  }
-
-  /* Theme transition */
-  * {
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .glass-nav {
-      flex-direction: column;
-      gap: 16px;
-      padding: 12px 20px;
-    }
-    .nav-links {
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-    }
-    .container {
-      padding: 40px 16px;
-    }
-    .milestone-item {
-      flex-direction: column;
-      text-align: center;
-    }
-    .milestone-year {
-      min-width: auto;
-    }
-    .grid-2, .grid-3, .grid-4 {
-      gap: 20px;
-    }
-  }
-</style>
-</head>
-<body data-theme="dark">
-
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-
-<nav class="glass-nav">
-  <a href="index.html" class="logo">
-    <div class="logo-icon"><i class="fas fa-mountain"></i></div>
-    <div class="logo-text">Book<span>mandu</span></div>
-  </a>
-  <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="#">Properties</a>
-    <a href="#">Host</a>
-    <a href="about.html" style="color: var(--green);">About</a>
-    <a href="#">Contact</a>
-    <button class="theme-toggle" id="themeToggle">
-      <i class="fas fa-moon" id="themeIcon"></i>
-      <span id="themeText">Dark</span>
-    </button>
-    <a href="#" class="btn-outline-small"><i class="fas fa-user"></i> Sign In</a>
-  </div>
-</nav>
-
-<!-- Hero Section -->
-<section class="about-hero">
-  <div class="hero-bg-pattern"></div>
-  <div class="hero-content">
-    <div class="hero-badge">✨ Since 2024</div>
-    <h1 class="hero-title">More Than a Stay,<br />It's an Experience</h1>
-    <p class="hero-subtitle">Bookmandu connects travelers with authentic Nepali hosts, creating meaningful connections and unforgettable journeys across the Himalayas.</p>
-  </div>
-</section>
-
-<div class="container">
   
-  <!-- Our Story Section -->
-  <section class="section">
-    <div class="grid grid-2">
-      <div>
-        <div class="hero-badge" style="margin-bottom: 16px;">Our Story</div>
-        <h2 style="font-size: 2rem; font-family: var(--font-display); margin-bottom: 20px;">
-          Born in the<br />
-          <span style="color: var(--green)">Heart of Himalayas</span>
+  .story-images .image-card.main {
+    height: 320px;
+  }
+  
+  .story-images .image-card.secondary {
+    height: 180px;
+  }
+  
+  .story-images .image-card .number-badge {
+    font-size: 36px;
+  }
+  
+  .what-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .numbers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+  .footer-brand { grid-column: span 2; max-width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .about-hero { padding: 60px 16px 80px; }
+  .section-padding { padding: 60px 16px; }
+  .story-section { padding: 60px 16px; }
+  
+  .story-grid {
+    gap: 30px;
+  }
+  
+  .story-content h2 {
+    font-size: 28px;
+  }
+  
+  .story-images {
+    gap: 16px;
+    min-height: auto;
+  }
+  
+  .story-images .image-card.main {
+    height: 240px;
+  }
+  
+  .story-images .image-card.secondary {
+    height: 140px;
+  }
+  
+  .story-images .image-card .number-badge {
+    font-size: 28px;
+    top: 12px;
+    left: 12px;
+  }
+  
+  .story-images .image-card .number-badge small {
+    font-size: 12px;
+  }
+  
+  .story-images .image-card .rating-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    top: 10px;
+    right: 10px;
+  }
+  
+  .story-images .image-card .destination-overlay .name {
+    font-size: 13px;
+  }
+  
+  .story-images .image-card .destination-overlay .sub {
+    font-size: 10px;
+  }
+  
+  .story-images .image-card .click-hint {
+    display: none;
+  }
+  
+  .what-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .values-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .numbers-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  
+  .number-item { padding: 24px 16px; }
+  
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-brand { grid-column: span 1; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .footer-lang-currency { justify-content: center; }
+  
+  .cta-buttons .btn { width: 100%; justify-content: center; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-page">
+
+  <!-- ==================== HERO ==================== -->
+  <section class="about-hero">
+    <div class="section-container">
+      <div class="about-hero-badge">🏠 About Pahuna</div>
+      <h1>
+        Connecting Travelers with<br>
+        <span class="highlight">Nepal's Heart &amp; Homes</span>
+      </h1>
+      <p>
+        Pahuna is Nepal's homegrown homestay platform — connecting travelers with authentic 
+        local hosts across the Himalayas, ancient cities, and jungle lowlands. We're on a mission 
+        to make travel in Nepal more personal, more sustainable, and more rewarding — for guests 
+        and hosts alike.
+      </p>
+      <div class="hero-ornament">✦ ✦ ✦</div>
+    </div>
+  </section>
+
+  <!-- ==================== OUR STORY - REDESIGNED ==================== -->
+  <section class="story-section">
+    <div class="story-grid">
+      <!-- Left Side: Story Content -->
+      <div class="story-content">
+        <span class="section-label">📖 Our Story</span>
+        <h2>
+          Born from a<br>
+          <span class="highlight">Simple Idea</span>
         </h2>
-        <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
-          Founded in Kathmandu in 2024, Bookmandu was born from a simple idea: the best way to experience Nepal isn't from a hotel lobby — it's from a family kitchen in Pokhara, a farmhouse in Chitwan, or a teahouse on the trail to Annapurna.
+        <p>
+          Founded in <strong>Kathmandu in 2026</strong>, Pahuna was born from a simple idea: 
+          the best way to experience Nepal isn't from a hotel lobby — it's from a family kitchen 
+          in Pokhara, a farmhouse in Chitwan, or a teahouse on the trail to Annapurna.
         </p>
-        <p style="color: var(--text-secondary); line-height: 1.8;">
-          We built Bookmandu to help travelers find those authentic moments, and to help Nepali families share their homes, culture, and hospitality with the world. Today, we're proud to be Nepal's fastest-growing homestay platform.
+        <p>
+          Our traveling adventures take you to breathtaking destinations, creating unforgettable 
+          memories and experiences that last a lifetime. We built Pahuna to help travelers find 
+          those authentic moments, and to help Nepali families share their homes and culture 
+          with the world.
         </p>
+        <div class="year-badge">✦ Established 2026</div>
       </div>
-      <div class="quote-card">
-        <i class="fas fa-quote-left" style="font-size: 2.5rem; color: var(--green); opacity: 0.5; margin-bottom: 16px; display: block;"></i>
-        <p style="font-size: 1.1rem; line-height: 1.7; font-style: italic; margin-bottom: 24px;">
-          "Every booking on Bookmandu is a story waiting to happen — a connection between a traveler and a host that goes beyond commerce."
-        </p>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div class="team-avatar" style="width: 48px; height: 48px; font-size: 1.2rem; margin: 0;">🙏</div>
-          <div>
-            <strong style="display: block;">Rijwan Miya</strong>
-            <span style="font-size: 0.8rem; color: var(--text-secondary);">Founder & CEO</span>
+
+      <!-- Right Side: Numbered Image Grid - BARGRAPH STYLE -->
+      <div class="story-images">
+        <!-- Main Image - 01 (Mustang Desert) - Larger (taller) -->
+        <a href="{{ url_for('auth.property_mustang_desert') }}" class="image-card main">
+          <img src="{{ url_for('static', filename='images/md3.jpg') }}" alt="Mustang Desert">
+          <span class="number-badge">01</span>
+          <div class="rating-badge">
+            <span class="star">★</span> 4.7
           </div>
+          <div class="destination-overlay">
+            <span class="name">Mustang Desert</span>
+            <span class="sub">Lo-Manthang · Upper Mustang</span>
+          </div>
+          <span class="click-hint">↗ Click to explore</span>
+        </a>
+
+        <!-- Secondary Image - 02 (Thamel Heritage) - Smaller, downside -->
+        <a href="{{ url_for('auth.property_thamel_heritage') }}" class="image-card secondary">
+          <img src="{{ url_for('static', filename='images/th1.jpg') }}" alt="Thamel Heritage House">
+          <span class="number-badge">02</span>
+          <div class="rating-badge">
+            <span class="star">★</span> 4.5
+          </div>
+          <div class="destination-overlay">
+            <span class="name">Thamel Heritage</span>
+            <span class="sub">Kathmandu · Thamel</span>
+          </div>
+          <span class="click-hint">↗ Click to explore</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== WHAT WE DO ==================== -->
+  <section class="what-section section-padding">
+    <div class="section-container">
+      <div style="text-align: center; max-width: 700px; margin: 0 auto;">
+        <span class="section-label">✨ What We Do</span>
+        <h2 class="section-title">Making Travel in Nepal <br>More Personal &amp; Sustainable</h2>
+      </div>
+
+      <div class="what-grid">
+        <div class="what-card">
+          <span class="icon">🏡</span>
+          <h3>Curated Homestays</h3>
+          <p>Every property is verified by our local team — no surprises, no fake listings. We personally visit each homestay to ensure quality and authenticity.</p>
+        </div>
+        <div class="what-card">
+          <span class="icon">🤝</span>
+          <h3>Fair to Hosts</h3>
+          <p>Lower commissions than global platforms, so more of what you pay reaches the host. We believe in empowering local communities.</p>
+        </div>
+        <div class="what-card">
+          <span class="icon">🌱</span>
+          <h3>Sustainable Travel</h3>
+          <p>We promote responsible tourism that benefits local communities and protects Nepal's rich cultural and natural heritage.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- What We Do Section -->
-  <section class="section">
-    <div style="text-align: center; margin-bottom: 48px;">
-      <div class="hero-badge">What We Do</div>
-      <h2 class="section-title">Connecting Travelers with<br /><span style="color: var(--green)">Authentic Nepal</span></h2>
-    </div>
-    <div class="grid grid-3">
-      <div class="feature-card"><div class="feature-icon">🏔️</div><h3>Curated Homestays</h3><p>Every property is verified by our local team — no surprises, no fake listings.</p></div>
-      <div class="feature-card"><div class="feature-icon">🤝</div><h3>Fair to Hosts</h3><p>Lower commissions than global platforms, so more reaches the host.</p></div>
-      <div class="feature-card"><div class="feature-icon">🌱</div><h3>Sustainable Travel</h3><p>Promoting responsible tourism that benefits local communities.</p></div>
-      <div class="feature-card"><div class="feature-icon">🔒</div><h3>Secure Booking</h3><p>Your payments and data are protected with enterprise-grade security.</p></div>
-      <div class="feature-card"><div class="feature-icon">💬</div><h3>24/7 Support</h3><p>Our local team is always ready to help in English and Nepali.</p></div>
-      <div class="feature-card"><div class="feature-icon">📱</div><h3>Easy Platform</h3><p>Book from anywhere with our mobile-friendly design.</p></div>
+  <!-- ==================== OUR VALUES ==================== -->
+  <section class="values-section section-padding">
+    <div class="section-container">
+      <div style="text-align: center; max-width: 700px; margin: 0 auto;">
+        <span class="section-label">💎 Our Values</span>
+        <h2 class="section-title">What Guides Everything We Do</h2>
+      </div>
+
+      <div class="values-grid">
+        <div class="value-item">
+          <span class="emoji">🧡</span>
+          <h4>Authenticity</h4>
+          <p>Real homes, real people, real Nepal. Every stay is a genuine cultural experience.</p>
+        </div>
+        <div class="value-item">
+          <span class="emoji">🔒</span>
+          <h4>Trust</h4>
+          <p>Transparent pricing, verified reviews, and no hidden fees — always.</p>
+        </div>
+        <div class="value-item">
+          <span class="emoji">🤗</span>
+          <h4>Community</h4>
+          <p>Supporting local economies in every region we serve across Nepal.</p>
+        </div>
+        <div class="value-item">
+          <span class="emoji">🗣️</span>
+          <h4>Accessibility</h4>
+          <p>Bilingual support in English and Nepali, for guests and hosts alike.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Our Values Section -->
-  <section class="section">
-    <div style="text-align: center; margin-bottom: 32px;">
-      <div class="hero-badge">Our Values</div>
-      <h2 class="section-title">What Guides Everything We Do</h2>
-    </div>
-    <div class="values-grid">
-      <div class="value-card"><div style="font-size: 2rem; margin-bottom: 12px;">🏠</div><h3>Authenticity</h3><p style="color: var(--text-secondary); font-size: 0.85rem;">Real homes, real people, real Nepal — no staged experiences</p></div>
-      <div class="value-card"><div style="font-size: 2rem; margin-bottom: 12px;">🤝</div><h3>Trust</h3><p style="color: var(--text-secondary); font-size: 0.85rem;">Transparent pricing, verified reviews, no hidden fees</p></div>
-      <div class="value-card"><div style="font-size: 2rem; margin-bottom: 12px;">🌍</div><h3>Community</h3><p style="color: var(--text-secondary); font-size: 0.85rem;">Supporting local economies in every region we serve</p></div>
-      <div class="value-card"><div style="font-size: 2rem; margin-bottom: 12px;">📱</div><h3>Accessibility</h3><p style="color: var(--text-secondary); font-size: 0.85rem;">Bilingual support in English and नेपाली for all users</p></div>
+  <!-- ==================== BY THE NUMBERS ==================== -->
+  <section class="numbers-section section-padding">
+    <div class="section-container">
+      <div style="text-align: center; max-width: 700px; margin: 0 auto;">
+        <span class="section-label">📊 By the Numbers</span>
+        <h2 class="section-title">Pahuna in Numbers</h2>
+        <p class="section-subtitle" style="margin: 0 auto;">The impact we're making across Nepal</p>
+      </div>
+
+      <div class="numbers-grid">
+        <div class="number-item">
+          <div class="number">500+</div>
+          <div class="label">Verified Homestays</div>
+        </div>
+        <div class="number-item">
+          <div class="number">25K+</div>
+          <div class="label">Happy Travelers Hosted</div>
+        </div>
+        <div class="number-item">
+          <div class="number">40+</div>
+          <div class="label">Districts Covered</div>
+        </div>
+        <div class="number-item">
+          <div class="number">⭐ 4.8</div>
+          <div class="label">Average Guest Rating</div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- By the Numbers Section -->
-  <section class="section">
-    <div style="text-align: center; margin-bottom: 48px;">
-      <div class="hero-badge">By the Numbers</div>
-      <h2 class="section-title">Bookmandu in Numbers</h2>
-    </div>
-    <div class="grid grid-4">
-      <div class="stat-card"><div class="feature-icon">🏔️</div><div class="stat-number">500+</div><p>Verified Homestays</p></div>
-      <div class="stat-card"><div class="feature-icon">🌟</div><div class="stat-number">25K+</div><p>Happy Travelers</p></div>
-      <div class="stat-card"><div class="feature-icon">🗺️</div><div class="stat-number">40+</div><p>Districts Covered</p></div>
-      <div class="stat-card"><div class="feature-icon">⭐</div><div class="stat-number">98%</div><p>Guest Satisfaction</p></div>
-    </div>
-  </section>
-
-  <!-- Our Journey Section -->
-  <section class="section">
-    <div style="text-align: center; margin-bottom: 48px;">
-      <div class="hero-badge">Our Journey</div>
-      <h2 class="section-title">Milestones That Matter</h2>
-    </div>
-    <div class="milestones">
-      <div class="milestone-item"><div class="milestone-year">2024</div><div><strong>🚀 Founded in Kathmandu</strong><br><span style="color: var(--text-secondary);">Started with 50 homestays in Pokhara Valley</span></div></div>
-      <div class="milestone-item"><div class="milestone-year">2024</div><div><strong>🎉 First 1,000 Bookings</strong><br><span style="color: var(--text-secondary);">Reached milestone within 6 months</span></div></div>
-      <div class="milestone-item"><div class="milestone-year">2025</div><div><strong>🇳🇵 Expanded Nationwide</strong><br><span style="color: var(--text-secondary);">Now covering 40+ districts across Nepal</span></div></div>
-      <div class="milestone-item"><div class="milestone-year">2025</div><div><strong>🌱 Sustainability Initiative</strong><br><span style="color: var(--text-secondary);">Launched eco-certification for hosts</span></div></div>
+  <!-- ==================== CTA ==================== -->
+  <section class="cta-section">
+    <div class="section-container">
+      <h2>Ready to Explore Nepal? 🇳🇵</h2>
+      <p>Find your perfect stay or list your home with us.</p>
+      <div class="cta-buttons">
+        <a href="{{ url_for('auth.browse') }}" class="btn btn-primary">
+          <i class="fas fa-compass"></i> Browse Properties
+        </a>
+        <a href="{{ url_for('auth.contact') }}" class="btn btn-outline">
+          <i class="fas fa-envelope"></i> Get in Touch
+        </a>
+      </div>
     </div>
   </section>
 
-  <!-- Meet the Team Section -->
-  <section class="section">
-    <div style="text-align: center; margin-bottom: 48px;">
-      <div class="hero-badge">The Team</div>
-      <h2 class="section-title">People Behind Bookmandu</h2>
-    </div>
-    <div class="grid grid-3">
-      <div class="team-card"><div class="team-avatar">👨‍💻</div><h3>Rijwan Miya</h3><p style="color: var(--green); font-size: 0.8rem;">Founder & CEO</p><p style="color: var(--text-secondary); font-size: 0.8rem;">Former trekking guide turned tech entrepreneur</p></div>
-      <div class="team-card"><div class="team-avatar">👩‍💼</div><h3>Sarita Gurung</h3><p style="color: var(--green); font-size: 0.8rem;">Head of Host Relations</p><p style="color: var(--text-secondary); font-size: 0.8rem;">10+ years in Nepali hospitality</p></div>
-      <div class="team-card"><div class="team-avatar">🤝</div><h3>Bikash Lama</h3><p style="color: var(--green); font-size: 0.8rem;">Community Manager</p><p style="color: var(--text-secondary); font-size: 0.8rem;">Connecting travelers with local experiences</p></div>
-    </div>
-  </section>
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        
+        <!-- Brand Column -->
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <i class="fas fa-home"></i>
+            <span>Pahuna</span>
+          </div>
+          <p class="footer-description">
+            Nepal's dedicated accommodation booking platform. Connect with authentic homestays, guesthouses, and unique stays across the Himalayas.
+          </p>
+          <div class="footer-social">
+            <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
 
-  <!-- CTA Section -->
-  <div class="cta-section">
-    <h2 style="font-size: 1.8rem; font-family: var(--font-display); margin-bottom: 16px;">Ready to Start Your Journey?</h2>
-    <p style="color: var(--text-secondary); margin-bottom: 24px;">Join thousands of travelers who found their perfect stay with Bookmandu</p>
-    <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-      <a href="#" class="btn btn-primary">Browse Properties</a>
-      <a href="#" class="btn btn-outline">List Your Property</a>
+        <!-- Explore Column -->
+        <div class="footer-column">
+          <h4 class="footer-heading">EXPLORE</h4>
+          <ul class="footer-links">
+            <li><a href="{{ url_for('auth.browse') }}"><i class="fas fa-compass"></i> Browse Properties</a></li>
+            <li><a href="{{ url_for('auth.index') }}"><i class="fas fa-home"></i> Home</a></li>
+          </ul>
+        </div>
+
+        <!-- Account Column -->
+        <div class="footer-column">
+          <h4 class="footer-heading">ACCOUNT</h4>
+          <ul class="footer-links">
+            <li><a href="{{ url_for('auth.register') }}"><i class="fas fa-user-plus"></i> Register</a></li>
+            <li><a href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
+          </ul>
+        </div>
+
+        <!-- Support Column -->
+        <div class="footer-column">
+          <h4 class="footer-heading">SUPPORT</h4>
+          <ul class="footer-links">
+            <li><a href="{{ url_for('auth.faq') }}"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            <li><a href="{{ url_for('auth.contact') }}"><i class="fas fa-envelope"></i> Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div class="footer-copyright">
+          © 2026 Pahuna. All rights reserved.
+        </div>
+        <div class="footer-lang-currency">
+          <button class="lang-btn" onclick="switchLanguage()">
+            <i class="fas fa-globe"></i> EN / नेपाली
+          </button>
+          <button class="currency-btn">
+            <i class="fas fa-rupee-sign"></i> NPR Rs
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
+  </footer>
+
 </div>
 
-<!-- Footer -->
-<footer class="footer">
-  <div class="footer-content">
-    <div class="footer-logo">
-      <div class="logo-text" style="font-size: 1.2rem;">Book<span>mandu</span></div>
-      <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 12px;">Authentic Himalayan Hospitality</p>
-    </div>
-    <div class="footer-links"><h4>Company</h4><a href="about.html">About Us</a><a href="#">Careers</a><a href="#">Press</a><a href="#">Blog</a></div>
-    <div class="footer-links"><h4>Support</h4><a href="#">Help Center</a><a href="#">Contact Us</a><a href="#">Safety</a><a href="#">FAQs</a></div>
-    <div class="footer-links"><h4>Legal</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cancellation Policy</a></div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2025 Bookmandu — Authentic Himalayan Hospitality. <i class="fas fa-heart"></i></p>
-    <p><small>Contact support: support@bookmandu.com | +977-1-1234567</small></p>
-  </div>
-</footer>
-
 <script>
-  // Theme Toggle Functionality
-  const themeToggle = document.getElementById('themeToggle');
-  const themeIcon = document.getElementById('themeIcon');
-  const themeText = document.getElementById('themeText');
-  
-  // Get saved theme from localStorage
-  const savedTheme = localStorage.getItem('bookmandu-theme');
-  if (savedTheme) {
-    document.body.setAttribute('data-theme', savedTheme);
-    updateThemeUI(savedTheme);
-  }
-  
-  function updateThemeUI(theme) {
-    if (theme === 'light') {
-      themeIcon.className = 'fas fa-sun';
-      themeText.textContent = 'Light';
-    } else {
-      themeIcon.className = 'fas fa-moon';
-      themeText.textContent = 'Dark';
-    }
-  }
-  
-  themeToggle.addEventListener('click', () => {
-    const currentTheme = document.body.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    document.body.setAttribute('data-theme', newTheme);
-    localStorage.setItem('bookmandu-theme', newTheme);
-    updateThemeUI(newTheme);
-  });
-  
-  // Intersection Observer for scroll animations
-  const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-      }
-    });
-  }, observerOptions);
-  
-  document.querySelectorAll('.feature-card, .stat-card, .team-card, .value-card, .milestone-item').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
-    observer.observe(el);
-  });
+function switchLanguage() {
+  showToast('Language switcher coming soon!', 'info');
+}
 </script>
-</body>
-</html>
+
+{% endblock %}
