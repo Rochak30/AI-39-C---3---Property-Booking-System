@@ -314,7 +314,8 @@ class AuthController(BaseController):
             print(name, description, price, category, stock)
         return render_template("product_form.html")
 
-    # ========== ADD PROPERTY ROUTE - HOST ONLY ==========
+    # Add this method to your AuthController class
+
     def add_property(self):
         """Route for adding a new property - HOSTS ONLY."""
         # Check if user is logged in
@@ -322,7 +323,7 @@ class AuthController(BaseController):
             flash("Please login to add a property.", "warning")
             return redirect(url_for("auth.login"))
         
-        # Check if user is a host - STRICT HOST ONLY
+        # Check if user is a host
         if session.get('role') != 'host':
             flash("⚠️ Only hosts can add properties. Please register as a host.", "warning")
             return redirect(url_for("auth.browse"))
@@ -333,15 +334,23 @@ class AuthController(BaseController):
             property_type = request.form.get("property_type")
             region = request.form.get("region")
             address = request.form.get("address")
+            tagline = request.form.get("tagline")
             description = request.form.get("description")
             price_per_night = request.form.get("price_per_night")
             amenities = request.form.getlist("amenities")
             max_guests = request.form.get("max_guests")
             bedrooms = request.form.get("bedrooms")
             bathrooms = request.form.get("bathrooms")
+            checkin_time = request.form.get("checkin_time")
+            checkout_time = request.form.get("checkout_time")
+            host_bio = request.form.get("host_bio")
+            host_languages = request.form.get("host_languages")
+            response_time = request.form.get("response_time")
+            additional_rules = request.form.get("additional_rules")
+            rules = request.form.getlist("rules")
             
             # Validate required fields
-            if not all([property_name, property_type, region, address, description, price_per_night]):
+            if not all([property_name, property_type, region, address, tagline, description, price_per_night]):
                 flash("All required fields must be filled.", "danger")
                 return render_template("add_property.html")
             
@@ -350,23 +359,51 @@ class AuthController(BaseController):
                 db = Database()
                 user_id = session.get("user_id")
                 
-                # Convert amenities list to comma-separated string
+                # Convert lists to comma-separated strings
                 amenities_str = ','.join(amenities) if amenities else ''
+                rules_str = ','.join(rules) if rules else ''
+                
+                # Handle image uploads
+                images = request.files.getlist("images")
+                image_filenames = []
+                
+                # Create upload directory if it doesn't exist
+                import os
+                upload_dir = os.path.join('app', 'static', 'images', 'properties')
+                os.makedirs(upload_dir, exist_ok=True)
+                
+                for idx, image in enumerate(images):
+                    if image and image.filename:
+                        # Generate unique filename
+                        import time
+                        ext = image.filename.rsplit('.', 1)[1].lower() if '.' in image.filename else 'jpg'
+                        filename = f"property_{user_id}_{int(time.time())}_{idx}.{ext}"
+                        filepath = os.path.join(upload_dir, filename)
+                        image.save(filepath)
+                        image_filenames.append(filename)
+                
+                # Store images as comma-separated string
+                images_str = ','.join(image_filenames) if image_filenames else ''
                 
                 query = """
                     INSERT INTO properties 
-                    (user_id, property_name, property_type, region, address, description, 
-                     price_per_night, amenities, max_guests, bedrooms, bathrooms, created_at)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+                    (user_id, property_name, property_type, region, address, tagline, description, 
+                    price_per_night, amenities, max_guests, bedrooms, bathrooms, 
+                    checkin_time, checkout_time, images, rules, additional_rules,
+                    host_bio, host_languages, response_time, created_at, status)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), %s)
                 """
                 
                 db.execute(query, (
-                    user_id, property_name, property_type, region, address, description,
-                    price_per_night, amenities_str, max_guests or 2, bedrooms or 1, bathrooms or 1
+                    user_id, property_name, property_type, region, address, tagline, description,
+                    price_per_night, amenities_str, max_guests or 2, bedrooms or 1, bathrooms or 1,
+                    checkin_time or '15:00', checkout_time or '12:00', images_str, rules_str,
+                    additional_rules, host_bio, host_languages, response_time or 'Within 1 hour',
+                    'pending'  # Status: pending review
                 ))
                 db.close()
                 
-                flash("✅ Property added successfully! It will be reviewed by our team.", "success")
+                flash("✅ Property added successfully! It will be reviewed by our team before going live.", "success")
                 return redirect(url_for("auth.browse"))
                 
             except Exception as e:
