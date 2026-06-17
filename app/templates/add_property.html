@@ -2,12 +2,828 @@
 
 {% block title %}Add Property — Pahuna{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* ============================================================
+       ADD PROPERTY PAGE - ALIGNED WITH PROPERTY DETAILS PAGE
+       ============================================================ */
+    .add-property-page {
+        padding-top: 100px;
+        padding-bottom: 60px;
+        max-width: 900px;
+        margin: 0 auto;
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    /* ========== HERO HEADER ========== */
+    .add-property-header {
+        text-align: center;
+        margin-bottom: 48px;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, var(--bg-700), var(--bg-600));
+        border-radius: 24px;
+        border: 1px solid var(--border-teal);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .add-property-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 201, 122, 0.05), transparent 60%);
+        animation: shimmer 8s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    @keyframes shimmer {
+        0%, 100% { transform: translate(-10%, -10%) scale(1); }
+        50% { transform: translate(10%, 10%) scale(1.1); }
+    }
+
+    .add-property-header h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 42px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        background: linear-gradient(135deg, var(--text-primary), var(--teal));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+        z-index: 1;
+    }
+
+    .add-property-header p {
+        color: var(--text-secondary);
+        font-size: 16px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .add-property-header .step-indicator {
+        display: flex;
+        justify-content: center;
+        gap: 32px;
+        margin-top: 24px;
+        position: relative;
+        z-index: 1;
+        flex-wrap: wrap;
+    }
+
+    .step-indicator .step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+
+    .step-indicator .step .step-num {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--bg-600);
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-muted);
+        transition: all 0.3s ease;
+    }
+
+    .step-indicator .step.active .step-num {
+        background: var(--teal);
+        border-color: var(--teal);
+        color: #051209;
+    }
+
+    .step-indicator .step.active {
+        color: var(--text-primary);
+    }
+
+    /* ========== FORM STYLES ========== */
+    .property-form {
+        background: var(--bg-700);
+        border-radius: 24px;
+        padding: 48px;
+        border: 1px solid var(--border);
+    }
+
+    .form-section {
+        margin-bottom: 40px;
+        padding-bottom: 40px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .form-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .form-section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .form-section-header .section-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: var(--teal-glow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--teal);
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .form-section-header h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    .form-section-header .section-subtitle {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin: 0;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 6px;
+    }
+
+    .form-group label .required {
+        color: var(--red);
+        margin-left: 4px;
+    }
+
+    .form-group .helper-text {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 4px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 16px;
+        background: var(--bg-600);
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        color: var(--text-primary);
+        font-size: 14px;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: var(--teal);
+        outline: none;
+        box-shadow: 0 0 0 3px var(--teal-glow);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .form-group select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 40px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-row-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+    }
+
+    /* ========== IMAGE UPLOAD ========== */
+    .image-upload-area {
+        border: 2px dashed var(--border);
+        border-radius: 16px;
+        padding: 40px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: var(--bg-600);
+        position: relative;
+    }
+
+    .image-upload-area:hover {
+        border-color: var(--teal);
+        background: var(--teal-glow);
+    }
+
+    .image-upload-area .upload-icon {
+        font-size: 48px;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    .image-upload-area .upload-text {
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    .image-upload-area .upload-text strong {
+        color: var(--teal);
+    }
+
+    .image-upload-area input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .image-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .image-preview-item {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid var(--border);
+        background: var(--bg-600);
+    }
+
+    .image-preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .image-preview-item .remove-image {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(231, 76, 60, 0.9);
+        border: none;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        transition: all 0.2s ease;
+    }
+
+    .image-preview-item .remove-image:hover {
+        transform: scale(1.1);
+    }
+
+    /* ========== AMENITIES GRID ========== */
+    .amenities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 10px;
+    }
+
+    .amenity-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        background: var(--bg-600);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1.5px solid var(--border);
+    }
+
+    .amenity-checkbox:hover {
+        border-color: var(--border-teal);
+        background: var(--bg-500);
+        transform: translateY(-2px);
+    }
+
+    .amenity-checkbox input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--teal);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .amenity-checkbox label {
+        font-size: 13px;
+        cursor: pointer;
+        margin: 0;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .amenity-checkbox label i {
+        color: var(--teal);
+        width: 16px;
+    }
+
+    /* ========== PACKAGE INCLUSIONS ========== */
+    .inclusions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 10px;
+    }
+
+    .inclusion-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        background: var(--bg-600);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1.5px solid var(--border);
+    }
+
+    .inclusion-checkbox:hover {
+        border-color: var(--border-teal);
+        background: var(--bg-500);
+        transform: translateY(-2px);
+    }
+
+    .inclusion-checkbox input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--teal);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .inclusion-checkbox label {
+        font-size: 13px;
+        cursor: pointer;
+        margin: 0;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .inclusion-checkbox label i {
+        color: var(--teal);
+        width: 16px;
+    }
+
+    /* ========== NEARBY PLACES ========== */
+    .nearby-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 10px;
+        background: var(--bg-600);
+        padding: 12px;
+        border-radius: 10px;
+        border: 1.5px solid var(--border);
+    }
+
+    .nearby-row input {
+        margin-bottom: 0 !important;
+    }
+
+    .nearby-remove-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(231, 76, 60, 0.15);
+        border: 1px solid rgba(231, 76, 60, 0.3);
+        color: var(--red);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .nearby-remove-btn:hover {
+        background: var(--red);
+        color: white;
+    }
+
+    .btn-add-nearby {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: var(--teal-glow);
+        border: 1.5px dashed var(--teal);
+        color: var(--teal);
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 4px;
+    }
+
+    .btn-add-nearby:hover {
+        background: var(--teal);
+        color: #051209;
+        border-style: solid;
+    }
+
+    /* ========== HOUSE RULES ========== */
+    .rules-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .rule-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        background: var(--bg-600);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1.5px solid var(--border);
+    }
+
+    .rule-checkbox:hover {
+        border-color: var(--border-teal);
+        background: var(--bg-500);
+    }
+
+    .rule-checkbox input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--teal);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .rule-checkbox label {
+        font-size: 13px;
+        cursor: pointer;
+        margin: 0;
+        color: var(--text-secondary);
+    }
+
+    /* ========== CANCELLATION / POLICY CARD ========== */
+    .policy-card {
+        background: var(--bg-600);
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 16px;
+    }
+
+    .policy-card-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .policy-card-title i {
+        color: var(--teal);
+    }
+
+    /* ========== HIGHLIGHTS ========== */
+    .highlights-grid-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+    }
+
+    .highlight-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        background: var(--bg-600);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1.5px solid var(--border);
+    }
+
+    .highlight-checkbox:hover {
+        border-color: var(--border-teal);
+        background: var(--bg-500);
+        transform: translateY(-2px);
+    }
+
+    .highlight-checkbox input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--teal);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .highlight-checkbox label {
+        font-size: 13px;
+        cursor: pointer;
+        margin: 0;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .highlight-checkbox label i {
+        color: var(--teal);
+        width: 16px;
+    }
+
+    /* ========== BUTTONS ========== */
+    .form-actions {
+        display: flex;
+        gap: 16px;
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+    }
+
+    .btn-submit {
+        flex: 1;
+        padding: 16px 32px;
+        background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+        color: #051209;
+        border: none;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(0, 201, 122, 0.4);
+    }
+
+    .btn-submit:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-cancel {
+        padding: 16px 32px;
+        background: var(--bg-600);
+        color: var(--text-secondary);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-width: 140px;
+    }
+
+    .btn-cancel:hover {
+        border-color: var(--red);
+        color: var(--red);
+    }
+
+    .btn-save-draft {
+        padding: 16px 32px;
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-save-draft:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+    }
+
+    .note-text {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        justify-content: center;
+    }
+
+    .note-text i {
+        color: var(--teal);
+    }
+
+    /* ========== PROGRESS BAR ========== */
+    .form-progress {
+        margin-bottom: 32px;
+        background: var(--bg-600);
+        border-radius: 12px;
+        height: 6px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .form-progress .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--teal), var(--cyan));
+        border-radius: 12px;
+        transition: width 0.5s ease;
+        width: 0%;
+    }
+
+    /* ========== SECTION LABEL (matches property detail style) ========== */
+    .section-label-tag {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--teal);
+        background: var(--teal-glow);
+        border: 1px solid var(--border-teal);
+        border-radius: 20px;
+        padding: 3px 10px;
+        margin-bottom: 8px;
+    }
+
+    /* ========== INPUT WITH PREFIX (for NPR currency) ========== */
+    .input-with-prefix {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-with-prefix .prefix {
+        position: absolute;
+        left: 14px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--teal);
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .input-with-prefix input {
+        padding-left: 52px !important;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 992px) {
+        .add-property-page {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        .property-form {
+            padding: 32px 24px;
+        }
+        .image-preview-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .add-property-header h1 {
+            font-size: 32px;
+        }
+        .form-row,
+        .form-row-3 {
+            grid-template-columns: 1fr;
+        }
+        .amenities-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+        .inclusions-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+        .rules-grid {
+            grid-template-columns: 1fr;
+        }
+        .highlights-grid-form {
+            grid-template-columns: 1fr 1fr;
+        }
+        .form-actions {
+            flex-direction: column;
+        }
+        .btn-cancel {
+            justify-content: center;
+        }
+        .image-preview-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .property-form {
+            padding: 24px 16px;
+        }
+        .nearby-row {
+            grid-template-columns: 1fr auto;
+        }
+        .nearby-row input:first-child {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .add-property-header {
+            padding: 24px 16px;
+        }
+        .add-property-header h1 {
+            font-size: 26px;
+        }
+        .amenities-grid,
+        .inclusions-grid,
+        .highlights-grid-form {
+            grid-template-columns: 1fr;
+        }
+        .image-preview-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+        .form-section-header {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<!-- Check if user is host -->
+
+<!-- ============================================================
+     CHECK IF USER IS HOST
+     ============================================================ -->
 {% if session.get('role') != 'host' %}
 <div style="max-width: 600px; margin: 120px auto; text-align: center; padding: 40px;">
     <div style="font-size: 64px; margin-bottom: 20px;">🚫</div>
-    <h1 style="font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 16px;">
+    <h1 style="font-family: 'Playfair Display', serif; font-size: 36px; margin-bottom: 16px;">
         Access Denied
     </h1>
     <p style="color: var(--text-secondary); font-size: 16px; margin-bottom: 24px;">
@@ -23,9 +839,865 @@
     </div>
 </div>
 {% else %}
-<!-- The actual add property form -->
+
+<!-- ============================================================
+     MAIN ADD PROPERTY FORM
+     ============================================================ -->
 <div class="add-property-page">
-    <!-- ... rest of your add property form ... -->
+
+    <!-- Header -->
+    <div class="add-property-header">
+        <h1>🏠 List Your Property</h1>
+        <p>Create a stunning listing to attract travelers from around the world</p>
+        <div class="step-indicator">
+            <div class="step active">
+                <span class="step-num">1</span>
+                <span>Basic Info</span>
+            </div>
+            <div class="step">
+                <span class="step-num">2</span>
+                <span>Details</span>
+            </div>
+            <div class="step">
+                <span class="step-num">3</span>
+                <span>Photos</span>
+            </div>
+            <div class="step">
+                <span class="step-num">4</span>
+                <span>Amenities</span>
+            </div>
+            <div class="step">
+                <span class="step-num">5</span>
+                <span>Package</span>
+            </div>
+            <div class="step">
+                <span class="step-num">6</span>
+                <span>Rules & Location</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="form-progress">
+        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+    </div>
+
+    <!-- Form -->
+    <form method="POST" class="property-form" enctype="multipart/form-data" id="addPropertyForm">
+
+        <!-- ============================================================
+             SECTION 1: BASIC INFORMATION
+             (matches: hero title, tagline, type, region, address)
+             ============================================================ -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="section-icon"><i class="fas fa-info-circle"></i></div>
+                <div>
+                    <h3>Basic Information</h3>
+                    <p class="section-subtitle">Displayed in the hero banner of your property page</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Property Name <span class="required">*</span></label>
+                <input type="text" name="property_name" placeholder="e.g., Mountain View Homestay" required>
+                <div class="helper-text">This appears as the large hero title on your listing</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Property Type <span class="required">*</span></label>
+                    <select name="property_type" required>
+                        <option value="">Select type</option>
+                        <option value="Homestay">🏠 Homestay</option>
+                        <option value="Guesthouse">🏨 Guesthouse</option>
+                        <option value="Private Room">🛏️ Private Room</option>
+                        <option value="Entire Property">🏡 Entire Property</option>
+                        <option value="Villa">🏰 Villa</option>
+                        <option value="Apartment">🏢 Apartment</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Region <span class="required">*</span></label>
+                    <select name="region" required>
+                        <option value="">Select region</option>
+                        <option value="Kathmandu">📍 Kathmandu</option>
+                        <option value="Pokhara">📍 Pokhara</option>
+                        <option value="Chitwan">📍 Chitwan</option>
+                        <option value="Lumbini">📍 Lumbini</option>
+                        <option value="Mustang">📍 Mustang</option>
+                        <option value="Other">📍 Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Specific Area / Neighbourhood <span class="required">*</span></label>
+                <input type="text" name="area" placeholder="e.g., Lakeside, Thamel, Sauraha" required>
+                <div class="helper-text">Shown as "Region, Area" in location tag (e.g., Pokhara, Lakeside)</div>
+            </div>
+
+            <div class="form-group">
+                <label>Full Address <span class="required">*</span></label>
+                <input type="text" name="address" placeholder="Street, landmark" required>
+                <div class="helper-text">📍 Shown to guests only after booking is confirmed</div>
+            </div>
+
+            <div class="form-group">
+                <label>Hero Tagline <span class="required">*</span></label>
+                <input type="text" name="tagline" placeholder="e.g., Authentic Nepali Hospitality" required>
+                <div class="helper-text">Short badge text shown above the property name in the hero (e.g., "✨ Authentic Nepali Hospitality")</div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 2: PROPERTY DETAILS
+             (matches: description, price, guests, bedrooms, bathrooms, check-in/out)
+             ============================================================ -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="section-icon"><i class="fas fa-home"></i></div>
+                <div>
+                    <h3>Property Details</h3>
+                    <p class="section-subtitle">Core listing details shown on your property page</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Welcome Description <span class="required">*</span></label>
+                <textarea name="description" placeholder="Describe your property, nearby attractions, special features, what guests can expect. E.g., 'Wake up to stunning sunrise over the Annapurna range...'" required style="min-height: 150px;"></textarea>
+                <div class="helper-text">This is the main description under "Welcome to…" on your property page. Be vivid and detailed.</div>
+            </div>
+
+            <div class="form-group">
+                <label>Second Description Paragraph</label>
+                <textarea name="description_2" placeholder="Additional detail about rooms, decor, special features, rooftop, etc." style="min-height: 100px;"></textarea>
+                <div class="helper-text">Optional second paragraph shown below the main description</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Price per Night (NPR) <span class="required">*</span></label>
+                    <div class="input-with-prefix">
+                        <span class="prefix">NPR</span>
+                        <input type="number" name="price_per_night" placeholder="e.g., 2500" required min="100">
+                    </div>
+                    <div class="helper-text">💰 Shown in hero badge and booking sidebar</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Max Guests <span class="required">*</span></label>
+                    <input type="number" name="max_guests" placeholder="e.g., 4" required min="1" value="2">
+                    <div class="helper-text">Shown as guest limit in booking sidebar dropdown</div>
+                </div>
+            </div>
+
+            <div class="form-row-3">
+                <div class="form-group">
+                    <label>Bedrooms</label>
+                    <input type="number" name="bedrooms" placeholder="e.g., 2" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Bathrooms</label>
+                    <input type="number" name="bathrooms" placeholder="e.g., 1" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Rating (if existing)</label>
+                    <input type="number" name="rating" placeholder="e.g., 4.8" min="1" max="5" step="0.1">
+                    <div class="helper-text">Shown in hero badge</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Check-in Time</label>
+                    <input type="time" name="checkin_time" value="15:00">
+                    <div class="helper-text">Default: 3:00 PM — shown in house rules</div>
+                </div>
+                <div class="form-group">
+                    <label>Check-out Time</label>
+                    <input type="time" name="checkout_time" value="12:00">
+                    <div class="helper-text">Default: 12:00 PM — shown in house rules</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 3: PHOTOS
+             (matches: hero image, gallery main + 5 thumbnails, stay-grid bedroom photos)
+             ============================================================ -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="section-icon"><i class="fas fa-images"></i></div>
+                <div>
+                    <h3>Property Photos</h3>
+                    <p class="section-subtitle">Hero image, gallery, and room cards — upload at least 6</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="image-upload-area" id="imageUploadArea">
+                    <span class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></span>
+                    <div class="upload-text">
+                        <strong>Click to upload</strong> or drag and drop<br>
+                        <small style="color: var(--text-muted);">JPG, PNG, WEBP · Max 10MB each · Up to 10 images</small>
+                    </div>
+                    <input type="file" name="images" id="imageInput" accept="image/*" multiple>
+                </div>
+                <div class="image-preview-grid" id="imagePreviewGrid"></div>
+                <div class="helper-text" style="margin-top: 8px;">
+                    📸 <strong>Image order matters:</strong>
+                    Image 1 → Hero &amp; Gallery main photo &nbsp;|&nbsp;
+                    Images 2–6 → Gallery thumbnails &nbsp;|&nbsp;
+                    Images 2–5 → "Where you'll stay" bedroom cards
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 4: AMENITIES
+             (matches: "Premium Amenities" section on property page)
+             ============================================================ -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="section-icon"><i class="fas fa-star"></i></div>
+                <div>
+                    <h3>Premium Amenities</h3>
+                    <p class="section-subtitle">Shown in the amenities grid with icons on your property page</p>
+                </div>
+            </div>
+
+            <div class="amenities-grid">
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="wifi" name="amenities" value="WiFi">
+                    <label for="wifi"><i class="fas fa-wifi"></i> WiFi</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="parking" name="amenities" value="Parking">
+                    <label for="parking"><i class="fas fa-parking"></i> Free Parking</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="breakfast_am" name="amenities" value="Breakfast Included">
+                    <label for="breakfast_am"><i class="fas fa-utensils"></i> Breakfast Included</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="hotwater" name="amenities" value="24/7 Hot Water">
+                    <label for="hotwater"><i class="fas fa-hot-tub"></i> 24/7 Hot Water</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="mountainview" name="amenities" value="Mountain View">
+                    <label for="mountainview"><i class="fas fa-mountain"></i> Mountain View</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="garden" name="amenities" value="Garden & Terrace">
+                    <label for="garden"><i class="fas fa-tree"></i> Garden &amp; Terrace</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="coffee" name="amenities" value="Tea/Coffee Maker">
+                    <label for="coffee"><i class="fas fa-coffee"></i> Tea/Coffee Maker</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="fire_ext" name="amenities" value="Fire Extinguisher">
+                    <label for="fire_ext"><i class="fas fa-shield-alt"></i> Fire Extinguisher</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="kitchen" name="amenities" value="Kitchen Access">
+                    <label for="kitchen"><i class="fas fa-utensil-spoon"></i> Kitchen Access</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="ac" name="amenities" value="Air Conditioning">
+                    <label for="ac"><i class="fas fa-snowflake"></i> Air Conditioning</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="tv" name="amenities" value="TV">
+                    <label for="tv"><i class="fas fa-tv"></i> TV</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="washer" name="amenities" value="Washing Machine">
+                    <label for="washer"><i class="fas fa-tshirt"></i> Washing Machine</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="fireplace" name="amenities" value="Fireplace">
+                    <label for="fireplace"><i class="fas fa-fire"></i> Fireplace</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="pool" name="amenities" value="Swimming Pool">
+                    <label for="pool"><i class="fas fa-swimmer"></i> Swimming Pool</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="gym" name="amenities" value="Gym">
+                    <label for="gym"><i class="fas fa-dumbbell"></i> Gym</label>
+                </div>
+                <div class="amenity-checkbox">
+                    <input type="checkbox" id="pet" name="amenities" value="Pet Friendly">
+                    <label for="pet"><i class="fas fa-paw"></i> Pet Friendly</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 5: PACKAGE / WHAT'S INCLUDED
+             (matches: "PACKAGE — Included in your stay" section)
+             ============================================================ -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="section-icon"><i class="fas fa-gift"></i></div>
+                <div>
+                    <h3>Package — What's Included</h3>
+                    <p class="section-subtitle">Shown in the "PACKAGE — Included in your stay" section</p>
+                </div>
+            </div>
+
+            <div class="inclusions-grid">
+                <div class="inclusion-checkbox">
+                    <input type="checkbox" id="inc_breakfast" name="inclusions" value="Breakfast">
+                    <label for="inc_breakfast"><i class="fas fa-coffee"></i> Breakfast</label>
+                </div>
+                <div class="inclusion-checkbox">
+                    <input type="checkbox" id="inc_lunch" name="inclusions" value="Lunch">
+                    <label for="inc_lunch"><i class="fas fa-hamburger"></i> Lunch</label>
+                </div>
+                <div class="inclusion-checkbox">
+                    <input type="checkbox" id="inc_dinner" name="inclusions" value="Dinner">
+                    <label for="inc_dinner"><i class="fas fa-utensils"></i> Dinner</label>
+                </div>
+                <div class="inclusion-checkbox">
+                    <input type="checkbox" id="inc_airport" name="inclusions" value="Airport Pickup">
+                    <label for="inc_airport"><i class="fas fa-car"></i> Airport Pickup</label>
+                </div>
+                <div class="inclusion-checkbox">
+                    <input type="checkbox" id="inc_guide" name="inclusions" value="Tour Guide">
+                    <label for="inc_guide"><i class="fas fa-map"></i> Tour Guide</label>
+                </div>
+                <div class="inclusion-checkbox">
+                    <input type="checkbox" id="inc_culture" name="inclusions" value="Cultural Program">
+                    <label for="inc_culture"><i class="fas fa-music"></i> Cultural Program</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 6: HIGHLIGHTS
+             (matches: "Why guests love this property" section with 4 cards)
+             ============================================================ -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="section-icon"><i class="fas fa-heart"></i></div>
+                <div>
+                    <h3>Why Guests Love This Property</h3>
+                    <p class="section-subtitle">Select up to 4 highlights shown in the feature cards section</p>
+                </div>
+            </div>
+
+            <div class="highlights-grid-form" style="margin-bottom: 20px;">
+                <div class="highlight-checkbox">
+                    <input type="checkbox" id="hl_mountain" name="highlights" value="Panoramic Himalayas">
+                    <label for="hl_mountain"><i class="fas fa-mountain"></i> Panoramic Himalayas</label>
+                </div>
+                <div class="highlight-checkbox">
+                    <input type="checkbox" id="hl_food" name="highlights" value="Authentic Dal Bhat">
+                    <label for="hl_food"><i class="fas fa-drumstick-bite"></i> Authentic Dal Bhat</label>
+                </div>
+                <div class="highlight-checkbox">
+                    <input type="checkbox" id="hl_trek" name="highlights" value="Trekking Assistance">
+                    <label for="hl_trek"><i class="fas fa-hiking"></i> Trekking Assistance</label>
+                </div>
+                <div class="highlight-checkbox">
+                    <input type="checkbox" id="hl_culture" name="highlights" value="Cultural Evenings">
+                    <label for="hl_culture"><i class="fas fa-chalkboard-user"></i> Cultural Evenings</label>
+                </div>
+                <div class="highlight-checkbox">
+                    <input type="checkbox" id="hl_lake" name="highlights" value="Lakeside Access">
+                    <label for="hl_lake"><i class="fas fa-water"></i> Lakeside Access</label>
+                </div>
+                <div class="highlight-checkbox">
+                    <input type="checkbox" id="hl_organic" name="highlights" value="Organic Meals">
+                    <label for="hl_organic"><i class="fas fa-leaf"></i> Organic Meals</label>
+                </div>
+                <div class="highlight-checkbox">
+                    <input type="checkbox" id="hl_yoga" name="highlights" value="Yoga & Meditation">
+                    <label for="hl_yoga"><i class="fas fa-spa"></i> Yoga &amp; Meditation</label>
+                </div>
+                <div class="highlight-checkbox">
+                    <input type="checkbox" id="hl_wildlife" name="highlights" value="Wildlife Safaris">
+                    <label for="hl_wildlife"><i class="fas fa-paw"></i> Wildlife Safaris</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Custom Highlight (Optional)</label>
+                <input type="text" name="custom_highlight" placeholder="e.g., Rooftop meditation deck with Himalayan views">
+                <div class="helper-text">Add one custom highlight not listed above — shown as the 4th card if selected highlights are fewer</div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 7: HOUSE RULES & POLICIES
+             (matches: "BEFORE YOU BOOK — House rules" section + cancellation)
+             ============================================================ -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="section-icon"><i class="fas fa-gavel"></i></div>
+                <div>
+                    <h3>House Rules &amp; Policies</h3>
+                    <p class="section-subtitle">Shown in the "BEFORE YOU BOOK" section of your property page</p>
+                </div>
+            </div>
+
+            <!-- Policy card: Check-in / Check-out (already captured above, just reminders here) -->
+            <div class="policy-card" style="margin-bottom: 16px;">
+                <div class="policy-card-title"><i class="fas fa-clock"></i> Check-in &amp; Check-out</div>
+                <p style="font-size: 12px; color: var(--text-muted); margin: 0;">
+                    Displayed from the times you set in Section 2 — "Check-in: After {time}" and "Check-out: By {time}"
+                </p>
+            </div>
+
+            <!-- Prepayment -->
+            <div class="policy-card">
+                <div class="policy-card-title"><i class="fas fa-money-bill-wave"></i> Prepayment Policy</div>
+                <div class="form-row" style="margin-bottom: 0;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Prepayment Amount Required (NPR)</label>
+                        <div class="input-with-prefix">
+                            <span class="prefix">NPR</span>
+                            <input type="number" name="prepayment_amount" placeholder="e.g., 2000" min="0">
+                        </div>
+                        <div class="helper-text">e.g., "A prepayment of NPR 2,000 is required to confirm your booking."</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Breakfast Service Deadline</label>
+                        <input type="time" name="breakfast_time" value="09:00">
+                        <div class="helper-text">e.g., "Breakfast served until 9:00 AM; concludes at 9:30 AM."</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cancellation -->
+            <div class="policy-card" style="margin-top: 16px;">
+                <div class="policy-card-title"><i class="fas fa-calendar-times"></i> Cancellation Policy</div>
+                <div class="form-row" style="margin-bottom: 0;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Free Cancellation Window</label>
+                        <select name="free_cancellation_days">
+                            <option value="7">Up to 7 days before check-in</option>
+                            <option value="5">Up to 5 days before check-in</option>
+                            <option value="3">Up to 3 days before check-in</option>
+                            <option value="1">Up to 24 hours before check-in</option>
+                            <option value="0">No free cancellation</option>
+                        </select>
+                        <div class="helper-text">Shown in the booking sidebar ("Free cancellation up to X days before check-in")</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Non-Refundable Window</label>
+                        <select name="nonrefundable_hours">
+                            <option value="72">Within 72 hours of arrival</option>
+                            <option value="48">Within 48 hours of arrival</option>
+                            <option value="24">Within 24 hours of arrival</option>
+                            <option value="0">Fully refundable any time</option>
+                        </select>
+                        <div class="helper-text">Shown in house rules ("Cancellations within X hours are non-refundable.")</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Standard house rules checkboxes -->
+            <div style="margin-top: 20px; margin-bottom: 12px;">
+                <span class="section-label-tag">Standard Rules</span>
+            </div>
+            <div class="rules-grid">
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_smoking" name="rules" value="No smoking inside">
+                    <label for="rule_smoking">🚭 No smoking inside</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_pets" name="rules" value="No pets allowed">
+                    <label for="rule_pets">🐾 No pets allowed</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_parties" name="rules" value="No parties or events">
+                    <label for="rule_parties">🎉 No parties or events</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_quiet" name="rules" value="Quiet hours: 10 PM - 7 AM">
+                    <label for="rule_quiet">🔇 Quiet hours: 10 PM – 7 AM</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_shoes" name="rules" value="No shoes inside">
+                    <label for="rule_shoes">👟 No shoes inside</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_children" name="rules" value="Children welcome">
+                    <label for="rule_children">👶 Children welcome</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_maxguests" name="rules" value="Respect max guest limit">
+                    <label for="rule_maxguests">👥 Respect max guest limit</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_photo" name="rules" value="Commercial photography requires approval">
+                    <label for="rule_photo">📷 Commercial photography needs approval</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_lights" name="rules" value="Turn off lights/AC when leaving">
+                    <label for="rule_lights">💡 Turn off lights/AC when leaving</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_trash" name="rules" value="Dispose trash in bins">
+                    <label for="rule_trash">🗑️ Dispose trash in designated bins</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_doors" name="rules" value="Lock doors when leaving">
+                    <label for="rule_doors">🔒 Lock doors when leaving</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_water" name="rules" value="Conserve water">
+                    <label for="rule_water">💧 Conserve water</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_supervise" name="rules" value="Supervise children at all times">
+                    <label for="rule_supervise">👁️ Supervise children at all times</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule_parking_rule" name="rules" value="Park in designated areas only">
+                    <label for="rule_parking_rule">🚗 Park in designated areas only</label>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 16px;">
+                <label>Additional Custom Rules</label>
+                <textarea name="additional_rules" placeholder="Any other rules guests should know about..." rows="3"></textarea>
+                <div class="helper-text">These are shown when guests tap "Show all rules" on your property page</div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 8: LOCATION & NEARBY ATTRACTIONS
+             (matches: "Location & nearby attractions" with map + place badges)
+             ============================================================ -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="section-icon"><i class="fas fa-map-pin"></i></div>
+                <div>
+                    <h3>Location &amp; Nearby Attractions</h3>
+                    <p class="section-subtitle">Shown in the location section with an embedded map</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Google Maps Embed URL</label>
+                <input type="url" name="map_embed_url" placeholder="https://www.google.com/maps/embed?pb=...">
+                <div class="helper-text">
+                    Go to <a href="https://www.google.com/maps" target="_blank" style="color: var(--teal);">Google Maps</a>, search your property, click Share → Embed a map → Copy the <code>src="..."</code> URL only
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Latitude</label>
+                <input type="text" name="latitude" placeholder="e.g., 28.20945">
+                <div class="helper-text">Optional — for advanced map features</div>
+            </div>
+            <div class="form-group">
+                <label>Longitude</label>
+                <input type="text" name="longitude" placeholder="e.g., 83.97240">
+            </div>
+
+            <!-- Nearby places with distances -->
+            <div style="margin-bottom: 12px;">
+                <span class="section-label-tag">Nearby Attractions</span>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px; margin-bottom: 12px;">
+                    Shown as badge tags, e.g., "🌊 Fewa Lake — 1.2 km"
+                </p>
+            </div>
+
+            <div id="nearbyPlacesList">
+                <!-- Row 1 -->
+                <div class="nearby-row" id="nearby-0">
+                    <input type="text" name="nearby_name[]" placeholder="Place name (e.g., Fewa Lake)" style="background: var(--bg-700); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text-primary); font-size: 13px;">
+                    <input type="text" name="nearby_distance[]" placeholder="Distance (e.g., 1.2 km)" style="background: var(--bg-700); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text-primary); font-size: 13px;">
+                    <button type="button" class="nearby-remove-btn" onclick="removeNearbyRow('nearby-0')" title="Remove"><i class="fas fa-times"></i></button>
+                </div>
+                <!-- Row 2 -->
+                <div class="nearby-row" id="nearby-1">
+                    <input type="text" name="nearby_name[]" placeholder="Place name (e.g., World Peace Pagoda)" style="background: var(--bg-700); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text-primary); font-size: 13px;">
+                    <input type="text" name="nearby_distance[]" placeholder="Distance (e.g., 4 km)" style="background: var(--bg-700); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text-primary); font-size: 13px;">
+                    <button type="button" class="nearby-remove-btn" onclick="removeNearbyRow('nearby-1')" title="Remove"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+
+            <button type="button" class="btn-add-nearby" onclick="addNearbyRow()">
+                <i class="fas fa-plus"></i> Add Nearby Place
+            </button>
+        </div>
+
+        <!-- ============================================================
+             SECTION 9: HOST DETAILS
+             (matches: the Host section with avatar, name, stats, bio)
+             ============================================================ -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="section-icon"><i class="fas fa-user"></i></div>
+                <div>
+                    <h3>Host Details</h3>
+                    <p class="section-subtitle">Shown in the "Hosted by" section with stats and bio</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Host Name <span class="required">*</span></label>
+                <input type="text" name="host_name" placeholder="e.g., Lakpa Tamang" required value="{{ session.get('user_name', '') }}">
+            </div>
+
+            <div class="form-group">
+                <label>Host Avatar / Profile Photo</label>
+                <div class="image-upload-area" id="hostAvatarArea" style="padding: 24px;">
+                    <span class="upload-icon" style="font-size: 36px;"><i class="fas fa-user-circle"></i></span>
+                    <div class="upload-text">
+                        <strong>Upload host profile photo</strong><br>
+                        <small style="color: var(--text-muted);">JPG, PNG · Displayed as circular avatar next to host bio</small>
+                    </div>
+                    <input type="file" name="host_avatar" id="hostAvatarInput" accept="image/*">
+                </div>
+                <div id="hostAvatarPreview" style="margin-top: 12px; display: none; text-align: center;">
+                    <img id="hostAvatarImg" src="" alt="Host avatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--teal);">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Years Hosting</label>
+                    <input type="number" name="years_hosting" placeholder="e.g., 8" min="0">
+                    <div class="helper-text">Shown as "Hosting for X years"</div>
+                </div>
+                <div class="form-group">
+                    <label>Response Rate (%)</label>
+                    <input type="number" name="response_rate" placeholder="e.g., 100" min="0" max="100" value="100">
+                    <div class="helper-text">Shown as "Response rate: X%"</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Host Response Time</label>
+                <select name="response_time">
+                    <option value="Within 1 hour">Within 1 hour</option>
+                    <option value="Within 3 hours">Within 3 hours</option>
+                    <option value="Within 6 hours">Within 6 hours</option>
+                    <option value="Within 12 hours">Within 12 hours</option>
+                    <option value="Within 24 hours">Within 24 hours</option>
+                </select>
+                <div class="helper-text">Shown as "Responds within X"</div>
+            </div>
+
+            <div class="form-group">
+                <label>Host Bio</label>
+                <textarea name="host_bio" placeholder="Hi, I'm Lakpa, born and raised in Pokhara. I love sharing our culture, trekking tips, and home-cooked meals with guests from around the world." rows="4"></textarea>
+                <div class="helper-text">💡 Keep it warm and personal — guests love connecting with hosts</div>
+            </div>
+
+            <div class="form-group">
+                <label>Languages Spoken</label>
+                <input type="text" name="host_languages" placeholder="e.g., Nepali, English, Hindi">
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 10: FORM ACTIONS
+             ============================================================ -->
+        <div class="form-actions">
+            <button type="button" class="btn-save-draft" onclick="saveDraft()">
+                <i class="fas fa-save"></i> Save Draft
+            </button>
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="fas fa-rocket"></i> Publish Property
+            </button>
+            <a href="{{ url_for('auth.browse') }}" class="btn-cancel">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+
+        <div class="note-text">
+            <i class="fas fa-info-circle"></i>
+            Your property will be reviewed by our team before going live. This ensures quality for all guests.
+        </div>
+    </form>
 </div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+    // ========== IMAGE UPLOAD (main gallery) ==========
+    const imageInput = document.getElementById('imageInput');
+    const imagePreviewGrid = document.getElementById('imagePreviewGrid');
+    const MAX_IMAGES = 10;
+    let uploadedImages = [];
+
+    imageInput.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        const remaining = MAX_IMAGES - uploadedImages.length;
+        if (files.length > remaining) { showToast(`You can upload ${remaining} more image(s).`, 'error'); return; }
+        files.forEach(file => {
+            if (uploadedImages.length >= MAX_IMAGES) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                uploadedImages.push({ file, dataUrl: ev.target.result });
+                renderImagePreviews();
+            };
+            reader.readAsDataURL(file);
+        });
+        e.target.value = '';
+    });
+
+    function renderImagePreviews() {
+        imagePreviewGrid.innerHTML = '';
+        const labels = ['Hero / Cover', 'Gallery 2', 'Gallery 3', 'Gallery 4', 'Gallery 5', 'Gallery 6', 'Room 1', 'Room 2', 'Room 3', 'Room 4'];
+        uploadedImages.forEach((img, index) => {
+            const div = document.createElement('div');
+            div.className = 'image-preview-item';
+            const imgEl = document.createElement('img');
+            imgEl.src = img.dataUrl;
+            imgEl.alt = `Image ${index + 1}`;
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-image';
+            removeBtn.innerHTML = '✕';
+            removeBtn.onclick = function(e) { e.stopPropagation(); uploadedImages.splice(index, 1); renderImagePreviews(); };
+            const badge = document.createElement('div');
+            badge.style.cssText = `position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,0.7);color:#fff;padding:2px 7px;border-radius:10px;font-size:9px;font-weight:700;`;
+            badge.textContent = labels[index] || `Photo ${index + 1}`;
+            if (index === 0) { badge.style.background = 'var(--teal)'; badge.style.color = '#051209'; }
+            div.appendChild(imgEl);
+            div.appendChild(removeBtn);
+            div.appendChild(badge);
+            imagePreviewGrid.appendChild(div);
+        });
+        updateProgress();
+    }
+
+    // Drag & drop
+    const uploadArea = document.getElementById('imageUploadArea');
+    uploadArea.addEventListener('dragover', function(e) { e.preventDefault(); this.style.borderColor = 'var(--teal)'; this.style.background = 'var(--teal-glow)'; });
+    uploadArea.addEventListener('dragleave', function(e) { e.preventDefault(); this.style.borderColor = 'var(--border)'; this.style.background = 'var(--bg-600)'; });
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.style.borderColor = 'var(--border)';
+        this.style.background = 'var(--bg-600)';
+        const files = Array.from(e.dataTransfer.files);
+        const remaining = MAX_IMAGES - uploadedImages.length;
+        if (files.length > remaining) { showToast(`You can upload ${remaining} more image(s).`, 'error'); return; }
+        files.forEach(file => {
+            if (uploadedImages.length >= MAX_IMAGES) return;
+            if (!file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) { uploadedImages.push({ file, dataUrl: ev.target.result }); renderImagePreviews(); };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    // ========== HOST AVATAR UPLOAD ==========
+    document.getElementById('hostAvatarInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            document.getElementById('hostAvatarImg').src = ev.target.result;
+            document.getElementById('hostAvatarPreview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // ========== NEARBY PLACES ==========
+    let nearbyCount = 2;
+    function addNearbyRow() {
+        const id = 'nearby-' + nearbyCount++;
+        const div = document.createElement('div');
+        div.className = 'nearby-row';
+        div.id = id;
+        div.innerHTML = `
+            <input type="text" name="nearby_name[]" placeholder="Place name" style="background:var(--bg-700);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text-primary);font-size:13px;">
+            <input type="text" name="nearby_distance[]" placeholder="Distance (e.g., 2 km)" style="background:var(--bg-700);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text-primary);font-size:13px;">
+            <button type="button" class="nearby-remove-btn" onclick="removeNearbyRow('${id}')" title="Remove"><i class="fas fa-times"></i></button>
+        `;
+        document.getElementById('nearbyPlacesList').appendChild(div);
+    }
+
+    function removeNearbyRow(id) {
+        const el = document.getElementById(id);
+        if (el) el.remove();
+    }
+
+    // ========== HIGHLIGHT LIMIT (max 4) ==========
+    document.querySelectorAll('input[name="highlights"]').forEach(cb => {
+        cb.addEventListener('change', function() {
+            const checked = document.querySelectorAll('input[name="highlights"]:checked');
+            if (checked.length > 4) {
+                this.checked = false;
+                showToast('You can select up to 4 highlights only.', 'error');
+            }
+        });
+    });
+
+    // ========== FORM PROGRESS ==========
+    function updateProgress() {
+        const form = document.getElementById('addPropertyForm');
+        const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+        let filled = 0;
+        inputs.forEach(input => { if (input.value && input.value.trim() !== '') filled++; });
+        if (uploadedImages.length >= 6) filled += 1;
+        const total = inputs.length + 1;
+        const percentage = Math.min((filled / total) * 100, 100);
+        document.getElementById('progressFill').style.width = percentage + '%';
+    }
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+        el.addEventListener('change', updateProgress);
+        el.addEventListener('input', updateProgress);
+    });
+
+    // ========== FORM VALIDATION ==========
+    document.getElementById('addPropertyForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const required = this.querySelectorAll('[required]');
+        let isValid = true;
+        required.forEach(field => {
+            if (!field.value || field.value.trim() === '') {
+                field.style.borderColor = 'var(--red)';
+                isValid = false;
+            } else {
+                field.style.borderColor = '';
+            }
+        });
+        if (!isValid) { showToast('Please fill all required fields.', 'error'); return; }
+        if (uploadedImages.length < 6) { showToast('Please upload at least 6 photos (1 hero + 5 gallery images).', 'error'); return; }
+        this.submit();
+    });
+
+    // ========== SAVE DRAFT ==========
+    function saveDraft() { showToast('💾 Draft saved successfully!', 'success'); }
+
+    // ========== TOAST ==========
+    function showToast(message, type) {
+        let container = document.getElementById('toasts');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'toast-container';
+            container.id = 'toasts';
+            document.body.appendChild(container);
+        }
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        const icon = type === 'success' ? '✓' : (type === 'error' ? '✕' : 'ℹ');
+        toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+    }
+
+    // ========== KEYBOARD SHORTCUT ==========
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveDraft(); }
+    });
+
+    // ========== INIT ==========
+    updateProgress();
+</script>
+
 {% endif %}
 {% endblock %}
