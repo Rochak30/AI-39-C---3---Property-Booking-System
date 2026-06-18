@@ -44,6 +44,8 @@ class AuthRoutes:
         self.bp.route("/admin/delete-user",        methods=["POST"])(self.controller.delete_user)
         self.bp.route("/admin/delete-property",    methods=["POST"])(self.controller.delete_property_admin)
         self.bp.route("/admin/resolve-query",      methods=["POST"])(self.controller.resolve_query)
+        self.bp.route("/admin/view-as-user",       methods=["POST"])(self.controller.view_as_user)
+        self.bp.route("/admin/exit-view-as",       methods=["GET"])(self.controller.exit_view_as)
 
         # ── Host actions ──────────────────────────────────────
         self.bp.route("/host/update-profile",  methods=["POST"])(self.controller.host_update_profile)
