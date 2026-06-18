@@ -1,0 +1,353 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — Bookmandu{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ── Layout ── */
+.dash-wrap   { display: flex; min-height: calc(100vh - 64px); margin-top: 64px; }
+.dash-sidebar{
+  width: 220px; flex-shrink: 0; background: var(--bg-800);
+  border-right: 1px solid var(--border); padding: 32px 0; position: sticky;
+  top: 64px; height: calc(100vh - 64px); overflow-y: auto;
+}
+.dash-main   { flex: 1; padding: 36px 40px; overflow-x: hidden; }
+.sidebar-label{ font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  color: var(--text-muted); padding: 20px 24px 8px; text-transform: uppercase; }
+.sidebar-link{
+  display: flex; align-items: center; gap: 10px; padding: 10px 24px;
+  font-size: 14px; color: var(--text-secondary); text-decoration: none;
+  transition: all .2s; border-left: 3px solid transparent;
+}
+.sidebar-link:hover, .sidebar-link.active{
+  color: var(--text-primary); background: var(--bg-700);
+  border-left-color: var(--teal);
+}
+.sidebar-link i { width: 18px; text-align: center; }
+
+/* ── Stats ── */
+.stats-grid  { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 18px; margin-bottom: 36px; }
+.stat-card   { background: var(--bg-800); border: 1px solid var(--border); border-radius: 12px;
+               padding: 20px; display: flex; flex-direction: column; gap: 6px; }
+.stat-num    { font-size: 32px; font-weight: 800; color: var(--teal); }
+.stat-label  { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .08em; }
+.stat-badge  { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; width: fit-content; }
+.badge-warn  { background: rgba(230,126,34,.15); color: #e67e22; }
+.badge-ok    { background: rgba(46,204,113,.15);  color: #2ecc71; }
+
+/* ── Section ── */
+.dash-section{ display: none; }
+.dash-section.active{ display: block; }
+.section-title{ font-size: 22px; font-weight: 700; margin-bottom: 20px;
+                display: flex; align-items: center; gap: 10px; }
+
+/* ── Tables ── */
+.table-wrap  { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+table        { width: 100%; border-collapse: collapse; font-size: 13px; }
+th           { background: var(--bg-700); color: var(--text-muted); font-weight: 600;
+               text-transform: uppercase; letter-spacing: .07em; padding: 10px 14px;
+               text-align: left; font-size: 11px; white-space: nowrap; }
+td           { padding: 11px 14px; border-bottom: 1px solid var(--border);
+               color: var(--text-secondary); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td  { background: var(--bg-700); }
+
+/* ── Status badges ── */
+.status      { display: inline-block; padding: 2px 10px; border-radius: 20px;
+               font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.status-approved,.status-active,.status-confirmed,.status-resolved{
+  background: rgba(46,204,113,.15); color: #2ecc71; }
+.status-pending { background: rgba(230,126,34,.15); color: #e67e22; }
+.status-rejected,.status-cancelled{ background: rgba(231,76,60,.15); color: #e74c3c; }
+.status-completed{ background: rgba(52,152,219,.15); color: #3498db; }
+
+/* ── Buttons ── */
+.btn-xs      { padding: 4px 10px; font-size: 11px; border-radius: 6px; cursor: pointer;
+               border: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+.btn-approve { background: rgba(46,204,113,.2); color: #2ecc71; }
+.btn-reject  { background: rgba(231,76,60,.2);  color: #e74c3c; }
+.btn-delete  { background: rgba(231,76,60,.1);  color: #e74c3c; }
+.btn-resolve { background: rgba(52,152,219,.2); color: #3498db; }
+.btn-approve:hover{ background: #2ecc71; color: #000; }
+.btn-reject:hover { background: #e74c3c; color: #fff; }
+.btn-delete:hover { background: #e74c3c; color: #fff; }
+.btn-resolve:hover{ background: #3498db; color: #fff; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+
+  <!-- ── Sidebar ── -->
+  <aside class="dash-sidebar">
+    <div style="padding: 0 24px 24px; border-bottom: 1px solid var(--border);">
+      <div style="font-weight:700; font-size:15px;">{{ session.user_name }}</div>
+      <div style="font-size:12px; color:var(--teal); margin-top:2px;">Administrator</div>
+    </div>
+
+    <div class="sidebar-label">Overview</div>
+    <a href="#" class="sidebar-link active" onclick="showSection('overview',this)">
+      <i class="fas fa-tachometer-alt"></i> Overview
+    </a>
+
+    <div class="sidebar-label">Management</div>
+    <a href="#" class="sidebar-link" onclick="showSection('users',this)">
+      <i class="fas fa-users"></i> Users
+      {% if stats.pending_hosts > 0 %}
+        <span class="stat-badge badge-warn" style="margin-left:auto;">{{ stats.pending_hosts }}</span>
+      {% endif %}
+    </a>
+    <a href="#" class="sidebar-link" onclick="showSection('properties',this)">
+      <i class="fas fa-home"></i> Properties
+      {% if stats.pending_props > 0 %}
+        <span class="stat-badge badge-warn" style="margin-left:auto;">{{ stats.pending_props }}</span>
+      {% endif %}
+    </a>
+    <a href="#" class="sidebar-link" onclick="showSection('bookings',this)">
+      <i class="fas fa-calendar-check"></i> Bookings
+    </a>
+    <a href="#" class="sidebar-link" onclick="showSection('queries',this)">
+      <i class="fas fa-envelope"></i> Queries
+      {% if stats.open_queries > 0 %}
+        <span class="stat-badge badge-warn" style="margin-left:auto;">{{ stats.open_queries }}</span>
+      {% endif %}
+    </a>
+
+    <div class="sidebar-label">Account</div>
+    <a href="/logout" class="sidebar-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="dash-main">
+
+    <!-- OVERVIEW -->
+    <section class="dash-section active" id="sec-overview">
+      <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> Overview</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num">{{ stats.total_users }}</div>
+          <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ stats.total_properties }}</div>
+          <div class="stat-label">Properties</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ stats.total_bookings }}</div>
+          <div class="stat-label">Bookings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ stats.open_queries }}</div>
+          <div class="stat-label">Open Queries</div>
+          {% if stats.open_queries > 0 %}
+            <span class="stat-badge badge-warn">Needs attention</span>
+          {% endif %}
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ stats.pending_hosts }}</div>
+          <div class="stat-label">Pending Hosts</div>
+          {% if stats.pending_hosts > 0 %}
+            <span class="stat-badge badge-warn">Awaiting review</span>
+          {% endif %}
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ stats.pending_props }}</div>
+          <div class="stat-label">Pending Properties</div>
+          {% if stats.pending_props > 0 %}
+            <span class="stat-badge badge-warn">Awaiting review</span>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if pending_hosts %}
+      <h3 style="font-size:16px; margin-bottom:12px; color:var(--text-secondary);">
+        <i class="fas fa-user-clock" style="color:#e67e22;"></i> Pending Host Approvals
+      </h3>
+      <div class="table-wrap" style="margin-bottom:32px;">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>ID Type</th><th>Property Type</th><th>Bank</th><th>Actions</th></tr></thead>
+          <tbody>
+          {% for h in pending_hosts %}
+            <tr>
+              <td>{{ h.name }}</td>
+              <td>{{ h.email }}</td>
+              <td>{{ h.id_type }}</td>
+              <td>{{ h.property_type }}</td>
+              <td>{{ h.payout_bank }}</td>
+              <td style="display:flex;gap:6px;">
+                <form method="POST" action="/admin/approve-host">
+                  <input type="hidden" name="host_profile_id" value="{{ h.host_profile_id }}">
+                  <button class="btn-xs btn-approve" type="submit">✓ Approve</button>
+                </form>
+                <form method="POST" action="/admin/reject-host">
+                  <input type="hidden" name="host_profile_id" value="{{ h.host_profile_id }}">
+                  <button class="btn-xs btn-reject" type="submit">✕ Reject</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </section>
+
+    <!-- USERS -->
+    <section class="dash-section" id="sec-users">
+      <h2 class="section-title"><i class="fas fa-users"></i> User Management</h2>
+      <input type="text" id="userSearch" class="form-input" placeholder="Search by name or email…"
+             style="max-width:320px; margin-bottom:16px;" oninput="filterTable('userTable',this.value)">
+      <div class="table-wrap">
+        <table id="userTable">
+          <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Phone</th><th>Registered</th><th>Action</th></tr></thead>
+          <tbody>
+          {% for u in users %}
+            <tr>
+              <td>{{ u.user_id }}</td>
+              <td>{{ u.name }}</td>
+              <td>{{ u.email }}</td>
+              <td><span class="status status-{{ u.role }}">{{ u.role }}</span></td>
+              <td>{{ u.phone or '—' }}</td>
+              <td>{{ u.registered_at.strftime('%b %d, %Y') if u.registered_at else '—' }}</td>
+              <td>
+                {% if u.role != 'admin' %}
+                <form method="POST" action="/admin/delete-user"
+                      onsubmit="return confirm('Delete {{ u.name }}?')">
+                  <input type="hidden" name="user_id" value="{{ u.user_id }}">
+                  <button class="btn-xs btn-delete" type="submit"><i class="fas fa-trash"></i> Delete</button>
+                </form>
+                {% else %}
+                  <span style="color:var(--text-muted);font-size:11px;">Protected</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PROPERTIES -->
+    <section class="dash-section" id="sec-properties">
+      <h2 class="section-title"><i class="fas fa-home"></i> Property Management</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Host</th><th>Region</th><th>Type</th><th>Price/Night</th><th>Approval</th><th>Actions</th></tr></thead>
+          <tbody>
+          {% for p in properties %}
+            <tr>
+              <td>{{ p.property_id }}</td>
+              <td>{{ p.title }}</td>
+              <td>{{ p.host_name }}</td>
+              <td>{{ p.region }}</td>
+              <td>{{ p.type }}</td>
+              <td>NPR {{ "{:,.0f}".format(p.price_per_night) }}</td>
+              <td><span class="status status-{{ p.approval_status }}">{{ p.approval_status }}</span></td>
+              <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                {% if p.approval_status == 'pending' %}
+                  <form method="POST" action="/admin/approve-property">
+                    <input type="hidden" name="property_id" value="{{ p.property_id }}">
+                    <button class="btn-xs btn-approve" type="submit">✓ Approve</button>
+                  </form>
+                  <form method="POST" action="/admin/reject-property">
+                    <input type="hidden" name="property_id" value="{{ p.property_id }}">
+                    <button class="btn-xs btn-reject" type="submit">✕ Reject</button>
+                  </form>
+                {% endif %}
+                <form method="POST" action="/admin/delete-property"
+                      onsubmit="return confirm('Delete this property?')">
+                  <input type="hidden" name="property_id" value="{{ p.property_id }}">
+                  <button class="btn-xs btn-delete" type="submit"><i class="fas fa-trash"></i></button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BOOKINGS -->
+    <section class="dash-section" id="sec-bookings">
+      <h2 class="section-title"><i class="fas fa-calendar-check"></i> All Bookings</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Ref</th><th>Guest</th><th>Property</th><th>Host</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Total</th><th>Status</th></tr></thead>
+          <tbody>
+          {% for b in bookings %}
+            <tr>
+              <td style="font-family:monospace;font-size:11px;">{{ b.booking_id }}</td>
+              <td>{{ b.guest_name }}</td>
+              <td>{{ b.property_title }}</td>
+              <td>{{ b.host_name }}</td>
+              <td>{{ b.checkin_date }}</td>
+              <td>{{ b.checkout_date }}</td>
+              <td>{{ b.guests_count }}</td>
+              <td>NPR {{ "{:,.0f}".format(b.total_amount) }}</td>
+              <td><span class="status status-{{ b.status }}">{{ b.status }}</span></td>
+            </tr>
+          {% else %}
+            <tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:24px;">No bookings yet.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- QUERIES -->
+    <section class="dash-section" id="sec-queries">
+      <h2 class="section-title"><i class="fas fa-envelope"></i> Support Queries</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+          {% for q in queries %}
+            <tr>
+              <td>{{ q.query_id }}</td>
+              <td>{{ q.name }}</td>
+              <td>{{ q.email }}</td>
+              <td>{{ q.subject }}</td>
+              <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                  title="{{ q.message }}">{{ q.message or '—' }}</td>
+              <td>{{ q.created_at.strftime('%b %d') if q.created_at else '—' }}</td>
+              <td><span class="status status-{{ q.status }}">{{ q.status }}</span></td>
+              <td>
+                {% if q.status == 'open' %}
+                  <form method="POST" action="/admin/resolve-query">
+                    <input type="hidden" name="query_id" value="{{ q.query_id }}">
+                    <button class="btn-xs btn-resolve" type="submit">✓ Resolve</button>
+                  </form>
+                {% else %}
+                  <span style="color:var(--text-muted);font-size:11px;">Done</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:24px;">No queries yet.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showSection(id, link) {
+  document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  link.classList.add('active');
+}
+
+function filterTable(tableId, term) {
+  const rows = document.querySelectorAll('#' + tableId + ' tbody tr');
+  const t = term.toLowerCase();
+  rows.forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(t) ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}
