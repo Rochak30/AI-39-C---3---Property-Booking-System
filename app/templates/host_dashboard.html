@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+{% block title %}Host Dashboard — Bookmandu{% endblock %}
+
+{% block extra_css %}
+<style>
+.dash-wrap   { display: flex; min-height: calc(100vh - 64px); margin-top: 64px; }
+.dash-sidebar{
+  width: 220px; flex-shrink: 0; background: var(--bg-800);
+  border-right: 1px solid var(--border); padding: 32px 0; position: sticky;
+  top: 64px; height: calc(100vh - 64px); overflow-y: auto;
+}
+.dash-main   { flex: 1; padding: 36px 40px; overflow-x: hidden; }
+.sidebar-label{ font-size: 10px; font-weight: 700; letter-spacing: .12em;
+  color: var(--text-muted); padding: 20px 24px 8px; text-transform: uppercase; }
+.sidebar-link{
+  display: flex; align-items: center; gap: 10px; padding: 10px 24px;
+  font-size: 14px; color: var(--text-secondary); text-decoration: none;
+  transition: all .2s; border-left: 3px solid transparent;
+}
+.sidebar-link:hover, .sidebar-link.active{
+  color: var(--text-primary); background: var(--bg-700); border-left-color: var(--teal);
+}
+.sidebar-link i { width: 18px; text-align: center; }
+
+.stats-grid  { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 18px; margin-bottom: 32px; }
+.stat-card   { background: var(--bg-800); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.stat-num    { font-size: 28px; font-weight: 800; color: var(--teal); }
+.stat-label  { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+.dash-section   { display: none; }
+.dash-section.active { display: block; }
+.section-title  { font-size: 22px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+
+.table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+table       { width: 100%; border-collapse: collapse; font-size: 13px; }
+th          { background: var(--bg-700); color: var(--text-muted); font-weight: 600; letter-spacing: .07em;
+              padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; }
+td          { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-700); }
+
+.status     { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.status-approved,.status-active{ background: rgba(46,204,113,.15); color: #2ecc71; }
+.status-pending  { background: rgba(230,126,34,.15); color: #e67e22; }
+.status-rejected,.status-cancelled{ background: rgba(231,76,60,.15); color: #e74c3c; }
+.status-confirmed{ background: rgba(46,204,113,.15); color: #2ecc71; }
+.status-completed{ background: rgba(52,152,219,.15); color: #3498db; }
+
+.btn-xs  { padding: 4px 10px; font-size: 11px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; }
+.btn-del { background: rgba(231,76,60,.1); color: #e74c3c; }
+.btn-del:hover { background: #e74c3c; color: #fff; }
+
+/* Approval banner */
+.banner { padding: 14px 20px; border-radius: 10px; margin-bottom: 24px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+.banner-warn { background: rgba(230,126,34,.12); border: 1px solid rgba(230,126,34,.3); color: #e67e22; }
+.banner-ok   { background: rgba(46,204,113,.1);  border: 1px solid rgba(46,204,113,.3); color: #2ecc71; }
+
+/* Profile form */
+.profile-form { max-width: 500px; }
+.profile-form .form-group { margin-bottom: 16px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+
+  <aside class="dash-sidebar">
+    <div style="padding: 0 24px 24px; border-bottom: 1px solid var(--border);">
+      <div style="font-weight:700; font-size:15px;">{{ session.user_name }}</div>
+      <div style="font-size:12px; color:var(--teal); margin-top:2px;">Host</div>
+    </div>
+
+    <div class="sidebar-label">Host Panel</div>
+    <a href="#" class="sidebar-link active" onclick="showSection('overview',this)">
+      <i class="fas fa-tachometer-alt"></i> Overview
+    </a>
+    <a href="#" class="sidebar-link" onclick="showSection('properties',this)">
+      <i class="fas fa-home"></i> My Properties
+    </a>
+    <a href="#" class="sidebar-link" onclick="showSection('bookings',this)">
+      <i class="fas fa-calendar-check"></i> Bookings
+    </a>
+    <a href="#" class="sidebar-link" onclick="showSection('earnings',this)">
+      <i class="fas fa-rupee-sign"></i> Earnings
+    </a>
+    <a href="#" class="sidebar-link" onclick="showSection('profile',this)">
+      <i class="fas fa-user-edit"></i> Profile
+    </a>
+
+    <div class="sidebar-label">Quick Links</div>
+    <a href="/add-property" class="sidebar-link"><i class="fas fa-plus"></i> Add Property</a>
+    <a href="/logout" class="sidebar-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </aside>
+
+  <main class="dash-main">
+
+    <!-- ── Approval banner ── -->
+    {% if host_profile %}
+      {% if host_profile.verified %}
+        <div class="banner banner-ok"><i class="fas fa-check-circle"></i> Your host account is <strong>approved</strong>. You can list properties.</div>
+      {% else %}
+        <div class="banner banner-warn"><i class="fas fa-clock"></i> Your host account is <strong>pending admin approval</strong>. Properties you submit won't be visible until approved.</div>
+      {% endif %}
+    {% endif %}
+
+    <!-- OVERVIEW -->
+    <section class="dash-section active" id="sec-overview">
+      <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> Overview</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num">{{ properties|length }}</div>
+          <div class="stat-label">My Properties</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ bookings|length }}</div>
+          <div class="stat-label">Total Bookings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">NPR {{ "{:,.0f}".format(earnings.total_revenue or 0) }}</div>
+          <div class="stat-label">Total Revenue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ earnings.active_count or 0 }}</div>
+          <div class="stat-label">Active Bookings</div>
+        </div>
+      </div>
+
+      <!-- Recent bookings preview -->
+      {% if bookings %}
+      <h3 style="font-size:15px; margin-bottom:12px; color:var(--text-secondary);">Recent Bookings</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Guest</th><th>Property</th><th>Check-in</th><th>Check-out</th><th>Status</th></tr></thead>
+          <tbody>
+          {% for b in bookings[:5] %}
+            <tr>
+              <td>{{ b.guest_name }}</td>
+              <td>{{ b.property_title }}</td>
+              <td>{{ b.checkin_date }}</td>
+              <td>{{ b.checkout_date }}</td>
+              <td><span class="status status-{{ b.status }}">{{ b.status }}</span></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </section>
+
+    <!-- MY PROPERTIES -->
+    <section class="dash-section" id="sec-properties">
+      <h2 class="section-title"><i class="fas fa-home"></i> My Properties</h2>
+      <a href="/add-property" class="btn btn-primary btn-sm" style="margin-bottom:16px;display:inline-flex;">
+        <i class="fas fa-plus"></i> Add New Property
+      </a>
+      {% if properties %}
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Region</th><th>Type</th><th>Price/Night</th><th>Max Guests</th><th>Approval</th><th>Bookings</th><th>Action</th></tr></thead>
+          <tbody>
+          {% for p in properties %}
+            <tr>
+              <td>{{ p.property_id }}</td>
+              <td>{{ p.title }}</td>
+              <td>{{ p.region }}</td>
+              <td>{{ p.type }}</td>
+              <td>NPR {{ "{:,.0f}".format(p.price_per_night) }}</td>
+              <td>{{ p.max_guests }}</td>
+              <td><span class="status status-{{ p.approval_status }}">{{ p.approval_status }}</span></td>
+              <td>{{ p.booking_count }}</td>
+              <td>
+                <form method="POST" action="/host/delete-property"
+                      onsubmit="return confirm('Delete {{ p.title }}?')">
+                  <input type="hidden" name="property_id" value="{{ p.property_id }}">
+                  <button class="btn-xs btn-del" type="submit"><i class="fas fa-trash"></i> Delete</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <p style="color:var(--text-muted);">You haven't added any properties yet. <a href="/add-property" style="color:var(--teal);">Add your first one.</a></p>
+      {% endif %}
+    </section>
+
+    <!-- BOOKINGS -->
+    <section class="dash-section" id="sec-bookings">
+      <h2 class="section-title"><i class="fas fa-calendar-check"></i> Bookings on My Properties</h2>
+      {% if bookings %}
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Ref</th><th>Guest</th><th>Property</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Total</th><th>Status</th></tr></thead>
+          <tbody>
+          {% for b in bookings %}
+            <tr>
+              <td style="font-family:monospace;font-size:11px;">{{ b.booking_id }}</td>
+              <td>{{ b.guest_name }}</td>
+              <td>{{ b.property_title }}</td>
+              <td>{{ b.checkin_date }}</td>
+              <td>{{ b.checkout_date }}</td>
+              <td>{{ b.guests_count }}</td>
+              <td>NPR {{ "{:,.0f}".format(b.total_amount) }}</td>
+              <td><span class="status status-{{ b.status }}">{{ b.status }}</span></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <p style="color:var(--text-muted);">No bookings yet.</p>
+      {% endif %}
+    </section>
+
+    <!-- EARNINGS -->
+    <section class="dash-section" id="sec-earnings">
+      <h2 class="section-title"><i class="fas fa-rupee-sign"></i> Earnings</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num">NPR {{ "{:,.0f}".format(earnings.total_revenue or 0) }}</div>
+          <div class="stat-label">Total Revenue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">NPR {{ "{:,.0f}".format(earnings.active_revenue or 0) }}</div>
+          <div class="stat-label">Active Bookings Revenue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">NPR {{ "{:,.0f}".format(earnings.completed_revenue or 0) }}</div>
+          <div class="stat-label">Completed Revenue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ earnings.active_count or 0 }}</div>
+          <div class="stat-label">Active Bookings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">{{ earnings.completed_count or 0 }}</div>
+          <div class="stat-label">Completed Stays</div>
+        </div>
+      </div>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:8px;">
+        <i class="fas fa-info-circle"></i> Revenue figures are based on confirmed and completed bookings only.
+      </p>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="dash-section" id="sec-profile">
+      <h2 class="section-title"><i class="fas fa-user-edit"></i> Edit Profile</h2>
+      <form class="profile-form" method="POST" action="/host/update-profile">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" type="text" name="name" value="{{ user.name }}" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" name="email" value="{{ user.email }}" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" type="text" name="phone" value="{{ user.phone or '' }}" placeholder="e.g. 98XXXXXXXX">
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Password <span style="color:var(--text-muted);font-size:12px;">(leave blank to keep current)</span></label>
+          <input class="form-input" type="password" name="password" placeholder="••••••••" minlength="6">
+        </div>
+        <button class="btn btn-primary" type="submit">Save Changes</button>
+      </form>
+    </section>
+
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showSection(id, link) {
+  document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  link.classList.add('active');
+}
+</script>
+{% endblock %}
