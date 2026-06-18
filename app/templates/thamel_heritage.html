@@ -2,15 +2,20 @@
 {% block title %}Thamel Heritage House – Kathmandu | Bookmandu{% endblock %}
 
 {% block extra_css %}
+<!-- ============================================================
+     EXTERNAL STYLESHEET
+     Purpose: Load property-specific styles from external CSS file
+     ============================================================ -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/property_details.css') }}">
 <style>
 
-    /* Premium Amenities - Change star icon to white */
+    /* ── Premium Amenities - Icon Color Overrides ── */
+    /* Ensures consistent icon color with dark theme */
     .amenities-section h3 i {
         color: #ffffff !important;
     }  
     
-    /* Where you'll stay - Change bed icon to white */
+    /* Where you'll stay - Bed icon to white */
     .where-stay-section h3 i {
         color: #ffffff !important;
     }
@@ -28,7 +33,10 @@
         color: #ffffff !important;
     }
     
-    /* ========== COMPACT DESIGN OVERRIDES ========== */
+    /* ============================================================
+       COMPACT DESIGN OVERRIDES
+       Purpose: Ensure normal page scrolling behavior
+       ============================================================ */
     
     /* FIXED: Remove left-side independent scrolling - use normal page scroll */
     .property-main {
@@ -42,6 +50,7 @@
         display: none;
     }
     
+    /* ── Hero Section Overrides ── */
     .hero-section {
         height: 45vh;
         min-height: 380px;
@@ -72,11 +81,13 @@
         font-size: 14px;
     }
     
+    /* ── Property Layout ── */
     .property-layout {
         gap: 32px;
         padding: 32px 24px;
     }
     
+    /* ── Gallery Section ── */
     .gallery-section {
         margin-bottom: 28px;
     }
@@ -109,6 +120,7 @@
         border: 2px solid var(--teal);
     }
     
+    /* ── Content Sections ── */
     .description-section, .amenities-section, .host-section,
     .highlights-section, .reviews-section, .location-section,
     .similar-properties {
@@ -133,6 +145,7 @@
         margin-bottom: 16px;
     }
     
+    /* ── Amenities Grid ── */
     .amenities-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -158,6 +171,7 @@
         font-size: 13px;
     }
     
+    /* ── Host Section ── */
     .host-section {
         padding: 20px;
         gap: 18px;
@@ -196,6 +210,7 @@
         line-height: 1.5;
     }
     
+    /* ── Highlights Grid ── */
     .highlights-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -221,6 +236,7 @@
         margin-bottom: 6px;
     }
     
+    /* ── Review Cards ── */
     .review-card {
         padding: 14px;
         background: var(--bg-700);
@@ -252,6 +268,7 @@
         color: var(--text-secondary);
     }
     
+    /* ── Location & Map ── */
     .map-placeholder iframe {
         height: 200px;
         width: 100%;
@@ -270,6 +287,7 @@
         margin-bottom: 8px;
     }
     
+    /* ── Similar Properties ── */
     .similar-card img {
         height: 130px;
         width: 100%;
@@ -291,6 +309,7 @@
         color: var(--text-muted);
     }
     
+    /* ── Booking Sidebar - Sticky ── */
     .booking-card-sticky {
         padding: 18px;
         top: 80px;
@@ -322,6 +341,7 @@
     
     /* ============================================================
        AESTHETIC CALENDAR ANIMATIONS - PREMIUM DESIGN
+       Purpose: Interactive date selection with smooth animations
        ============================================================ */
 
     /* Calendar Container - Smooth transitions */
@@ -389,7 +409,7 @@
         transform: scale(0.95);
     }
 
-    /* Month Text Animation */
+    /* Month Text with subtle glow animation */
     .calendar-month {
         font-size: 16px;
         font-weight: 700;
@@ -409,7 +429,7 @@
         }
     }
 
-    /* Weekday Labels Animation */
+    /* Weekday Labels */
     .calendar-weekdays {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
@@ -498,7 +518,7 @@
         height: 100%;
     }
 
-    /* Available Date Animation */
+    /* Available Date - subtle green background */
     .calendar-day.available {
         background: rgba(46, 204, 113, 0.15);
         color: var(--green);
@@ -514,7 +534,7 @@
         box-shadow: 0 8px 20px rgba(0, 201, 122, 0.3);
     }
 
-    /* Booked Date Style */
+    /* Booked Date - red with strikethrough */
     .calendar-day.booked {
         background: rgba(231, 76, 60, 0.2);
         color: var(--red);
@@ -524,7 +544,7 @@
         position: relative;
     }
 
-    /* Selected Date (Check-in or Check-out) */
+    /* Selected Date (Check-in or Check-out) - pop animation */
     .calendar-day.selected {
         background: linear-gradient(135deg, var(--teal), var(--teal-dark));
         color: #051209;
@@ -549,7 +569,7 @@
         }
     }
 
-    /* Selected date glow effect */
+    /* Selected date glow border effect */
     .calendar-day.selected::before {
         content: '';
         position: absolute;
@@ -586,20 +606,19 @@
         }
     }
 
-    /* Range hover effect */
     .calendar-day.selected-range:hover {
         background: linear-gradient(90deg, rgba(0, 201, 122, 0.35), rgba(0, 229, 204, 0.35));
         transform: translateY(-2px);
     }
 
-    /* Disabled dates */
+    /* Disabled dates - past dates */
     .calendar-day.disabled {
         opacity: 0.3;
         cursor: not-allowed;
         filter: grayscale(0.3);
     }
 
-    /* Legend Items Animation */
+    /* ── Calendar Legend ── */
     .calendar-legend {
         display: flex;
         gap: 16px;
@@ -658,7 +677,7 @@
         }
     }
 
-    /* Selected Dates Display Animation */
+    /* Selected Dates Display - shows selected date range */
     .selected-dates-display {
         background: linear-gradient(135deg, var(--teal-glow), transparent);
         padding: 12px;
@@ -689,7 +708,7 @@
         border-color: var(--teal);
     }
 
-    /* Calendar refresh animation when month changes */
+    /* Calendar month change animation - flip effect */
     .calendar-days {
         animation: calendarFlip 0.4s ease-out;
     }
@@ -705,7 +724,7 @@
         }
     }
 
-    /* Responsive adjustments */
+    /* ── Responsive Calendar ── */
     @media (max-width: 480px) {
         .calendar-day {
             font-size: 10px;
@@ -724,6 +743,7 @@
         }
     }
     
+    /* ── Form Elements ── */
     .form-group {
         margin-bottom: 12px;
     }
@@ -745,7 +765,7 @@
         font-size: 12px;
     }
     
-    /* Coupon Section */
+    /* ── Coupon Section ── */
     .coupon-section {
         margin: 16px 0;
     }
@@ -798,6 +818,7 @@
         transform: translateY(-2px);
     }
     
+    /* Clear coupon button - red delete style */
     #clearCouponBtn {
         background: var(--bg-600);
         border: 1px solid var(--border);
@@ -812,6 +833,7 @@
         color: white;
     }
     
+    /* Discount message styling */
     .discount-applied {
         margin-top: 8px;
         padding: 6px 10px;
@@ -840,6 +862,7 @@
         display: none;
     }
     
+    /* ── Price Details ── */
     .price-details {
         margin-top: 14px;
         background: var(--bg-700);
@@ -882,6 +905,7 @@
         color: var(--teal);
     }
     
+    /* ── Booking Button ── */
     .btn-block {
         width: 100%;
         padding: 10px;
@@ -925,6 +949,7 @@
         color: var(--teal);
     }
     
+    /* ── Responsive Layout ── */
     @media (max-width: 992px) {
         .property-layout {
             grid-template-columns: 1fr;
@@ -944,13 +969,14 @@
         .gallery-thumbs {
             grid-template-columns: repeat(3, 1fr);
         }
+        /* Hide extra thumbnails on mobile for cleaner layout */
         .gallery-thumbs img:nth-child(4),
         .gallery-thumbs img:nth-child(5) {
             display: none;
         }
     }
     
-    /* Payment Methods Enhanced */
+    /* ── Payment Methods Enhanced ── */
     .payment-methods-enhanced {
         display: flex;
         gap: 15px;
@@ -972,6 +998,7 @@
         overflow: hidden;
     }
     
+    /* Shimmer effect on hover */
     .payment-method-enhanced::before {
         content: '';
         position: absolute;
@@ -1018,21 +1045,10 @@
         display: block;
     }
     
-    /* QR Section Styling */
+    /* ── QR Section ── */
     #qrSection {
         margin: 20px 0;
         animation: fadeInUp 0.4s ease;
-    }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
     }
     
     .qr-container {
@@ -1047,6 +1063,7 @@
         position: relative;
     }
     
+    /* Glow border effect */
     .qr-container::before {
         content: '';
         position: absolute;
@@ -1101,7 +1118,7 @@
         font-size: 16px;
     }
     
-    /* Bank Details Styling */
+    /* ── Bank Details ── */
     .bank-details {
         background: linear-gradient(135deg, var(--bg-700), var(--bg-600));
         padding: 20px;
@@ -1150,7 +1167,7 @@
         color: var(--text-primary);
     }
     
-    /* Copy Button */
+    /* ── Copy Button ── */
     .copy-btn {
         background: var(--bg-600);
         border: 1px solid var(--border);
@@ -1177,7 +1194,7 @@
         transform: scale(1.02);
     }
     
-    /* Payment Status */
+    /* ── Payment Status ── */
     .payment-status {
         margin-top: 20px;
         padding: 12px;
@@ -1199,6 +1216,7 @@
         color: var(--green);
     }
     
+    /* ── Booking Modal ── */
     .booking-modal {
         max-width: 520px;
         width: 90%;
@@ -1222,7 +1240,7 @@
         cursor: pointer;
     }
     
-    /* Booking Summary Styling */
+    /* ── Booking Summary ── */
     #bookingSummary {
         background: linear-gradient(135deg, var(--bg-700), var(--bg-600));
         border-radius: 16px;
@@ -1264,7 +1282,7 @@
         color: var(--text-primary);
     }
     
-    /* Price Breakdown Styling */
+    /* ── Price Breakdown ── */
     #priceBreakdown {
         background: var(--bg-700);
         border-radius: 16px;
@@ -1311,7 +1329,7 @@
         color: var(--teal);
     }
     
-    /* Modal Header with Icon */
+    /* ── Modal Header ── */
     .booking-modal h3 {
         display: flex;
         align-items: center;
@@ -1328,7 +1346,7 @@
         font-size: 24px;
     }
     
-    /* Modal Buttons */
+    /* ── Modal Buttons ── */
     .modal-buttons {
         display: flex;
         gap: 15px;
@@ -1365,7 +1383,7 @@
         box-shadow: 0 5px 15px rgba(0, 201, 122, 0.3);
     }
     
-    /* Where You'll Stay Section */
+    /* ── Where You'll Stay Section ── */
     .where-stay-section h3 {
         color: var(--text-primary);
     }
@@ -1440,7 +1458,7 @@
         }
     }
     
-    /* Package Section */
+    /* ── Package Section ── */
     .package-section {
         padding: 16px;
         background: linear-gradient(135deg, var(--bg-700), var(--bg-600));
@@ -1472,7 +1490,7 @@
         color: var(--teal);
     }
     
-    /* Rules Section */
+    /* ── Rules Section ── */
     .rules-section {
         padding: 16px;
         background: var(--bg-700);
@@ -1529,7 +1547,7 @@
         color: #051209;
     }
     
-    /* Success Modal */
+    /* ── Success Modal ── */
     .success-icon {
         width: 70px;
         height: 70px;
@@ -1612,6 +1630,7 @@
         color: var(--teal);
     }
     
+    /* ── Modal Overlays ── */
     .success-modal-overlay {
         position: fixed;
         inset: 0;
@@ -1654,7 +1673,7 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Footer Styles */
+    /* ── Footer Styles ── */
     .footer {
         background: var(--bg-800);
         border-top: 1px solid var(--border);
@@ -1723,33 +1742,64 @@
 
 {% block content %}
 
+<!-- ============================================================
+     PROPERTY DETAILS PAGE - THAMEL HERITAGE HOUSE
+     
+     Page Structure:
+     1. Hero Section - Full-width banner with property info
+     2. Property Layout - Two-column grid (main content + booking sidebar)
+     3. Main Content - Gallery, description, amenities, host, reviews
+     4. Booking Sidebar - Calendar, pricing, booking form
+     5. Modals - Booking confirmation and success modals
+     6. Footer - Site-wide navigation
+     ============================================================ -->
+
 <div class="property-container">
-    <!-- Hero Section -->
+    <!-- ============================================================
+         HERO SECTION
+         Purpose: Showcase property with large banner image and key details
+         ============================================================ -->
     <div class="hero-section">
         <div class="hero-image" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('{{ url_for('static', filename='images/th1.jpg') }}');">
             <div class="hero-overlay-content">
+                <!-- Tagline above title -->
                 <div class="hero-tagline">🏛️ Heritage Charm in the Heart of Kathmandu</div>
+                <!-- Property name -->
                 <h1 class="hero-title">Thamel Heritage House</h1>
+                <!-- Meta information: location, type, rating -->
                 <div class="hero-meta">
                     <span><i class="fas fa-map-marker-alt"></i> Thamel, Kathmandu</span>
                     <span class="hero-type"><i class="fas fa-building"></i> Guesthouse</span>
                     <span class="hero-rating"><i class="fas fa-star"></i> 4.5 (38 reviews)</span>
                 </div>
+                <!-- Price badge -->
                 <div class="hero-price-badge">NPR 3,200 <span>/ night</span></div>
+                <!-- Quick book button - scrolls to booking panel -->
                 <a href="#booking-panel" class="btn btn-primary btn-hero">Book Now <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
     </div>
 
+    <!-- ============================================================
+         PROPERTY LAYOUT - Two-column grid
+         Left: Main content (gallery, description, amenities, etc.)
+         Right: Booking sidebar (sticky)
+         ============================================================ -->
     <div class="property-layout">
-        <!-- Left Column -->
+        <!-- ── LEFT COLUMN: Main Content ── -->
         <div class="property-main">
-            <!-- Gallery Section -->
+            
+            <!-- ============================================================
+                 GALLERY SECTION
+                 Purpose: Display property images with main + thumbnail grid
+                 ============================================================ -->
             <div class="gallery-section">
                 <div class="gallery-grid">
+                    <!-- Main large image -->
                     <div class="gallery-main">
                         <img src="{{ url_for('static', filename='images/th1.jpg') }}" alt="Thamel Heritage House Kathmandu Nepal">
                     </div>
+                    <!-- Thumbnail grid - 5 smaller images -->
                     <div class="gallery-thumbs">
                         <img src="{{ url_for('static', filename='images/th2.jpg') }}" alt="Thamel Heritage House Interior">
                         <img src="{{ url_for('static', filename='images/th3.jpg') }}" alt="Thamel Heritage House Courtyard">
@@ -1760,17 +1810,24 @@
                 </div>
             </div>
 
-            <!-- Description -->
+            <!-- ============================================================
+                 DESCRIPTION SECTION
+                 Purpose: Provide detailed property description
+                 ============================================================ -->
             <div class="description-section">
                 <h2>Experience Old Kathmandu with Modern Comfort</h2>
                 <p>Thamel Heritage House blends traditional Newari architecture with contemporary amenities. Located in the vibrant tourist hub of Thamel, our guesthouse offers a peaceful courtyard escape from the bustling streets. Each room features handcrafted woodwork, antique furniture, and modern en-suite bathrooms.</p>
                 <p>Our rooftop restaurant serves authentic Nepali cuisine with views of the Kathmandu Valley. We're steps away from Garden of Dreams, local eateries, trekking shops, and UNESCO World Heritage sites. Free parking, fully equipped kitchen access, and 24-hour front desk make your stay effortless.</p>
             </div>
 
-            <!-- Premium Amenities -->
+            <!-- ============================================================
+                 PREMIUM AMENITIES SECTION
+                 Purpose: List all available amenities with icons
+                 ============================================================ -->
             <div class="amenities-section">
                 <h3><i class="fas fa-star"></i> Premium Amenities</h3>
                 <div class="amenities-grid">
+                    <!-- Each amenity displayed as a card with icon and label -->
                     <div class="amenity-item"><i class="fas fa-wifi"></i> <span>Free High-Speed WiFi</span></div>
                     <div class="amenity-item"><i class="fas fa-parking"></i> <span>Free Parking</span></div>
                     <div class="amenity-item"><i class="fas fa-utensils"></i> <span>Full Kitchen Access</span></div>
@@ -1782,10 +1839,14 @@
                 </div>
             </div>
 
-            <!-- Where You'll Stay -->
+            <!-- ============================================================
+                 WHERE YOU'LL STAY SECTION
+                 Purpose: Show bedroom images with "view photos" buttons
+                 ============================================================ -->
             <div class="where-stay-section">
                 <h3><i class="fas fa-bed"></i> Where you'll stay</h3>
                 <div class="stay-grid">
+                    <!-- Each bedroom displayed as a card -->
                     <div class="stay-card">
                         <img src="{{ url_for('static', filename='images/th2.jpg') }}" alt="Bedroom 1">
                         <div class="stay-info">
@@ -1815,12 +1876,16 @@
                         </div>
                     </div>
                 </div>
+                <!-- "View all images" link - opens full gallery modal -->
                 <div class="view-all-link">
                     <a href="#" onclick="openAllImages(); return false;"><i class="fas fa-images"></i> View all images</a>
                 </div>
             </div>
 
-            <!-- Package Section -->
+            <!-- ============================================================
+                 PACKAGE SECTION
+                 Purpose: Show what's included in the stay
+                 ============================================================ -->
             <div class="package-section">
                 <h3><i class="fas fa-gift"></i> PACKAGE</h3>
                 <p class="package-subtitle">Included in your stay</p>
@@ -1830,27 +1895,37 @@
                 </div>
             </div>
 
-            <!-- House Rules -->
+            <!-- ============================================================
+                 HOUSE RULES SECTION
+                 Purpose: Display key rules with "show all" functionality
+                 ============================================================ -->
             <div class="rules-section">
                 <h3><i class="fas fa-gavel"></i> BEFORE YOU BOOK</h3>
                 <p class="rules-subtitle">House rules</p>
                 <div class="rules-list">
+                    <!-- Important rules displayed by default -->
                     <div class="rule-item"><i class="fas fa-money-bill-wave"></i> <span>A prepayment of NPR 20,000 is required to confirm your booking.</span></div>
                     <div class="rule-item"><i class="fas fa-calendar-times"></i> <span>Cancellations within 72 hours of arrival are non-refundable.</span></div>
                     <div class="rule-item"><i class="fas fa-clock"></i> <span>Check-out: By 12:00 Noon</span></div>
                     <div class="rule-item"><i class="fas fa-clock"></i> <span>Check-in: After 3:00 PM</span></div>
                     <div class="rule-item"><i class="fas fa-utensils"></i> <span>Breakfast is served until 9:00 AM; service concludes at 9:30 AM.</span></div>
                 </div>
+                <!-- Button to show all 17 rules in a modal -->
                 <button class="show-all-rules-btn" onclick="showAllRules()"><i class="fas fa-chevron-down"></i> Show all 17 rules</button>
             </div>
 
-            <!-- Host -->
+            <!-- ============================================================
+                 HOST SECTION
+                 Purpose: Show host information, response rate, and bio
+                 ============================================================ -->
             <div class="host-section">
+                <!-- Host avatar with border -->
                 <div class="host-avatar" style="width: 90px; height: 90px; min-width: 90px; min-height: 90px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: var(--bg-600);">
                     <img src="{{ url_for('static', filename='images/Rochak.png') }}" alt="Rochak KC" style="width: 100%; height: 100%; display: block; border-radius: 50%; object-fit: cover; border: 3px solid var(--teal); margin: 0; padding: 0;">
                 </div>
                 <div class="host-details">
                     <h3>Hosted by Rochak KC</h3>
+                    <!-- Host stats: response rate, response time, hosting experience -->
                     <div class="host-stats">
                         <span><i class="fas fa-check-circle"></i> Response rate: 98%</span>
                         <span><i class="fas fa-clock"></i> Responds within 2 hours</span>
@@ -1860,7 +1935,10 @@
                 </div>
             </div>
 
-            <!-- Highlights -->
+            <!-- ============================================================
+                 HIGHLIGHTS SECTION
+                 Purpose: Show key selling points of the property
+                 ============================================================ -->
             <div class="highlights-section">
                 <h3>✨ Why guests love this property</h3>
                 <div class="highlights-grid">
@@ -1871,10 +1949,14 @@
                 </div>
             </div>
 
-            <!-- Reviews -->
+            <!-- ============================================================
+                 REVIEWS SECTION
+                 Purpose: Display guest reviews with ratings
+                 ============================================================ -->
             <div class="reviews-section">
                 <h3><i class="fas fa-star"></i> Guest reviews · 4.5 average</h3>
                 <div class="reviews-list">
+                    <!-- Each review displays: name, rating, date, comment -->
                     <div class="review-card"><div class="review-header"><strong>Arun Rai</strong> <div class="stars">★★★★★</div> <span>Feb 2026</span></div><p>"Perfect location in Thamel! The staff went above and beyond to make our stay comfortable. The rooftop views are stunning, and the breakfast was delicious. Highly recommend!"</p></div>
                     <div class="review-card"><div class="review-header"><strong>Meera Koirala</strong> <div class="stars">★★★★★</div> <span>Jan 2026</span></div><p>"A hidden gem in the heart of Kathmandu. The courtyard is so peaceful despite being in Thamel. Rochak is a wonderful host who helped us plan our entire itinerary."</p></div>
                     <div class="review-card"><div class="review-header"><strong>Abishek Bimali</strong> <div class="stars">★★★★☆</div> <span>Dec 2025</span></div><p>"Beautiful heritage property with modern amenities. The room was spacious and clean. Only minor feedback - WiFi was a bit slow during peak hours. Otherwise excellent!"</p></div>
@@ -1883,12 +1965,17 @@
                 </div>
             </div>
 
-            <!-- Location -->
+            <!-- ============================================================
+                 LOCATION SECTION
+                 Purpose: Show map and nearby attractions
+                 ============================================================ -->
             <div class="location-section">
                 <h3><i class="fas fa-map-pin"></i> Location & nearby attractions</h3>
+                <!-- Google Maps embed -->
                 <div class="map-placeholder">
                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.5678!2d85.311234!3d27.717245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb190c3d6f6b1d%3A0x8b5c3e2a1f4d8e9c!2sThamel%2C%20Kathmandu!5e0!3m2!1sen!2snp!4v1713234567890!5m2!1sen!2snp" width="100%" height="200" style="border:0; border-radius: 16px;" allowfullscreen="" loading="lazy"></iframe>
                 </div>
+                <!-- Nearby places as chips -->
                 <div class="nearby-places">
                     <div class="place-item"><i class="fas fa-tree"></i> Garden of Dreams — 200 m</div>
                     <div class="place-item"><i class="fas fa-temple"></i> Kathmandu Durbar Square — 1.5 km</div>
@@ -1897,7 +1984,10 @@
                 </div>
             </div>
 
-            <!-- Similar Properties -->
+            <!-- ============================================================
+                 SIMILAR PROPERTIES SECTION
+                 Purpose: Show related properties to keep users engaged
+                 ============================================================ -->
             <div class="similar-properties">
                 <h3>Similar stays you might like</h3>
                 <div class="similar-grid">
@@ -1908,21 +1998,32 @@
             </div>
         </div>
 
-        <!-- Booking Sidebar - Sticky on right -->
+        <!-- ── RIGHT COLUMN: Booking Sidebar ── -->
         <aside class="booking-sidebar" id="booking-panel">
             <div class="booking-card-sticky">
+                <!-- Property price display -->
                 <div class="booking-price">NPR 3,200 <span class="per-night">/ night</span></div>
+                <!-- Rating summary -->
                 <div class="rating-summary"><i class="fas fa-star"></i> 4.5 · 38 reviews</div>
                 
-                <!-- CALENDAR SECTION - ENHANCED WITH ANIMATIONS -->
+                <!-- ============================================================
+                     CALENDAR SECTION - ENHANCED WITH ANIMATIONS
+                     Purpose: Interactive date selection with visual feedback
+                     ============================================================ -->
                 <div class="calendar-container">
                     <div class="calendar-header">
+                        <!-- Previous month button with rotation animation on hover -->
                         <button class="calendar-nav-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
+                        <!-- Current month/year with pulsing glow -->
                         <span class="calendar-month" id="currentMonthYear">June 2026</span>
+                        <!-- Next month button -->
                         <button class="calendar-nav-btn" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
                     </div>
+                    <!-- Weekday headers -->
                     <div class="calendar-weekdays"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+                    <!-- Calendar days grid -->
                     <div class="calendar-days" id="calendarDays"></div>
+                    <!-- Legend for date status -->
                     <div class="calendar-legend">
                         <div class="legend-item"><div class="legend-color available"></div><span>Available</span></div>
                         <div class="legend-item"><div class="legend-color booked"></div><span>Booked</span></div>
@@ -1930,11 +2031,17 @@
                     </div>
                 </div>
                 
+                <!-- Selected dates display -->
                 <div class="selected-dates-display" id="selectedDatesDisplay">
                     <i class="fas fa-calendar-alt"></i> Select check-in and check-out dates
                 </div>
                 
+                <!-- ============================================================
+                     BOOKING FORM
+                     Purpose: Collect guest information and calculate pricing
+                     ============================================================ -->
                 <div class="booking-form">
+                    <!-- Guest selection dropdown -->
                     <div class="form-group">
                         <label>Guests <span class="guest-max">(max 6)</span></label>
                         <select id="guests" class="form-select">
@@ -1947,7 +2054,10 @@
                         </select>
                     </div>
                     
-                    <!-- Coupon Section -->
+                    <!-- ============================================================
+                         COUPON SECTION
+                         Purpose: Apply discount codes to the booking
+                         ============================================================ -->
                     <div class="coupon-section">
                         <label><i class="fas fa-ticket-alt"></i> Coupon code (optional)</label>
                         <div class="coupon-input-group">
@@ -1957,7 +2067,10 @@
                         <div id="discountMessage" class="discount-applied"></div>
                     </div>
                     
-                    <!-- Price Details -->
+                    <!-- ============================================================
+                         PRICE DETAILS
+                         Purpose: Show breakdown of costs
+                         ============================================================ -->
                     <div class="price-details">
                         <div class="price-row">
                             <span>Subtotal</span>
@@ -1967,6 +2080,7 @@
                             <span><span id="nightCount">0</span> nights × NPR 3,200</span>
                             <span></span>
                         </div>
+                        <!-- Discount row - hidden by default -->
                         <div class="price-row discount-row" id="discountRow" style="display: none;">
                             <span><i class="fas fa-tag"></i> Discount <span id="discountPercent"></span></span>
                             <span class="amount">-NPR <span id="discountAmount">0</span></span>
@@ -1977,33 +2091,44 @@
                         </div>
                     </div>
                     
+                    <!-- Confirm Booking Button - disabled until dates selected -->
                     <button type="button" id="confirmBookingBtn" class="btn btn-primary btn-block" disabled>Select Dates First</button>
                     <p class="secure-note"><i class="fas fa-lock"></i> Secure payment after confirmation</p>
                 </div>
+                <!-- Extra info note -->
                 <div class="extra-info">✓ Free cancellation up to 7 days before check-in</div>
             </div>
         </aside>
     </div>
 </div>
 
-<!-- Booking Modal -->
+<!-- ============================================================
+     BOOKING MODAL
+     Purpose: Show booking summary and payment options
+     ============================================================ -->
 <div class="booking-modal-overlay" id="bookingModal">
     <div class="booking-modal">
+        <!-- Close button -->
         <button class="close-modal-btn" onclick="closeBookingModal()"><i class="fas fa-times"></i></button>
         <h3><i class="fas fa-receipt"></i> Complete Your Booking</h3>
+        <!-- Booking summary dynamically populated -->
         <div id="bookingSummary"></div>
+        <!-- Price breakdown dynamically populated -->
         <div id="priceBreakdown"></div>
         <h4><i class="fas fa-credit-card"></i> Select Payment Method</h4>
+        <!-- Payment method options -->
         <div class="payment-methods-enhanced">
             <div class="payment-method-enhanced" data-method="esewa"><img src="{{ url_for('static', filename='images/esewa.png') }}" alt="eSewa"><span class="method-name">eSewa</span></div>
             <div class="payment-method-enhanced" data-method="khalti"><img src="{{ url_for('static', filename='images/khalti.png') }}" alt="Khalti"><span class="method-name">Khalti</span></div>
             <div class="payment-method-enhanced" data-method="bank"><img src="{{ url_for('static', filename='images/bank.png') }}" alt="Bank"><span class="method-name">Bank Transfer</span></div>
         </div>
+        <!-- QR Section - shown when payment method selected -->
         <div id="qrSection" style="display: none;">
             <div class="qr-container">
                 <img id="qrImage" src="" alt="QR Code">
                 <p><i class="fas fa-qrcode"></i> Scan QR code to pay</p>
             </div>
+            <!-- Bank details - shown for bank transfer method -->
             <div class="bank-details" id="bankDetails" style="display: none;">
                 <p><strong><i class="fas fa-university"></i> Bank:</strong> <span id="bankName">Nepal Investment Bank</span> <button class="copy-btn" onclick="copyBankText('bankName')"><i class="fas fa-copy"></i> Copy</button></p>
                 <p><strong><i class="fas fa-user"></i> Account:</strong> <span id="accountName">Bookmandu Pvt. Ltd.</span> <button class="copy-btn" onclick="copyBankText('accountName')"><i class="fas fa-copy"></i> Copy</button></p>
@@ -2011,7 +2136,9 @@
                 <p><strong><i class="fas fa-money-bill-wave"></i> Amount:</strong> <span id="paymentAmount"></span></p>
             </div>
         </div>
+        <!-- Payment status message -->
         <div id="paymentStatus" class="payment-status"></div>
+        <!-- Modal action buttons -->
         <div class="modal-buttons">
             <button class="btn btn-ghost" onclick="closeBookingModal()"><i class="fas fa-times"></i> Cancel</button>
             <button class="btn btn-primary" id="proceedPaymentBtn">Proceed to Pay <i class="fas fa-arrow-right"></i></button>
@@ -2020,7 +2147,10 @@
     </div>
 </div>
 
-<!-- Success Modal -->
+<!-- ============================================================
+     SUCCESS MODAL
+     Purpose: Show booking confirmation with reference number
+     ============================================================ -->
 <div class="success-modal-overlay" id="successModal">
     <div class="success-modal">
         <button class="close-modal-btn" onclick="closeSuccessModal()"><i class="fas fa-times"></i></button>
@@ -2036,12 +2166,19 @@
     </div>
 </div>
 
+<!-- ============================================================
+   JAVASCRIPT - FULL FUNCTIONALITY
+   Purpose: Calendar, booking, coupon, payment, and modal logic
+   ============================================================ -->
 <script>
 // ============================================
-// FULL JAVASCRIPT CODE - WITH ENHANCED FEATURES
+// GALLERY AND IMAGE VIEWER FUNCTIONS
 // ============================================
 
-// All gallery images for the "View all images" feature
+/**
+ * galleryAllImages - Array of all property images
+ * Used for the "View all images" gallery modal
+ */
 var galleryAllImages = [
     '{{ url_for("static", filename="images/th1.jpg") }}',
     '{{ url_for("static", filename="images/th2.jpg") }}',
@@ -2051,7 +2188,10 @@ var galleryAllImages = [
     '{{ url_for("static", filename="images/th6.jpg") }}'
 ];
 
-// Bedroom images for viewer
+/**
+ * bedroomImages - Array of bedroom images
+ * Used for the single image viewer
+ */
 var bedroomImages = [
     '{{ url_for("static", filename="images/th2.jpg") }}',
     '{{ url_for("static", filename="images/th3.jpg") }}',
@@ -2059,7 +2199,14 @@ var bedroomImages = [
     '{{ url_for("static", filename="images/th5.jpg") }}'
 ];
 
-// Booked dates for Thamel Heritage House
+// ============================================
+// CALENDAR DATA AND STATE
+// ============================================
+
+/**
+ * bookedDates - Array of pre-booked dates for this property
+ * Format: YYYY-MM-DD
+ */
 var bookedDates = [
     '2026-06-01', '2026-06-02', '2026-06-03',
     '2026-06-10', '2026-06-11', '2026-06-12',
@@ -2067,22 +2214,33 @@ var bookedDates = [
     '2026-06-24', '2026-06-25', '2026-06-26'
 ];
 
-var currentDate = new Date(2026, 5);
-var selectedCheckIn = null;
-var selectedCheckOut = null;
-var appliedCoupon = null;
-var selectedPaymentMethod = null;
+var currentDate = new Date(2026, 5); // Current calendar month (June 2026)
+var selectedCheckIn = null; // Selected check-in date
+var selectedCheckOut = null; // Selected check-out date
+var appliedCoupon = null; // Currently applied coupon code
+var selectedPaymentMethod = null; // Selected payment method
 
-var pricePerNight = 3200;
+var pricePerNight = 3200; // Base price per night
+
+/**
+ * availableCoupons - Object containing all available coupon codes
+ * Each coupon has: discount amount, type (percentage/fixed), and display messages
+ */
 var availableCoupons = {
     'WELCOME10': { discount: 10, type: 'percentage', message: '10% off!', description: '10% discount applied' },
     'SAVE20': { discount: 20, type: 'percentage', message: '20% off!', description: '20% discount applied' },
     'FLAT500': { discount: 500, type: 'fixed', message: 'NPR 500 off!', description: 'NPR 500 discount applied' }
 };
 
-// Persistent coupon tracking
+/**
+ * usedCoupons - Array to track used coupons (prevents reuse)
+ * Persists in localStorage
+ */
 var usedCoupons = [];
 
+/**
+ * loadUsedCouponsFromStorage - Load used coupons from localStorage
+ */
 function loadUsedCouponsFromStorage() {
     try {
         var saved = localStorage.getItem('bookmandu_used_coupons');
@@ -2096,16 +2254,29 @@ function loadUsedCouponsFromStorage() {
     }
 }
 
+/**
+ * saveUsedCouponsToStorage - Save used coupons to localStorage
+ */
 function saveUsedCouponsToStorage() {
     try {
         localStorage.setItem('bookmandu_used_coupons', JSON.stringify(usedCoupons));
     } catch(e) {}
 }
 
+/**
+ * isCouponAlreadyUsed - Check if a coupon has been used before
+ * @param {string} couponCode - The coupon code to check
+ * @returns {boolean} - True if coupon has been used
+ */
 function isCouponAlreadyUsed(couponCode) {
     return usedCoupons.includes(couponCode);
 }
 
+/**
+ * markCouponAsUsed - Mark a coupon as used
+ * @param {string} couponCode - The coupon code to mark
+ * @returns {boolean} - True if successfully marked
+ */
 function markCouponAsUsed(couponCode) {
     if (!usedCoupons.includes(couponCode)) {
         usedCoupons.push(couponCode);
@@ -2115,13 +2286,53 @@ function markCouponAsUsed(couponCode) {
     return false;
 }
 
+// Initialize used coupons from storage
 loadUsedCouponsFromStorage();
 
+// ============================================
+// CALENDAR HELPER FUNCTIONS
+// ============================================
+
+/**
+ * formatDate - Format date as YYYY-MM-DD
+ * @param {number} year - Year
+ * @param {number} month - Month (0-indexed)
+ * @param {number} day - Day
+ * @returns {string} - Formatted date string
+ */
 function formatDate(year, month, day) { return year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0'); }
+
+/**
+ * isDateBooked - Check if a date is booked
+ * @param {number} year - Year
+ * @param {number} month - Month (0-indexed)
+ * @param {number} day - Day
+ * @returns {boolean} - True if date is booked
+ */
 function isDateBooked(year, month, day) { return bookedDates.indexOf(formatDate(year, month, day)) !== -1; }
+
+/**
+ * getQRCodeUrl - Generate QR code URL for payment
+ * @param {number} amount - Payment amount
+ * @param {string} method - Payment method (esewa, khalti, bank)
+ * @returns {string} - QR code image URL
+ */
 function getQRCodeUrl(amount, method) { return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + method.toUpperCase() + ':PAY:' + amount + ':BOOKMANDU'; }
+
+/**
+ * getNights - Calculate number of nights between selected dates
+ * @returns {number} - Number of nights
+ */
 function getNights() { if (!selectedCheckIn || !selectedCheckOut) return 0; return Math.ceil(Math.abs(selectedCheckOut - selectedCheckIn) / (1000 * 60 * 60 * 24)); }
 
+// ============================================
+// PRICE CALCULATION
+// ============================================
+
+/**
+ * calculatePriceWithDiscount - Calculate total price with applied discount
+ * @returns {object} - { nights, subtotal, discount, total }
+ */
 function calculatePriceWithDiscount() {
     var nights = getNights();
     if (nights === 0) {
@@ -2136,8 +2347,13 @@ function calculatePriceWithDiscount() {
     var discountPercentText = '';
     if (appliedCoupon && availableCoupons[appliedCoupon]) {
         var coupon = availableCoupons[appliedCoupon];
-        if (coupon.type === 'percentage') { discountAmount = subtotal * (coupon.discount / 100); discountPercentText = '(' + coupon.discount + '% off)'; }
-        else { discountAmount = Math.min(coupon.discount, subtotal); discountPercentText = '(NPR ' + coupon.discount + ' off)'; }
+        if (coupon.type === 'percentage') { 
+            discountAmount = subtotal * (coupon.discount / 100); 
+            discountPercentText = '(' + coupon.discount + '% off)'; 
+        } else { 
+            discountAmount = Math.min(coupon.discount, subtotal); 
+            discountPercentText = '(NPR ' + coupon.discount + ' off)'; 
+        }
     }
     var total = subtotal - discountAmount;
     document.getElementById('nightCount').textContent = nights;
@@ -2149,11 +2365,24 @@ function calculatePriceWithDiscount() {
         document.getElementById('discountAmount').textContent = discountAmount.toLocaleString();
     } else { document.getElementById('discountRow').style.display = 'none'; }
     var confirmBtn = document.getElementById('confirmBookingBtn');
-    if (nights > 0 && selectedCheckIn && selectedCheckOut) { confirmBtn.disabled = false; confirmBtn.innerHTML = '<i class="fas fa-lock"></i> Confirm Booking · NPR ' + total.toLocaleString(); }
-    else { confirmBtn.disabled = true; confirmBtn.innerHTML = 'Select Dates First'; }
+    if (nights > 0 && selectedCheckIn && selectedCheckOut) { 
+        confirmBtn.disabled = false; 
+        confirmBtn.innerHTML = '<i class="fas fa-lock"></i> Confirm Booking · NPR ' + total.toLocaleString(); 
+    } else { 
+        confirmBtn.disabled = true; 
+        confirmBtn.innerHTML = 'Select Dates First'; 
+    }
     return { nights: nights, subtotal: subtotal, discount: discountAmount, total: total };
 }
 
+// ============================================
+// CALENDAR RENDER FUNCTION
+// ============================================
+
+/**
+ * renderCalendar - Render the calendar for the current month
+ * Handles: month navigation, booked dates, selected dates, animations
+ */
 function renderCalendar() {
     var year = currentDate.getFullYear(), month = currentDate.getMonth();
     var firstDay = new Date(year, month, 1), startWeekday = firstDay.getDay(), daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -2161,45 +2390,113 @@ function renderCalendar() {
     document.getElementById('currentMonthYear').textContent = monthNames[month] + ' ' + year;
     var calendarDays = document.getElementById('calendarDays');
     calendarDays.innerHTML = '';
+    // Empty cells for days before the first day of month
     for (var i = 0; i < startWeekday; i++) { var emptyCell = document.createElement('div'); emptyCell.className = 'calendar-day disabled'; emptyCell.style.visibility = 'hidden'; calendarDays.appendChild(emptyCell); }
     var today = new Date(); today.setHours(0, 0, 0, 0);
     for (var day = 1; day <= daysInMonth; day++) {
         var isBooked = isDateBooked(year, month, day), cellDate = new Date(year, month, day), isPast = cellDate < today;
         var dayCell = document.createElement('div'); dayCell.className = 'calendar-day'; dayCell.textContent = day;
-        if (isPast && (year < 2026 || (year === 2026 && month < 5))) { dayCell.classList.add('disabled'); }
-        else if (isBooked) { dayCell.classList.add('booked'); }
-        else {
+        if (isPast && (year < 2026 || (year === 2026 && month < 5))) { 
+            dayCell.classList.add('disabled'); 
+        } else if (isBooked) { 
+            dayCell.classList.add('booked'); 
+        } else {
             dayCell.classList.add('available');
-            if (selectedCheckIn && cellDate.getTime() === selectedCheckIn.getTime()) { dayCell.classList.add('selected'); }
-            else if (selectedCheckOut && cellDate.getTime() === selectedCheckOut.getTime()) { dayCell.classList.add('selected'); }
-            else if (selectedCheckIn && selectedCheckOut && cellDate > selectedCheckIn && cellDate < selectedCheckOut) { dayCell.classList.add('selected-range'); }
+            // Check if date is selected (check-in or check-out)
+            if (selectedCheckIn && cellDate.getTime() === selectedCheckIn.getTime()) { 
+                dayCell.classList.add('selected'); 
+            } else if (selectedCheckOut && cellDate.getTime() === selectedCheckOut.getTime()) { 
+                dayCell.classList.add('selected'); 
+            } else if (selectedCheckIn && selectedCheckOut && cellDate > selectedCheckIn && cellDate < selectedCheckOut) { 
+                dayCell.classList.add('selected-range'); 
+            }
+            // Click handler for date selection
             dayCell.onclick = (function(y, m, d) { return function() { selectDate(y, m, d); }; })(year, month, day);
         }
         calendarDays.appendChild(dayCell);
     }
 }
 
+// ============================================
+// DATE SELECTION FUNCTION
+// ============================================
+
+/**
+ * selectDate - Handle date selection logic
+ * Implements: check-in → check-out → reset flow
+ * @param {number} year - Selected year
+ * @param {number} month - Selected month (0-indexed)
+ * @param {number} day - Selected day
+ */
 function selectDate(year, month, day) {
     var selectedDate = new Date(year, month, day), dateStr = formatDate(year, month, day);
-    if (bookedDates.indexOf(dateStr) !== -1) { showToast('This date is already booked.', 'error'); return; }
+    if (bookedDates.indexOf(dateStr) !== -1) { 
+        showToast('This date is already booked.', 'error'); 
+        return; 
+    }
     var today = new Date(); today.setHours(0, 0, 0, 0);
-    if (selectedDate < today) { showToast('Cannot select past dates.', 'error'); return; }
-    if (!selectedCheckIn) { selectedCheckIn = selectedDate; selectedCheckOut = null; renderCalendar(); updateBookingSummary(); showToast('Check-in set', 'success'); }
-    else if (selectedCheckIn && !selectedCheckOut) {
-        if (selectedDate <= selectedCheckIn) { selectedCheckIn = selectedDate; renderCalendar(); updateBookingSummary(); showToast('Check-in updated', 'success'); }
-        else { selectedCheckOut = selectedDate; renderCalendar(); updateBookingSummary(); showToast('Check-out set', 'success'); }
-    } else { selectedCheckIn = selectedDate; selectedCheckOut = null; renderCalendar(); updateBookingSummary(); showToast('Check-in reset', 'info'); }
+    if (selectedDate < today) { 
+        showToast('Cannot select past dates.', 'error'); 
+        return; 
+    }
+    if (!selectedCheckIn) { 
+        // First selection: set check-in
+        selectedCheckIn = selectedDate; 
+        selectedCheckOut = null; 
+        renderCalendar(); 
+        updateBookingSummary(); 
+        showToast('Check-in set', 'success'); 
+    } else if (selectedCheckIn && !selectedCheckOut) {
+        // Second selection: set check-out or update check-in
+        if (selectedDate <= selectedCheckIn) { 
+            selectedCheckIn = selectedDate; 
+            renderCalendar(); 
+            updateBookingSummary(); 
+            showToast('Check-in updated', 'success'); 
+        } else { 
+            selectedCheckOut = selectedDate; 
+            renderCalendar(); 
+            updateBookingSummary(); 
+            showToast('Check-out set', 'success'); 
+        }
+    } else { 
+        // Reset: both dates selected, start over
+        selectedCheckIn = selectedDate; 
+        selectedCheckOut = null; 
+        renderCalendar(); 
+        updateBookingSummary(); 
+        showToast('Check-in reset', 'info'); 
+    }
 }
 
+// ============================================
+// BOOKING SUMMARY UPDATE
+// ============================================
+
+/**
+ * updateBookingSummary - Update the selected dates display
+ * Shows: date range, number of nights, total price
+ */
 function updateBookingSummary() {
     var calc = calculatePriceWithDiscount();
     if (selectedCheckIn && selectedCheckOut) {
         var options = { year: 'numeric', month: 'short', day: 'numeric' }, nights = getNights(), subtotal = nights * pricePerNight, finalTotal = appliedCoupon ? (subtotal - calc.discount) : subtotal;
         document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-check"></i> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '<br><small>' + nights + ' nights · ' + (appliedCoupon ? '<span style="text-decoration: line-through; opacity: 0.6;">NPR ' + subtotal.toLocaleString() + '</span> → ' : '') + 'NPR ' + finalTotal.toLocaleString() + '</small>';
-    } else if (selectedCheckIn) { document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-day"></i> Check-in: ' + selectedCheckIn.toDateString() + '<br><small>Select check-out date</small>'; }
-    else { document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-alt"></i> Select check-in and check-out dates'; }
+    } else if (selectedCheckIn) { 
+        document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-day"></i> Check-in: ' + selectedCheckIn.toDateString() + '<br><small>Select check-out date</small>'; 
+    } else { 
+        document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-alt"></i> Select check-in and check-out dates'; 
+    }
 }
 
+// ============================================
+// COUPON FUNCTIONS
+// ============================================
+
+/**
+ * applyCoupon - Apply a coupon code
+ * Validates: coupon exists, not already used, dates selected
+ */
 function applyCoupon() {
     var couponCode = document.getElementById('couponCode').value.trim().toUpperCase();
     var msgDiv = document.getElementById('discountMessage');
@@ -2265,6 +2562,9 @@ function applyCoupon() {
     setTimeout(function() { if (msgDiv.style.display === 'flex') msgDiv.style.display = 'none'; }, 4000);
 }
 
+/**
+ * removeCoupon - Remove the applied coupon
+ */
 function removeCoupon() { 
     if (appliedCoupon) {
         showToast('Coupon removed. Cannot be reused.', 'info');
@@ -2276,6 +2576,9 @@ function removeCoupon() {
     }
 }
 
+/**
+ * addClearCouponButton - Add clear button to coupon input
+ */
 function addClearCouponButton() { 
     var group = document.querySelector('.coupon-input-group'); 
     if (group && !document.getElementById('clearCouponBtn')) { 
@@ -2288,6 +2591,10 @@ function addClearCouponButton() {
     } 
 }
 
+// ============================================
+// EVENT LISTENERS
+// ============================================
+
 document.getElementById('applyCouponBtn').addEventListener('click', applyCoupon);
 document.getElementById('couponCode').addEventListener('keypress', function(e) { if (e.key === 'Enter') applyCoupon(); });
 document.getElementById('prevMonthBtn').addEventListener('click', function() { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
@@ -2295,6 +2602,14 @@ document.getElementById('nextMonthBtn').addEventListener('click', function() { c
 document.getElementById('guests').addEventListener('change', function() { calculatePriceWithDiscount(); updateBookingSummary(); });
 addClearCouponButton();
 
+// ============================================
+// BOOKING MODAL FUNCTIONS
+// ============================================
+
+/**
+ * showEnhancedBookingModal - Show booking confirmation modal
+ * Populates: booking summary, price breakdown
+ */
 function showEnhancedBookingModal() {
     var calc = calculatePriceWithDiscount();
     var options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -2358,7 +2673,14 @@ function showEnhancedBookingModal() {
     document.getElementById('priceBreakdown').innerHTML = priceHtml;
 }
 
-// ========== SINGLE IMAGE VIEWER ==========
+// ============================================
+// IMAGE VIEWER FUNCTIONS
+// ============================================
+
+/**
+ * openImageViewer - Open single image viewer
+ * @param {number} index - Index of image to display
+ */
 function openImageViewer(index) { 
     var modal = document.getElementById('imageViewerModal'); 
     if (!modal) { 
@@ -2381,13 +2703,19 @@ function openImageViewer(index) {
     if (modal) modal.classList.add('open'); 
 }
 
+/**
+ * closeImageViewer - Close single image viewer
+ */
 function closeImageViewer(e) { 
     var modal = document.getElementById('imageViewerModal'); 
     if (modal && (!e || e.target.id === 'imageViewerModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')))) 
         modal.classList.remove('open'); 
 }
 
-// ========== VIEW ALL IMAGES - SHOWS ALL 6 IMAGES IN A GRID ==========
+/**
+ * openAllImages - Open full gallery with all images
+ * Displays all images in a grid with click-to-view functionality
+ */
 function openAllImages() {
     var galleryModal = document.getElementById('allImagesModal');
     
@@ -2441,6 +2769,9 @@ function openAllImages() {
     if (galleryModal) galleryModal.classList.add('open');
 }
 
+/**
+ * closeAllImagesModal - Close full gallery modal
+ */
 function closeAllImagesModal(e) {
     var modal = document.getElementById('allImagesModal');
     if (!modal) return;
@@ -2449,6 +2780,13 @@ function closeAllImagesModal(e) {
     }
 }
 
+// ============================================
+// RULES MODAL FUNCTIONS
+// ============================================
+
+/**
+ * showAllRules - Show all house rules in a modal
+ */
 function showAllRules() { 
     var modal = document.getElementById('rulesModal'); 
     if (!modal) { 
@@ -2459,18 +2797,34 @@ function showAllRules() {
     if (modal) modal.classList.add('open'); 
 }
 
+/**
+ * closeRulesModal - Close rules modal
+ */
 function closeRulesModal(e) { 
     var modal = document.getElementById('rulesModal'); 
     if (modal && (!e || e.target.id === 'rulesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close')))) 
         modal.classList.remove('open'); 
 }
 
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+
+/**
+ * copyBankText - Copy text to clipboard
+ * @param {string} elementId - ID of element containing text to copy
+ */
 function copyBankText(elementId) { 
     var text = document.getElementById(elementId).textContent; 
     navigator.clipboard.writeText(text); 
     showToast('Copied to clipboard!', 'success'); 
 }
 
+/**
+ * showToast - Display a toast notification
+ * @param {string} message - Message to display
+ * @param {string} type - 'success', 'error', or 'info'
+ */
 function showToast(message, type) { 
     var container = document.getElementById('toasts'); 
     if (!container) { 
@@ -2486,6 +2840,10 @@ function showToast(message, type) {
     container.appendChild(toast); 
     setTimeout(function() { toast.remove(); }, 4000); 
 }
+
+// ============================================
+// PAYMENT METHOD SELECTION
+// ============================================
 
 var paymentMethods = document.querySelectorAll('.payment-method-enhanced');
 for (var i = 0; i < paymentMethods.length; i++) { 
@@ -2510,6 +2868,10 @@ for (var i = 0; i < paymentMethods.length; i++) {
         } 
     }); 
 }
+
+// ============================================
+// BOOKING CONFIRMATION HANDLERS
+// ============================================
 
 document.getElementById('confirmBookingBtn').addEventListener('click', function() { 
     if (selectedCheckIn && selectedCheckOut) { 
@@ -2543,6 +2905,7 @@ document.getElementById('proceedPaymentBtn').addEventListener('click', function(
 });
 
 document.getElementById('confirmPaymentBtn').addEventListener('click', function() { 
+    // Generate random booking reference
     var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; 
     var bookingReference = ''; 
     for (var i = 0; i < 10; i++) bookingReference += chars.charAt(Math.floor(Math.random() * chars.length)); 
@@ -2552,6 +2915,7 @@ document.getElementById('confirmPaymentBtn').addEventListener('click', function(
     document.getElementById('successDetails').innerHTML = '<p><strong>Property:</strong> Thamel Heritage House</p><p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p><p><strong>Guests:</strong> ' + document.getElementById('guests').value + '</p><p><strong>Total Paid:</strong> NPR ' + calc.total.toLocaleString() + '</p>'; 
     document.getElementById('bookingModal').classList.remove('active'); 
     document.getElementById('successModal').classList.add('active'); 
+    // Reset booking state
     selectedCheckIn = null; 
     selectedCheckOut = null; 
     appliedCoupon = null; 
@@ -2562,17 +2926,27 @@ document.getElementById('confirmPaymentBtn').addEventListener('click', function(
     renderCalendar(); 
 });
 
+// ============================================
+// MODAL CONTROL FUNCTIONS
+// ============================================
+
 function closeBookingModal() { document.getElementById('bookingModal').classList.remove('active'); }
 function closeSuccessModal() { document.getElementById('successModal').classList.remove('active'); }
 function redirectToBrowse() { window.location.href = "{{ url_for('auth.browse') }}"; }
 function downloadInvoice() { showToast('Downloading invoice...', 'success'); }
 function switchLanguage() { showToast('Language switcher coming soon!', 'info'); }
 
+// ============================================
+// INITIALIZATION
+// ============================================
+
 renderCalendar();
 calculatePriceWithDiscount();
 </script>
 
-<!-- ========== FOOTER ========== -->
+<!-- ============================================================
+   FOOTER - Site-wide navigation and branding
+   ============================================================ -->
 <footer class="footer">
     <div class="footer-container">
         <div class="footer-grid">
@@ -2636,6 +3010,5 @@ calculatePriceWithDiscount();
         </div>
     </div>
 </footer>
-<!-- ========== END FOOTER ========== -->
 
 {% endblock %}
