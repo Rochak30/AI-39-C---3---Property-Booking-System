@@ -1,4 +1,4 @@
-/* ============================================================
+* ============================================================
    BOOKMANDU — SHARED APP.JS
    All shared data, state, utilities, and UI helpers.
    Include this in every page via base.html.
