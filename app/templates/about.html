@@ -7,8 +7,9 @@
    ABOUT PAGE STYLES
    ============================================================ */
 
+/* ── Page Container ── */
 .about-page {
-  padding-top: 80px;
+  padding-top: 80px; /* Accounts for fixed navbar height */
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -22,6 +23,7 @@
   overflow: hidden;
 }
 
+/* Decorative background circles for visual depth */
 .about-hero::before {
   content: '';
   position: absolute;
@@ -46,6 +48,7 @@
   pointer-events: none;
 }
 
+/* Hero badge - small tag above main heading */
 .about-hero-badge {
   display: inline-block;
   padding: 6px 20px;
@@ -63,6 +66,7 @@
   animation: fadeInDown 0.6s ease;
 }
 
+/* Main heading with gradient highlight */
 .about-hero h1 {
   font-family: var(--font-display);
   font-size: clamp(42px, 8vw, 72px);
@@ -74,6 +78,7 @@
   animation: fadeInUp 0.8s ease;
 }
 
+/* Gradient text effect for brand name emphasis */
 .about-hero h1 .highlight {
   background: linear-gradient(135deg, var(--teal), var(--cyan));
   -webkit-background-clip: text;
@@ -81,6 +86,7 @@
   background-clip: text;
 }
 
+/* Hero description text */
 .about-hero p {
   max-width: 640px;
   margin: 0 auto;
@@ -92,6 +98,7 @@
   animation: fadeInUp 1s ease;
 }
 
+/* Decorative ornament below hero text */
 .about-hero .hero-ornament {
   margin-top: 32px;
   font-size: 28px;
@@ -101,7 +108,7 @@
   animation: fadeInUp 1.2s ease;
 }
 
-/* ── Section Common ── */
+/* ── Section Common Styles ── */
 .section-padding {
   padding: 80px 24px;
 }
@@ -111,6 +118,7 @@
   margin: 0 auto;
 }
 
+/* Section label - small tag above section titles */
 .section-label {
   display: inline-block;
   padding: 4px 16px;
@@ -148,6 +156,7 @@
   overflow: hidden;
 }
 
+/* Subtle background glow effect */
 .story-section::before {
   content: '';
   position: absolute;
@@ -160,6 +169,7 @@
   pointer-events: none;
 }
 
+/* Two-column layout: story text on left, images on right */
 .story-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -200,6 +210,7 @@
   font-size: 15px;
 }
 
+/* Year badge - visually prominent establishment year */
 .story-content .year-badge {
   display: inline-block;
   padding: 10px 28px;
@@ -228,7 +239,7 @@
   min-height: 450px;
 }
 
-/* Main image (01) - Larger, taller */
+/* Main image (01) - Larger, taller - creates visual hierarchy */
 .story-images .image-card.main {
   position: relative;
   border-radius: 24px;
@@ -241,7 +252,7 @@
   align-self: stretch;
 }
 
-/* Secondary image (02) - Smaller, downside (bottom aligned) */
+/* Secondary image (02) - Smaller, bottom aligned - asymmetrical layout */
 .story-images .image-card.secondary {
   position: relative;
   border-radius: 24px;
@@ -255,12 +266,14 @@
   margin-bottom: 0;
 }
 
+/* Hover effects for image cards */
 .story-images .image-card:hover {
   transform: translateY(-6px);
   border-color: var(--border-teal);
   box-shadow: 0 12px 30px rgba(0, 201, 122, 0.15);
 }
 
+/* Image zoom on hover */
 .story-images .image-card img {
   width: 100%;
   height: 100%;
@@ -273,7 +286,7 @@
   transform: scale(1.05);
 }
 
-/* Dark gradient overlay for better text readability */
+/* Dark gradient overlay for text readability */
 .story-images .image-card::after {
   content: '';
   position: absolute;
@@ -306,6 +319,7 @@
   margin-left: 4px;
 }
 
+/* Teal highlight on number when hovering */
 .story-images .image-card:hover .number-badge {
   transform: scale(1.05);
   color: var(--teal);
@@ -330,6 +344,7 @@
   z-index: 2;
 }
 
+/* Gold star color for rating */
 .story-images .image-card .rating-badge .star {
   color: #f0a500;
 }
@@ -357,7 +372,7 @@
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-/* ── Click Hint ── */
+/* ── Click Hint - Hidden by default, appears on hover ── */
 .story-images .image-card .click-hint {
   position: absolute;
   bottom: 70px;
@@ -378,7 +393,7 @@
   opacity: 1;
 }
 
-/* ── What We Do ── */
+/* ── What We Do Section ── */
 .what-section {
   background: var(--bg-800);
 }
@@ -390,6 +405,7 @@
   margin-top: 48px;
 }
 
+/* Individual card for each "what we do" item */
 .what-card {
   background: var(--bg-700);
   border: 1px solid var(--border);
@@ -401,6 +417,7 @@
   overflow: hidden;
 }
 
+/* Animated top border on hover */
 .what-card::before {
   content: '';
   position: absolute;
@@ -488,13 +505,14 @@
   line-height: 1.6;
 }
 
-/* ── Numbers Section ── */
+/* ── Numbers Section (Stats) ── */
 .numbers-section {
   background: linear-gradient(135deg, var(--bg-800), var(--bg-700));
   position: relative;
   overflow: hidden;
 }
 
+/* Subtle radial gradient background */
 .numbers-section::before {
   content: '';
   position: absolute;
@@ -527,6 +545,7 @@
   box-shadow: 0 8px 30px rgba(0, 201, 122, 0.1);
 }
 
+/* Large gradient numbers for visual impact */
 .number-item .number {
   font-family: var(--font-display);
   font-size: clamp(36px, 5vw, 56px);
@@ -602,7 +621,7 @@
   transform: translateY(-3px);
 }
 
-/* ── Footer ── */
+/* ── Footer Styles ── */
 .footer {
   background: var(--bg-800);
   border-top: 1px solid var(--border);
@@ -644,7 +663,15 @@
 .footer-links a:hover { color: var(--teal); transform: translateX(5px); }
 .footer-links a:hover i { transform: translateX(3px); }
 
-.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 16px;
+}
 .footer-copyright { font-size: 12px; color: var(--text-muted); }
 .footer-lang-currency { display: flex; gap: 16px; }
 .lang-btn, .currency-btn {
@@ -665,10 +692,12 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Responsive ── */
+/* ── Responsive Design ── */
+
+/* Tablet and smaller screens */
 @media (max-width: 992px) {
   .story-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Stack columns vertically */
     gap: 50px;
   }
   
@@ -708,6 +737,7 @@
   .footer-brand { grid-column: span 2; max-width: 100%; }
 }
 
+/* Mobile screens */
 @media (max-width: 768px) {
   .about-hero { padding: 60px 16px 80px; }
   .section-padding { padding: 60px 16px; }
@@ -760,11 +790,11 @@
   }
   
   .story-images .image-card .click-hint {
-    display: none;
+    display: none; /* Hide click hint on mobile for cleaner UI */
   }
   
   .what-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Single column on mobile */
   }
   
   .values-grid {
@@ -791,7 +821,8 @@
 {% block content %}
 <div class="about-page">
 
-  <!-- ==================== HERO ==================== -->
+  <!-- ==================== HERO SECTION ==================== -->
+  <!-- Purpose: Introduce the brand with a compelling headline and tagline -->
   <section class="about-hero">
     <div class="section-container">
       <div class="about-hero-badge">🏠 About Pahuna</div>
@@ -810,9 +841,10 @@
   </section>
 
   <!-- ==================== OUR STORY - REDESIGNED ==================== -->
+  <!-- Purpose: Share the brand origin story with visual storytelling -->
   <section class="story-section">
     <div class="story-grid">
-      <!-- Left Side: Story Content -->
+      <!-- Left: Story narrative -->
       <div class="story-content">
         <span class="section-label">📖 Our Story</span>
         <h2>
@@ -830,12 +862,15 @@
           those authentic moments, and to help Nepali families share their homes and culture 
           with the world.
         </p>
+        <!-- Year badge highlights establishment year -->
         <div class="year-badge">✦ Established 2026</div>
       </div>
 
-      <!-- Right Side: Numbered Image Grid - BARGRAPH STYLE -->
+      <!-- Right: Asymmetrical image grid with property cards -->
+      <!-- Design choice: "bargraph" style creates visual interest and hierarchy -->
       <div class="story-images">
-        <!-- Main Image - 01 (Mustang Desert) - Larger (taller) -->
+        <!-- Main Image - 01 (Mustang Desert) - Larger/taller -->
+        <!-- Clicking navigates to property detail page -->
         <a href="{{ url_for('auth.property_mustang_desert') }}" class="image-card main">
           <img src="{{ url_for('static', filename='images/md3.jpg') }}" alt="Mustang Desert">
           <span class="number-badge">01</span>
@@ -867,6 +902,7 @@
   </section>
 
   <!-- ==================== WHAT WE DO ==================== -->
+  <!-- Purpose: Explain the core services and value proposition -->
   <section class="what-section section-padding">
     <div class="section-container">
       <div style="text-align: center; max-width: 700px; margin: 0 auto;">
@@ -875,16 +911,19 @@
       </div>
 
       <div class="what-grid">
+        <!-- Card 1: Curated Homestays -->
         <div class="what-card">
           <span class="icon">🏡</span>
           <h3>Curated Homestays</h3>
           <p>Every property is verified by our local team — no surprises, no fake listings. We personally visit each homestay to ensure quality and authenticity.</p>
         </div>
+        <!-- Card 2: Fair to Hosts -->
         <div class="what-card">
           <span class="icon">🤝</span>
           <h3>Fair to Hosts</h3>
           <p>Lower commissions than global platforms, so more of what you pay reaches the host. We believe in empowering local communities.</p>
         </div>
+        <!-- Card 3: Sustainable Travel -->
         <div class="what-card">
           <span class="icon">🌱</span>
           <h3>Sustainable Travel</h3>
@@ -895,6 +934,7 @@
   </section>
 
   <!-- ==================== OUR VALUES ==================== -->
+  <!-- Purpose: Communicate the brand's core principles -->
   <section class="values-section section-padding">
     <div class="section-container">
       <div style="text-align: center; max-width: 700px; margin: 0 auto;">
@@ -903,21 +943,25 @@
       </div>
 
       <div class="values-grid">
+        <!-- Value 1: Authenticity -->
         <div class="value-item">
           <span class="emoji">🧡</span>
           <h4>Authenticity</h4>
           <p>Real homes, real people, real Nepal. Every stay is a genuine cultural experience.</p>
         </div>
+        <!-- Value 2: Trust -->
         <div class="value-item">
           <span class="emoji">🔒</span>
           <h4>Trust</h4>
           <p>Transparent pricing, verified reviews, and no hidden fees — always.</p>
         </div>
+        <!-- Value 3: Community -->
         <div class="value-item">
           <span class="emoji">🤗</span>
           <h4>Community</h4>
           <p>Supporting local economies in every region we serve across Nepal.</p>
         </div>
+        <!-- Value 4: Accessibility -->
         <div class="value-item">
           <span class="emoji">🗣️</span>
           <h4>Accessibility</h4>
@@ -928,6 +972,7 @@
   </section>
 
   <!-- ==================== BY THE NUMBERS ==================== -->
+  <!-- Purpose: Build trust through social proof and metrics -->
   <section class="numbers-section section-padding">
     <div class="section-container">
       <div style="text-align: center; max-width: 700px; margin: 0 auto;">
@@ -937,18 +982,22 @@
       </div>
 
       <div class="numbers-grid">
+        <!-- Stat 1: Homestays -->
         <div class="number-item">
           <div class="number">500+</div>
           <div class="label">Verified Homestays</div>
         </div>
+        <!-- Stat 2: Travelers -->
         <div class="number-item">
           <div class="number">25K+</div>
           <div class="label">Happy Travelers Hosted</div>
         </div>
+        <!-- Stat 3: Districts -->
         <div class="number-item">
           <div class="number">40+</div>
           <div class="label">Districts Covered</div>
         </div>
+        <!-- Stat 4: Rating -->
         <div class="number-item">
           <div class="number">⭐ 4.8</div>
           <div class="label">Average Guest Rating</div>
@@ -957,15 +1006,18 @@
     </div>
   </section>
 
-  <!-- ==================== CTA ==================== -->
+  <!-- ==================== CALL TO ACTION ==================== -->
+  <!-- Purpose: Convert visitors to take action (browse or contact) -->
   <section class="cta-section">
     <div class="section-container">
       <h2>Ready to Explore Nepal? 🇳🇵</h2>
       <p>Find your perfect stay or list your home with us.</p>
       <div class="cta-buttons">
+        <!-- Primary CTA: Browse properties -->
         <a href="{{ url_for('auth.browse') }}" class="btn btn-primary">
           <i class="fas fa-compass"></i> Browse Properties
         </a>
+        <!-- Secondary CTA: Contact -->
         <a href="{{ url_for('auth.contact') }}" class="btn btn-outline">
           <i class="fas fa-envelope"></i> Get in Touch
         </a>
@@ -974,11 +1026,12 @@
   </section>
 
   <!-- ==================== FOOTER ==================== -->
+  <!-- Purpose: Site-wide navigation and brand information -->
   <footer class="footer">
     <div class="footer-container">
       <div class="footer-grid">
         
-        <!-- Brand Column -->
+        <!-- Brand Column: Logo and description -->
         <div class="footer-brand">
           <div class="footer-logo">
             <i class="fas fa-home"></i>
@@ -987,13 +1040,14 @@
           <p class="footer-description">
             Nepal's dedicated accommodation booking platform. Connect with authentic homestays, guesthouses, and unique stays across the Himalayas.
           </p>
+          <!-- Social media links -->
           <div class="footer-social">
             <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
             <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
           </div>
         </div>
 
-        <!-- Explore Column -->
+        <!-- Explore Column: Primary navigation -->
         <div class="footer-column">
           <h4 class="footer-heading">EXPLORE</h4>
           <ul class="footer-links">
@@ -1002,7 +1056,7 @@
           </ul>
         </div>
 
-        <!-- Account Column -->
+        <!-- Account Column: User authentication links -->
         <div class="footer-column">
           <h4 class="footer-heading">ACCOUNT</h4>
           <ul class="footer-links">
@@ -1011,7 +1065,7 @@
           </ul>
         </div>
 
-        <!-- Support Column -->
+        <!-- Support Column: Help and contact -->
         <div class="footer-column">
           <h4 class="footer-heading">SUPPORT</h4>
           <ul class="footer-links">
@@ -1021,11 +1075,12 @@
         </div>
       </div>
 
-      <!-- Footer Bottom -->
+      <!-- Footer Bottom: Legal and utility controls -->
       <div class="footer-bottom">
         <div class="footer-copyright">
           © 2026 Pahuna. All rights reserved.
         </div>
+        <!-- Language and currency switcher buttons -->
         <div class="footer-lang-currency">
           <button class="lang-btn" onclick="switchLanguage()">
             <i class="fas fa-globe"></i> EN / नेपाली
@@ -1040,7 +1095,12 @@
 
 </div>
 
+<!-- JavaScript for interactive features -->
 <script>
+/**
+ * switchLanguage - Placeholder function for language switching
+ * Currently shows a toast notification as the feature is planned for future implementation
+ */
 function switchLanguage() {
   showToast('Language switcher coming soon!', 'info');
 }

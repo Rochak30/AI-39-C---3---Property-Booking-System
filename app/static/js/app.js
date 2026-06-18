@@ -1,4 +1,4 @@
-/* ============================================================
+* ============================================================
    BOOKMANDU — SHARED APP.JS
    All shared data, state, utilities, and UI helpers.
    Include this in every page via base.html.
@@ -7,6 +7,18 @@
 // ============================================================
 // DATA
 // ============================================================
+
+/**
+ * PROPERTIES - Master array of all property listings
+ * Contains all property data including:
+ * - Basic info: id, title, region, type, price
+ * - Guest info: maxGuests, amenities, host
+ * - Ratings: rating, reviews, bookings
+ * - Visual: icon, trending flag
+ * - Safety: safety information
+ * - Description: detailed property description
+ * - Availability: bookedDates array
+ */
 const PROPERTIES = [
   { id:1, title:"Mountain View Homestay", region:"Kathmandu", type:"Homestay", price:3200, maxGuests:4, rating:4.8, reviews:24, bookings:47, icon:"🏔", trending:true, amenities:["WiFi","Breakfast","Hot Water","Mountain View"], host:"Sita Rai", safety:"Fire extinguisher on each floor. Emergency exits marked. No smoking indoors.", desc:"A beautiful traditional Newari homestay with stunning views of the Himalayan range. Located 20 minutes from Thamel, this family-run property offers authentic Nepali hospitality with modern comforts. Enjoy home-cooked Newari meals and personalised cultural tours.", bookedDates:[[2026,5,20],[2026,5,21],[2026,5,22],[2026,6,1],[2026,6,2]] },
   { id:2, title:"Thamel Heritage House", region:"Kathmandu", type:"Guesthouse", price:2800, maxGuests:6, rating:4.6, reviews:18, bookings:31, icon:"🕌", trending:false, amenities:["WiFi","Kitchen Access","Parking","Hot Water"], host:"Bikash Shrestha", safety:"CCTV in common areas. 24/7 reception. First aid kit available.", desc:"A charming heritage guesthouse in the heart of Thamel. Originally built in the 1950s, this property blends traditional architecture with comfortable modern amenities. Walk to restaurants, shops, and cultural sites within minutes.", bookedDates:[[2026,5,25],[2026,5,26],[2026,5,27]] },
@@ -18,6 +30,10 @@ const PROPERTIES = [
   { id:8, title:"Bandipur Hilltop Bungalow", region:"Kathmandu", type:"Entire Property", price:7500, maxGuests:8, rating:4.9, reviews:7, bookings:11, icon:"🏡", trending:false, amenities:["WiFi","Kitchen Access","Mountain View","Parking","Garden"], host:"Suresh Magar", safety:"Property equipped with fire alarm. Emergency number posted in every room.", desc:"A stunning bungalow perched on Bandipur Hill with 360-degree Himalayan views. Perfect for special occasions, family retreats, or a romantic escape. A fully equipped kitchen and private garden included.", bookedDates:[[2026,6,20],[2026,6,21],[2026,6,22],[2026,6,23]] },
 ];
 
+/**
+ * BOOKINGS_DATA - Sample booking data for dashboard display
+ * Each booking has: reference number, property name, icon, dates, guests, status, amount
+ */
 const BOOKINGS_DATA = [
   { ref:"BM-A7K2M9PQ", prop:"Mountain View Homestay", icon:"🏔", dates:"May 20–23, 2026", guests:2, status:"confirmed", amount:"NPR 9,600" },
   { ref:"BM-C3L8N5RX", prop:"Lakeside Comfort Inn", icon:"🏞", dates:"Jun 5–8, 2026", guests:2, status:"pending", amount:"NPR 5,400" },
@@ -27,27 +43,47 @@ const BOOKINGS_DATA = [
 // ============================================================
 // STATE
 // ============================================================
+
+/** wishlist - Array of property IDs the user has saved to wishlist */
 let wishlist = [1, 3, 6];
+
+/** filterType - Current property type filter ('all', 'homestay', 'guesthouse', etc.) */
 let filterType = 'all';
+
+/** filterAmenity - Current amenity filter (null if not filtering by amenity) */
 let filterAmenity = null;
+
+/** minPrice, maxPrice - Price range filter values (null if not set) */
 let minPrice = null, maxPrice = null;
+
+/** sortBy - Current sorting method ('popular', 'price-asc', 'price-desc', 'rating') */
 let sortBy = 'popular';
 
-// Global variables for booking (will be set by property page)
-window.selectedCheckIn = null;
-window.selectedCheckOut = null;
-window.appliedCoupon = null;
-window.pricePerNight = 2500;
-window.availableCoupons = {
+/**
+ * Global variables for booking (will be set by property page)
+ * These are shared across pages for booking functionality
+ */
+window.selectedCheckIn = null;      // Selected check-in date
+window.selectedCheckOut = null;     // Selected check-out date
+window.appliedCoupon = null;        // Currently applied coupon code
+window.pricePerNight = 2500;        // Default price per night
+window.availableCoupons = {         // Available coupon codes with their details
     'WELCOME10': { discount: 10, type: 'percentage', message: '10% off!', description: '10% discount applied', code: 'WELCOME10' },
     'SAVE20': { discount: 20, type: 'percentage', message: '20% off!', description: '20% discount applied', code: 'SAVE20' },
     'FLAT500': { discount: 500, type: 'fixed', message: 'NPR 500 off!', description: 'NPR 500 discount applied', code: 'FLAT500' }
 };
 
-// Track used coupons - stored in localStorage for persistence across page refreshes
+/**
+ * usedCoupons - Track used coupons in localStorage for persistence
+ * This ensures coupons cannot be reused even after page refresh
+ */
 let usedCoupons = [];
 
-// Load used coupons from localStorage (persists even after page refresh)
+/**
+ * loadUsedCoupons - Load used coupons from localStorage
+ * Called on script initialization to restore state
+ * Persists coupon usage across page refreshes
+ */
 function loadUsedCoupons() {
     try {
         const savedUsedCoupons = localStorage.getItem('bookmandu_used_coupons');
@@ -63,7 +99,11 @@ function loadUsedCoupons() {
     }
 }
 
-// Save used coupons to localStorage
+/**
+ * saveUsedCoupons - Save used coupons to localStorage
+ * Called after marking a coupon as used
+ * Ensures coupon usage persists across sessions
+ */
 function saveUsedCoupons() {
     try {
         localStorage.setItem('bookmandu_used_coupons', JSON.stringify(usedCoupons));
@@ -73,14 +113,22 @@ function saveUsedCoupons() {
     }
 }
 
-// Check if coupon has been used already
+/**
+ * isCouponUsed - Check if a coupon has been used already
+ * @param {string} couponCode - The coupon code to check
+ * @returns {boolean} - True if coupon has been used
+ */
 function isCouponUsed(couponCode) {
     const isUsed = usedCoupons.includes(couponCode);
     console.log(`Checking coupon ${couponCode}: ${isUsed ? 'ALREADY USED' : 'NOT USED YET'}`);
     return isUsed;
 }
 
-// Mark coupon as used and save immediately
+/**
+ * markCouponUsed - Mark a coupon as used and save to localStorage
+ * @param {string} couponCode - The coupon code to mark
+ * @returns {boolean} - True if successfully marked
+ */
 function markCouponUsed(couponCode) {
     if (!usedCoupons.includes(couponCode)) {
         usedCoupons.push(couponCode);
@@ -93,7 +141,10 @@ function markCouponUsed(couponCode) {
     return false;
 }
 
-// Clear all used coupons (for testing/debugging)
+/**
+ * clearUsedCoupons - Clear all used coupons (for testing/debugging)
+ * Removes all coupon records from localStorage
+ */
 function clearUsedCoupons() {
     usedCoupons = [];
     localStorage.removeItem('bookmandu_used_coupons');
@@ -107,6 +158,12 @@ loadUsedCoupons();
 // ============================================================
 // THEME
 // ============================================================
+
+/**
+ * toggleTheme - Switch between light and dark mode
+ * Updates data-theme attribute on html element
+ * Saves preference to localStorage
+ */
 function toggleTheme() {
   const html = document.documentElement;
   const isDark = html.getAttribute('data-theme') === 'dark';
@@ -117,7 +174,11 @@ function toggleTheme() {
   showToast(isDark ? '☀️ Light mode enabled' : '🌙 Dark mode enabled', 'info');
 }
 
-// Apply saved theme on load
+/**
+ * Apply saved theme on page load
+ * Immediately Invoked Function Expression (IIFE) that runs on script load
+ * Checks localStorage for saved theme preference and applies it
+ */
 (function() {
   const saved = localStorage.getItem('theme');
   if (saved) {
@@ -132,6 +193,15 @@ function toggleTheme() {
 // ============================================================
 // TOAST
 // ============================================================
+
+/**
+ * showToast - Display a toast notification
+ * @param {string} msg - Message to display
+ * @param {string} type - 'success', 'error', or 'info'
+ * 
+ * Creates a toast element with appropriate icon based on type
+ * Auto-dismisses after 4 seconds
+ */
 function showToast(msg, type = 'info') {
   const icons = { success: '✓', error: '✕', info: 'ℹ' };
   const t = document.createElement('div');
@@ -151,6 +221,15 @@ function showToast(msg, type = 'info') {
 // ============================================================
 // MODAL
 // ============================================================
+
+/**
+ * openModal - Open a modal dialog with custom title and body
+ * @param {string} title - Modal title
+ * @param {string} body - Modal body HTML
+ * 
+ * Creates modal element if it doesn't exist
+ * Sets content and opens the modal
+ */
 function openModal(title, body) {
   let modalOverlay = document.getElementById('modal-overlay');
   if (!modalOverlay) {
@@ -172,6 +251,12 @@ function openModal(title, body) {
   modalOverlay.classList.add('open');
 }
 
+/**
+ * closeModal - Close the modal dialog
+ * @param {Event} e - Click event (optional)
+ * 
+ * Closes modal when clicking overlay or close button
+ */
 function closeModal(e) {
   const modalOverlay = document.getElementById('modal-overlay');
   if (!modalOverlay) return;
@@ -183,6 +268,15 @@ function closeModal(e) {
 // ============================================================
 // PROPERTY CARD BUILDER
 // ============================================================
+
+/**
+ * buildCard - Generate HTML for a property card
+ * @param {Object} p - Property object from PROPERTIES array
+ * @returns {string} - HTML string for the property card
+ * 
+ * Includes: image placeholder, badges, wishlist button, location, title,
+ * amenities, price, and rating
+ */
 function buildCard(p) {
   const inWishlist = wishlist.includes(p.id);
   return `
@@ -221,6 +315,14 @@ function buildCard(p) {
 // ============================================================
 // BROWSE FILTERS
 // ============================================================
+
+/**
+ * getFilteredProps - Get filtered and sorted properties
+ * @returns {Array} - Filtered and sorted properties array
+ * 
+ * Applies filters: type, price range, amenity, region (from URL param)
+ * Applies sorting: price (asc/desc), rating, bookings
+ */
 function getFilteredProps() {
   return PROPERTIES.filter(p => {
     const typeOk = filterType === 'all' || p.type.toLowerCase().replace(/ /g,'-') === filterType;
@@ -237,6 +339,14 @@ function getFilteredProps() {
   });
 }
 
+/**
+ * applyFilter - Apply a filter and update the UI
+ * @param {string} type - Filter type ('type' or 'amenity')
+ * @param {string} val - Filter value
+ * @param {HTMLElement} el - Element that triggered the filter
+ * 
+ * Updates filter state and re-renders the browse page
+ */
 function applyFilter(type, val, el) {
   if (type === 'type') {
     filterType = val;
@@ -250,12 +360,20 @@ function applyFilter(type, val, el) {
   if (typeof renderBrowse === 'function') renderBrowse();
 }
 
+/**
+ * applyPriceFilter - Apply price range filter from input fields
+ * Reads min and max price inputs and updates filter state
+ */
 function applyPriceFilter() {
   minPrice = +document.getElementById('price-min').value || null;
   maxPrice = +document.getElementById('price-max').value || null;
   if (typeof renderBrowse === 'function') renderBrowse();
 }
 
+/**
+ * sortProperties - Sort properties by selected criteria
+ * @param {string} val - Sort value ('popular', 'price-asc', 'price-desc', 'rating')
+ */
 function sortProperties(val) {
   sortBy = val;
   if (typeof renderBrowse === 'function') renderBrowse();
@@ -264,6 +382,14 @@ function sortProperties(val) {
 // ============================================================
 // WISHLIST
 // ============================================================
+
+/**
+ * toggleWishlist - Add or remove property from wishlist
+ * @param {number} id - Property ID
+ * @param {HTMLElement} btn - Wishlist button element
+ * 
+ * Toggles wishlist state, updates UI, and shows toast notification
+ */
 function toggleWishlist(id, btn) {
   const idx = wishlist.indexOf(id);
   if (idx === -1) {
@@ -280,6 +406,14 @@ function toggleWishlist(id, btn) {
 // ============================================================
 // CANCEL BOOKING MODAL
 // ============================================================
+
+/**
+ * cancelBooking - Open cancellation modal for a booking
+ * @param {string} ref - Booking reference number
+ * 
+ * Shows modal with textarea for cancellation reason
+ * Submits cancellation request
+ */
 function cancelBooking(ref) {
   openModal('Cancel Booking', `
     <p style="color:var(--text-secondary);margin-bottom:20px">Please provide a reason for cancelling booking <strong>${ref}</strong>.</p>
@@ -296,6 +430,11 @@ function cancelBooking(ref) {
 // ============================================================
 // ADD PROPERTY MODAL
 // ============================================================
+
+/**
+ * showAddPropertyModal - Open modal for adding a new property
+ * Hosts can submit new property listings for review
+ */
 function showAddPropertyModal() {
   openModal('Add New Property', `
     <div style="display:flex;flex-direction:column;gap:14px">
@@ -319,7 +458,22 @@ function showAddPropertyModal() {
 // ENHANCED BOOKING MODAL FUNCTIONS
 // ============================================================
 
-// Function to show enhanced booking modal with beautiful styling
+/**
+ * showEnhancedBookingModal - Display booking summary with price breakdown
+ * @param {Date} selectedCheckIn - Check-in date
+ * @param {Date} selectedCheckOut - Check-out date
+ * @param {number} guests - Number of guests
+ * @param {number} pricePerNight - Price per night
+ * @param {number} nights - Number of nights
+ * @param {number} subtotal - Subtotal before discount
+ * @param {number} discount - Discount amount
+ * @param {number} total - Total amount after discount
+ * @param {string} appliedCoupon - Applied coupon code (if any)
+ * @param {Object} availableCoupons - Available coupons object
+ * 
+ * Generates HTML for booking summary and price breakdown
+ * Displays in the booking modal
+ */
 function showEnhancedBookingModal(selectedCheckIn, selectedCheckOut, guests, pricePerNight, nights, subtotal, discount, total, appliedCoupon, availableCoupons) {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     
@@ -384,12 +538,25 @@ function showEnhancedBookingModal(selectedCheckIn, selectedCheckOut, guests, pri
     if (priceDiv) priceDiv.innerHTML = priceHtml;
 }
 
-// Function to get QR code URL
+/**
+ * getQRCodeUrl - Generate QR code URL for payment
+ * @param {number} amount - Payment amount
+ * @param {string} method - Payment method (esewa, khalti, bank)
+ * @returns {string} - QR code image URL
+ * 
+ * Uses qrserver.com API to generate QR codes
+ */
 function getQRCodeUrl(amount, method) {
     return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + method.toUpperCase() + ':PAY:' + amount + ':BOOKMANDU';
 }
 
-// Function to copy text to clipboard
+/**
+ * copyBankText - Copy bank detail text to clipboard
+ * @param {string} elementId - ID of element containing text to copy
+ * 
+ * Uses Clipboard API to copy text
+ * Shows success toast on copy
+ */
 function copyBankText(elementId) {
     const text = document.getElementById(elementId).textContent;
     navigator.clipboard.writeText(text);
@@ -400,6 +567,23 @@ function copyBankText(elementId) {
 // COUPON APPLICATION WITH ONE-TIME USE (PERSISTENT)
 // ============================================================
 
+/**
+ * applyCouponCode - Apply a coupon code to the booking
+ * @param {string} couponCode - Coupon code to apply
+ * @param {number} pricePerNight - Price per night
+ * @param {Date} selectedCheckIn - Check-in date
+ * @param {Date} selectedCheckOut - Check-out date
+ * @param {number} guests - Number of guests
+ * @param {Function} updateCallback - Callback function to update UI
+ * @returns {Object} - Result object with success status and details
+ * 
+ * Features:
+ * - Validates coupon exists
+ * - Checks if dates are selected
+ * - CRITICAL: Checks if coupon has been used (from localStorage)
+ * - Calculates discount based on coupon type (percentage/fixed)
+ * - Marks coupon as used immediately and saves to localStorage
+ */
 function applyCouponCode(couponCode, pricePerNight, selectedCheckIn, selectedCheckOut, guests, updateCallback) {
     const code = couponCode.trim().toUpperCase();
     
@@ -459,10 +643,15 @@ function applyCouponCode(couponCode, pricePerNight, selectedCheckIn, selectedChe
     };
 }
 
+/**
+ * removeAppliedCoupon - Remove the currently applied coupon
+ * @returns {Object} - Result object with success status and details
+ * 
+ * Note: Even after removal, the coupon remains in usedCoupons (localStorage)
+ * This prevents reusing the same coupon after removal
+ */
 function removeAppliedCoupon() {
     if (window.appliedCoupon) {
-        // Note: Even after removal, the coupon remains in usedCoupons (localStorage)
-        // This prevents reusing the same coupon after removal
         const removedCode = window.appliedCoupon;
         window.appliedCoupon = null;
         window.currentDiscountValue = 0;
@@ -472,16 +661,30 @@ function removeAppliedCoupon() {
     return { success: false, message: 'No coupon to remove' };
 }
 
+/**
+ * getNightsFromDates - Calculate number of nights between two dates
+ * @param {Date} checkIn - Check-in date
+ * @param {Date} checkOut - Check-out date
+ * @returns {number} - Number of nights
+ */
 function getNightsFromDates(checkIn, checkOut) {
     if (!checkIn || !checkOut) return 0;
     const diffTime = Math.abs(checkOut - checkIn);
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
+/**
+ * getCurrentAppliedCoupon - Get the currently applied coupon
+ * @returns {string|null} - Applied coupon code or null
+ */
 function getCurrentAppliedCoupon() {
     return window.appliedCoupon;
 }
 
+/**
+ * getCurrentDiscountValue - Get the current discount value
+ * @returns {number} - Current discount amount
+ */
 function getCurrentDiscountValue() {
     return window.currentDiscountValue;
 }
@@ -490,7 +693,10 @@ function getCurrentDiscountValue() {
 // IMAGE VIEWER FUNCTIONS - COMPLETELY FIXED
 // ============================================================
 
-// Use your actual image URLs from your server
+/**
+ * bedroomImages - Array of bedroom image URLs from server
+ * Used for the bedroom image viewer
+ */
 var bedroomImages = [
     '{{ url_for("static", filename="images/mvh2.jpg") }}',
     '{{ url_for("static", filename="images/mvh3.jpg") }}',
@@ -498,6 +704,10 @@ var bedroomImages = [
     '{{ url_for("static", filename="images/mvh5.jpg") }}'
 ];
 
+/**
+ * galleryAllImages - Array of all gallery image URLs
+ * Used for the full gallery view
+ */
 var galleryAllImages = [
     '{{ url_for("static", filename="images/mvh1.jpg") }}',
     '{{ url_for("static", filename="images/mvh2.jpg") }}',
@@ -507,7 +717,13 @@ var galleryAllImages = [
     '{{ url_for("static", filename="images/mvh6.jpg") }}'
 ];
 
-// Single image viewer with navigation
+/**
+ * openImageViewer - Open single image viewer with navigation
+ * @param {number} index - Index of image to display
+ * 
+ * Creates modal with image and Previous/Next buttons
+ * Allows navigation through bedroom images
+ */
 function openImageViewer(index) {
     let imageModal = document.getElementById('imageViewerModal');
     if (!imageModal) {
@@ -529,7 +745,7 @@ function openImageViewer(index) {
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         imageModal = document.getElementById('imageViewerModal');
         
-        // Add navigation functionality
+        // Add navigation functionality to Previous and Next buttons
         const prevBtn = document.getElementById('prevImageBtn');
         const nextBtn = document.getElementById('nextImageBtn');
         
@@ -568,6 +784,12 @@ function openImageViewer(index) {
     if (imageModal) imageModal.classList.add('open');
 }
 
+/**
+ * closeImageViewer - Close single image viewer
+ * @param {Event} e - Click event
+ * 
+ * Closes when clicking overlay or close button
+ */
 function closeImageViewer(e) {
     const modal = document.getElementById('imageViewerModal');
     if (!modal) return;
@@ -576,7 +798,13 @@ function closeImageViewer(e) {
     }
 }
 
-// ========== VIEW ALL IMAGES - SHOWS GRID GALLERY ==========
+/**
+ * openAllImages - Open full gallery grid view
+ * 
+ * Creates modal with all images in a grid
+ * Each image clickable to view full size
+ * Uses closeAllImagesModal to close
+ */
 function openAllImages() {
     // Close any existing modal first
     closeAllImagesModal();
@@ -623,6 +851,7 @@ function openAllImages() {
                     <i class="fas fa-image"></i> Image ${idx + 1}
                 </p>
             `;
+            // Click handler to close gallery and open full image viewer
             imgDiv.addEventListener('click', (function(i) {
                 return function() {
                     // Close gallery and open full image viewer
@@ -636,7 +865,7 @@ function openAllImages() {
                 };
             })(idx));
             
-            // Hover effect
+            // Hover effect for better UX
             imgDiv.addEventListener('mouseenter', () => {
                 imgDiv.style.transform = 'translateY(-5px)';
                 imgDiv.style.boxShadow = '0 8px 20px rgba(0,201,122,0.2)';
@@ -653,7 +882,14 @@ function openAllImages() {
     if (galleryModal) galleryModal.classList.add('open');
 }
 
-// Separate full image viewer for gallery images
+/**
+ * openFullImageViewer - Open full-size image viewer for gallery images
+ * @param {string} imageSrc - Image source URL
+ * @param {number} index - Index of image in gallery
+ * 
+ * Similar to openImageViewer but for gallery images
+ * Includes navigation through all gallery images
+ */
 function openFullImageViewer(imageSrc, index) {
     let fullImageModal = document.getElementById('fullImageModal');
     
@@ -712,6 +948,10 @@ function openFullImageViewer(imageSrc, index) {
     if (fullImageModal) fullImageModal.classList.add('open');
 }
 
+/**
+ * closeFullImageViewer - Close full image viewer
+ * @param {Event} e - Click event
+ */
 function closeFullImageViewer(e) {
     const modal = document.getElementById('fullImageModal');
     if (!modal) return;
@@ -720,6 +960,10 @@ function closeFullImageViewer(e) {
     }
 }
 
+/**
+ * closeAllImagesModal - Close the gallery grid modal
+ * @param {Event} e - Click event
+ */
 function closeAllImagesModal(e) {
     const modal = document.getElementById('allImagesModal');
     if (!modal) return;
@@ -728,15 +972,26 @@ function closeAllImagesModal(e) {
     }
 }
 
-// Keep the original function names for compatibility
+/**
+ * openFullGallery - Alias for openAllImages
+ * Kept for compatibility with existing code
+ */
 function openFullGallery() {
     openAllImages();
 }
 
+/**
+ * closeGalleryModal - Alias for closeAllImagesModal
+ * Kept for compatibility with existing code
+ */
 function closeGalleryModal(e) {
     closeAllImagesModal(e);
 }
 
+/**
+ * openFullImage - Open full image viewer for specific image
+ * @param {number} index - Index of image in galleryAllImages
+ */
 function openFullImage(index) {
     if (galleryAllImages[index]) {
         openFullImageViewer(galleryAllImages[index], index);
@@ -747,6 +1002,11 @@ function openFullImage(index) {
 // HOUSE RULES MODAL - UPDATED (REMOVED THE REFUND RULE)
 // ============================================================
 
+/**
+ * showAllRules - Display all house rules in a modal
+ * Shows 17 rules including: payment, cancellation, check-in/out, etc.
+ * Updated to remove the refund rule as requested
+ */
 function showAllRules() { 
     var modal = document.getElementById('rulesModal'); 
     if (!modal) { 
@@ -757,6 +1017,10 @@ function showAllRules() {
     if (modal) modal.classList.add('open'); 
 }
 
+/**
+ * closeRulesModal - Close the rules modal
+ * @param {Event} e - Click event
+ */
 function closeRulesModal(e) {
     const modal = document.getElementById('rulesModal');
     if (!modal) return;
@@ -769,6 +1033,18 @@ function closeRulesModal(e) {
 // GLOBAL EVENT LISTENERS SETUP
 // ============================================================
 
+/**
+ * setupGlobalEventListeners - Set up all global event listeners
+ * 
+ * Sets up:
+ * - Confirm Booking button
+ * - Payment method selection
+ * - Proceed Payment button
+ * - Confirm Payment button
+ * 
+ * Uses cloneNode to avoid duplicate event listeners
+ * This function is called once on DOM ready
+ */
 function setupGlobalEventListeners() {
     // Confirm Booking Button
     const confirmBtn = document.getElementById('confirmBookingBtn');
@@ -837,7 +1113,7 @@ function setupGlobalEventListeners() {
         });
     }
     
-    // Payment Methods
+    // Payment Methods - Setup click handlers
     const paymentMethods = document.querySelectorAll('.payment-method-enhanced');
     paymentMethods.forEach(method => {
         const newMethod = method.cloneNode(true);
@@ -987,26 +1263,41 @@ function setupGlobalEventListeners() {
     }
 }
 
-// Close modal functions
+/**
+ * closeBookingModal - Close booking modal
+ */
 function closeBookingModal() { 
     const modal = document.getElementById('bookingModal');
     if (modal) modal.classList.remove('active');
 }
 
+/**
+ * closeSuccessModal - Close success modal
+ */
 function closeSuccessModal() { 
     const modal = document.getElementById('successModal');
     if (modal) modal.classList.remove('active');
 }
 
+/**
+ * redirectToBrowse - Redirect to browse page
+ */
 function redirectToBrowse() { 
     window.location.href = "/browse"; 
 }
 
+/**
+ * downloadInvoice - Download booking invoice
+ * Currently shows toast - placeholder for actual implementation
+ */
 function downloadInvoice() { 
     showToast('Downloading invoice...', 'success'); 
 }
 
-// Initialize when DOM is ready
+/**
+ * DOMContentLoaded - Initialize when DOM is ready
+ * Sets up event listeners and logs current state
+ */
 document.addEventListener('DOMContentLoaded', function() {
     console.log('App.js DOM loaded, setting up event listeners');
     console.log('Currently used coupons from storage:', usedCoupons);
@@ -1016,6 +1307,11 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================================
 // MAKE FUNCTIONS GLOBALLY AVAILABLE
 // ============================================================
+
+/**
+ * Export all functions to window object for use in HTML
+ * This makes them accessible from inline onclick handlers and other scripts
+ */
 window.openImageViewer = openImageViewer;
 window.closeImageViewer = closeImageViewer;
 window.openAllImages = openAllImages;
@@ -1049,5 +1345,6 @@ window.clearUsedCoupons = clearUsedCoupons;
 window.loadUsedCoupons = loadUsedCoupons;
 window.saveUsedCoupons = saveUsedCoupons;
 
+// Log successful initialization
 console.log('Bookmandu app.js loaded successfully with PERSISTENT one-time coupon system!');
 console.log('Used coupons will survive page refreshes via localStorage');
