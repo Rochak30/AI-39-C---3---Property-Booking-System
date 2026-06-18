@@ -4,22 +4,40 @@
 {% block content %}
 <section class="browse-page">
 
-  <!-- Filter Panel - Enhanced Animated -->
+  <!-- ============================================================
+       FILTER PANEL - ENHANCED ANIMATED
+       Purpose: Provides search, filtering, and sorting functionality
+       with a sticky header that compacts on scroll
+       
+       Architecture:
+       - Sticky positioned below navbar (top: 64px)
+       - Compact mode triggered at 80px scroll
+       - Scroll progress indicator at bottom
+       - Backdrop blur for modern glass-morphism effect
+       ============================================================ -->
   <div class="filter-panel" id="filterPanel">
     <div class="container">
 
+      <!-- Primary search input row - always visible in expanded state -->
       <div class="filter-search-row">
         <div class="filter-search-wrap">
+          <!-- Magnifying glass icon positioned inside input -->
           <span class="filter-search-icon">🔍</span>
+          <!-- Search input triggers real-time filtering on each keystroke -->
           <input type="text" id="searchInput" class="filter-search" placeholder="Search by name or location…">
         </div>
       </div>
 
+      <!-- Wrapper for all filter rows - collapses in compact mode -->
       <div class="filter-rows-wrapper" id="filterRowsWrapper">
+        
+        <!-- Region filter row - allows filtering properties by geographic location -->
         <div class="filter-row" id="filterRow1">
           <span class="filter-label">📍 REGION</span>
           <div class="filter-chips" id="regionFilter">
+            <!-- Active chip indicates current filter selection -->
             <button class="chip active" data-value="all">All</button>
+            <!-- Each region chip filters properties from that specific area -->
             <button class="chip" data-value="Kathmandu">Kathmandu</button>
             <button class="chip" data-value="Pokhara">Pokhara</button>
             <button class="chip" data-value="Chitwan">Chitwan</button>
@@ -28,10 +46,12 @@
           </div>
         </div>
 
+        <!-- Property type filter row - categorizes by accommodation style -->
         <div class="filter-row" id="filterRow2">
           <span class="filter-label">🏠 TYPE</span>
           <div class="filter-chips" id="typeFilter">
             <button class="chip active" data-value="all">All</button>
+            <!-- Different property types available for booking -->
             <button class="chip" data-value="Homestay">Homestay</button>
             <button class="chip" data-value="Guesthouse">Guesthouse</button>
             <button class="chip" data-value="Private Room">Private Room</button>
@@ -39,17 +59,25 @@
           </div>
         </div>
 
+        <!-- Bottom row: Contains price range, amenities, sort, and clear button -->
         <div class="filter-row filter-row-bottom" id="filterRow3">
+          
+          <!-- Price range inputs - filters properties within min/max price range -->
           <div class="filter-price-group">
             <span class="filter-label">💰 PRICE</span>
+            <!-- Min price input - filters properties with price >= this value -->
             <input type="number" id="priceMin" class="form-input price-input" placeholder="Min NPR" value="">
             <span style="color: var(--text-muted);">—</span>
+            <!-- Max price input - filters properties with price <= this value -->
             <input type="number" id="priceMax" class="form-input price-input" placeholder="Max NPR" value="">
           </div>
 
+          <!-- Amenities filter - multi-select chips for property features -->
           <div class="filter-amenity-group">
             <span class="filter-label">✨ AMENITIES</span>
             <div class="filter-chips" id="amenityFilter">
+              <!-- Each amenity chip toggles on/off for filtering -->
+              <!-- Font Awesome icons provide visual cues for each amenity -->
               <button class="chip" data-value="WiFi"><i class="fas fa-wifi"></i> WiFi</button>
               <button class="chip" data-value="Parking"><i class="fas fa-parking"></i> Parking</button>
               <button class="chip" data-value="Breakfast Included"><i class="fas fa-utensils"></i> Breakfast</button>
@@ -59,29 +87,45 @@
             </div>
           </div>
 
+          <!-- Sorting dropdown - reorders results based on selected criteria -->
           <div class="filter-sort-group">
             <span class="filter-label">📊 SORT</span>
             <select class="form-select" id="sortSelect">
+              <!-- Default: original order from database -->
               <option value="default">Default</option>
+              <!-- Price-based sorting with clear labels -->
               <option value="price-asc">💰 Price: Low to High</option>
               <option value="price-desc">💰 Price: High to Low</option>
+              <!-- Rating sorting - highest rated first -->
               <option value="rating">⭐ Top Rated</option>
+              <!-- Popularity sorting - most booked first -->
               <option value="bookings">🔥 Most Booked</option>
             </select>
           </div>
 
+          <!-- Clear all filters button - resets all filter states to default -->
           <button class="btn btn-ghost btn-sm clear-btn" id="clearFilters">
             <i class="fas fa-eraser"></i> Clear All
           </button>
         </div>
       </div>
 
-      <!-- Compact search bar that appears when scrolled -->
+      <!-- ============================================================
+           COMPACT SEARCH BAR - Appears when scrolled past threshold
+           Purpose: Maintains search functionality in compact mode
+           
+           UX Rationale:
+           - When users scroll down, they still need to search
+           - Compact mode saves vertical space
+           - "Filters" button expands full panel on click
+           ============================================================ -->
       <div class="compact-search" id="compactSearch">
         <div class="compact-search-wrap">
           <span class="compact-search-icon">🔍</span>
+          <!-- Synced with main search input via JavaScript -->
           <input type="text" id="compactSearchInput" class="compact-search-input" placeholder="Search properties...">
         </div>
+        <!-- Button to expand full filter panel -->
         <button class="compact-filter-toggle" id="compactFilterToggle">
           <i class="fas fa-sliders-h"></i> Filters
         </button>
@@ -90,49 +134,99 @@
     </div>
   </div>
 
-  <!-- Results -->
+  <!-- ============================================================
+       RESULTS SECTION
+       Purpose: Display filtered and sorted property listings
+       
+       Layout:
+       - Results count header with dynamic updates
+       - Grid of property cards (3 columns on desktop)
+       - No results message when filters match nothing
+       ============================================================ -->
   <div class="container browse-results">
+    
+    <!-- Results header with dynamic count -->
     <div class="results-header">
       <p class="results-count" id="resultsCount">6 properties found</p>
+      <!-- Future enhancement: view toggle (grid/list) could go here -->
     </div>
 
+    <!-- ============================================================
+         PROPERTY GRID - FIXED 3x2 LAYOUT
+         Purpose: Display property cards with data attributes for filtering
+         
+         Data Attribute Strategy:
+         - data-id: Unique identifier for each property
+         - data-region: Geographic location (matches region chips)
+         - data-type: Property type (matches type chips)
+         - data-price: Numeric price for filtering and sorting
+         - data-amenities: Comma-separated list for amenity filtering
+         - data-rating: Numeric rating for sorting
+         - data-bookings: Booking count for popularity sorting
+         - data-trending: Boolean flag for trending badge display
+         ============================================================ -->
     <div class="props-grid" id="propertiesGrid">
 
-      <!-- Card 1 - Mountain View Homestay -->
+      <!-- ============================================================
+           CARD 1: Mountain View Homestay - Pokhara
+           Features: WiFi, Breakfast, Mountain View, Hot Water
+           Trending: Yes (🔥 badge displayed)
+           ============================================================ -->
       <a href="{{ url_for('auth.property_mountain_view') }}" class="prop-card"
          data-id="1" data-region="Pokhara" data-type="Homestay" data-price="2500"
          data-amenities="WiFi,Breakfast Included,Mountain View,Hot Water" data-rating="4.8" data-bookings="42" data-trending="true">
+        
+        <!-- Image container with hover zoom effect -->
         <div class="prop-img-placeholder">
           <img src="{{ url_for('static', filename='images/mvh1.jpg') }}" alt="Mountain View Homestay">
+          
+          <!-- Badge row - displays trending tag -->
           <div class="prop-badge-row">
             <span class="prop-trending">🔥 Trending</span>
           </div>
+          
+          <!-- Wishlist button - heart icon toggle with localStorage persistence -->
+          <!-- onclick prevents navigation to property details page -->
           <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(1,this)">🤍</button>
         </div>
+        
+        <!-- Card body with property details -->
         <div class="prop-body">
+          <!-- Location display with emoji icon -->
           <p class="prop-location">📍 Pokhara · Homestay</p>
           <h3 class="prop-title">Mountain View Homestay</h3>
+          
+          <!-- Amenities tags - shows key features at a glance -->
           <div class="prop-amenities">
             <span class="amenity-tag"><i class="fas fa-wifi"></i> WiFi</span>
             <span class="amenity-tag"><i class="fas fa-utensils"></i> Breakfast</span>
             <span class="amenity-tag"><i class="fas fa-mountain"></i> Mountain View</span>
           </div>
+          
+          <!-- Footer: Price and Rating -->
           <div class="prop-footer">
             <div class="prop-price">
               <span class="prop-price-amount">NPR 2,500</span>
               <span class="prop-price-night">/ night</span>
             </div>
+            <!-- Rating: Stars display + score + booking count -->
             <div class="prop-rating">
               <span class="prop-rating-star">★★★★★</span>
               <span>4.8</span>
               <span class="prop-rating-count">· 🔥 42</span>
             </div>
           </div>
+          
+          <!-- Call to action button -->
           <button class="btn btn-primary view-details-btn">View Details <i class="fas fa-arrow-right"></i></button>
         </div>
       </a>
 
-      <!-- Card 2 - Thamel Heritage House -->
+      <!-- ============================================================
+           CARD 2: Thamel Heritage House - Kathmandu
+           Features: WiFi, Parking, Kitchen Access, Hot Water
+           Trending: Yes
+           ============================================================ -->
       <a href="{{ url_for('auth.property_thamel_heritage') }}" class="prop-card"
          data-id="2" data-region="Kathmandu" data-type="Guesthouse" data-price="3200"
          data-amenities="WiFi,Parking,Kitchen Access,Hot Water" data-rating="4.5" data-bookings="38" data-trending="true">
@@ -156,6 +250,7 @@
               <span class="prop-price-amount">NPR 3,200</span>
               <span class="prop-price-night">/ night</span>
             </div>
+            <!-- Half star displayed using Unicode ★½ -->
             <div class="prop-rating">
               <span class="prop-rating-star">★★★★½</span>
               <span>4.5</span>
@@ -166,7 +261,11 @@
         </div>
       </a>
 
-      <!-- Card 3 - Jungle Retreat Chitwan -->
+      <!-- ============================================================
+           CARD 3: Jungle Retreat Chitwan
+           Features: Breakfast, Parking, Hot Water
+           Trending: Yes - Highest rating (4.9) and most bookings (55)
+           ============================================================ -->
       <a href="{{ url_for('auth.property_jungle_retreat') }}" class="prop-card"
          data-id="3" data-region="Chitwan" data-type="Entire Property" data-price="4500"
          data-amenities="Breakfast Included,Parking,Hot Water" data-rating="4.9" data-bookings="55" data-trending="true">
@@ -200,12 +299,17 @@
         </div>
       </a>
 
-      <!-- Card 4 - Lumbini Peace Lodge -->
+      <!-- ============================================================
+           CARD 4: Lumbini Peace Lodge
+           Features: WiFi, Hot Water
+           Trending: No - Lower price point (NPR 1,800)
+           ============================================================ -->
       <a href="{{ url_for('auth.property_lumbini_peace') }}" class="prop-card"
          data-id="4" data-region="Lumbini" data-type="Private Room" data-price="1800"
          data-amenities="WiFi,Hot Water" data-rating="4.3" data-bookings="19" data-trending="false">
         <div class="prop-img-placeholder">
           <img src="{{ url_for('static', filename='images/lp1.jpg') }}" alt="Lumbini Peace Lodge">
+          <!-- Empty badge row - no trending badge displayed -->
           <div class="prop-badge-row"></div>
           <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(4,this)">🤍</button>
         </div>
@@ -231,7 +335,11 @@
         </div>
       </a>
 
-      <!-- Card 5 - Mustang Desert Homestay -->
+      <!-- ============================================================
+           CARD 5: Mustang Desert Homestay
+           Features: Breakfast, Hot Water, Mountain View
+           Trending: No - Highest price point (NPR 5,500)
+           ============================================================ -->
       <a href="{{ url_for('auth.property_mustang_desert') }}" class="prop-card"
          data-id="5" data-region="Mustang" data-type="Homestay" data-price="5500"
          data-amenities="Breakfast Included,Hot Water,Mountain View" data-rating="4.7" data-bookings="29" data-trending="false">
@@ -241,6 +349,7 @@
           <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(5,this)">🤍</button>
         </div>
         <div class="prop-body">
+          <!-- Location includes district (Lo-Manthang) for specificity -->
           <p class="prop-location">📍 Lo-Manthang, Mustang · Homestay</p>
           <h3 class="prop-title">Mustang Desert Homestay</h3>
           <div class="prop-amenities">
@@ -263,7 +372,11 @@
         </div>
       </a>
 
-      <!-- Card 6 - Lakeside Comfort Inn -->
+      <!-- ============================================================
+           CARD 6: Lakeside Comfort Inn - Pokhara
+           Features: WiFi, Parking, Kitchen Access
+           Trending: No - Mid-range price (NPR 2,200)
+           ============================================================ -->
       <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="prop-card"
          data-id="6" data-region="Pokhara" data-type="Guesthouse" data-price="2200"
          data-amenities="WiFi,Parking,Kitchen Access" data-rating="4.4" data-bookings="31" data-trending="false">
@@ -297,6 +410,11 @@
 
     </div>
 
+    <!-- ============================================================
+         NO RESULTS MESSAGE
+         Purpose: Displayed when no properties match the current filters
+         Hidden by default (class="hidden")
+         ============================================================ -->
     <p class="no-results hidden" id="noResults">
       <i class="fas fa-search"></i> No properties match your filters.<br>
       <span style="font-size: 13px;">Try adjusting your search criteria</span>
@@ -305,10 +423,21 @@
 
     <!-- ============================================================
        ADD PROPERTY SECTION - ONLY VISIBLE TO HOSTS
+       Purpose: Provide a prominent CTA for hosts to list their property
+       
+       Visibility Condition: {% if session.get('role') == 'host' %}
+       - Hosts see this section with a call to action
+       - Guests and non-logged-in users do not see this section
+       
+       Design Features:
+       - Glass-morphism gradient background with shimmer animation
+       - Animated plus icon that rotates on hover
+       - Responsive design for all screen sizes
        ============================================================ -->
   {% if session.get('role') == 'host' %}
   <div class="add-property-section">
       <div class="add-property-wrapper">
+          <!-- Left side: Icon and text content -->
           <div class="add-property-content">
               <div class="add-property-icon-wrap">
                   <i class="fas fa-plus"></i>
@@ -318,6 +447,7 @@
                   <p>Share your unique place with travelers from around the world</p>
               </div>
           </div>
+          <!-- Right side: Primary CTA button -->
           <a href="{{ url_for('auth.add_property') }}" class="btn-add-property">
               <span class="plus-icon">+</span> Add Property
               <i class="fas fa-arrow-right"></i>
@@ -326,12 +456,22 @@
   </div>
   {% endif %}
 
-    <!-- Footer -->
+    <!-- ============================================================
+       FOOTER - Site-wide navigation and branding
+       Purpose: Consistent navigation across all pages
+       
+       Structure:
+       - Brand column with logo and description
+       - Explore: Primary navigation links
+       - Account: User authentication links
+       - Support: Help and contact links
+       - Bottom: Copyright and utility controls (language/currency)
+       ============================================================ -->
   <footer class="footer">
     <div class="footer-container">
       <div class="footer-grid">
         
-        <!-- Brand Column -->
+        <!-- Brand Column: Logo, tagline, and social links -->
         <div class="footer-brand">
           <div class="footer-logo">
             <i class="fas fa-home"></i>
@@ -340,13 +480,14 @@
           <p class="footer-description">
             Nepal's dedicated accommodation booking platform. Connect with authentic homestays, guesthouses, and unique stays across the Himalayas.
           </p>
+          <!-- Social media links with hover effects -->
           <div class="footer-social">
             <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
             <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
           </div>
         </div>
 
-        <!-- Explore Column -->
+        <!-- Explore Column: Primary navigation -->
         <div class="footer-column">
           <h4 class="footer-heading">EXPLORE</h4>
           <ul class="footer-links">
@@ -355,7 +496,7 @@
           </ul>
         </div>
 
-        <!-- Account Column -->
+        <!-- Account Column: User authentication links -->
         <div class="footer-column">
           <h4 class="footer-heading">ACCOUNT</h4>
           <ul class="footer-links">
@@ -364,7 +505,7 @@
           </ul>
         </div>
 
-        <!-- Support Column -->
+        <!-- Support Column: Help and contact information -->
         <div class="footer-column">
           <h4 class="footer-heading">SUPPORT</h4>
           <ul class="footer-links">
@@ -374,11 +515,13 @@
         </div>
       </div>
 
-      <!-- Footer Bottom -->
+      <!-- Footer Bottom: Legal and utility controls -->
       <div class="footer-bottom">
+        <!-- Copyright notice -->
         <div class="footer-copyright">
           © 2026 Pahuna. All rights reserved.
         </div>
+        <!-- Language and currency switcher buttons -->
         <div class="footer-lang-currency">
           <button class="lang-btn" onclick="switchLanguage()">
             <i class="fas fa-globe"></i> EN / नेपाली
@@ -393,10 +536,13 @@
 
 </section>
 
+<!-- ============================================================
+   STYLES
+   ============================================================ -->
 <style>
-/* Browse Page Specific Styles */
+/* ── Page Container ── */
 .browse-page { 
-  padding-top: 80px; 
+  padding-top: 80px; /* Account for fixed navbar height */ 
   min-height: 100vh; 
   display: flex;
   flex-direction: column;
@@ -407,21 +553,23 @@
   background: var(--bg-800);
   border-bottom: 1px solid var(--border);
   padding: 20px 0;
-  position: sticky;
-  top: 64px;
-  z-index: 100;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: sticky; /* Sticks to top when scrolling */
+  top: 64px; /* Below the fixed navbar */
+  z-index: 100; /* Above content but below modals */
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transitions */
   overflow: hidden;
-  backdrop-filter: blur(10px);
-  background: rgba(19, 26, 34, 0.95);
+  backdrop-filter: blur(10px); /* Glass-morphism effect */
+  background: rgba(19, 26, 34, 0.95); /* Semi-transparent background */
 }
 
+/* ── Compact Mode - Triggered on scroll ── */
 .filter-panel.compact {
   padding: 8px 0;
   background: rgba(19, 26, 34, 0.98);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
+/* Hide full filter rows when in compact mode */
 .filter-panel.compact .filter-rows-wrapper {
   opacity: 0;
   visibility: hidden;
@@ -432,6 +580,7 @@
   transition: all 0.4s ease;
 }
 
+/* Show compact search bar when in compact mode */
 .filter-panel.compact .compact-search {
   opacity: 1;
   visibility: visible;
@@ -439,6 +588,7 @@
   display: flex;
 }
 
+/* Hide main search row when in compact mode */
 .filter-panel.compact .filter-search-row {
   margin-bottom: 0;
   opacity: 0;
@@ -447,8 +597,9 @@
   overflow: hidden;
 }
 
+/* ── Compact Search Bar ── */
 .compact-search {
-  display: none;
+  display: none; /* Hidden by default */
   align-items: center;
   gap: 12px;
   opacity: 0;
@@ -462,6 +613,7 @@
   position: relative;
 }
 
+/* Search icon positioning inside input */
 .compact-search-icon {
   position: absolute;
   left: 14px;
@@ -499,6 +651,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap; /* Prevent wrapping on small screens */
 }
 
 .compact-filter-toggle:hover {
@@ -507,6 +660,7 @@
   transform: scale(1.02);
 }
 
+/* Compact search slide-in animation */
 .filter-panel.compact .compact-search {
   display: flex;
   animation: slideDown 0.4s ease;
@@ -527,6 +681,7 @@
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ── Search Input ── */
 .filter-search-row { margin-bottom: 20px; transition: all 0.3s ease; }
 .filter-search-wrap { position: relative; }
 .filter-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 14px; transition: all 0.3s ease; }
@@ -538,14 +693,15 @@
 }
 .filter-search:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-glow); outline: none; }
 
+/* ── Filter Rows ── */
 .filter-row { 
   display: flex; 
   align-items: center; 
   gap: 20px; 
   margin-bottom: 16px; 
-  flex-wrap: wrap; 
+  flex-wrap: wrap; /* Wrap on smaller screens */
   transition: all 0.3s ease;
-  animation: fadeInUp 0.5s ease;
+  animation: fadeInUp 0.5s ease; /* Entrance animation */
 }
 
 @keyframes fadeInUp {
@@ -565,6 +721,7 @@
   margin-bottom: 0;
 }
 
+/* ── Filter Labels ── */
 .filter-label { 
   font-size: 11px; 
   font-weight: 700; 
@@ -579,6 +736,7 @@
   border-radius: 20px;
 }
 
+/* ── Filter Chips ── */
 .filter-chips { display: flex; gap: 10px; flex-wrap: wrap; }
 .chip {
   padding: 8px 18px;
@@ -593,6 +751,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  user-select: none; /* Prevent text selection on click */
 }
 
 .chip i { font-size: 12px; transition: transform 0.2s ease; }
@@ -603,6 +762,8 @@
   border-color: var(--border-teal);
 }
 .chip:hover i { transform: scale(1.1); }
+
+/* Active chip state - teal gradient for visual feedback */
 .chip.active { 
   background: linear-gradient(135deg, var(--teal), var(--teal-dark));
   color: #051209; 
@@ -612,10 +773,12 @@
 }
 .chip.active i { transform: scale(1.1); }
 
+/* ── Filter Groups ── */
 .filter-price-group,
 .filter-amenity-group,
 .filter-sort-group { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
+/* Price input fields with rounded corners */
 .price-input { 
   width: 110px; 
   padding: 8px 12px; 
@@ -632,6 +795,7 @@
   box-shadow: 0 0 0 3px var(--teal-glow);
 }
 
+/* Sort dropdown with custom styling */
 .filter-sort-group .form-select {
   padding: 8px 32px 8px 16px;
   border-radius: 30px;
@@ -641,6 +805,10 @@
   font-size: 13px;
   cursor: pointer;
   transition: all 0.3s ease;
+  appearance: none; /* Remove default arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7a8a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
 }
 .filter-sort-group .form-select:focus {
   border-color: var(--teal);
@@ -648,6 +816,7 @@
   box-shadow: 0 0 0 3px var(--teal-glow);
 }
 
+/* Clear filters button - red accent for destructive action */
 .clear-btn {
   padding: 8px 20px;
   border-radius: 30px;
@@ -665,6 +834,8 @@
   border-color: var(--red);
 }
 
+/* ── Scroll Progress Indicator ── */
+/* Dynamic progress bar at bottom of filter panel */
 .filter-panel::before {
   content: '';
   position: absolute;
@@ -678,7 +849,7 @@
   z-index: 1;
 }
 
-/* Results */
+/* ========== RESULTS SECTION ========== */
 .browse-results { 
   padding: 32px 24px 60px; 
   flex: 1;
@@ -708,26 +879,26 @@
 /* ========== PROPERTY GRID - FIXED 3x2 LAYOUT ========== */
 .props-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop */
   gap: 28px;
   transition: all 0.3s ease;
 }
 
-/* For 2x3 layout on medium screens */
+/* Responsive: 2 columns on tablet */
 @media (max-width: 1100px) {
   .props-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* For mobile screens */
+/* Responsive: 1 column on mobile */
 @media (max-width: 768px) {
   .props-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* Property Card */
+/* ── Property Card ── */
 .prop-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -743,12 +914,12 @@
 
 .prop-card:hover {
   border-color: var(--border-teal);
-  transform: translateY(-6px);
+  transform: translateY(-6px); /* Lift effect on hover */
   box-shadow: 0 12px 30px rgba(0, 201, 122, 0.15);
 }
 
 .prop-card.hidden {
-  display: none !important;
+  display: none !important; /* Hidden when filtered out */
 }
 
 @keyframes cardFadeIn {
@@ -762,6 +933,7 @@
   }
 }
 
+/* ── Image Container ── */
 .prop-img-placeholder {
   width: 100%;
   height: 220px;
@@ -777,10 +949,12 @@
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Image zoom on card hover - creates immersive feel */
 .prop-card:hover .prop-img-placeholder img {
   transform: scale(1.08);
 }
 
+/* Gradient overlay on image - darkens bottom for text readability */
 .prop-img-placeholder::after {
   content: '';
   position: absolute;
@@ -795,6 +969,7 @@
   opacity: 1;
 }
 
+/* ── Wishlist Button ── */
 .prop-wishlist {
   position: absolute;
   top: 12px;
@@ -819,10 +994,11 @@
   transform: scale(1.1);
 }
 .prop-wishlist.active { 
-  background: #ff4757;
+  background: #ff4757; /* Red heart when active */
   color: white;
 }
 
+/* ── Badge Row (Trending tag) ── */
 .prop-badge-row {
   position: absolute;
   top: 12px;
@@ -840,7 +1016,7 @@
   background: linear-gradient(135deg, #ff6b35, #f0a500);
   color: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  animation: pulse 2s infinite;
+  animation: pulse 2s infinite; /* Subtle pulse to draw attention */
 }
 
 @keyframes pulse {
@@ -848,6 +1024,7 @@
   50% { opacity: 0.8; }
 }
 
+/* ── Card Body ── */
 .prop-body { padding: 18px; }
 .prop-location { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
 .prop-title { 
@@ -857,6 +1034,7 @@
   margin-bottom: 12px; 
   line-height: 1.3; 
   color: var(--text-primary);
+  /* Truncate long titles to 2 lines */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -880,7 +1058,7 @@
 .prop-price-amount { font-size: 22px; font-weight: 800; color: var(--teal); }
 .prop-price-night { font-size: 12px; color: var(--text-muted); margin-left: 2px; }
 .prop-rating { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
-.prop-rating-star { color: var(--amber); letter-spacing: 1px; }
+.prop-rating-star { color: var(--amber); letter-spacing: 1px; } /* Gold color for stars */
 .prop-rating-count { color: var(--text-muted); font-size: 12px; }
 
 .view-details-btn {
@@ -897,7 +1075,7 @@
   background: var(--teal);
   color: #051209;
   transform: translateY(-2px);
-  gap: 12px;
+  gap: 12px; /* Arrow moves on hover */
 }
 
 .no-results { text-align: center; padding: 60px; color: var(--text-muted); font-size: 16px; }
@@ -905,6 +1083,13 @@
 
 /* ============================================================
    ADD PROPERTY SECTION - PREMIUM STYLING
+   Purpose: Prominent CTA for hosts to list their property
+   
+   Design Decisions:
+   - Gradient background with subtle shimmer animation
+   - Icon with rotation on container hover
+   - Glass-morphism effect on the card
+   - Responsive design that stacks on mobile
    ============================================================ */
 .add-property-section {
     padding: 40px 24px 20px;
@@ -931,6 +1116,7 @@
     overflow: hidden;
 }
 
+/* Animated background shimmer effect */
 .add-property-wrapper::before {
     content: '';
     position: absolute;
@@ -963,6 +1149,7 @@
     flex: 1;
 }
 
+/* Icon container with gradient background */
 .add-property-icon-wrap {
     width: 56px;
     height: 56px;
@@ -977,7 +1164,7 @@
 }
 
 .add-property-wrapper:hover .add-property-icon-wrap {
-    transform: scale(1.05) rotate(-5deg);
+    transform: scale(1.05) rotate(-5deg); /* Slight rotation on hover */
     box-shadow: 0 6px 30px rgba(0, 201, 122, 0.5);
 }
 
@@ -1000,6 +1187,7 @@
     margin: 0;
 }
 
+/* Primary CTA button with gradient */
 .btn-add-property {
     display: inline-flex;
     align-items: center;
@@ -1027,7 +1215,7 @@
 }
 
 .btn-add-property:active {
-    transform: scale(0.97);
+    transform: scale(0.97); /* Press effect */
 }
 
 .btn-add-property i {
@@ -1036,9 +1224,10 @@
 }
 
 .btn-add-property:hover i {
-    transform: rotate(90deg) scale(1.1);
+    transform: rotate(90deg) scale(1.1); /* Rotate arrow on hover */
 }
 
+/* Plus icon rotation on hover - playful detail */
 .btn-add-property .plus-icon {
     display: inline-block;
     transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -1048,7 +1237,7 @@
     transform: rotate(180deg);
 }
 
-/* Footer Styles */
+/* ── Footer Styles ── */
 .footer {
   background: var(--bg-800);
   border-top: 1px solid var(--border);
@@ -1101,6 +1290,7 @@
 }
 .lang-btn:hover, .currency-btn:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
 
+/* ── Responsive: Footer ── */
 @media (max-width: 992px) {
   .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
   .footer-brand { grid-column: span 2; max-width: 100%; }
@@ -1112,7 +1302,7 @@
   .footer-lang-currency { justify-content: center; }
 }
 
-/* Responsive for Add Property Section */
+/* ── Responsive: Add Property Section ── */
 @media (max-width: 768px) {
     .add-property-wrapper {
         flex-direction: column;
@@ -1172,7 +1362,7 @@
     }
 }
 
-/* Toast styles */
+/* ── Toast Notification Styles ── */
 .toast-container {
   position: fixed;
   bottom: 24px;
@@ -1207,6 +1397,7 @@
   to { opacity: 1; transform: translateX(0); }
 }
 
+/* ── Responsive: Filter Panel ── */
 @media (max-width: 992px) {
   .filter-row { flex-direction: column; align-items: stretch; }
   .filter-row-bottom { flex-direction: column; }
@@ -1219,27 +1410,43 @@
 }
 </style>
 
+<!-- ============================================================
+   JAVASCRIPT - ENHANCED ANIMATED FILTER PANEL
+   ============================================================ -->
 <script>
 // ========== ENHANCED ANIMATED FILTER PANEL SCROLL BEHAVIOR ==========
 const filterPanel = document.getElementById('filterPanel');
 let ticking = false;
 
+/**
+ * handleFilterPanelScroll - Handles sticky filter panel behavior
+ * 
+ * Features:
+ * - Toggles compact mode when scrolled past threshold (80px)
+ * - Updates scroll progress indicator width
+ * - Uses requestAnimationFrame for smooth performance
+ * 
+ * Performance: Ticking pattern prevents excessive reflows
+ */
 function handleFilterPanelScroll() {
   const currentScrollY = window.scrollY;
   const scrollThreshold = 80;
   
+  // Toggle compact mode based on scroll position
   if (currentScrollY > scrollThreshold) {
     filterPanel.classList.add('compact');
   } else {
     filterPanel.classList.remove('compact');
   }
   
+  // Update scroll progress indicator width (0% to 100%)
   const scrollPercent = Math.min((currentScrollY / 300) * 100, 100);
   filterPanel.style.setProperty('--scroll-progress', scrollPercent + '%');
   
   ticking = false;
 }
 
+// Use requestAnimationFrame for smooth 60fps performance
 window.addEventListener('scroll', function() {
   if (!ticking) {
     requestAnimationFrame(handleFilterPanelScroll);
@@ -1247,49 +1454,90 @@ window.addEventListener('scroll', function() {
   }
 });
 
-// Compact search input sync
+// ========== COMPACT SEARCH SYNC ==========
 const compactSearchInput = document.getElementById('compactSearchInput');
 const mainSearchInput = document.getElementById('searchInput');
 
+/**
+ * Sync compact search with main search input
+ * Updates main search when compact search is used
+ * This ensures both inputs stay in sync
+ */
 if (compactSearchInput) {
   compactSearchInput.addEventListener('input', function(e) {
     mainSearchInput.value = e.target.value;
+    // Dispatch input event to trigger main search's filter logic
     const event = new Event('input', { bubbles: true });
     mainSearchInput.dispatchEvent(event);
   });
 }
 
+/**
+ * Compact filter toggle - expands full filter panel when clicked
+ * Provides a way for users to access all filters from compact mode
+ */
 const compactFilterToggle = document.getElementById('compactFilterToggle');
 if (compactFilterToggle) {
   compactFilterToggle.addEventListener('click', function() {
     filterPanel.classList.remove('compact');
+    // Smooth scroll to top of filter panel
     filterPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }
 
+// Initialize filter panel state on page load
 handleFilterPanelScroll();
 
-// Wishlist storage
+// ========== WISHLIST FUNCTIONALITY ==========
+/**
+ * wishlistIds - Array of property IDs saved in localStorage
+ * Persists across page reloads and sessions
+ */
 let wishlistIds = JSON.parse(localStorage.getItem('bookmandu_wishlist') || '[]');
 
+/**
+ * toggleWishlist - Toggle property in wishlist
+ * 
+ * @param {number} id - Property ID (from data-id attribute)
+ * @param {HTMLElement} btn - Wishlist button element
+ * 
+ * Behavior:
+ * - If ID not in wishlist: Add, show heart, show success toast
+ * - If ID in wishlist: Remove, show empty heart, show info toast
+ * - Saves to localStorage for persistence
+ */
 function toggleWishlist(id, btn) {
   const index = wishlistIds.indexOf(id);
   if (index === -1) {
+    // Add to wishlist
     wishlistIds.push(id);
-    if (btn) { btn.classList.add('active'); btn.textContent = '❤️'; }
+    if (btn) { 
+      btn.classList.add('active'); 
+      btn.textContent = '❤️'; 
+    }
     showToast('❤️ Added to wishlist!', 'success');
   } else {
+    // Remove from wishlist
     wishlistIds.splice(index, 1);
-    if (btn) { btn.classList.remove('active'); btn.textContent = '🤍'; }
+    if (btn) { 
+      btn.classList.remove('active'); 
+      btn.textContent = '🤍'; 
+    }
     showToast('Removed from wishlist', 'info');
   }
+  // Persist to localStorage
   localStorage.setItem('bookmandu_wishlist', JSON.stringify(wishlistIds));
 }
 
+/**
+ * Restore wishlist states on page load
+ * Checks each property card against saved wishlist IDs
+ */
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.prop-wishlist').forEach((btn, idx) => {
     const card = btn.closest('.prop-card');
     if (card) {
+      // Extract ID from href or use index as fallback
       const href = card.getAttribute('href');
       const id = href ? parseInt(href.split('/').pop()) : idx + 1;
       if (wishlistIds.includes(id)) {
@@ -1300,12 +1548,13 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// ========== FIXED FILTER AND SORT FUNCTIONALITY ==========
+// ========== FILTER AND SORT FUNCTIONALITY ==========
 const grid = document.getElementById('propertiesGrid');
 const cards = document.querySelectorAll('.prop-card');
 const resultsCount = document.getElementById('resultsCount');
 const noResults = document.getElementById('noResults');
 
+// Filter state variables - track all active filter criteria
 let activeRegion = 'all';
 let activeType = 'all';
 let activeAmenities = [];
@@ -1314,44 +1563,87 @@ let sortBy = 'default';
 let minPrice = null;
 let maxPrice = null;
 
+/**
+ * Helper functions to extract property data from data attributes
+ */
 function getPriceValue(card) { return parseInt(card.dataset.price) || 0; }
 function getRatingValue(card) { return parseFloat(card.dataset.rating) || 0; }
 function getBookingsValue(card) { return parseInt(card.dataset.bookings) || 0; }
 
+/**
+ * applyFiltersAndSort - Main filtering and sorting function
+ * 
+ * Filter Logic (AND - all conditions must match):
+ * 1. Region must match activeRegion (or 'all')
+ * 2. Type must match activeType (or 'all')
+ * 3. Price must be between minPrice and maxPrice (if set)
+ * 4. Must have ALL selected amenities
+ * 5. Search term must match title OR location
+ * 
+ * Sort Logic:
+ * - default: Original order (by data-id)
+ * - price-asc: Lowest price first
+ * - price-desc: Highest price first
+ * - rating: Highest rating first
+ * - bookings: Most bookings first
+ * 
+ * UI Updates:
+ * - Updates results count
+ * - Shows/hides no results message
+ * - Reorders cards in DOM
+ */
 function applyFiltersAndSort() {
   const priceMinInput = document.getElementById('priceMin');
   const priceMaxInput = document.getElementById('priceMax');
   
+  // Read current filter values from inputs
   minPrice = priceMinInput.value ? parseInt(priceMinInput.value) : null;
   maxPrice = priceMaxInput.value ? parseInt(priceMaxInput.value) : null;
   sortBy = document.getElementById('sortSelect').value;
   
-  // Filter cards
-  let visibleCards = Array.from(cards).filter(card => {
+  // Get all cards and determine which are visible
+  const allCards = Array.from(cards);
+  
+  // Reset: remove hidden class from all, remove all from grid
+  allCards.forEach(card => {
+    card.classList.remove('hidden');
+    card.remove();
+  });
+  
+  // Filter: determine which cards should be hidden
+  const hiddenCards = allCards.filter(card => {
+    // Region filter - case sensitive match
     const region = card.dataset.region;
-    if (activeRegion !== 'all' && region !== activeRegion) return false;
+    if (activeRegion !== 'all' && region !== activeRegion) return true;
     
+    // Type filter
     const type = card.dataset.type;
-    if (activeType !== 'all' && type !== activeType) return false;
+    if (activeType !== 'all' && type !== activeType) return true;
     
+    // Price filter - numeric comparison
     const price = getPriceValue(card);
-    if (minPrice !== null && price < minPrice) return false;
-    if (maxPrice !== null && price > maxPrice) return false;
+    if (minPrice !== null && price < minPrice) return true;
+    if (maxPrice !== null && price > maxPrice) return true;
     
+    // Amenities filter - must have ALL selected amenities (AND logic)
     const amenities = card.dataset.amenities.split(',');
     if (activeAmenities.length > 0) {
       const hasAllAmenities = activeAmenities.every(amenity => amenities.includes(amenity));
-      if (!hasAllAmenities) return false;
+      if (!hasAllAmenities) return true;
     }
     
+    // Search term filter - checks title AND location for match
     const title = card.querySelector('.prop-title').textContent.toLowerCase();
     const location = card.querySelector('.prop-location').textContent.toLowerCase();
-    if (searchTerm && !title.includes(searchTerm) && !location.includes(searchTerm)) return false;
+    if (searchTerm && !title.includes(searchTerm) && !location.includes(searchTerm)) return true;
     
-    return true;
+    return false;
   });
   
-  // Sort visible cards
+  // Visible cards are those not hidden
+  let visibleCards = allCards.filter(card => !hiddenCards.includes(card));
+  
+  // Sort visible cards based on selected sort option
   if (sortBy === 'price-asc') {
     visibleCards.sort((a, b) => getPriceValue(a) - getPriceValue(b));
   } else if (sortBy === 'price-desc') {
@@ -1361,7 +1653,7 @@ function applyFiltersAndSort() {
   } else if (sortBy === 'bookings') {
     visibleCards.sort((a, b) => getBookingsValue(b) - getBookingsValue(a));
   } else {
-    // Default - sort by data-id
+    // Default: sort by data-id (original order)
     visibleCards.sort((a, b) => {
       const idA = parseInt(a.dataset.id) || 0;
       const idB = parseInt(b.dataset.id) || 0;
@@ -1369,91 +1661,27 @@ function applyFiltersAndSort() {
     });
   }
   
-  // Remove all cards from grid
-  cards.forEach(card => card.remove());
-  
-  // Append sorted cards back to grid
-  visibleCards.forEach(card => {
-    grid.appendChild(card);
-  });
-  
-  // Update visibility for cards that were filtered out
-  // (Cards not in visibleCards were already removed from DOM)
-  // We need to re-add filtered out cards but hide them
-  // Actually we should hide the ones that were filtered out
-  // Since we removed all and re-added only visible ones,
-  // we need to keep track and re-add filtered ones with hidden class
-  
-  // Wait - the approach above removes all cards and re-adds visible ones.
-  // But we need to keep hidden cards in the DOM but hidden.
-  // Better approach: keep all cards in DOM, just reorder and toggle hidden class
-  
-  // Let's redo this - simpler approach
-  // Store original cards in a variable
-  const allCards = Array.from(cards);
-  
-  // Reset: remove hidden class from all, remove all from grid
-  allCards.forEach(card => {
-    card.classList.remove('hidden');
-    card.remove();
-  });
-  
-  // Separate visible and hidden
-  const hiddenCards = allCards.filter(card => {
-    const region = card.dataset.region;
-    if (activeRegion !== 'all' && region !== activeRegion) return true;
-    
-    const type = card.dataset.type;
-    if (activeType !== 'all' && type !== activeType) return true;
-    
-    const price = getPriceValue(card);
-    if (minPrice !== null && price < minPrice) return true;
-    if (maxPrice !== null && price > maxPrice) return true;
-    
-    const amenities = card.dataset.amenities.split(',');
-    if (activeAmenities.length > 0) {
-      const hasAllAmenities = activeAmenities.every(amenity => amenities.includes(amenity));
-      if (!hasAllAmenities) return true;
-    }
-    
-    const title = card.querySelector('.prop-title').textContent.toLowerCase();
-    const location = card.querySelector('.prop-location').textContent.toLowerCase();
-    if (searchTerm && !title.includes(searchTerm) && !location.includes(searchTerm)) return true;
-    
-    return false;
-  });
-  
-  let visibleCards2 = allCards.filter(card => !hiddenCards.includes(card));
-  
-  // Sort visible cards
-  if (sortBy === 'price-asc') {
-    visibleCards2.sort((a, b) => getPriceValue(a) - getPriceValue(b));
-  } else if (sortBy === 'price-desc') {
-    visibleCards2.sort((a, b) => getPriceValue(b) - getPriceValue(a));
-  } else if (sortBy === 'rating') {
-    visibleCards2.sort((a, b) => getRatingValue(b) - getRatingValue(a));
-  } else if (sortBy === 'bookings') {
-    visibleCards2.sort((a, b) => getBookingsValue(b) - getBookingsValue(a));
-  } else {
-    visibleCards2.sort((a, b) => {
-      const idA = parseInt(a.dataset.id) || 0;
-      const idB = parseInt(b.dataset.id) || 0;
-      return idA - idB;
-    });
-  }
-  
-  // Hide hidden cards
+  // Hide hidden cards (keep in DOM but hidden)
   hiddenCards.forEach(card => card.classList.add('hidden'));
   
-  // Append visible cards first, then hidden cards (but hidden won't show)
-  visibleCards2.forEach(card => grid.appendChild(card));
+  // Append visible cards first, then hidden cards (hidden won't show)
+  visibleCards.forEach(card => grid.appendChild(card));
   hiddenCards.forEach(card => grid.appendChild(card));
   
-  const count = visibleCards2.length;
+  // Update results count and show/hide no results message
+  const count = visibleCards.length;
   resultsCount.textContent = `${count} propert${count === 1 ? 'y' : 'ies'} found`;
-  noResults.classList.toggle('hidden', visibleCards2.length > 0);
+  noResults.classList.toggle('hidden', visibleCards.length > 0);
 }
 
+/**
+ * setChipGroup - Set active state for a group of chips
+ * 
+ * @param {string} groupId - ID of the chip group container
+ * @param {string} value - Value to set as active
+ * 
+ * Used for region and type filters (single-select)
+ */
 function setChipGroup(groupId, value) {
   const chips = document.querySelectorAll(`#${groupId} .chip`);
   chips.forEach(chip => {
@@ -1462,7 +1690,11 @@ function setChipGroup(groupId, value) {
   });
 }
 
-// Event listeners
+// ========== EVENT LISTENERS ==========
+
+/**
+ * Region filter - single select (only one region at a time)
+ */
 document.getElementById('regionFilter').addEventListener('click', (e) => {
   if (!e.target.classList.contains('chip')) return;
   activeRegion = e.target.dataset.value;
@@ -1470,6 +1702,9 @@ document.getElementById('regionFilter').addEventListener('click', (e) => {
   applyFiltersAndSort();
 });
 
+/**
+ * Type filter - single select (only one type at a time)
+ */
 document.getElementById('typeFilter').addEventListener('click', (e) => {
   if (!e.target.classList.contains('chip')) return;
   activeType = e.target.dataset.value;
@@ -1477,58 +1712,104 @@ document.getElementById('typeFilter').addEventListener('click', (e) => {
   applyFiltersAndSort();
 });
 
+/**
+ * Amenities filter - multi-select (toggle multiple amenities)
+ * Each click toggles the amenity on/off
+ */
 document.getElementById('amenityFilter').addEventListener('click', (e) => {
   if (!e.target.classList.contains('chip')) return;
   const amenity = e.target.dataset.value;
   const index = activeAmenities.indexOf(amenity);
   if (index === -1) {
+    // Add amenity
     activeAmenities.push(amenity);
     e.target.classList.add('active');
   } else {
+    // Remove amenity
     activeAmenities.splice(index, 1);
     e.target.classList.remove('active');
   }
   applyFiltersAndSort();
 });
 
+/**
+ * Search input - real-time filtering on each keystroke
+ * Also syncs with compact search input
+ */
 document.getElementById('searchInput').addEventListener('input', (e) => {
   searchTerm = e.target.value.toLowerCase();
   if (compactSearchInput) compactSearchInput.value = e.target.value;
   applyFiltersAndSort();
 });
 
+/**
+ * Sort select - changes sorting criteria
+ */
 document.getElementById('sortSelect').addEventListener('change', (e) => {
   sortBy = e.target.value;
   applyFiltersAndSort();
 });
 
+/**
+ * Price inputs - real-time filtering on each change
+ */
 const priceMinInput = document.getElementById('priceMin');
 const priceMaxInput = document.getElementById('priceMax');
 priceMinInput.addEventListener('input', () => applyFiltersAndSort());
 priceMaxInput.addEventListener('input', () => applyFiltersAndSort());
 
+/**
+ * Clear all filters button - resets all filter states
+ * 
+ * Resets:
+ * - Region: 'all'
+ * - Type: 'all'
+ * - Amenities: []
+ * - Search: ''
+ * - Sort: 'default'
+ * - Price: ''
+ * - All chip states to default
+ */
 document.getElementById('clearFilters').addEventListener('click', () => {
+  // Reset all filter states
   activeRegion = 'all';
   activeType = 'all';
   activeAmenities = [];
   searchTerm = '';
   sortBy = 'default';
   
+  // Reset input values
   document.getElementById('searchInput').value = '';
   if (compactSearchInput) compactSearchInput.value = '';
   priceMinInput.value = '';
   priceMaxInput.value = '';
   document.getElementById('sortSelect').value = 'default';
   
+  // Reset chip states
   setChipGroup('regionFilter', 'all');
   setChipGroup('typeFilter', 'all');
   document.querySelectorAll('#amenityFilter .chip').forEach(chip => chip.classList.remove('active'));
   
+  // Re-apply filters with reset state
   applyFiltersAndSort();
   showToast('✨ All filters cleared', 'info');
 });
 
+// ========== TOAST NOTIFICATION SYSTEM ==========
+/**
+ * showToast - Display a toast notification
+ * 
+ * @param {string} message - Message to display
+ * @param {string} type - 'success', 'error', or 'info'
+ * 
+ * Features:
+ * - Auto-dismiss after 4 seconds
+ * - Color-coded left border based on type
+ * - Slide-in animation from right
+ * - Stackable multiple notifications
+ */
 function showToast(message, type) {
+  // Create container if it doesn't exist
   let container = document.getElementById('toasts');
   if (!container) {
     container = document.createElement('div');
@@ -1536,22 +1817,37 @@ function showToast(message, type) {
     container.id = 'toasts';
     document.body.appendChild(container);
   }
+  
+  // Create toast element
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
   const icon = type === 'success' ? '✓' : (type === 'error' ? '✕' : 'ℹ');
-  toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
+  toast.innerHTML = `
+    <span class="toast-icon">${icon}</span>
+    <span>${message}</span>
+    <span class="toast-close" onclick="this.parentElement.remove()">✕</span>
+  `;
+  
+  // Add to container
   container.appendChild(toast);
+  
+  // Auto-remove after 4 seconds
   setTimeout(() => toast.remove(), 4000);
 }
 
+/**
+ * switchLanguage - Placeholder for language switcher
+ * Currently shows a toast notification as the feature is planned for future implementation
+ */
 function switchLanguage() {
   showToast('Language switcher coming soon!', 'info');
 }
 
+// Expose functions to global scope for inline onclick handlers
 window.toggleWishlist = toggleWishlist;
 window.switchLanguage = switchLanguage;
 
-// Initialize
+// Initialize filter and sort on page load
 applyFiltersAndSort();
 </script>
 {% endblock %}
