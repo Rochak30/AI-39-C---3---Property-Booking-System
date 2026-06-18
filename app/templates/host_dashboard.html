@@ -3,73 +3,264 @@
 
 {% block extra_css %}
 <style>
-.dash-wrap   { display: flex; min-height: calc(100vh - 64px); margin-top: 64px; }
+/* ============================================================
+   HOST DASHBOARD STYLES
+   Purpose: Styling for the host dashboard layout and components
+   ============================================================ */
+
+/* ── Dashboard Layout ── */
+.dash-wrap   { 
+  display: flex; 
+  min-height: calc(100vh - 64px); /* Full viewport minus navbar height */
+  margin-top: 64px; /* Account for fixed navbar */
+}
+
+/* ── Sidebar ── */
 .dash-sidebar{
-  width: 220px; flex-shrink: 0; background: var(--bg-800);
-  border-right: 1px solid var(--border); padding: 32px 0; position: sticky;
-  top: 64px; height: calc(100vh - 64px); overflow-y: auto;
+  width: 220px; 
+  flex-shrink: 0; /* Prevent sidebar from shrinking */
+  background: var(--bg-800);
+  border-right: 1px solid var(--border); 
+  padding: 32px 0; 
+  position: sticky; /* Sticks to top when scrolling */
+  top: 64px; /* Below navbar */
+  height: calc(100vh - 64px); /* Full viewport height minus navbar */
+  overflow-y: auto; /* Scroll if content overflows */
 }
-.dash-main   { flex: 1; padding: 36px 40px; overflow-x: hidden; }
-.sidebar-label{ font-size: 10px; font-weight: 700; letter-spacing: .12em;
-  color: var(--text-muted); padding: 20px 24px 8px; text-transform: uppercase; }
+
+/* ── Main Content ── */
+.dash-main   { 
+  flex: 1; /* Takes remaining space */
+  padding: 36px 40px; 
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* ── Sidebar Labels ── */
+.sidebar-label{ 
+  font-size: 10px; 
+  font-weight: 700; 
+  letter-spacing: .12em;
+  color: var(--text-muted); 
+  padding: 20px 24px 8px; 
+  text-transform: uppercase; 
+}
+
+/* ── Sidebar Links ── */
 .sidebar-link{
-  display: flex; align-items: center; gap: 10px; padding: 10px 24px;
-  font-size: 14px; color: var(--text-secondary); text-decoration: none;
-  transition: all .2s; border-left: 3px solid transparent;
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  padding: 10px 24px;
+  font-size: 14px; 
+  color: var(--text-secondary); 
+  text-decoration: none;
+  transition: all .2s; 
+  border-left: 3px solid transparent; /* Left border for active state */
 }
+
 .sidebar-link:hover, .sidebar-link.active{
-  color: var(--text-primary); background: var(--bg-700); border-left-color: var(--teal);
+  color: var(--text-primary); 
+  background: var(--bg-700); 
+  border-left-color: var(--teal); /* Teal indicator for active link */
 }
-.sidebar-link i { width: 18px; text-align: center; }
 
-.stats-grid  { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 18px; margin-bottom: 32px; }
-.stat-card   { background: var(--bg-800); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-.stat-num    { font-size: 28px; font-weight: 800; color: var(--teal); }
-.stat-label  { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.sidebar-link i { 
+  width: 18px; 
+  text-align: center; 
+}
 
-.dash-section   { display: none; }
-.dash-section.active { display: block; }
-.section-title  { font-size: 22px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+/* ── Statistics Cards ── */
+.stats-grid  { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+  gap: 18px; 
+  margin-bottom: 32px; 
+}
 
-.table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
-table       { width: 100%; border-collapse: collapse; font-size: 13px; }
-th          { background: var(--bg-700); color: var(--text-muted); font-weight: 600; letter-spacing: .07em;
-              padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; }
-td          { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); vertical-align: middle; }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: var(--bg-700); }
+.stat-card   { 
+  background: var(--bg-800); 
+  border: 1px solid var(--border); 
+  border-radius: 12px; 
+  padding: 20px; 
+}
 
-.status     { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-.status-approved,.status-active{ background: rgba(46,204,113,.15); color: #2ecc71; }
-.status-pending  { background: rgba(230,126,34,.15); color: #e67e22; }
-.status-rejected,.status-cancelled{ background: rgba(231,76,60,.15); color: #e74c3c; }
-.status-confirmed{ background: rgba(46,204,113,.15); color: #2ecc71; }
-.status-completed{ background: rgba(52,152,219,.15); color: #3498db; }
+.stat-num    { 
+  font-size: 28px; 
+  font-weight: 800; 
+  color: var(--teal); 
+}
 
-.btn-xs  { padding: 4px 10px; font-size: 11px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; }
-.btn-del { background: rgba(231,76,60,.1); color: #e74c3c; }
-.btn-del:hover { background: #e74c3c; color: #fff; }
+.stat-label  { 
+  font-size: 12px; 
+  color: var(--text-muted); 
+  margin-top: 4px; 
+}
 
-/* Approval banner */
-.banner { padding: 14px 20px; border-radius: 10px; margin-bottom: 24px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
-.banner-warn { background: rgba(230,126,34,.12); border: 1px solid rgba(230,126,34,.3); color: #e67e22; }
-.banner-ok   { background: rgba(46,204,113,.1);  border: 1px solid rgba(46,204,113,.3); color: #2ecc71; }
+/* ── Dashboard Sections ── */
+.dash-section   { display: none; } /* Hidden by default */
+.dash-section.active { display: block; } /* Show active section */
 
-/* Profile form */
+.section-title  { 
+  font-size: 22px; 
+  font-weight: 700; 
+  margin-bottom: 20px; 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+}
+
+/* ── Table Styles ── */
+.table-wrap { 
+  overflow-x: auto; /* Horizontal scroll on small screens */
+  border-radius: 10px; 
+  border: 1px solid var(--border); 
+}
+
+table       { 
+  width: 100%; 
+  border-collapse: collapse; 
+  font-size: 13px; 
+}
+
+th          { 
+  background: var(--bg-700); 
+  color: var(--text-muted); 
+  font-weight: 600; 
+  letter-spacing: .07em;
+  padding: 10px 14px; 
+  text-align: left; 
+  font-size: 11px; 
+  text-transform: uppercase; 
+}
+
+td          { 
+  padding: 11px 14px; 
+  border-bottom: 1px solid var(--border); 
+  color: var(--text-secondary); 
+  vertical-align: middle; 
+}
+
+tr:last-child td { border-bottom: none; } /* Remove border on last row */
+tr:hover td { background: var(--bg-700); } /* Hover effect */
+
+/* ── Status Badges ── */
+.status     { 
+  display: inline-block; 
+  padding: 2px 10px; 
+  border-radius: 20px; 
+  font-size: 11px; 
+  font-weight: 700; 
+  text-transform: uppercase; 
+}
+
+/* Status colors - each with its own color scheme */
+.status-approved, .status-active { 
+  background: rgba(46, 204, 113, .15); 
+  color: #2ecc71; /* Green */
+}
+
+.status-pending  { 
+  background: rgba(230, 126, 34, .15); 
+  color: #e67e22; /* Orange */
+}
+
+.status-rejected, .status-cancelled { 
+  background: rgba(231, 76, 60, .15); 
+  color: #e74c3c; /* Red */
+}
+
+.status-confirmed { 
+  background: rgba(46, 204, 113, .15); 
+  color: #2ecc71; /* Green */
+}
+
+.status-completed { 
+  background: rgba(52, 152, 219, .15); 
+  color: #3498db; /* Blue */
+}
+
+/* ── Small Buttons ── */
+.btn-xs  { 
+  padding: 4px 10px; 
+  font-size: 11px; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  border: none; 
+  font-weight: 600; 
+}
+
+.btn-del { 
+  background: rgba(231, 76, 60, .1); 
+  color: #e74c3c; 
+}
+
+.btn-del:hover { 
+  background: #e74c3c; 
+  color: #fff; 
+}
+
+/* ── Approval Banner ── */
+.banner { 
+  padding: 14px 20px; 
+  border-radius: 10px; 
+  margin-bottom: 24px; 
+  font-size: 14px; 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+}
+
+.banner-warn { 
+  background: rgba(230, 126, 34, .12); 
+  border: 1px solid rgba(230, 126, 34, .3); 
+  color: #e67e22; /* Warning orange */
+}
+
+.banner-ok   { 
+  background: rgba(46, 204, 113, .1); 
+  border: 1px solid rgba(46, 204, 113, .3); 
+  color: #2ecc71; /* Success green */
+}
+
+/* ── Profile Form ── */
 .profile-form { max-width: 500px; }
 .profile-form .form-group { margin-bottom: 16px; }
 </style>
 {% endblock %}
 
 {% block content %}
+<!-- ============================================================
+     HOST DASHBOARD
+     
+     Purpose: Central control panel for hosts to manage:
+     - Properties (view, add, delete)
+     - Bookings (view all bookings on their properties)
+     - Earnings (revenue tracking)
+     - Profile (update personal information)
+     
+     Access: Only available to users with 'host' role
+     ============================================================ -->
 <div class="dash-wrap">
 
+  <!-- ============================================================
+       SIDEBAR NAVIGATION
+       
+       Structure:
+       - User info section (name + role)
+       - Host Panel links (Overview, Properties, Bookings, Earnings, Profile)
+       - Quick Links (Add Property, Logout)
+       
+       Active state: Current section highlighted with teal border
+       ============================================================ -->
   <aside class="dash-sidebar">
+    
+    <!-- ── User Info ── -->
     <div style="padding: 0 24px 24px; border-bottom: 1px solid var(--border);">
       <div style="font-weight:700; font-size:15px;">{{ session.user_name }}</div>
       <div style="font-size:12px; color:var(--teal); margin-top:2px;">Host</div>
     </div>
 
+    <!-- ── Host Panel Navigation ── -->
     <div class="sidebar-label">Host Panel</div>
     <a href="#" class="sidebar-link active" onclick="showSection('overview',this)">
       <i class="fas fa-tachometer-alt"></i> Overview
@@ -87,25 +278,54 @@ tr:hover td { background: var(--bg-700); }
       <i class="fas fa-user-edit"></i> Profile
     </a>
 
+    <!-- ── Quick Links ── -->
     <div class="sidebar-label">Quick Links</div>
     <a href="/add-property" class="sidebar-link"><i class="fas fa-plus"></i> Add Property</a>
     <a href="/logout" class="sidebar-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </aside>
 
+  <!-- ============================================================
+       MAIN CONTENT AREA
+       
+       Displays the active section based on sidebar navigation
+       Sections: Overview, Properties, Bookings, Earnings, Profile
+       ============================================================ -->
   <main class="dash-main">
 
-    <!-- ── Approval banner ── -->
+    <!-- ============================================================
+         APPROVAL BANNER
+         
+         Purpose: Shows host account verification status
+         - If verified: Show success banner
+         - If pending: Show warning banner (properties won't be visible)
+         ============================================================ -->
     {% if host_profile %}
       {% if host_profile.verified %}
-        <div class="banner banner-ok"><i class="fas fa-check-circle"></i> Your host account is <strong>approved</strong>. You can list properties.</div>
+        <div class="banner banner-ok">
+          <i class="fas fa-check-circle"></i> 
+          Your host account is <strong>approved</strong>. You can list properties.
+        </div>
       {% else %}
-        <div class="banner banner-warn"><i class="fas fa-clock"></i> Your host account is <strong>pending admin approval</strong>. Properties you submit won't be visible until approved.</div>
+        <div class="banner banner-warn">
+          <i class="fas fa-clock"></i> 
+          Your host account is <strong>pending admin approval</strong>. 
+          Properties you submit won't be visible until approved.
+        </div>
       {% endif %}
     {% endif %}
 
-    <!-- OVERVIEW -->
+    <!-- ============================================================
+         SECTION 1: OVERVIEW
+         
+         Purpose: Dashboard summary with key metrics
+         Displays:
+         - Stats cards: Properties count, Total Bookings, Total Revenue, Active Bookings
+         - Recent bookings table (last 5)
+         ============================================================ -->
     <section class="dash-section active" id="sec-overview">
       <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> Overview</h2>
+      
+      <!-- ── Stats Cards ── -->
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-num">{{ properties|length }}</div>
@@ -125,14 +345,22 @@ tr:hover td { background: var(--bg-700); }
         </div>
       </div>
 
-      <!-- Recent bookings preview -->
+      <!-- ── Recent Bookings Preview ── -->
       {% if bookings %}
       <h3 style="font-size:15px; margin-bottom:12px; color:var(--text-secondary);">Recent Bookings</h3>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Guest</th><th>Property</th><th>Check-in</th><th>Check-out</th><th>Status</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Guest</th>
+              <th>Property</th>
+              <th>Check-in</th>
+              <th>Check-out</th>
+              <th>Status</th>
+            </tr>
+          </thead>
           <tbody>
-          {% for b in bookings[:5] %}
+          {% for b in bookings[:5] %} <!-- Show only first 5 bookings -->
             <tr>
               <td>{{ b.guest_name }}</td>
               <td>{{ b.property_title }}</td>
@@ -147,16 +375,39 @@ tr:hover td { background: var(--bg-700); }
       {% endif %}
     </section>
 
-    <!-- MY PROPERTIES -->
+    <!-- ============================================================
+         SECTION 2: MY PROPERTIES
+         
+         Purpose: Manage all properties owned by the host
+         Displays:
+         - Property listing with details (ID, Title, Region, Type, Price, Max Guests, Approval Status, Bookings)
+         - Delete action (with confirmation)
+         - Add Property button
+         ============================================================ -->
     <section class="dash-section" id="sec-properties">
       <h2 class="section-title"><i class="fas fa-home"></i> My Properties</h2>
+      
+      <!-- ── Add Property Button ── -->
       <a href="/add-property" class="btn btn-primary btn-sm" style="margin-bottom:16px;display:inline-flex;">
         <i class="fas fa-plus"></i> Add New Property
       </a>
+      
       {% if properties %}
       <div class="table-wrap">
         <table>
-          <thead><tr><th>ID</th><th>Title</th><th>Region</th><th>Type</th><th>Price/Night</th><th>Max Guests</th><th>Approval</th><th>Bookings</th><th>Action</th></tr></thead>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Region</th>
+              <th>Type</th>
+              <th>Price/Night</th>
+              <th>Max Guests</th>
+              <th>Approval</th>
+              <th>Bookings</th>
+              <th>Action</th>
+            </tr>
+          </thead>
           <tbody>
           {% for p in properties %}
             <tr>
@@ -166,13 +417,17 @@ tr:hover td { background: var(--bg-700); }
               <td>{{ p.type }}</td>
               <td>NPR {{ "{:,.0f}".format(p.price_per_night) }}</td>
               <td>{{ p.max_guests }}</td>
+              <!-- Approval status badge -->
               <td><span class="status status-{{ p.approval_status }}">{{ p.approval_status }}</span></td>
               <td>{{ p.booking_count }}</td>
               <td>
+                <!-- Delete form with confirmation dialog -->
                 <form method="POST" action="/host/delete-property"
                       onsubmit="return confirm('Delete {{ p.title }}?')">
                   <input type="hidden" name="property_id" value="{{ p.property_id }}">
-                  <button class="btn-xs btn-del" type="submit"><i class="fas fa-trash"></i> Delete</button>
+                  <button class="btn-xs btn-del" type="submit">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
                 </form>
               </td>
             </tr>
@@ -181,17 +436,38 @@ tr:hover td { background: var(--bg-700); }
         </table>
       </div>
       {% else %}
-        <p style="color:var(--text-muted);">You haven't added any properties yet. <a href="/add-property" style="color:var(--teal);">Add your first one.</a></p>
+        <p style="color:var(--text-muted);">
+          You haven't added any properties yet. 
+          <a href="/add-property" style="color:var(--teal);">Add your first one.</a>
+        </p>
       {% endif %}
     </section>
 
-    <!-- BOOKINGS -->
+    <!-- ============================================================
+         SECTION 3: BOOKINGS
+         
+         Purpose: View all bookings on the host's properties
+         Displays:
+         - Booking details: Reference, Guest, Property, Check-in, Check-out, Guests, Total, Status
+         ============================================================ -->
     <section class="dash-section" id="sec-bookings">
       <h2 class="section-title"><i class="fas fa-calendar-check"></i> Bookings on My Properties</h2>
+      
       {% if bookings %}
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Ref</th><th>Guest</th><th>Property</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Total</th><th>Status</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Ref</th>
+              <th>Guest</th>
+              <th>Property</th>
+              <th>Check-in</th>
+              <th>Check-out</th>
+              <th>Guests</th>
+              <th>Total</th>
+              <th>Status</th>
+            </tr>
+          </thead>
           <tbody>
           {% for b in bookings %}
             <tr>
@@ -213,9 +489,17 @@ tr:hover td { background: var(--bg-700); }
       {% endif %}
     </section>
 
-    <!-- EARNINGS -->
+    <!-- ============================================================
+         SECTION 4: EARNINGS
+         
+         Purpose: Track revenue from bookings
+         Displays:
+         - Stats cards: Total Revenue, Active Bookings Revenue, Completed Revenue, Active Bookings, Completed Stays
+         - Info note about revenue calculation
+         ============================================================ -->
     <section class="dash-section" id="sec-earnings">
       <h2 class="section-title"><i class="fas fa-rupee-sign"></i> Earnings</h2>
+      
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-num">NPR {{ "{:,.0f}".format(earnings.total_revenue or 0) }}</div>
@@ -238,31 +522,52 @@ tr:hover td { background: var(--bg-700); }
           <div class="stat-label">Completed Stays</div>
         </div>
       </div>
+      
       <p style="color:var(--text-muted); font-size:13px; margin-top:8px;">
-        <i class="fas fa-info-circle"></i> Revenue figures are based on confirmed and completed bookings only.
+        <i class="fas fa-info-circle"></i> 
+        Revenue figures are based on confirmed and completed bookings only.
       </p>
     </section>
 
-    <!-- PROFILE -->
+    <!-- ============================================================
+         SECTION 5: PROFILE
+         
+         Purpose: Update host profile information
+         Fields:
+         - Full Name (required)
+         - Email (required)
+         - Phone (optional)
+         - New Password (optional, leave blank to keep current)
+         
+         Note: Password field has minimum length 6 characters
+         ============================================================ -->
     <section class="dash-section" id="sec-profile">
       <h2 class="section-title"><i class="fas fa-user-edit"></i> Edit Profile</h2>
+      
       <form class="profile-form" method="POST" action="/host/update-profile">
         <div class="form-group">
           <label class="form-label">Full Name</label>
           <input class="form-input" type="text" name="name" value="{{ user.name }}" required>
         </div>
+        
         <div class="form-group">
           <label class="form-label">Email</label>
           <input class="form-input" type="email" name="email" value="{{ user.email }}" required>
         </div>
+        
         <div class="form-group">
           <label class="form-label">Phone</label>
           <input class="form-input" type="text" name="phone" value="{{ user.phone or '' }}" placeholder="e.g. 98XXXXXXXX">
         </div>
+        
         <div class="form-group">
-          <label class="form-label">New Password <span style="color:var(--text-muted);font-size:12px;">(leave blank to keep current)</span></label>
+          <label class="form-label">
+            New Password 
+            <span style="color:var(--text-muted);font-size:12px;">(leave blank to keep current)</span>
+          </label>
           <input class="form-input" type="password" name="password" placeholder="••••••••" minlength="6">
         </div>
+        
         <button class="btn btn-primary" type="submit">Save Changes</button>
       </form>
     </section>
@@ -273,10 +578,32 @@ tr:hover td { background: var(--bg-700); }
 
 {% block extra_js %}
 <script>
+/* ============================================================
+   DASHBOARD NAVIGATION
+   
+   Purpose: Switch between dashboard sections
+   
+   How it works:
+   1. Hides all sections (dash-section) by removing 'active' class
+   2. Removes 'active' class from all sidebar links
+   3. Shows the selected section by adding 'active' class
+   4. Highlights the clicked sidebar link with 'active' class
+   
+   Parameters:
+   - id: Section identifier (matches id="sec-{id}")
+   - link: The sidebar link element that was clicked
+   ============================================================ */
 function showSection(id, link) {
+  // Hide all sections
   document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
+  
+  // Remove active class from all sidebar links
   document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  
+  // Show the selected section
   document.getElementById('sec-' + id).classList.add('active');
+  
+  // Highlight the clicked link
   link.classList.add('active');
 }
 </script>
