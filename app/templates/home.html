@@ -1,11 +1,884 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>This will be our home page</h1>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Pahuna — Experience Nepal, Like a Local{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================================
+       RESET & GLOBAL TWEAKS
+       ============================================================ */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: var(--bg-800);
+        color: var(--text-primary);
+    }
+
+    /* ============================================================
+       HERO SECTION – relative positioning, scrolls normally
+       ============================================================ */
+    .hero-section {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        min-height: 600px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-start;
+        overflow: hidden;
+        /* background image – about.png, full cover */
+        background: url("{{ url_for('static', filename='images/about.png') }}") center center / cover no-repeat;
+        background-color: transparent;
+    }
+
+    /* STRONGER GRADIENT OVERLAY – reduces exposure, improves readability */
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, 
+            rgba(0, 0, 0, 0.75) 0%, 
+            rgba(0, 0, 0, 0.4) 35%, 
+            rgba(0, 0, 0, 0.15) 60%, 
+            rgba(0, 0, 0, 0.05) 80%,
+            transparent 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: left;
+        max-width: 800px;
+        padding: 0 48px 80px 48px;
+        animation: heroFadeIn 1.2s ease-out;
+        padding-bottom: 100px;
+        width: 100%;
+    }
+
+    @keyframes heroFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===== MAIN TITLE – 2 LINES ONLY ===== */
+    .hero-title {
+        font-family: var(--font-display), 'Playfair Display', serif;
+        font-size: 62px;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 12px;
+        color: #ffffff;
+        text-shadow: 0 4px 40px rgba(0, 0, 0, 0.8);
+        letter-spacing: -0.02em;
+    }
+
+    .hero-title .highlight {
+        background: linear-gradient(135deg, var(--teal), var(--cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: none;
+    }
+
+    /* ===== SUBTITLE – REDUCED BOLDNESS ===== */
+    .hero-subtitle {
+        font-size: 20px;
+        font-weight: 500;
+        color: #ffffff;
+        max-width: 620px;
+        margin: 0;
+        line-height: 1.5;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
+        letter-spacing: 0.02em;
+    }
+
+    /* ============================================================
+       HOW IT WORKS SECTION
+       ============================================================ */
+    .how-it-works {
+        padding: 80px 24px 40px 24px;
+        max-width: 1200px;
+        margin: 0 auto;
+        background: var(--bg-800);
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .section-header h2 {
+        font-family: var(--font-display), 'Playfair Display', serif;
+        font-size: 42px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        background: linear-gradient(135deg, var(--text-primary), var(--teal));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .section-header p {
+        color: var(--text-secondary);
+        font-size: 18px;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+    }
+
+    .step-card {
+        background: var(--bg-700);
+        border-radius: 20px;
+        padding: 40px 32px;
+        text-align: center;
+        border: 1px solid var(--border);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .step-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--teal), #60b0ff);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .step-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .step-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--teal);
+        box-shadow: 0 12px 40px rgba(0, 201, 122, 0.1);
+    }
+
+    .step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--teal-glow), var(--teal));
+        color: #051209;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .step-icon {
+        font-size: 40px;
+        color: var(--teal);
+        margin-bottom: 16px;
+        display: block;
+    }
+
+    .step-card h3 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--text-primary);
+    }
+
+    .step-card p {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* ============================================================
+       FEATURED PROPERTIES SECTION
+       ============================================================ */
+    .featured-properties {
+        padding: 40px 24px 60px 24px;
+        max-width: 1200px;
+        margin: 0 auto;
+        background: var(--bg-800);
+    }
+
+    .properties-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+        margin-top: 40px;
+    }
+
+    .property-card {
+        background: var(--bg-700);
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        cursor: pointer;
+    }
+
+    .property-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--teal);
+        box-shadow: 0 12px 40px rgba(0, 201, 122, 0.1);
+    }
+
+    .property-card-image {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+    }
+
+    .property-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .property-card:hover .property-card-image img {
+        transform: scale(1.05);
+    }
+
+    .property-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: linear-gradient(135deg, var(--teal), #00cc88);
+        color: #051209;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .property-rating-badge {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        padding: 4px 12px;
+        border-radius: 20px;
+        color: #fff;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .property-rating-badge i {
+        color: #f0a500;
+    }
+
+    .property-card-body {
+        padding: 20px;
+    }
+
+    .property-card-body h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: var(--text-primary);
+    }
+
+    .property-location {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .property-location i {
+        color: var(--teal);
+        font-size: 12px;
+    }
+
+    .property-amenities {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
+
+    .property-amenity {
+        font-size: 11px;
+        color: var(--text-secondary);
+        background: var(--bg-600);
+        padding: 2px 10px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .property-amenity i {
+        font-size: 10px;
+        color: var(--teal);
+    }
+
+    .property-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+    }
+
+    .property-price {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--teal);
+    }
+
+    .property-price span {
+        font-size: 13px;
+        font-weight: 400;
+        color: var(--text-secondary);
+    }
+
+    .property-review-count {
+        font-size: 12px;
+        color: var(--text-secondary);
+    }
+
+    .view-all-link {
+        text-align: center;
+        margin-top: 48px;
+    }
+
+    .view-all-link a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 36px;
+        border: 2px solid var(--teal);
+        border-radius: 50px;
+        color: var(--teal);
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .view-all-link a:hover {
+        background: var(--teal);
+        color: #051209;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(0, 201, 122, 0.2);
+    }
+
+    /* ============================================================
+       FOOTER SECTION – as shown in screenshot
+       ============================================================ */
+    .footer {
+        background: var(--bg-800);
+        border-top: 1px solid var(--border);
+        padding: 60px 24px 32px;
+    }
+
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 48px;
+        margin-bottom: 48px;
+    }
+
+    .footer-brand {
+        max-width: 320px;
+    }
+
+    .footer-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 16px;
+        color: var(--text-primary);
+    }
+
+    .footer-logo i {
+        font-size: 28px;
+        color: var(--teal);
+    }
+
+    .footer-description {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .footer-social {
+        display: flex;
+        gap: 12px;
+    }
+
+    .social-link {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--bg-700);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .social-link:hover {
+        background: var(--teal);
+        color: #051209;
+        transform: translateY(-3px);
+        border-color: var(--teal);
+    }
+
+    .footer-column h4 {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--teal);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 20px;
+    }
+
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .footer-links li {
+        margin-bottom: 12px;
+    }
+
+    .footer-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .footer-links a i {
+        font-size: 12px;
+        width: 16px;
+        color: var(--teal);
+        transition: transform 0.2s ease;
+    }
+
+    .footer-links a:hover {
+        color: var(--teal);
+        transform: translateX(5px);
+    }
+
+    .footer-links a:hover i {
+        transform: translateX(3px);
+    }
+
+    .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .footer-copyright {
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+
+    .footer-lang-currency {
+        display: flex;
+        gap: 12px;
+    }
+
+    .lang-btn,
+    .currency-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 12px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .lang-btn:hover,
+    .currency-btn:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+        transform: translateY(-2px);
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 992px) {
+        .hero-title {
+            font-size: 48px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+        }
+
+        .hero-content {
+            padding: 0 32px 80px 32px;
+        }
+
+        .steps-grid,
+        .properties-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .footer-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+
+        .footer-brand {
+            grid-column: span 2;
+            max-width: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 36px;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+        }
+
+        .hero-content {
+            padding: 0 24px 70px 24px;
+            padding-bottom: 80px;
+        }
+
+        .steps-grid {
+            grid-template-columns: 1fr;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .properties-grid {
+            grid-template-columns: 1fr;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .section-header h2 {
+            font-size: 32px;
+        }
+
+        .footer-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .footer-brand {
+            grid-column: span 1;
+        }
+
+        .footer-bottom {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .footer-lang-currency {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 28px;
+        }
+
+        .hero-subtitle {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .hero-content {
+            padding: 0 16px 60px 16px;
+            padding-bottom: 70px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ============================================================
+     HERO SECTION – relative positioning, scrolls normally
+     ============================================================ -->
+<section class="hero-section">
+    <div class="hero-content">
+        <!-- 2 LINES ONLY: "Experience Nepal," + "Like a Local" -->
+        <h1 class="hero-title">
+            Experience Nepal,<br>
+            <span class="highlight">Like a Local</span>
+        </h1>
+        <p class="hero-subtitle">
+            Book authentic homestays across Kathmandu, Pokhara, Chitwan, Lumbini &amp; Mustang
+        </p>
+    </div>
+</section>
+
+<!-- ============================================================
+     HOW IT WORKS SECTION
+     ============================================================ -->
+<section class="how-it-works" id="how-it-works">
+    <div class="section-header">
+        <h2>How It Works</h2>
+        <p>Three simple steps to your perfect Nepali stay</p>
+    </div>
+
+    <div class="steps-grid">
+        <!-- Step 1: Search -->
+        <div class="step-card">
+            <div class="step-number">01</div>
+            <span class="step-icon"><i class="fas fa-search"></i></span>
+            <h3>Search</h3>
+            <p>Filter by region, price, amenities and find your ideal homestay.</p>
+        </div>
+
+        <!-- Step 2: Book -->
+        <div class="step-card">
+            <div class="step-number">02</div>
+            <span class="step-icon"><i class="fas fa-calendar-check"></i></span>
+            <h3>Book</h3>
+            <p>Pick your dates, apply a coupon, and confirm in just a few clicks.</p>
+        </div>
+
+        <!-- Step 3: Stay -->
+        <div class="step-card">
+            <div class="step-number">03</div>
+            <span class="step-icon"><i class="fas fa-heart"></i></span>
+            <h3>Stay</h3>
+            <p>Meet your host, experience the culture, and leave a review.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     FEATURED PROPERTIES SECTION
+     ============================================================ -->
+<section class="featured-properties">
+    <div class="section-header">
+        <h2>Featured Properties</h2>
+        <p>Most loved by our guests this season</p>
+    </div>
+
+    <div class="properties-grid">
+        <!-- Property 1: Jungle Retreat Chitwan -->
+        <div class="property-card" onclick="window.location.href='{{ url_for('auth.property_jungle_retreat') }}'">
+            <div class="property-card-image">
+                <img src="{{ url_for('static', filename='images/jr1.jpg') }}" alt="Jungle Retreat Chitwan" onerror="this.src='https://via.placeholder.com/400x220/1a1a2e/00c97a?text=Jungle+Retreat'">
+                <span class="property-badge">Trending</span>
+                <div class="property-rating-badge">
+                    <i class="fas fa-star"></i> 4.9
+                </div>
+            </div>
+            <div class="property-card-body">
+                <h3>Jungle Retreat Chitwan</h3>
+                <div class="property-location">
+                    <i class="fas fa-map-marker-alt"></i> Chitwan
+                </div>
+                <div class="property-amenities">
+                    <span class="property-amenity"><i class="fas fa-utensils"></i> Breakfast</span>
+                    <span class="property-amenity"><i class="fas fa-parking"></i> Parking</span>
+                    <span class="property-amenity"><i class="fas fa-hot-tub"></i> Hot Water</span>
+                </div>
+                <div class="property-card-footer">
+                    <div>
+                        <div class="property-price">NPR 4,500 <span>/ night</span></div>
+                        <div class="property-review-count">55 reviews</div>
+                    </div>
+                    <span style="color: var(--teal);"><i class="fas fa-chevron-right"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Property 2: Mountain View Homestay -->
+        <div class="property-card" onclick="window.location.href='{{ url_for('auth.property_mountain_view') }}'">
+            <div class="property-card-image">
+                <img src="{{ url_for('static', filename='images/mvh1.jpg') }}" alt="Mountain View Homestay" onerror="this.src='https://via.placeholder.com/400x220/1a1a2e/00c97a?text=Mountain+View'">
+                <span class="property-badge">Trending</span>
+                <div class="property-rating-badge">
+                    <i class="fas fa-star"></i> 4.8
+                </div>
+            </div>
+            <div class="property-card-body">
+                <h3>Mountain View Homestay</h3>
+                <div class="property-location">
+                    <i class="fas fa-map-marker-alt"></i> Pokhara
+                </div>
+                <div class="property-amenities">
+                    <span class="property-amenity"><i class="fas fa-wifi"></i> WiFi</span>
+                    <span class="property-amenity"><i class="fas fa-utensils"></i> Breakfast</span>
+                    <span class="property-amenity"><i class="fas fa-mountain"></i> Mountain View</span>
+                </div>
+                <div class="property-card-footer">
+                    <div>
+                        <div class="property-price">NPR 2,500 <span>/ night</span></div>
+                        <div class="property-review-count">42 reviews</div>
+                    </div>
+                    <span style="color: var(--teal);"><i class="fas fa-chevron-right"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Property 3: Thamel Heritage House -->
+        <div class="property-card" onclick="window.location.href='{{ url_for('auth.property_thamel_heritage') }}'">
+            <div class="property-card-image">
+                <img src="{{ url_for('static', filename='images/th1.jpg') }}" alt="Thamel Heritage House" onerror="this.src='https://via.placeholder.com/400x220/1a1a2e/00c97a?text=Thamel+Heritage'">
+                <span class="property-badge">Trending</span>
+                <div class="property-rating-badge">
+                    <i class="fas fa-star"></i> 4.5
+                </div>
+            </div>
+            <div class="property-card-body">
+                <h3>Thamel Heritage House</h3>
+                <div class="property-location">
+                    <i class="fas fa-map-marker-alt"></i> Kathmandu
+                </div>
+                <div class="property-amenities">
+                    <span class="property-amenity"><i class="fas fa-wifi"></i> WiFi</span>
+                    <span class="property-amenity"><i class="fas fa-parking"></i> Parking</span>
+                    <span class="property-amenity"><i class="fas fa-kitchen-set"></i> Kitchen</span>
+                </div>
+                <div class="property-card-footer">
+                    <div>
+                        <div class="property-price">NPR 3,200 <span>/ night</span></div>
+                        <div class="property-review-count">38 reviews</div>
+                    </div>
+                    <span style="color: var(--teal);"><i class="fas fa-chevron-right"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="view-all-link">
+        <a href="{{ url_for('auth.browse') }}">
+            See all properties <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</section>
+
+<!-- ============================================================
+     FOOTER SECTION – as shown in screenshot
+     ============================================================ -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-grid">
+            <!-- Brand Column -->
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <i class="fas fa-home"></i>
+                    <span>Pahuna</span>
+                </div>
+                <p class="footer-description">
+                    Nepal's dedicated accommodation booking platform. Connect with authentic homestays, guesthouses, and unique stays across the Himalayas.
+                </p>
+                <div class="footer-social">
+                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                   
+                </div>
+            </div>
+
+            <!-- Explore Column -->
+            <div class="footer-column">
+                <h4>EXPLORE</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('auth.browse') }}"><i class="fas fa-compass"></i> Browse Properties</a></li>
+                    <li><a href="{{ url_for('auth.index') }}"><i class="fas fa-home"></i> Home</a></li>
+                </ul>
+            </div>
+
+            <!-- Account Column -->
+            <div class="footer-column">
+                <h4>ACCOUNT</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('auth.register') }}"><i class="fas fa-user-plus"></i> Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
+                </ul>
+            </div>
+
+            <!-- Support Column -->
+            <div class="footer-column">
+                <h4>SUPPORT</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('auth.faq') }}"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                    <li><a href="{{ url_for('auth.contact') }}"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="footer-copyright">
+                © 2026 Pahuna. All rights reserved.
+            </div>
+            <div class="footer-lang-currency">
+                <button class="lang-btn" onclick="switchLanguage()">
+                    <i class="fas fa-globe"></i> EN / नेपाली
+                </button>
+                <button class="currency-btn">
+                    <i class="fas fa-rupee-sign"></i> NPR Rs
+                </button>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+function switchLanguage() {
+    alert('Language switcher coming soon!');
+}
+</script>
+{% endblock %}
