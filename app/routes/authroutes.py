@@ -1,10 +1,14 @@
 from flask import Blueprint
 from app.controllers.auth import AuthController
 from app.auth import login_required, admin_required
+
+
 class AuthRoutes:
+
     def __init__(self):
         self.bp         = Blueprint("auth", __name__)
         self.controller = AuthController()
+
     def register(self):
         # ── Public pages ──────────────────────────────────────
         self.bp.route("/",        endpoint="index")(self.controller.home)
