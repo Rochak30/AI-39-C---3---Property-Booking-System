@@ -66,6 +66,8 @@ tr:hover td  { background: var(--bg-700); }
 .btn-approve { background: rgba(46,204,113,.2); color: #2ecc71; }
 .btn-reject  { background: rgba(231,76,60,.2);  color: #e74c3c; }
 .btn-delete  { background: rgba(231,76,60,.1);  color: #e74c3c; }
+.btn-view    { background: rgba(52,152,219,.12); color: #3498db; }
+.btn-view:hover { background: #3498db; color: #fff; }
 .btn-resolve { background: rgba(52,152,219,.2); color: #3498db; }
 .btn-approve:hover{ background: #2ecc71; color: #000; }
 .btn-reject:hover { background: #e74c3c; color: #fff; }
@@ -208,8 +210,12 @@ tr:hover td  { background: var(--bg-700); }
               <td><span class="status status-{{ u.role }}">{{ u.role }}</span></td>
               <td>{{ u.phone or '—' }}</td>
               <td>{{ u.registered_at.strftime('%b %d, %Y') if u.registered_at else '—' }}</td>
-              <td>
+              <td style="display:flex;gap:6px;">
                 {% if u.role != 'admin' %}
+                <form method="POST" action="/admin/view-as-user">
+                  <input type="hidden" name="user_id" value="{{ u.user_id }}">
+                  <button class="btn-xs btn-view" type="submit"><i class="fas fa-eye"></i> View</button>
+                </form>
                 <form method="POST" action="/admin/delete-user"
                       onsubmit="return confirm('Delete {{ u.name }}?')">
                   <input type="hidden" name="user_id" value="{{ u.user_id }}">

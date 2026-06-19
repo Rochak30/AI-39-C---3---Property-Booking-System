@@ -1,10 +1,14 @@
 from flask import Blueprint
 from app.controllers.auth import AuthController
 from app.auth import login_required, admin_required
+
+
 class AuthRoutes:
+
     def __init__(self):
         self.bp         = Blueprint("auth", __name__)
         self.controller = AuthController()
+
     def register(self):
         # ── Public pages ──────────────────────────────────────
         self.bp.route("/",        endpoint="index")(self.controller.home)
@@ -40,6 +44,8 @@ class AuthRoutes:
         self.bp.route("/admin/delete-user",        methods=["POST"])(self.controller.delete_user)
         self.bp.route("/admin/delete-property",    methods=["POST"])(self.controller.delete_property_admin)
         self.bp.route("/admin/resolve-query",      methods=["POST"])(self.controller.resolve_query)
+        self.bp.route("/admin/view-as-user",       methods=["POST"])(self.controller.view_as_user)
+        self.bp.route("/admin/exit-view-as",       methods=["GET"])(self.controller.exit_view_as)
 
         # ── Host actions ──────────────────────────────────────
         self.bp.route("/host/update-profile",  methods=["POST"])(self.controller.host_update_profile)

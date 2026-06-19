@@ -73,6 +73,23 @@ class AuthController(BaseController):
                     session["user_id"]   = user_data["user_id"]
                     session["user_name"] = user_data["name"]
                     session["role"]      = user_data["role"]
+
+                    # Let pending hosts know right at login, not just on the dashboard
+                    if user_data["role"] == "host":
+                        db = Database()
+                        host_profile = db.fetch_one(
+                            "SELECT verified FROM host_profiles WHERE user_id=%s",
+                            (user_data["user_id"],)
+                        )
+                        db.close()
+                        if host_profile and not host_profile["verified"]:
+                            flash(
+                                "Welcome back! Your host account is still pending admin approval. "
+                                "You can log in and view your dashboard, but you won't be able to add "
+                                "properties until you're approved.",
+                                "warning"
+                            )
+
                     return redirect(url_for("auth.dashboard"))
 
             flash("Invalid email or password.", "danger")
@@ -86,6 +103,7 @@ class AuthController(BaseController):
         if request.method == "POST":
             name, email = self.get_form_data("name", "email")
             password = request.form.get("password", "")
+            phone    = request.form.get("phone", "").strip()
             role     = request.form.get("role", "user")
             if role not in ("guest", "host"):
                 role = "user"
@@ -103,7 +121,7 @@ class AuthController(BaseController):
                 return render_template("register.html")
 
             try:
-                user_id = new_user.save()
+                user_id = new_user.save(phone=phone)
                 if role == "host":
                     new_user.save_host_profile(
                         user_id,
@@ -125,6 +143,11 @@ class AuthController(BaseController):
         return render_template("register.html")
 
     def logout(self):
+        # If admin is mid-impersonation, "Logout" should just exit back to
+        # admin rather than destroying the admin's real session entirely.
+        if session.get("viewing_as") and "impersonator_id" in session:
+            return self.exit_view_as()
+
         session.clear()
         flash("Logged out successfully.", "success")
         return redirect(url_for("auth.login"))
@@ -147,6 +170,65 @@ class AuthController(BaseController):
             return redirect(url_for("auth.host_dashboard"))
         else:
             return redirect(url_for("auth.guest_dashboard"))
+
+    # ════════════════════════════════════════════════════════════
+    # ADMIN — VIEW AS USER (impersonation for troubleshooting)
+    # ════════════════════════════════════════════════════════════
+    # Lets an admin temporarily see exactly what a user sees, fully
+    # interactive (can submit forms / edit data as that user).
+    # The admin's real identity is stashed in session under
+    # "impersonator_*" keys and restored on exit_view_as().
+
+    def view_as_user(self):
+        if session.get("role") != "admin":
+            flash("Admin access required.", "danger")
+            return redirect(url_for("auth.dashboard"))
+
+        target_user_id = request.form.get("user_id")
+        db = Database()
+        target_user = db.fetch_one(
+            "SELECT * FROM users WHERE user_id=%s", (target_user_id,)
+        )
+        db.close()
+
+        if not target_user:
+            flash("User not found.", "danger")
+            return redirect(url_for("auth.admin_dashboard"))
+
+        if target_user["role"] == "admin":
+            flash("You can't view-as another admin account.", "warning")
+            return redirect(url_for("auth.admin_dashboard"))
+
+        # Stash the real admin identity so we can restore it later
+        session["impersonator_id"]   = session.get("user_id")
+        session["impersonator_name"] = session.get("user_name")
+
+        # Swap session to the target user
+        session["user_id"]   = target_user["user_id"]
+        session["user_name"] = target_user["name"]
+        session["role"]      = target_user["role"]
+        session["viewing_as"] = True
+
+        flash(f"You are now viewing as {target_user['name']}.", "info")
+
+        if target_user["role"] == "host":
+            return redirect(url_for("auth.host_dashboard"))
+        else:
+            return redirect(url_for("auth.guest_dashboard"))
+
+    def exit_view_as(self):
+        if not session.get("viewing_as") or "impersonator_id" not in session:
+            flash("Not currently viewing as another user.", "warning")
+            return redirect(url_for("auth.dashboard"))
+
+        # Restore the real admin identity
+        session["user_id"]   = session.pop("impersonator_id")
+        session["user_name"] = session.pop("impersonator_name")
+        session["role"]      = "admin"
+        session.pop("viewing_as", None)
+
+        flash("Returned to your admin account.", "success")
+        return redirect(url_for("auth.admin_dashboard"))
 
     # ────────────────────────────────────────────────────────────
     # ADMIN DASHBOARD
@@ -290,6 +372,64 @@ class AuthController(BaseController):
         db.execute("DELETE FROM users WHERE user_id=%s", (user_id,))
         db.close()
         flash("User deleted.", "warning")
+        return redirect(url_for("auth.admin_dashboard"))
+
+    # ── Admin: view-as (impersonation) ───────────────────────────
+
+    def view_as_user(self):
+        """
+        Admin clicks 'Login as' on a user row. We stash the admin's real
+        identity in session under separate _impersonator_* keys, then swap
+        the active session to the target user. The target user's dashboard
+        renders normally and is fully interactive (real actions, real DB
+        writes) — this is for troubleshooting, not a read-only preview.
+        """
+        if session.get("role") != "admin":
+            return redirect(url_for("auth.admin_dashboard"))
+
+        target_user_id = request.form.get("user_id")
+        db = Database()
+        target = db.fetch_one("SELECT * FROM users WHERE user_id=%s", (target_user_id,))
+        db.close()
+
+        if not target:
+            flash("User not found.", "danger")
+            return redirect(url_for("auth.admin_dashboard"))
+
+        if target["role"] == "admin":
+            flash("You can't view-as another admin account.", "warning")
+            return redirect(url_for("auth.admin_dashboard"))
+
+        # Stash the real admin identity (only if not already impersonating —
+        # prevents nested impersonation from clobbering the original admin)
+        if not session.get("_impersonator_id"):
+            session["_impersonator_id"]   = session.get("user_id")
+            session["_impersonator_name"] = session.get("user_name")
+            session["_impersonator_role"] = session.get("role")
+
+        # Swap active session to the target user
+        session["user_id"]   = target["user_id"]
+        session["user_name"] = target["name"]
+        session["role"]      = target["role"]
+
+        flash(f"You are now viewing as {target['name']} ({target['role']}).", "info")
+
+        if target["role"] == "host":
+            return redirect(url_for("auth.host_dashboard"))
+        else:
+            return redirect(url_for("auth.guest_dashboard"))
+
+    def exit_view_as(self):
+        """Restore the original admin session after a view-as session."""
+        if not session.get("_impersonator_id"):
+            # Not impersonating anyone — nothing to exit
+            return redirect(url_for("auth.dashboard"))
+
+        session["user_id"]   = session.pop("_impersonator_id")
+        session["user_name"] = session.pop("_impersonator_name")
+        session["role"]      = session.pop("_impersonator_role")
+
+        flash("Returned to your admin account.", "success")
         return redirect(url_for("auth.admin_dashboard"))
 
     def resolve_query(self):
@@ -597,6 +737,21 @@ class AuthController(BaseController):
             flash("Only hosts can add properties.", "warning")
             return redirect(url_for("auth.browse"))
 
+        # Gate: unverified hosts cannot submit properties
+        db = Database()
+        host_profile = db.fetch_one(
+            "SELECT verified FROM host_profiles WHERE user_id=%s",
+            (session.get("user_id"),)
+        )
+        db.close()
+        if not host_profile or not host_profile["verified"]:
+            flash(
+                "Your host account is still pending admin approval. "
+                "You'll be able to add properties once approved.",
+                "warning"
+            )
+            return redirect(url_for("auth.host_dashboard"))
+
         if request.method == "POST":
             title           = request.form.get("property_name", "").strip()
             prop_type       = request.form.get("property_type", "").strip()
@@ -620,7 +775,7 @@ class AuthController(BaseController):
                 ))
                 db.close()
                 flash("Property submitted for approval!", "success")
-                return redirect(url_for("auth.dashboard"))
+                return redirect(url_for("auth.host_dashboard"))
             except Exception as e:
                 flash(f"Error adding property: {str(e)}", "danger")
                 return render_template("add_property.html")
@@ -730,6 +885,9 @@ class AuthController(BaseController):
     def product_form(self):
         return render_template("product_form.html")
 
+    # Property detail pages — kept as static templates for now.
+    # When your teammate's add-property feature is done, replace with one
+    # dynamic route: /property/<int:property_id>
 
     def property_mountain_view(self):
         return render_template("mountain_view.html")

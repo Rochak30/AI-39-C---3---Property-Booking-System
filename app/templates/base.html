@@ -127,6 +127,21 @@
   </div>
 </nav>
 
+<!-- Admin "View As" Banner -->
+{% if session.get('viewing_as') %}
+<div style="position:fixed; top:64px; left:0; right:0; z-index:9998;
+            background:#e67e22; color:#fff; padding:10px 24px;
+            display:flex; align-items:center; justify-content:center; gap:16px;
+            font-size:14px; font-weight:600; box-shadow:0 2px 8px rgba(0,0,0,.2);">
+  <span><i class="fas fa-user-secret"></i> Viewing as {{ session.get('user_name') }}</span>
+  <a href="/admin/exit-view-as" style="background:#fff; color:#e67e22; padding:4px 14px;
+     border-radius:6px; text-decoration:none; font-size:12px; font-weight:700;">
+    <i class="fas fa-sign-out-alt"></i> Exit to Admin
+  </a>
+</div>
+<div style="height:44px;"></div>
+{% endif %}
+
 <!-- Flash Messages -->
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}

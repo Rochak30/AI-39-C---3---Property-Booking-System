@@ -93,207 +93,100 @@
   <!-- Results -->
   <div class="container browse-results">
     <div class="results-header">
-      <p class="results-count" id="resultsCount">6 properties found</p>
+      <p class="results-count" id="resultsCount">{{ properties|length }} propert{{ 'y' if properties|length == 1 else 'ies' }} found</p>
     </div>
+
+    {# ── property_url_map: maps property_id to its named route ── #}
+    {% set property_urls = {
+      1: url_for('auth.property_mountain_view'),
+      2: url_for('auth.property_thamel_heritage'),
+      3: url_for('auth.property_jungle_retreat'),
+      4: url_for('auth.property_lumbini_peace'),
+      5: url_for('auth.property_mustang_desert'),
+      6: url_for('auth.property_lakeside_comfort'),
+    } %}
+
+    {# amenity → icon map #}
+    {% set amenity_icons = {
+      'WiFi': 'fa-wifi', 'Parking': 'fa-parking',
+      'Breakfast Included': 'fa-utensils', 'Hot Water': 'fa-hot-tub',
+      'Kitchen Access': 'fa-utensil-spoon', 'Mountain View': 'fa-mountain',
+      'Air Conditioning': 'fa-snowflake', 'Pet Friendly': 'fa-paw',
+    } %}
+
+    {# property_id → image file map (keeps your existing images) #}
+    {% set prop_images = {
+      1: 'images/mvh1.jpg', 2: 'images/th1.jpg',  3: 'images/jr1.jpg',
+      4: 'images/lp1.jpg',  5: 'images/md3.jpg',  6: 'images/lc1.jpg',
+    } %}
 
     <div class="props-grid" id="propertiesGrid">
 
-      <!-- Card 1 - Mountain View Homestay -->
-      <a href="{{ url_for('auth.property_mountain_view') }}" class="prop-card"
-         data-id="1" data-region="Pokhara" data-type="Homestay" data-price="2500"
-         data-amenities="WiFi,Breakfast Included,Mountain View,Hot Water" data-rating="4.8" data-bookings="42" data-trending="true">
-        <div class="prop-img-placeholder">
-          <img src="{{ url_for('static', filename='images/mvh1.jpg') }}" alt="Mountain View Homestay">
-          <div class="prop-badge-row">
-            <span class="prop-trending">🔥 Trending</span>
-          </div>
-          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(1,this)">🤍</button>
-        </div>
-        <div class="prop-body">
-          <p class="prop-location">📍 Pokhara · Homestay</p>
-          <h3 class="prop-title">Mountain View Homestay</h3>
-          <div class="prop-amenities">
-            <span class="amenity-tag"><i class="fas fa-wifi"></i> WiFi</span>
-            <span class="amenity-tag"><i class="fas fa-utensils"></i> Breakfast</span>
-            <span class="amenity-tag"><i class="fas fa-mountain"></i> Mountain View</span>
-          </div>
-          <div class="prop-footer">
-            <div class="prop-price">
-              <span class="prop-price-amount">NPR 2,500</span>
-              <span class="prop-price-night">/ night</span>
-            </div>
-            <div class="prop-rating">
-              <span class="prop-rating-star">★★★★★</span>
-              <span>4.8</span>
-              <span class="prop-rating-count">· 🔥 42</span>
-            </div>
-          </div>
-          <button class="btn btn-primary view-details-btn">View Details <i class="fas fa-arrow-right"></i></button>
-        </div>
-      </a>
+      {% for p in properties %}
+        {% set amenities_list = (p.amenity_list or '').split(',') %}
+        {% set is_wished = p.property_id in wishlist_ids %}
+        {% set detail_url = property_urls.get(p.property_id, url_for('auth.browse')) %}
+        {% set img_src    = prop_images.get(p.property_id, 'images/mvh1.jpg') %}
+        {% set rating     = p.avg_rating | round(1) %}
+        {% set bookings   = p.booking_count %}
 
-      <!-- Card 2 - Thamel Heritage House -->
-      <a href="{{ url_for('auth.property_thamel_heritage') }}" class="prop-card"
-         data-id="2" data-region="Kathmandu" data-type="Guesthouse" data-price="3200"
-         data-amenities="WiFi,Parking,Kitchen Access,Hot Water" data-rating="4.5" data-bookings="38" data-trending="true">
-        <div class="prop-img-placeholder">
-           <img src="{{ url_for('static', filename='images/th1.jpg') }}" alt="Thamel Heritage House">
-          <div class="prop-badge-row">
-            <span class="prop-trending">🔥 Trending</span>
-          </div>
-          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(2,this)">🤍</button>
-        </div>
-        <div class="prop-body">
-          <p class="prop-location">📍 Kathmandu · Guesthouse</p>
-          <h3 class="prop-title">Thamel Heritage House</h3>
-          <div class="prop-amenities">
-            <span class="amenity-tag"><i class="fas fa-wifi"></i> WiFi</span>
-            <span class="amenity-tag"><i class="fas fa-parking"></i> Parking</span>
-            <span class="amenity-tag"><i class="fas fa-utensil-spoon"></i> Kitchen</span>
-          </div>
-          <div class="prop-footer">
-            <div class="prop-price">
-              <span class="prop-price-amount">NPR 3,200</span>
-              <span class="prop-price-night">/ night</span>
-            </div>
-            <div class="prop-rating">
-              <span class="prop-rating-star">★★★★½</span>
-              <span>4.5</span>
-              <span class="prop-rating-count">· 🔥 38</span>
-            </div>
-          </div>
-          <button class="btn btn-primary view-details-btn">View Details <i class="fas fa-arrow-right"></i></button>
-        </div>
-      </a>
+        <a href="{{ detail_url }}" class="prop-card"
+           data-id="{{ p.property_id }}"
+           data-region="{{ p.region }}"
+           data-type="{{ p.type }}"
+           data-price="{{ p.price_per_night | int }}"
+           data-amenities="{{ p.amenity_list or '' }}"
+           data-rating="{{ rating }}"
+           data-bookings="{{ bookings }}"
+           data-trending="{{ 'true' if bookings > 30 else 'false' }}">
 
-      <!-- Card 3 - Jungle Retreat Chitwan -->
-      <a href="{{ url_for('auth.property_jungle_retreat') }}" class="prop-card"
-         data-id="3" data-region="Chitwan" data-type="Entire Property" data-price="4500"
-         data-amenities="Breakfast Included,Parking,Hot Water" data-rating="4.9" data-bookings="55" data-trending="true">
-        <div class="prop-img-placeholder">
-          <img src="{{ url_for('static', filename='images/jr1.jpg') }}" alt="Jungle Retreat Chitwan">
-          <div class="prop-badge-row">
-            <span class="prop-trending">🔥 Trending</span>
-          </div>
-          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(3,this)">🤍</button>
-        </div>
-        <div class="prop-body">
-          <p class="prop-location">📍 Chitwan · Entire Property</p>
-          <h3 class="prop-title">Jungle Retreat Chitwan</h3>
-          <div class="prop-amenities">
-            <span class="amenity-tag"><i class="fas fa-utensils"></i> Breakfast</span>
-            <span class="amenity-tag"><i class="fas fa-parking"></i> Parking</span>
-            <span class="amenity-tag"><i class="fas fa-hot-tub"></i> Hot Water</span>
-          </div>
-          <div class="prop-footer">
-            <div class="prop-price">
-              <span class="prop-price-amount">NPR 4,500</span>
-              <span class="prop-price-night">/ night</span>
+          <div class="prop-img-placeholder">
+            <img src="{{ url_for('static', filename=img_src) }}" alt="{{ p.title }}">
+            <div class="prop-badge-row">
+              {% if bookings > 30 %}
+                <span class="prop-trending">🔥 Trending</span>
+              {% endif %}
             </div>
-            <div class="prop-rating">
-              <span class="prop-rating-star">★★★★★</span>
-              <span>4.9</span>
-              <span class="prop-rating-count">· 🔥 55</span>
-            </div>
+            <button class="prop-wishlist {{ 'active' if is_wished else '' }}"
+                    onclick="event.preventDefault(); toggleWishlist({{ p.property_id }}, this)">
+              {{ '❤️' if is_wished else '🤍' }}
+            </button>
           </div>
-          <button class="btn btn-primary view-details-btn">View Details <i class="fas fa-arrow-right"></i></button>
-        </div>
-      </a>
 
-      <!-- Card 4 - Lumbini Peace Lodge -->
-      <a href="{{ url_for('auth.property_lumbini_peace') }}" class="prop-card"
-         data-id="4" data-region="Lumbini" data-type="Private Room" data-price="1800"
-         data-amenities="WiFi,Hot Water" data-rating="4.3" data-bookings="19" data-trending="false">
-        <div class="prop-img-placeholder">
-          <img src="{{ url_for('static', filename='images/lp1.jpg') }}" alt="Lumbini Peace Lodge">
-          <div class="prop-badge-row"></div>
-          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(4,this)">🤍</button>
-        </div>
-        <div class="prop-body">
-          <p class="prop-location">📍 Lumbini · Private Room</p>
-          <h3 class="prop-title">Lumbini Peace Lodge</h3>
-          <div class="prop-amenities">
-            <span class="amenity-tag"><i class="fas fa-wifi"></i> WiFi</span>
-            <span class="amenity-tag"><i class="fas fa-hot-tub"></i> Hot Water</span>
-          </div>
-          <div class="prop-footer">
-            <div class="prop-price">
-              <span class="prop-price-amount">NPR 1,800</span>
-              <span class="prop-price-night">/ night</span>
+          <div class="prop-body">
+            <p class="prop-location">📍 {{ p.region }} · {{ p.type }}</p>
+            <h3 class="prop-title">{{ p.title }}</h3>
+            <div class="prop-amenities">
+              {% for amenity in amenities_list[:3] %}
+                {% if amenity %}
+                  <span class="amenity-tag">
+                    <i class="fas {{ amenity_icons.get(amenity, 'fa-check') }}"></i>
+                    {{ amenity | replace('Breakfast Included', 'Breakfast') | replace('Kitchen Access', 'Kitchen') | replace('Mountain View', 'Mtn View') }}
+                  </span>
+                {% endif %}
+              {% endfor %}
             </div>
-            <div class="prop-rating">
-              <span class="prop-rating-star">★★★★</span>
-              <span>4.3</span>
-              <span class="prop-rating-count">· 🔥 19</span>
+            <div class="prop-footer">
+              <div class="prop-price">
+                <span class="prop-price-amount">NPR {{ "{:,.0f}".format(p.price_per_night) }}</span>
+                <span class="prop-price-night">/ night</span>
+              </div>
+              <div class="prop-rating">
+                <span class="prop-rating-star">★</span>
+                <span>{{ "%.1f"|format(rating) if rating > 0 else 'New' }}</span>
+                {% if bookings > 0 %}
+                  <span class="prop-rating-count">· 🔥 {{ bookings }}</span>
+                {% endif %}
+              </div>
             </div>
+            <button class="btn btn-primary view-details-btn">View Details <i class="fas fa-arrow-right"></i></button>
           </div>
-          <button class="btn btn-primary view-details-btn">View Details <i class="fas fa-arrow-right"></i></button>
-        </div>
-      </a>
-
-      <!-- Card 5 - Mustang Desert Homestay -->
-      <a href="{{ url_for('auth.property_mustang_desert') }}" class="prop-card"
-         data-id="5" data-region="Mustang" data-type="Homestay" data-price="5500"
-         data-amenities="Breakfast Included,Hot Water,Mountain View" data-rating="4.7" data-bookings="29" data-trending="false">
-        <div class="prop-img-placeholder">
-          <img src="{{ url_for('static', filename='images/md3.jpg') }}" alt="Mustang Desert Homestay">
-          <div class="prop-badge-row"></div>
-          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(5,this)">🤍</button>
-        </div>
-        <div class="prop-body">
-          <p class="prop-location">📍 Lo-Manthang, Mustang · Homestay</p>
-          <h3 class="prop-title">Mustang Desert Homestay</h3>
-          <div class="prop-amenities">
-            <span class="amenity-tag"><i class="fas fa-utensils"></i> Breakfast</span>
-            <span class="amenity-tag"><i class="fas fa-hot-tub"></i> Hot Water</span>
-            <span class="amenity-tag"><i class="fas fa-mountain"></i> Mountain View</span>
-          </div>
-          <div class="prop-footer">
-            <div class="prop-price">
-              <span class="prop-price-amount">NPR 5,500</span>
-              <span class="prop-price-night">/ night</span>
-            </div>
-            <div class="prop-rating">
-              <span class="prop-rating-star">★★★★★</span>
-              <span>4.7</span>
-              <span class="prop-rating-count">· 🔥 29</span>
-            </div>
-          </div>
-          <button class="btn btn-primary view-details-btn">View Details <i class="fas fa-arrow-right"></i></button>
-        </div>
-      </a>
-
-      <!-- Card 6 - Lakeside Comfort Inn -->
-      <a href="{{ url_for('auth.property_lakeside_comfort') }}" class="prop-card"
-         data-id="6" data-region="Pokhara" data-type="Guesthouse" data-price="2200"
-         data-amenities="WiFi,Parking,Kitchen Access" data-rating="4.4" data-bookings="31" data-trending="false">
-        <div class="prop-img-placeholder">
-          <img src="{{ url_for('static', filename='images/lc1.jpg') }}" alt="Lakeside Comfort Inn">
-          <div class="prop-badge-row"></div>
-          <button class="prop-wishlist" onclick="event.preventDefault(); toggleWishlist(6,this)">🤍</button>
-        </div>
-        <div class="prop-body">
-          <p class="prop-location">📍 Pokhara · Guesthouse</p>
-          <h3 class="prop-title">Lakeside Comfort Inn</h3>
-          <div class="prop-amenities">
-            <span class="amenity-tag"><i class="fas fa-wifi"></i> WiFi</span>
-            <span class="amenity-tag"><i class="fas fa-parking"></i> Parking</span>
-            <span class="amenity-tag"><i class="fas fa-utensil-spoon"></i> Kitchen</span>
-          </div>
-          <div class="prop-footer">
-            <div class="prop-price">
-              <span class="prop-price-amount">NPR 2,200</span>
-              <span class="prop-price-night">/ night</span>
-            </div>
-            <div class="prop-rating">
-              <span class="prop-rating-star">★★★★</span>
-              <span>4.4</span>
-              <span class="prop-rating-count">· 🔥 31</span>
-            </div>
-          </div>
-          <button class="btn btn-primary view-details-btn">View Details <i class="fas fa-arrow-right"></i></button>
-        </div>
-      </a>
+        </a>
+      {% else %}
+        <p style="color:var(--text-muted); grid-column:1/-1; text-align:center; padding:40px;">
+          No properties available yet.
+        </p>
+      {% endfor %}
 
     </div>
 
@@ -1269,36 +1162,35 @@ if (compactFilterToggle) {
 
 handleFilterPanelScroll();
 
-// Wishlist storage
-let wishlistIds = JSON.parse(localStorage.getItem('bookmandu_wishlist') || '[]');
+// Wishlist — backend-driven
+// wishlist_ids are seeded from the DB via Jinja at page load
+const serverWishlistIds = new Set({{ wishlist_ids | list | tojson }});
 
 function toggleWishlist(id, btn) {
-  const index = wishlistIds.indexOf(id);
-  if (index === -1) {
-    wishlistIds.push(id);
-    if (btn) { btn.classList.add('active'); btn.textContent = '❤️'; }
-    showToast('❤️ Added to wishlist!', 'success');
-  } else {
-    wishlistIds.splice(index, 1);
-    if (btn) { btn.classList.remove('active'); btn.textContent = '🤍'; }
-    showToast('Removed from wishlist', 'info');
-  }
-  localStorage.setItem('bookmandu_wishlist', JSON.stringify(wishlistIds));
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.prop-wishlist').forEach((btn, idx) => {
-    const card = btn.closest('.prop-card');
-    if (card) {
-      const href = card.getAttribute('href');
-      const id = href ? parseInt(href.split('/').pop()) : idx + 1;
-      if (wishlistIds.includes(id)) {
-        btn.classList.add('active');
-        btn.textContent = '❤️';
-      }
+  {% if session.get('user_id') %}
+  fetch('/wishlist/toggle', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ property_id: id })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.action === 'added') {
+      serverWishlistIds.add(id);
+      if (btn) { btn.classList.add('active'); btn.textContent = '❤️'; }
+      showToast('❤️ Added to wishlist!', 'success');
+    } else {
+      serverWishlistIds.delete(id);
+      if (btn) { btn.classList.remove('active'); btn.textContent = '🤍'; }
+      showToast('Removed from wishlist', 'info');
     }
-  });
-});
+  })
+  .catch(() => showToast('Something went wrong', 'error'));
+  {% else %}
+  showToast('Please login to save to wishlist', 'info');
+  setTimeout(() => { window.location.href = '/login'; }, 1200);
+  {% endif %}
+}
 
 // ========== FIXED FILTER AND SORT FUNCTIONALITY ==========
 const grid = document.getElementById('propertiesGrid');

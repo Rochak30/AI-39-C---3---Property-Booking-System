@@ -41,12 +41,12 @@ class User(BaseModel):
 
     # ── Create ───────────────────────────────────────────────
 
-    def save(self):
+    def save(self, phone=None):
         """Insert user row and return the new user_id."""
         db = Database()
         user_id = db.execute_get_id(
-            "INSERT INTO users (name, email, password_hash, role) VALUES (%s, %s, %s, %s)",
-            (self.name, self.email, self.__password, self.role),
+            "INSERT INTO users (name, email, password_hash, role, phone) VALUES (%s, %s, %s, %s, %s)",
+            (self.name, self.email, self.__password, self.role, phone),
         )
         db.close()
         return user_id  # ✅ caller uses this for host_profiles
