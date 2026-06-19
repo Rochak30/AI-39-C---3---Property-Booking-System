@@ -2648,8 +2648,7 @@ function openAllImages() {
     }
    
     if (galleryModal) galleryModal.classList.add('open');
-}
-
+}s
 function closeAllImagesModal(e) {
     var modal = document.getElementById('allImagesModal');
     if (!modal) return;
@@ -2657,7 +2656,6 @@ function closeAllImagesModal(e) {
         modal.classList.remove('open');
     }
 }
-
 function showAllRules() {
     var modal = document.getElementById('rulesModal');
     if (!modal) {
@@ -2667,19 +2665,16 @@ function showAllRules() {
     }
     if (modal) modal.classList.add('open');
 }
-
 function closeRulesModal(e) {
     var modal = document.getElementById('rulesModal');
     if (modal && (!e || e.target.id === 'rulesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))))
         modal.classList.remove('open');
 }
-
 function copyBankText(elementId) {
     var text = document.getElementById(elementId).textContent;
     navigator.clipboard.writeText(text);
     showToast('Copied to clipboard!', 'success');
 }
-
 function showToast(message, type) {
     var container = document.getElementById('toasts');
     if (!container) {
@@ -2695,7 +2690,6 @@ function showToast(message, type) {
     container.appendChild(toast);
     setTimeout(function() { toast.remove(); }, 4000);
 }
-
 var paymentMethods = document.querySelectorAll('.payment-method-enhanced');
 for (var i = 0; i < paymentMethods.length; i++) {
     paymentMethods[i].addEventListener('click', function() {
@@ -2719,7 +2713,6 @@ for (var i = 0; i < paymentMethods.length; i++) {
         }
     });
 }
-
 document.getElementById('confirmBookingBtn').addEventListener('click', function() {
     if (selectedCheckIn && selectedCheckOut) {
         showEnhancedBookingModal();
@@ -2733,7 +2726,6 @@ document.getElementById('confirmBookingBtn').addEventListener('click', function(
         selectedPaymentMethod = null;
     }
 });
-
 document.getElementById('proceedPaymentBtn').addEventListener('click', function() {
     if (!selectedPaymentMethod) {
         showToast('Please select a payment method', 'error');
@@ -2750,7 +2742,6 @@ document.getElementById('proceedPaymentBtn').addEventListener('click', function(
         document.getElementById('confirmPaymentBtn').style.display = 'flex';
     }, 2000);
 });
-
 document.getElementById('confirmPaymentBtn').addEventListener('click', function() {
     var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     var bookingReference = '';
@@ -2770,7 +2761,6 @@ document.getElementById('confirmPaymentBtn').addEventListener('click', function(
     updateBookingSummary();
     renderCalendar();
 });
-
 function closeBookingModal() { document.getElementById('bookingModal').classList.remove('active'); }
 function closeSuccessModal() { document.getElementById('successModal').classList.remove('active'); }
 function redirectToBrowse() { window.location.href = "{{ url_for('auth.browse') }}"; }
