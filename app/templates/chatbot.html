@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+  <!-- ============================================================
+       META TAGS & CACHE CONTROL
+       Prevents browser caching to ensure latest version loads
+       ============================================================ -->
   <meta charset="UTF-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -8,90 +12,105 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bookmandu — AI Booking Assistant</title>
   
-  <!-- Fonts -->
+  <!-- ============================================================
+       GOOGLE FONTS
+       Syne - Display font for headings
+       Alata - Clean body font
+       Dancing Script - Decorative logo font
+       ============================================================ -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Alata&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Font Awesome -->
+  <!-- ============================================================
+       FONT AWESOME 6 (FREE ICONS)
+       Provides all icons used throughout the page
+       ============================================================ -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
   <style>
     /* ============================================================
        CSS CUSTOM PROPERTIES — DESIGN TOKENS
+       These variables control the entire theme and can be easily
+       overridden for light/dark mode switching.
        ============================================================ */
     :root {
-      /* Dark backgrounds */
-      --bg-900: #0b1015;
-      --bg-800: #131a22;
-      --bg-700: #192030;
-      --bg-600: #1e2738;
-      --bg-500: #263040;
-      --surface: #1a2535;
-      --surface-hover: #1f2d40;
+      /* ── Dark Theme Backgrounds ── */
+      --bg-900: #0b1015;        /* Deepest background */
+      --bg-800: #131a22;        /* Slightly lighter */
+      --bg-700: #192030;        /* Card backgrounds */
+      --bg-600: #1e2738;        /* Hover states */
+      --bg-500: #263040;        /* Interactive elements */
+      --surface: #1a2535;       /* Main surface color */
+      --surface-hover: #1f2d40; /* Surface hover state */
 
-      /* Brand accent — logo green-teal */
-      --teal: #00c97a;
-      --teal-dark: #00a864;
-      --teal-glow: rgba(0, 201, 122, 0.13);
+      /* ── Brand Accent — Green-Teal ── */
+      --teal: #00c97a;           /* Primary brand color */
+      --teal-dark: #00a864;      /* Darker variant for hover */
+      --teal-glow: rgba(0, 201, 122, 0.13);  /* Glow effect */
       --teal-glow-strong: rgba(0, 201, 122, 0.25);
 
-      /* Secondary accent */
-      --cyan: #00e5cc;
-      --amber: #f0a500;
-      --red: #e74c3c;
-      --green: #2ecc71;
-      --orange: #e67e22;
-      --purple: #9b59b6;
+      /* ── Secondary Accents ── */
+      --cyan: #00e5cc;           /* Secondary accent */
+      --amber: #f0a500;          /* Warning/rating color */
+      --red: #e74c3c;            /* Error/danger color */
+      --green: #2ecc71;          /* Success color */
+      --orange: #e67e22;         /* Warning color */
+      --purple: #9b59b6;         /* Premium color */
 
-      /* Text */
-      --text-primary: #e8eef5;
-      --text-secondary: #8b9ab0;
-      --text-muted: #5f6e82;
+      /* ── Text Colors ── */
+      --text-primary: #e8eef5;   /* Main text */
+      --text-secondary: #8b9ab0; /* Secondary text */
+      --text-muted: #5f6e82;     /* Muted/disabled text */
 
-      /* Borders */
-      --border: rgba(40, 55, 75, 0.9);
-      --border-teal: rgba(0, 201, 122, 0.3);
+      /* ── Borders ── */
+      --border: rgba(40, 55, 75, 0.9);        /* Default border */
+      --border-teal: rgba(0, 201, 122, 0.3);   /* Teal border for accents */
 
-      /* Typography */
-      --font-display: 'Syne', sans-serif;
-      --font-body: 'Alata', sans-serif;
+      /* ── Typography ── */
+      --font-display: 'Syne', sans-serif;     /* Headings and display text */
+      --font-body: 'Alata', sans-serif;       /* Body text */
 
-      /* Shape */
-      --radius-sm: 6px;
-      --radius-md: 12px;
-      --radius-lg: 18px;
-      --radius-xl: 24px;
+      /* ── Shapes & Radius ── */
+      --radius-sm: 6px;          /* Small radius */
+      --radius-md: 12px;         /* Medium radius */
+      --radius-lg: 18px;         /* Large radius */
+      --radius-xl: 24px;         /* Extra large radius */
 
-      /* Shadows */
-      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.45);
-      --shadow-teal: 0 0 24px rgba(0, 201, 122, 0.18);
+      /* ── Shadows ── */
+      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.45);  /* Card shadow */
+      --shadow-teal: 0 0 24px rgba(0, 201, 122, 0.18); /* Teal glow shadow */
 
-      /* Transition */
+      /* ── Transitions ── */
       --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Light theme overrides */
+    /* ============================================================
+       LIGHT THEME OVERRIDES
+       When data-theme="light" is applied to html, these variables
+       override the dark theme values.
+       ============================================================ */
     [data-theme="light"] {
-      --bg-900: #f0f5f0;
-      --bg-800: #ffffff;
-      --bg-700: #f5faf7;
-      --bg-600: #e4ede8;
-      --bg-500: #cddbd2;
-      --surface: #ffffff;
-      --surface-hover: #f0f9f4;
-      --text-primary: #0d1f14;
-      --text-secondary: #3d5a47;
-      --text-muted: #7a9485;
-      --border: rgba(180, 210, 195, 0.85);
+      --bg-900: #f0f5f0;        /* Light background */
+      --bg-800: #ffffff;        /* White surface */
+      --bg-700: #f5faf7;        /* Light gray */
+      --bg-600: #e4ede8;        /* Slightly darker */
+      --bg-500: #cddbd2;        /* Medium light */
+      --surface: #ffffff;       /* White surface */
+      --surface-hover: #f0f9f4; /* Light hover */
+      --text-primary: #0d1f14;  /* Dark text */
+      --text-secondary: #3d5a47; /* Dark secondary */
+      --text-muted: #7a9485;    /* Muted text */
+      --border: rgba(180, 210, 195, 0.85);  /* Light border */
       --border-teal: rgba(0, 201, 122, 0.35);
-      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);  /* Light shadow */
       --shadow-teal: 0 0 20px rgba(0, 201, 122, 0.15);
     }
 
     /* ============================================================
-       RESET & BASE
+       RESET & BASE STYLES
+       Normalizes browser defaults and sets global styles.
        ============================================================ */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -110,7 +129,7 @@
       color: var(--text-primary);
       line-height: 1.6;
       min-height: 100vh;
-      transition: background 0.3s, color 0.3s;
+      transition: background 0.3s, color 0.3s;  /* Smooth theme transitions */
     }
 
     img {
@@ -136,6 +155,7 @@
 
     /* ============================================================
        NAVIGATION
+       Fixed position with glassmorphism effect.
        ============================================================ */
     .nav {
       position: fixed;
@@ -144,11 +164,12 @@
       right: 0;
       z-index: 1000;
       background: rgba(11, 16, 21, 0.92);
-      backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);  /* Glassmorphism effect */
       border-bottom: 1px solid var(--border);
       transition: var(--transition);
     }
 
+    /* Light theme nav override */
     [data-theme="light"] .nav {
       background: rgba(255, 255, 255, 0.94);
     }
@@ -163,6 +184,7 @@
       margin: 0 auto;
     }
 
+    /* --- Logo --- */
     .nav-logo {
       display: flex;
       align-items: center;
@@ -188,17 +210,18 @@
     }
 
     .nav-logo:hover .nav-logo-wordmark {
-      transform: scale(1.05);
+      transform: scale(1.05);  /* Subtle hover animation */
     }
 
+    /* Theme-specific logo colors */
     [data-theme="dark"] .nav-logo-wordmark {
       color: #ffffff;
     }
-
     [data-theme="light"] .nav-logo-wordmark {
       color: #1a1a2e;
     }
 
+    /* --- Navigation Links --- */
     .nav-links {
       display: flex;
       align-items: center;
@@ -225,6 +248,7 @@
       border: 1px solid var(--border-teal);
     }
 
+    /* --- Navigation Actions --- */
     .nav-actions {
       display: flex;
       align-items: center;
@@ -241,6 +265,10 @@
       border: 1px solid var(--border-teal);
     }
 
+    /* ============================================================
+       BUTTONS
+       Reusable button styles used throughout the page.
+       ============================================================ */
     .btn-icon {
       width: 38px;
       height: 38px;
@@ -302,7 +330,8 @@
     }
 
     /* ============================================================
-       TOAST CONTAINER
+       TOAST NOTIFICATIONS
+       Temporary messages that appear at the bottom right.
        ============================================================ */
     .toast-container {
       position: fixed;
@@ -335,6 +364,7 @@
       to { opacity: 1; transform: translateX(0); }
     }
 
+    /* Toast variants */
     .toast.success { border-left: 3px solid var(--teal); }
     .toast.error { border-left: 3px solid var(--red); }
     .toast.info { border-left: 3px solid var(--cyan); }
@@ -349,15 +379,16 @@
 
     /* ============================================================
        CHATBOT PAGE - Premium UI/UX
+       Main chatbot interface with hero, chat box, and features.
        ============================================================ */
 
     .chatbot-container {
-      padding-top: 80px;
+      padding-top: 80px;  /* Offset for fixed nav */
       min-height: calc(100vh - 200px);
       display: flex;
       flex-direction: column;
       align-items: center;
-      animation: fadeInUp 0.6s ease;
+      animation: fadeInUp 0.6s ease;  /* Page entrance animation */
     }
 
     @keyframes fadeInUp {
@@ -365,7 +396,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Hero Section */
+    /* --- Hero Section --- */
     .chatbot-hero {
       text-align: center;
       padding: 30px 20px 20px;
@@ -389,10 +420,6 @@
       letter-spacing: 0.5px;
     }
 
-    .chatbot-hero .hero-badge i {
-      font-size: 14px;
-    }
-
     .chatbot-hero h1 {
       font-family: var(--font-display);
       font-size: clamp(32px, 5vw, 48px);
@@ -412,7 +439,7 @@
       margin: 0 auto;
     }
 
-    /* Stats */
+    /* --- Stats Section --- */
     .chatbot-stats {
       display: flex;
       gap: 40px;
@@ -450,7 +477,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* Chat Wrapper */
+    /* --- Chat Wrapper --- */
     .chat-wrapper {
       width: 100%;
       max-width: 860px;
@@ -458,6 +485,7 @@
       padding: 0 20px 40px;
     }
 
+    /* --- Chat Box Container --- */
     .chat-box {
       background: var(--surface);
       border-radius: var(--radius-xl);
@@ -471,7 +499,7 @@
       border-color: var(--border-teal);
     }
 
-    /* Chat Header */
+    /* --- Chat Header --- */
     .chat-box-header {
       display: flex;
       align-items: center;
@@ -552,11 +580,7 @@
       border-color: var(--border-teal);
     }
 
-    .chat-box-header .chat-actions button i {
-      font-size: 14px;
-    }
-
-    /* Chat Messages */
+    /* --- Chat Messages Area --- */
     .chat-messages {
       padding: 20px 24px;
       max-height: 460px;
@@ -568,21 +592,20 @@
       scroll-behavior: smooth;
     }
 
+    /* Custom scrollbar styling */
     .chat-messages::-webkit-scrollbar {
       width: 5px;
     }
-
     .chat-messages::-webkit-scrollbar-track {
       background: var(--bg-700);
       border-radius: 3px;
     }
-
     .chat-messages::-webkit-scrollbar-thumb {
       background: var(--teal);
       border-radius: 3px;
     }
 
-    /* Message Bubbles */
+    /* --- Message Bubbles --- */
     .message {
       display: flex;
       gap: 12px;
@@ -596,11 +619,11 @@
     }
 
     .message.bot {
-      align-self: flex-start;
+      align-self: flex-start;  /* Bot messages align left */
     }
 
     .message.user {
-      align-self: flex-end;
+      align-self: flex-end;    /* User messages align right */
       flex-direction: row-reverse;
     }
 
@@ -659,7 +682,7 @@
       color: rgba(5, 18, 9, 0.7);
     }
 
-    /* Quick Replies */
+    /* --- Quick Reply Buttons --- */
     .message-content .quick-replies {
       display: flex;
       flex-wrap: wrap;
@@ -686,7 +709,7 @@
       transform: scale(1.02);
     }
 
-    /* Property Suggestion */
+    /* --- Property Suggestion Card --- */
     .prop-suggestion {
       background: var(--bg-600);
       border: 1px solid var(--border);
@@ -717,7 +740,7 @@
       font-weight: 600;
     }
 
-    /* Typing Indicator */
+    /* --- Typing Indicator --- */
     .typing-indicator {
       display: none;
       align-self: flex-start;
@@ -749,7 +772,7 @@
       30% { transform: translateY(-8px); opacity: 1; }
     }
 
-    /* Chat Input */
+    /* --- Chat Input Area --- */
     .chat-input-area {
       padding: 16px 24px;
       border-top: 1px solid var(--border);
@@ -806,7 +829,7 @@
       cursor: not-allowed;
     }
 
-    /* Chat Features */
+    /* --- Chat Features Grid --- */
     .chat-features {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -851,7 +874,10 @@
       color: var(--text-muted);
     }
 
-    /* Footer */
+    /* ============================================================
+       FOOTER
+       Simple footer with copyright and contact info.
+       ============================================================ */
     .footer {
       background: var(--bg-800);
       border-top: 1px solid var(--border);
@@ -867,7 +893,8 @@
     }
 
     /* ============================================================
-       RESPONSIVE
+       RESPONSIVE BREAKPOINTS
+       Mobile-first approach with breakpoints at 992px, 768px, 480px.
        ============================================================ */
     @media (max-width: 992px) {
       .chat-wrapper {
@@ -876,6 +903,7 @@
     }
 
     @media (max-width: 768px) {
+      /* Stack navigation items */
       .nav-inner {
         flex-wrap: wrap;
         height: auto;
@@ -900,10 +928,12 @@
         gap: 6px;
       }
 
+      /* Smaller hero text */
       .chatbot-hero h1 {
         font-size: 28px;
       }
       
+      /* Reduced chat height */
       .chat-messages {
         max-height: 350px;
         min-height: 200px;
@@ -914,6 +944,7 @@
         max-width: 95%;
       }
       
+      /* Stack input and button */
       .chat-input-area {
         padding: 12px 16px;
         flex-wrap: wrap;
@@ -957,6 +988,7 @@
     }
 
     @media (max-width: 480px) {
+      /* Smaller logo */
       .nav-logo-wordmark {
         font-size: 26px;
       }
@@ -1002,16 +1034,22 @@
     }
   </style>
 </head>
+
 <body data-theme="dark">
 
-  <!-- ========== NAVIGATION ========== -->
+  <!-- ============================================================
+       NAVIGATION
+       ============================================================ -->
   <nav class="nav">
     <div class="nav-inner">
+      <!-- Logo -->
       <a href="/" class="nav-logo">
+        <!-- SVG Logo - Inline for performance -->
         <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='38' viewBox='0 0 38 38'%3E%3Crect width='38' height='38' rx='10' fill='%2300c97a'/%3E%3Ctext x='19' y='24' text-anchor='middle' font-size='22' font-weight='bold' fill='%23051209' font-family='Arial'%3E🏔%3C/text%3E%3C/svg%3E" alt="Logo" class="nav-logo-img" />
         <div class="nav-logo-wordmark">Pahuna</div>
       </a>
 
+      <!-- Navigation Links -->
       <div class="nav-links">
         <a href="#" class="nav-link">Home</a>
         <a href="#" class="nav-link">Browse</a>
@@ -1021,6 +1059,7 @@
         <a href="#" class="nav-link">FAQ</a>
       </div>
 
+      <!-- Navigation Actions -->
       <div class="nav-actions">
         <div class="nav-role-badge">GUEST ✦</div>
         <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme" id="theme-btn">🌙</button>
@@ -1030,7 +1069,10 @@
     </div>
   </nav>
 
-  <!-- ========== CHATBOT CONTENT ========== -->
+  <!-- ============================================================
+       CHATBOT CONTENT
+       Main page content - Hero + Chat Interface + Features
+       ============================================================ -->
   <div class="chatbot-container">
     
     <!-- Hero Section -->
@@ -1044,6 +1086,7 @@
         Ask me about hotels, bookings, or anything about your trip!
       </p>
       
+      <!-- Statistics -->
       <div class="chatbot-stats">
         <div class="stat-item">
           <div class="stat-number">500+</div>
@@ -1085,9 +1128,9 @@
           </div>
         </div>
 
-        <!-- Chat Messages -->
+        <!-- Chat Messages Area -->
         <div class="chat-messages" id="chatMessages">
-          <!-- Welcome message injected by JavaScript -->
+          <!-- Welcome message is injected by JavaScript -->
         </div>
 
         <!-- Typing Indicator -->
@@ -1097,7 +1140,7 @@
           <div class="typing-dot"></div>
         </div>
 
-        <!-- Chat Input -->
+        <!-- Chat Input Area -->
         <div class="chat-input-area">
           <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off" />
           <button id="sendBtn">
@@ -1107,7 +1150,7 @@
 
       </div>
 
-      <!-- Features -->
+      <!-- Features Grid -->
       <div class="chat-features">
         <div class="chat-feature">
           <i class="fas fa-search-location"></i>
@@ -1142,26 +1185,39 @@
 
   </div>
 
-  <!-- ========== FOOTER ========== -->
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
   <footer class="footer">
     <p>© 2025 Pahuna — Authentic Himalayan Hospitality. <i class="fas fa-heart"></i></p>
     <p><small>Contact support: support@pahuna.com | +977-1-1234567</small></p>
   </footer>
 
-  <!-- ========== TOAST CONTAINER ========== -->
+  <!-- ============================================================
+       TOAST CONTAINER
+       For notification messages
+       ============================================================ -->
   <div class="toast-container" id="toasts"></div>
 
+  <!-- ============================================================
+       JAVASCRIPT
+       All application logic - Theme, Chat, Hotel Database, etc.
+       ============================================================ -->
   <script>
-    // ===================== THEME TOGGLE =====================
+    // ============================================================
+    // THEME TOGGLE
+    // Switches between dark and light mode with localStorage persistence
+    // ============================================================
     function toggleTheme() {
       const html = document.documentElement;
       const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       html.setAttribute('data-theme', next);
       const btn = document.getElementById('theme-btn');
       if (btn) btn.textContent = next === 'dark' ? '🌙' : '☀️';
-      localStorage.setItem('theme', next);
+      localStorage.setItem('theme', next);  // Persist user preference
     }
 
+    // Load saved theme preference on page load
     (function() {
       const saved = localStorage.getItem('theme');
       if (saved) {
@@ -1171,7 +1227,10 @@
       }
     })();
 
-    // ===================== TOAST =====================
+    // ============================================================
+    // TOAST NOTIFICATION
+    // Shows temporary messages to the user
+    // ============================================================
     function showToast(message, type = 'info') {
       const container = document.getElementById('toasts');
       const toast = document.createElement('div');
@@ -1182,10 +1241,14 @@
         <span class="toast-close" onclick="this.parentElement.remove()">✕</span>
       `;
       container.appendChild(toast);
+      // Auto-dismiss after 3 seconds
       setTimeout(() => toast.remove(), 3000);
     }
 
-    // ===================== HOTEL DATABASE =====================
+    // ============================================================
+    // HOTEL DATABASE
+    // Simulated hotel data for the chatbot to search through
+    // ============================================================
     const hotels = [
       { id: 1, name: 'Pokhara Lake Hotel', city: 'pokhara', price: 4500, rating: 4.8, amenities: ['WiFi', 'Lake View', 'Breakfast'] },
       { id: 2, name: 'Lake View Inn', city: 'pokhara', price: 2800, rating: 4.2, amenities: ['WiFi', 'Lake View'] },
@@ -1199,15 +1262,21 @@
       { id: 10, name: 'Lumbini Peace Villa', city: 'lumbini', price: 3200, rating: 3.9, amenities: ['WiFi', 'Breakfast'] }
     ];
 
-    // ===================== CHAT LOGIC =====================
+    // ============================================================
+    // CHAT LOGIC
+    // Handles message display, user input, and bot responses
+    // ============================================================
     const chatMessages = document.getElementById('chatMessages');
     const chatInput = document.getElementById('chatInput');
     const sendBtn = document.getElementById('sendBtn');
     const typingIndicator = document.getElementById('typingIndicator');
 
-    let isProcessing = false;
+    let isProcessing = false;  // Prevent multiple messages being sent at once
 
-    // Welcome Message
+    /**
+     * Sends the welcome message when the chat initializes
+     * Includes quick reply buttons for common queries
+     */
     function sendWelcomeMessage() {
       addMessage('bot', `
         <div>👋 Namaste! I'm <strong>Booky</strong>, your AI booking assistant.</div>
@@ -1226,24 +1295,30 @@
       `);
     }
 
-    // Add message to chat
+    /**
+     * Adds a message to the chat interface
+     * @param {string} sender - 'bot' or 'user'
+     * @param {string} content - HTML content to display
+     */
     function addMessage(sender, content) {
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${sender}`;
 
+      // Avatar
       const avatar = document.createElement('div');
       avatar.className = 'message-avatar';
       avatar.innerHTML = sender === 'bot' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
 
+      // Content
       const contentDiv = document.createElement('div');
       contentDiv.className = 'message-content';
-
       if (typeof content === 'string') {
         contentDiv.innerHTML = content;
       } else {
         contentDiv.appendChild(content);
       }
 
+      // Timestamp
       const time = document.createElement('span');
       time.className = 'time';
       time.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -1252,28 +1327,36 @@
       messageDiv.appendChild(avatar);
       messageDiv.appendChild(contentDiv);
       chatMessages.appendChild(messageDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+      chatMessages.scrollTop = chatMessages.scrollHeight;  // Auto-scroll to bottom
     }
 
-    // Quick reply handler
+    /**
+     * Handles quick reply button clicks
+     * Sets the input value and triggers send
+     */
     function sendQuickReply(text) {
       chatInput.value = text;
       sendMessage();
     }
 
-    // Send message
+    /**
+     * Sends the user's message and processes the bot response
+     */
     function sendMessage() {
       const message = chatInput.value.trim();
       if (!message || isProcessing) return;
 
+      // Add user message
       addMessage('user', message);
       chatInput.value = '';
       sendBtn.disabled = true;
       isProcessing = true;
 
+      // Show typing indicator
       typingIndicator.classList.add('active');
       chatMessages.scrollTop = chatMessages.scrollHeight;
 
+      // Simulate AI thinking time
       setTimeout(() => {
         const response = getBotResponse(message);
         typingIndicator.classList.remove('active');
@@ -1284,27 +1367,33 @@
       }, 400 + Math.random() * 600);
     }
 
-    // ===================== BOT RESPONSE ENGINE =====================
+    // ============================================================
+    // BOT RESPONSE ENGINE
+    // Natural language processing for common queries
+    // ============================================================
     function getBotResponse(message) {
       const lower = message.toLowerCase();
 
-      // Greetings
+      // --- GREETINGS ---
       if (lower.match(/^(hi|hello|hey|namaste|good morning|good evening|yo|hola)/)) {
         return `👋 Hello! I'm Booky, your booking assistant. How can I help you find the perfect stay in Nepal?`;
       }
 
-      // Hotel search
+      // --- HOTEL SEARCH ---
       if (lower.includes('hotel') || lower.includes('stay') || lower.includes('find') || lower.includes('search') || lower.includes('show')) {
+        // Extract city from message
         let city = null;
         const cities = ['pokhara', 'kathmandu', 'mustang', 'chitwan', 'lumbini'];
         for (const c of cities) {
           if (lower.includes(c)) { city = c; break; }
         }
 
+        // Extract budget from message
         let budget = null;
         const budgetMatch = lower.match(/(?:under|below|less than|<=|>?)\s*([0-9,]+)/i);
         if (budgetMatch) budget = parseInt(budgetMatch[1].replace(/,/g, ''));
 
+        // Filter hotels based on criteria
         let filtered = hotels;
         if (city) filtered = filtered.filter(h => h.city === city);
         if (budget) filtered = filtered.filter(h => h.price <= budget);
@@ -1313,6 +1402,7 @@
           return `😅 I couldn't find any hotels matching your criteria. Try adjusting your search or ask for a different city!`;
         }
 
+        // Build response with hotel list
         let response = `🏨 I found ${filtered.length} hotel(s) in ${city ? city.charAt(0).toUpperCase() + city.slice(1) : 'Nepal'}${budget ? ` under NPR ${budget.toLocaleString()}` : ''}:\n\n`;
         filtered.slice(0, 5).forEach((hotel, index) => {
           response += `${index + 1}. <strong>${hotel.name}</strong>\n`;
@@ -1325,7 +1415,7 @@
         return response;
       }
 
-      // Booking help
+      // --- BOOKING HELP ---
       if (lower.includes('book') || lower.includes('booking') || lower.includes('reserve')) {
         return `📖 <strong>Booking with Bookmandu is easy!</strong>\n\n` +
                `1️⃣ Find your perfect property\n` +
@@ -1336,7 +1426,7 @@
                `🔗 You can start booking by visiting our Properties page or ask me to find hotels for you!`;
       }
 
-      // Cancellation
+      // --- CANCELLATION ---
       if (lower.includes('cancel') || lower.includes('refund') || lower.includes('policy')) {
         return `❓ <strong>Cancellation Policy</strong>\n\n` +
                `🔄 Free cancellation up to 7 days before check-in\n` +
@@ -1345,7 +1435,7 @@
                `⚠️ Some properties may have different policies. Please check the property page for details.`;
       }
 
-      // Payment
+      // --- PAYMENT METHODS ---
       if (lower.includes('payment') || lower.includes('pay') || lower.includes('card')) {
         return `💳 <strong>Accepted Payment Methods</strong>\n\n` +
                `✅ Credit/Debit Cards (Visa, Mastercard)\n` +
@@ -1355,7 +1445,7 @@
                `All payments are encrypted and secure. 🔒`;
       }
 
-      // Contact
+      // --- CONTACT SUPPORT ---
       if (lower.includes('contact') || lower.includes('help') || lower.includes('support')) {
         return `📞 <strong>Contact Support</strong>\n\n` +
                `📧 Email: support@bookmandu.com\n` +
@@ -1365,7 +1455,7 @@
                `We're here to help! 🏔️`;
       }
 
-      // Best rated
+      // --- TOP RATED ---
       if (lower.includes('best') || lower.includes('highest') || lower.includes('top') || lower.includes('rated')) {
         const top = [...hotels].sort((a, b) => b.rating - a.rating).slice(0, 3);
         let response = `🌟 <strong>Top Rated Properties</strong>\n\n`;
@@ -1376,7 +1466,7 @@
         return response;
       }
 
-      // Default
+      // --- DEFAULT / UNKNOWN QUERY ---
       return `🤔 I'm not sure I understood that. Here are some things I can help with:\n\n` +
              `🏨 "Find hotels in Pokhara"\n` +
              `💰 "Show me budget stays"\n` +
@@ -1387,21 +1477,26 @@
              `Just type what you're looking for! 😊`;
     }
 
-    // Clear chat
+    // ============================================================
+    // CHAT CONTROLS
+    // Clear and reset the conversation
+    // ============================================================
     function clearChat() {
       chatMessages.innerHTML = '';
       sendWelcomeMessage();
       showToast('Chat cleared!', 'info');
     }
 
-    // Reset chat
     function resetChat() {
       chatMessages.innerHTML = '';
       sendWelcomeMessage();
       showToast('Conversation reset!', 'info');
     }
 
-    // Event listeners
+    // ============================================================
+    // EVENT LISTENERS
+    // Handle user input via button click and Enter key
+    // ============================================================
     sendBtn.addEventListener('click', sendMessage);
     chatInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -1410,11 +1505,17 @@
       }
     });
 
-    // Initialize chat
+    // ============================================================
+    // INITIALIZATION
+    // Start the chat with a welcome message and focus input
+    // ============================================================
     sendWelcomeMessage();
     chatInput.focus();
 
-    // Make functions global
+    // ============================================================
+    // GLOBAL EXPOSURE
+    // Make functions available for inline onclick handlers
+    // ============================================================
     window.sendQuickReply = sendQuickReply;
     window.clearChat = clearChat;
     window.resetChat = resetChat;
