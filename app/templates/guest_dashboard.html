@@ -243,6 +243,28 @@ tr:hover td { background: var(--bg-700); }
         justify-content: center;
     }
 }
+
+/* Small button style for invoice */
+.btn-sm-invoice {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 11px;
+    border-radius: 6px;
+    background: var(--teal);
+    color: #051209;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
+    border: none;
+    cursor: pointer;
+}
+.btn-sm-invoice:hover {
+    background: var(--teal-dark);
+    transform: translateY(-1px);
+}
+.btn-sm-invoice i {
+    margin-right: 4px;
+}
 </style>
 {% endblock %}
 
@@ -312,31 +334,48 @@ tr:hover td { background: var(--bg-700); }
       {% if bookings %}
       <div class="table-wrap">
         <table id="bookingsTable">
- <thead><tr><th>Ref</th><th>Property</th><th>Region</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Total</th><th>Status</th><th>Cancellation</th><th>Action</th></tr></thead>
-<tbody>
-{% for b in bookings %}
-  <tr data-status="{{ b.status }}">
-    <td style="font-family:monospace;font-size:11px;">{{ b.booking_id }}</td>
-    <td>{{ b.property_title }}</td>
-    <td>{{ b.region }}</td>
-    <td>{{ b.checkin_date }}</td>
-    <td>{{ b.checkout_date }}</td>
-    <td>{{ b.guests_count }}</td>
-    <td>NPR {{ "{:,.0f}".format(b.total_amount) }}</td>
-    <td><span class="status status-{{ b.status }}">{{ b.status }}</span></td>
-    <td>
-      {% if b.cancellation_status %}
-        <span class="status status-{{ 'cancelled' if b.cancellation_status=='approved' else 'pending' if b.cancellation_status=='requested' else 'completed' }}">{{ b.cancellation_status }}</span>
-      {% else %}—{% endif %}
-    </td>
-    <td>
-      {% if b.status == 'confirmed' and b.cancellation_status != 'requested' %}
-        <button class="btn-xs-remove" onclick="requestCancellation('{{ b.booking_id }}')">Cancel</button>
-      {% endif %}
-    </td>
-  </tr>
-{% endfor %}
-</tbody>
+          <thead>
+            <tr>
+              <th>Ref</th>
+              <th>Property</th>
+              <th>Region</th>
+              <th>Check-in</th>
+              <th>Check-out</th>
+              <th>Guests</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Invoice</th>           <!-- NEW COLUMN -->
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in bookings %}
+            <tr data-status="{{ b.status }}">
+              <td style="font-family:monospace;font-size:11px;">{{ b.booking_id }}</td>
+              <td>{{ b.property_title }}</td>
+              <td>{{ b.region }}</td>
+              <td>{{ b.checkin_date }}</td>
+              <td>{{ b.checkout_date }}</td>
+              <td>{{ b.guests_count }}</td>
+              <td>NPR {{ "{:,.0f}".format(b.total_amount) }}</td>
+              <td><span class="status status-{{ b.status }}">{{ b.status }}</span></td>
+              <td>
+                {% if b.status in ['confirmed', 'completed'] %}
+                  <a href="{{ url_for('auth.download_invoice', booking_ref=b.booking_id) }}" class="btn-sm-invoice" target="_blank">
+                    <i class="fas fa-download"></i> PDF
+                  </a>
+                {% else %}
+                  <span style="color:var(--text-muted);font-size:11px;">—</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if b.status == 'confirmed' and b.cancellation_status != 'requested' %}
+                  <button class="btn-xs-remove" onclick="requestCancellation('{{ b.booking_id }}')">Cancel</button>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
         </table>
       </div>
       {% else %}
@@ -396,12 +435,11 @@ tr:hover td { background: var(--bg-700); }
 </div>
 
 <!-- ============================================================
-     FOOTER SECTION – as shown in screenshot (copied from index)
+     FOOTER SECTION
      ============================================================ -->
 <footer class="footer">
     <div class="footer-container">
         <div class="footer-grid">
-            <!-- Brand Column -->
             <div class="footer-brand">
                 <div class="footer-logo">
                     <i class="fas fa-home"></i>
@@ -413,11 +451,8 @@ tr:hover td { background: var(--bg-700); }
                 <div class="footer-social">
                     <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
                     <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
-                   
                 </div>
             </div>
-
-            <!-- Explore Column -->
             <div class="footer-column">
                 <h4>EXPLORE</h4>
                 <ul class="footer-links">
@@ -425,8 +460,6 @@ tr:hover td { background: var(--bg-700); }
                     <li><a href="{{ url_for('auth.index') }}"><i class="fas fa-home"></i> Home</a></li>
                 </ul>
             </div>
-
-            <!-- Account Column -->
             <div class="footer-column">
                 <h4>ACCOUNT</h4>
                 <ul class="footer-links">
@@ -434,8 +467,6 @@ tr:hover td { background: var(--bg-700); }
                     <li><a href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
                 </ul>
             </div>
-
-            <!-- Support Column -->
             <div class="footer-column">
                 <h4>SUPPORT</h4>
                 <ul class="footer-links">
@@ -444,22 +475,18 @@ tr:hover td { background: var(--bg-700); }
                 </ul>
             </div>
         </div>
-
-        <!-- Footer Bottom -->
         <div class="footer-bottom">
-            <div class="footer-copyright">
-                © 2026 Pahuna. All rights reserved.
-            </div>
+            <div class="footer-copyright">© 2026 Pahuna. All rights reserved.</div>
             <div class="footer-lang-currency">
                 <button class="lang-btn" onclick="switchLanguage()">
                     <i class="fas fa-globe"></i> EN / नेपाली
                 </button>
-                
             </div>
         </div>
     </div>
 </footer>
 {% endblock %}
+
 {% block extra_js %}
 <script>
 function switchLanguage() {
