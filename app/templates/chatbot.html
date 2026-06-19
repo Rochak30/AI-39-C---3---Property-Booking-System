@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chatbot — Bookmandu AI Assistant</title>
+  <title>Chatbot — Pahuna AI Assistant</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -271,7 +271,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Hero */
     .chatbot-hero {
       text-align: center;
       padding: 30px 20px 20px;
@@ -316,7 +315,6 @@
       margin: 0 auto;
     }
 
-    /* Stats */
     .chatbot-stats {
       display: flex;
       gap: 40px;
@@ -375,7 +373,6 @@
 
     .chat-box:hover { border-color: var(--border-teal); }
 
-    /* Chat Header */
     .chat-box-header {
       display: flex;
       align-items: center;
@@ -462,7 +459,6 @@
       border-color: var(--border-teal);
     }
 
-    /* Messages */
     .chat-messages {
       padding: 20px 24px;
       max-height: 460px;
@@ -555,7 +551,6 @@
 
     .message.user .message-content .time { color: rgba(5, 18, 9, 0.7); }
 
-    /* Quick Replies */
     .quick-replies {
       display: flex;
       flex-wrap: wrap;
@@ -582,15 +577,16 @@
       transform: scale(1.02);
     }
 
-    /* Property Listing Card in Chat */
-    .prop-listing-card {
+    /* ============================================================
+       AUTH HELP CARDS IN CHAT
+       ============================================================ */
+    .auth-help-card {
       margin-top: 10px;
       padding: 14px 16px;
       background: var(--bg-600);
       border-radius: var(--radius-md);
       border-left: 3px solid var(--teal);
-      transition: all 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
-      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
       animation: cardSlide 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
     }
 
@@ -599,14 +595,13 @@
       to { opacity: 1; transform: translateX(0); }
     }
 
-    .prop-listing-card:hover {
-      transform: translateX(6px) scale(1.01);
+    .auth-help-card:hover {
+      transform: translateX(6px);
       border-left-width: 5px;
       background: var(--surface-hover);
-      box-shadow: var(--shadow-teal);
     }
 
-    .prop-listing-card .prop-name {
+    .auth-help-card .auth-title {
       font-weight: 700;
       color: var(--teal);
       font-size: 14px;
@@ -615,83 +610,70 @@
       gap: 8px;
     }
 
-    .prop-listing-card .prop-name .prop-index {
-      background: var(--teal-glow);
-      padding: 0 8px;
-      border-radius: 12px;
-      font-size: 10px;
-      color: var(--teal);
-    }
-
-    .prop-listing-card .prop-details {
-      font-size: 12px;
+    .auth-help-card .auth-desc {
+      font-size: 13px;
       color: var(--text-secondary);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
       margin-top: 4px;
     }
 
-    .prop-listing-card .prop-details span {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+    .auth-help-card .auth-steps {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      padding-left: 16px;
+      list-style: none;
     }
 
-    .prop-listing-card .prop-details i { color: var(--teal); font-size: 11px; }
-
-    .prop-listing-card .prop-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
+    .auth-help-card .auth-steps li {
+      margin-bottom: 2px;
+      position: relative;
     }
 
-    .prop-listing-card .view-prop-btn {
+    .auth-help-card .auth-steps li::before {
+      content: '•';
+      color: var(--teal);
+      position: absolute;
+      left: -12px;
+    }
+
+    .action-btn-chat {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 4px 14px;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 6px 16px;
       background: var(--teal);
       color: #051209;
       border-radius: 20px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
-    }
-
-    .prop-listing-card .view-prop-btn:hover {
-      background: var(--teal-dark);
-      transform: scale(1.02) translateX(3px);
-    }
-
-    .prop-listing-card .wishlist-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 12px;
-      background: var(--bg-700);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 11px;
-      color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+      border: none;
+      text-decoration: none;
     }
 
-    .prop-listing-card .wishlist-btn:hover {
-      border-color: var(--red);
-      color: var(--red);
+    .action-btn-chat:hover {
       transform: scale(1.02);
+      background: var(--teal-dark);
     }
 
-    .prop-listing-card .wishlist-btn.active {
-      background: rgba(231, 76, 60, 0.2);
-      border-color: var(--red);
-      color: var(--red);
+    .action-btn-chat.amber {
+      background: var(--amber);
     }
 
-    .prop-listing-card .wishlist-btn i { font-size: 12px; }
+    .action-btn-chat.amber:hover {
+      background: #d4940a;
+    }
+
+    .action-btn-chat.purple {
+      background: #9b59b6;
+      color: #fff;
+    }
+
+    .action-btn-chat.purple:hover {
+      background: #8e44ad;
+    }
 
     /* Typing Indicator */
     .typing-indicator {
@@ -849,9 +831,7 @@
       color: var(--text-muted);
     }
 
-    /* ============================================================
-       FOOTER
-       ============================================================ */
+    /* Footer */
     .footer {
       background: var(--bg-800);
       border-top: 1px solid var(--border);
@@ -961,14 +941,14 @@
       <div class="hero-badge"><i class="fas fa-robot"></i> AI-Powered Booking Assistant</div>
       <h1>Hi, I'm Booky 👋</h1>
       <p class="hero-subtitle">
-        Your intelligent booking assistant for finding the perfect stay in Nepal. 
-        I can search properties, filter by budget, and recommend the best options for you!
+        Your intelligent booking assistant for finding the perfect stay in Nepal.
+        I can help you with login, registration, password reset, property search, and more!
       </p>
       
       <div class="chatbot-stats">
         <div class="stat-item"><div class="stat-number">6</div><div class="stat-label">Properties</div></div>
-        <div class="stat-item"><div class="stat-number">98%</div><div class="stat-label">Accuracy</div></div>
-        <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">Available</div></div>
+        <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
+        <div class="stat-item"><div class="stat-number">98%</div><div class="stat-label">Satisfaction</div></div>
       </div>
     </div>
 
@@ -1016,16 +996,16 @@
           <div class="feature-text">Smart Search <small>Find hotels by city or budget</small></div>
         </div>
         <div class="chat-feature">
+          <i class="fas fa-headset"></i>
+          <div class="feature-text">24/7 Support <small>Get help with bookings & refunds</small></div>
+        </div>
+        <div class="chat-feature">
           <i class="fas fa-robot"></i>
-          <div class="feature-text">AI Recommendations <small>Get personalized suggestions</small></div>
+          <div class="feature-text">AI Recommendations <small>Personalized suggestions</small></div>
         </div>
         <div class="chat-feature">
-          <i class="fas fa-clock"></i>
-          <div class="feature-text">24/7 Available <small>Always here to help</small></div>
-        </div>
-        <div class="chat-feature">
-          <i class="fas fa-globe-asia"></i>
-          <div class="feature-text">Multi-Language <small>English & Nepali support</small></div>
+          <i class="fas fa-key"></i>
+          <div class="feature-text">Account Help <small>Login, Register, Reset Password</small></div>
         </div>
       </div>
     </div>
@@ -1080,7 +1060,7 @@
     }
 
     // ============================================================
-    // PROPERTY DATA (from browse page)
+    // PROPERTY DATA
     // ============================================================
     const propertyData = [
       { id: 1, name: 'Pokhara Lake Hotel', region: 'Pokhara', type: 'Hotel', price: 4500, rating: 4.8, bookings: 156, amenities: ['WiFi', 'Hot Water', 'Breakfast Included'] },
@@ -1101,60 +1081,133 @@
 
     let isProcessing = false;
 
-    // Build property listing card HTML
+    // Build property listing card
     function buildPropertyCardHTML(property, index) {
       return `
-        <div class="prop-listing-card" onclick="window.location.href='#'">
-          <div class="prop-name">
-            <span class="prop-index">#${index + 1}</span>
-            ${property.name}
-          </div>
-          <div class="prop-details">
-            <span><i class="fas fa-map-marker-alt"></i> ${property.region}</span>
-            <span><i class="fas fa-tag"></i> ${property.type}</span>
-            <span><i class="fas fa-rupee-sign"></i> NPR ${property.price.toLocaleString()}/night</span>
+        <div class="auth-help-card" onclick="window.location.href='#'">
+          <div class="auth-title"><span class="prop-index" style="background:var(--teal-glow);padding:0 8px;border-radius:12px;font-size:10px;color:var(--teal);">#${index + 1}</span> ${property.name}</div>
+          <div class="auth-desc">
+            <span><i class="fas fa-map-marker-alt"></i> ${property.region}</span> · 
+            <span><i class="fas fa-rupee-sign"></i> NPR ${property.price.toLocaleString()}/night</span> · 
             <span><i class="fas fa-star" style="color: var(--amber);"></i> ${property.rating}</span>
-            <span><i class="fas fa-fire" style="color: var(--orange);"></i> ${property.bookings} bookings</span>
           </div>
-          <div class="prop-amenities" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;">
-            ${property.amenities.slice(0, 3).map(a => 
-              `<span style="background:var(--teal-glow);padding:2px 8px;border-radius:12px;font-size:10px;color:var(--teal);">${a}</span>`
-            ).join('')}
+          <button class="action-btn-chat" onclick="event.stopPropagation(); window.location.href='#'">
+            <i class="fas fa-eye"></i> View Details
+          </button>
+        </div>
+      `;
+    }
+
+    // Build Login Help Card
+    function buildLoginHelpCard() {
+      return `
+        <div class="auth-help-card">
+          <div class="auth-title"><i class="fas fa-sign-in-alt"></i> Login Help</div>
+          <div class="auth-desc">To sign in to your account:</div>
+          <ul class="auth-steps">
+            <li>Go to the <strong>Login</strong> page</li>
+            <li>Enter your <strong>Email Address</strong></li>
+            <li>Enter your <strong>Password</strong></li>
+            <li>Click <strong>Sign In</strong></li>
+          </ul>
+          <div class="auth-desc" style="margin-top:6px;font-size:12px;color:var(--text-muted);">
+            💡 Forgot password? Ask me about "password reset" or click the "Forgot password?" link on the login page.
           </div>
-          <div class="prop-actions">
-            <button class="view-prop-btn" onclick="event.stopPropagation(); window.location.href='#'">
-              <i class="fas fa-eye"></i> View Details
+          <button class="action-btn-chat" onclick="window.location.href='/login'">
+            <i class="fas fa-arrow-right"></i> Go to Login
+          </button>
+        </div>
+      `;
+    }
+
+    // Build Register Help Card
+    function buildRegisterHelpCard() {
+      return `
+        <div class="auth-help-card">
+          <div class="auth-title"><i class="fas fa-user-plus"></i> Registration Help</div>
+          <div class="auth-desc">To create a new account:</div>
+          <ul class="auth-steps">
+            <li>Go to the <strong>Register</strong> page</li>
+            <li>Choose your role: <strong>Guest</strong> (book stays) or <strong>Host</strong> (list properties)</li>
+            <li>Fill in your <strong>Full Name, Email, Password, Phone</strong></li>
+            <li>Fill in role-specific details (Guest: Address, Emergency Contact | Host: ID, Property, Bank)</li>
+            <li>Agree to the terms and click <strong>Create Account</strong></li>
+          </ul>
+          <div class="auth-desc" style="margin-top:6px;font-size:12px;color:var(--text-muted);">
+            ✅ Registration is free and takes less than 2 minutes!
+          </div>
+          <button class="action-btn-chat" onclick="window.location.href='/register'">
+            <i class="fas fa-arrow-right"></i> Go to Register
+          </button>
+        </div>
+      `;
+    }
+
+    // Build Password Reset Help Card
+    function buildPasswordResetHelpCard() {
+      return `
+        <div class="auth-help-card">
+          <div class="auth-title"><i class="fas fa-key"></i> Password Reset Help</div>
+          <div class="auth-desc">To reset your password:</div>
+          <ul class="auth-steps">
+            <li>Go to the <strong>Forgot Password</strong> page</li>
+            <li>Enter your <strong>registered email address</strong></li>
+            <li>Check your inbox for a <strong>6-digit reset code</strong></li>
+            <li>Enter the code and set a <strong>new password</strong></li>
+            <li>Sign in with your new password</li>
+          </ul>
+          <div class="auth-desc" style="margin-top:6px;font-size:12px;color:var(--text-muted);">
+            ⏰ The code expires in <strong>10 minutes</strong> for security.
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+            <button class="action-btn-chat" onclick="window.location.href='/forgot-password'">
+              <i class="fas fa-arrow-right"></i> Reset Password
             </button>
-            <button class="wishlist-btn" onclick="event.stopPropagation(); toggleWishlistChat(${property.id}, this)">
-              <i class="fas fa-heart"></i> Wishlist
+            <button class="action-btn-chat amber" onclick="window.location.href='/login'">
+              <i class="fas fa-sign-in-alt"></i> Back to Login
             </button>
           </div>
         </div>
       `;
     }
 
-    // Wishlist toggle in chat
-    function toggleWishlistChat(id, btn) {
-      const isActive = btn.classList.toggle('active');
-      btn.innerHTML = isActive ? '<i class="fas fa-heart" style="color: var(--red);"></i> Added' : '<i class="fas fa-heart"></i> Wishlist';
-      showToast(isActive ? '❤️ Added to wishlist!' : 'Removed from wishlist', isActive ? 'success' : 'info');
+    // Build Role Selection Help
+    function buildRoleHelpCard() {
+      return `
+        <div class="auth-help-card">
+          <div class="auth-title"><i class="fas fa-users"></i> Choose Your Role</div>
+          <div class="auth-desc">When registering, you can choose:</div>
+          <ul class="auth-steps">
+            <li><strong>🧳 Guest</strong> — I want to book stays and travel</li>
+            <li><strong>🏠 Host</strong> — I want to list properties and earn</li>
+          </ul>
+          <div class="auth-desc" style="margin-top:6px;font-size:12px;color:var(--text-muted);">
+            ⚡ You can switch roles later, but some details may need re-verification.
+          </div>
+          <button class="action-btn-chat purple" onclick="window.location.href='/register'">
+            <i class="fas fa-arrow-right"></i> Create Account
+          </button>
+        </div>
+      `;
     }
 
     // Welcome Message
     function sendWelcomeMessage() {
       addMessage('bot', `
         <div>👋 Namaste! I'm <strong>Booky</strong>, your AI booking assistant.</div>
-        <div style="margin-top:10px;">I can help you find the perfect stay in Nepal!</div>
-        <div style="margin-top:4px; font-size:0.85rem;">🏨 Find hotels in any city</div>
-        <div style="font-size:0.85rem;">💰 Filter by budget</div>
-        <div style="font-size:0.85rem;">🌟 Show top rated properties</div>
-        <div style="font-size:0.85rem;">📋 List all properties</div>
+        <div style="margin-top:10px;">I can help you with:</div>
+        <div style="margin-top:4px; font-size:0.85rem;">🔑 Login to your account</div>
+        <div style="font-size:0.85rem;">📝 Register as Guest or Host</div>
+        <div style="font-size:0.85rem;">🔐 Reset your password</div>
+        <div style="font-size:0.85rem;">🏨 Find properties in Nepal</div>
+        <div style="font-size:0.85rem;">🔄 Process refunds</div>
+        <div style="font-size:0.85rem;">📞 Contact support</div>
         <div style="margin-top:12px; font-size:0.9rem; color:var(--teal);">Try asking me:</div>
         <div class="quick-replies">
+          <button class="quick-reply" onclick="sendQuickReply('How to login?')">🔑 Login</button>
+          <button class="quick-reply" onclick="sendQuickReply('How to register?')">📝 Register</button>
+          <button class="quick-reply" onclick="sendQuickReply('Reset my password')">🔐 Reset</button>
           <button class="quick-reply" onclick="sendQuickReply('Find hotels in Pokhara')">🏔️ Pokhara</button>
-          <button class="quick-reply" onclick="sendQuickReply('Find hotels in Kathmandu')">🏛️ Kathmandu</button>
-          <button class="quick-reply" onclick="sendQuickReply('Show me budget stays')">💰 Budget</button>
-          <button class="quick-reply" onclick="sendQuickReply('Show me all properties')">📋 All Properties</button>
         </div>
       `);
     }
@@ -1169,12 +1222,7 @@
 
       const contentDiv = document.createElement('div');
       contentDiv.className = 'message-content';
-
-      if (typeof content === 'string') {
-        contentDiv.innerHTML = content;
-      } else {
-        contentDiv.appendChild(content);
-      }
+      contentDiv.innerHTML = content;
 
       const time = document.createElement('span');
       time.className = 'time';
@@ -1215,28 +1263,43 @@
     }
 
     // ============================================================
-    // BOT RESPONSE ENGINE with LISTINGS
+    // BOT RESPONSE ENGINE with AUTH HELP
     // ============================================================
     function getBotResponse(message) {
       const lower = message.toLowerCase();
 
-      // Greetings
+      // GREETINGS
       if (lower.match(/^(hi|hello|hey|namaste|good morning|good evening|yo|hola)/)) {
-        return `👋 Hello! I'm Booky, your booking assistant. I can help you find the perfect stay in Nepal! Try asking me:\n\n• "Find hotels in Pokhara"\n• "Show me budget stays"\n• "Best rated properties"\n• "Show me all properties"`;
+        return `👋 Hello! I'm Booky, your booking assistant. I can help you with login, registration, password reset, finding stays, and more! What do you need help with?`;
       }
 
-      // Show all properties
-      if (lower.includes('all properties') || lower.includes('show me all') || lower.includes('list all')) {
-        let response = `🏨 <strong>All ${propertyData.length} Properties</strong>\n\n`;
-        propertyData.forEach((p, i) => {
-          response += `${i + 1}. <strong>${p.name}</strong> — ⭐ ${p.rating}\n`;
-          response += `   📍 ${p.region} · 💰 NPR ${p.price.toLocaleString()}/night\n\n`;
-        });
-        response += `\n💰 <em>Want to filter by budget? Try "budget stays" or "luxury properties"</em>`;
-        return response;
+      // LOGIN HELP
+      if (lower.includes('login') || lower.includes('sign in') || lower.includes('log in')) {
+        if (lower.includes('how to') || lower.includes('help') || lower.includes('guide')) {
+          return buildLoginHelpCard();
+        }
+        return buildLoginHelpCard();
       }
 
-      // Hotel search with listings
+      // REGISTER HELP
+      if (lower.includes('register') || lower.includes('sign up') || lower.includes('create account') || lower.includes('account')) {
+        if (lower.includes('role') || lower.includes('guest') || lower.includes('host')) {
+          return buildRoleHelpCard();
+        }
+        return buildRegisterHelpCard();
+      }
+
+      // ROLE SELECTION
+      if (lower.includes('guest') || lower.includes('host') || lower.includes('role')) {
+        return buildRoleHelpCard();
+      }
+
+      // PASSWORD RESET HELP
+      if (lower.includes('reset') || lower.includes('forgot') || lower.includes('password') || lower.includes('recover')) {
+        return buildPasswordResetHelpCard();
+      }
+
+      // PROPERTY SEARCH
       if (lower.includes('find') || lower.includes('search') || lower.includes('show') || lower.includes('hotel') || lower.includes('stay')) {
         let region = null;
         const regions = ['pokhara', 'kathmandu', 'chitwan', 'lumbini', 'mustang'];
@@ -1257,20 +1320,14 @@
         }
 
         let response = `🏨 I found <strong>${filtered.length}</strong> property(ies) ${region ? `in ${region}` : 'in Nepal'}${budget ? ` under NPR ${budget}` : ''}:\n\n`;
-        
         filtered.forEach((p, i) => {
           response += buildPropertyCardHTML(p, i);
           response += '\n';
         });
-
-        if (filtered.length > 3) {
-          response += `\n✨ Showing ${filtered.length} properties. Try "Show me all properties" to see everything!`;
-        }
-
         return response;
       }
 
-      // Budget specific
+      // BUDGET
       if (lower.includes('budget') || lower.includes('cheap') || lower.includes('affordable')) {
         const sorted = [...propertyData].sort((a, b) => a.price - b.price);
         let response = `💰 <strong>Best Budget Options (${sorted.length} properties)</strong>\n\n`;
@@ -1278,23 +1335,10 @@
           response += `${i + 1}. <strong>${p.name}</strong> — NPR ${p.price.toLocaleString()}/night ⭐ ${p.rating}\n`;
           response += `   📍 ${p.region} · ${p.type}\n\n`;
         });
-        if (sorted.length > 5) response += `✨ And ${sorted.length - 5} more budget options available!\n`;
-        response += `\n💰 <em>Try "Show me all properties" for the complete list</em>`;
         return response;
       }
 
-      // Luxury
-      if (lower.includes('luxury') || lower.includes('premium') || lower.includes('expensive')) {
-        const sorted = [...propertyData].sort((a, b) => b.price - a.price);
-        let response = `💎 <strong>Luxury Properties (${sorted.length} options)</strong>\n\n`;
-        sorted.slice(0, 3).forEach((p, i) => {
-          response += `${i + 1}. <strong>${p.name}</strong> — NPR ${p.price.toLocaleString()}/night ⭐ ${p.rating}\n`;
-          response += `   📍 ${p.region} · ${p.amenities.join(', ')}\n\n`;
-        });
-        return response;
-      }
-
-      // Top rated
+      // TOP RATED
       if (lower.includes('best') || lower.includes('top') || lower.includes('highest') || lower.includes('rated')) {
         const top = [...propertyData].sort((a, b) => b.rating - a.rating);
         let response = `🌟 <strong>Top Rated Properties (${top.length} options)</strong>\n\n`;
@@ -1306,55 +1350,70 @@
         return response;
       }
 
-      // Booking help
+      // ALL PROPERTIES
+      if (lower.includes('all properties') || lower.includes('show me all') || lower.includes('list all')) {
+        let response = `🏨 <strong>All ${propertyData.length} Properties</strong>\n\n`;
+        propertyData.forEach((p, i) => {
+          response += `${i + 1}. <strong>${p.name}</strong> — ⭐ ${p.rating}\n`;
+          response += `   📍 ${p.region} · 💰 NPR ${p.price.toLocaleString()}/night\n\n`;
+        });
+        return response;
+      }
+
+      // BOOKING HELP
       if (lower.includes('book') || lower.includes('booking') || lower.includes('reserve')) {
         return `📖 <strong>Booking with Pahuna is easy!</strong>\n\n` +
-               `1️⃣ Find your perfect property using the search above or ask me!\n` +
+               `1️⃣ Find your perfect property using the search above\n` +
                `2️⃣ Click "View Details" on any property\n` +
                `3️⃣ Choose your check-in/out dates\n` +
                `4️⃣ Enter guest details and confirm\n` +
                `5️⃣ Receive confirmation email\n\n` +
-               `🔗 Need help finding a property? Try "Find hotels in Pokhara" or "Show me budget stays"`;
+               `🔗 Need help? Contact us at support@pahuna.com`;
       }
 
-      // Cancellation
-      if (lower.includes('cancel') || lower.includes('refund') || lower.includes('policy')) {
-        return `❓ <strong>Cancellation Policy</strong>\n\n` +
-               `🔄 Free cancellation up to 7 days before check-in\n` +
-               `💳 50% refund for cancellations within 3-7 days\n` +
-               `❌ No refund for cancellations within 48 hours\n\n` +
-               `⚠️ Some properties may have different policies. Please check the property page for details.`;
+      // CONTACT
+      if (lower.includes('contact') || lower.includes('support') || lower.includes('help') || lower.includes('assist')) {
+        return `
+          <div>📞 <strong>Contact Support</strong></div>
+          <div style="margin-top:8px;font-size:13px;color:var(--text-secondary);">
+            📧 Email: <strong>support@pahuna.com</strong>
+            <br>📱 Phone: <strong>+977 01-XXXXXXX</strong>
+            <br>📍 Location: <strong>Kathmandu, Nepal</strong>
+            <br>⏰ Response Time: <strong>Within 24 hours (NPT)</strong>
+          </div>
+          <button class="action-btn-chat" onclick="window.location.href='/contact'">
+            <i class="fas fa-paper-plane"></i> Go to Contact Page
+          </button>
+        `;
       }
 
-      // Payment
-      if (lower.includes('payment') || lower.includes('pay') || lower.includes('card')) {
-        return `💳 <strong>Accepted Payment Methods</strong>\n\n` +
-               `✅ Credit/Debit Cards (Visa, Mastercard)\n` +
-               `✅ eSewa\n` +
-               `✅ Khalti\n` +
-               `✅ Bank Transfer\n\n` +
-               `All payments are encrypted and secure. 🔒`;
+      // REFUND
+      if (lower.includes('refund') || lower.includes('cancel') || lower.includes('return money')) {
+        return `
+          <div>🔄 <strong>Refund & Cancellation Policy</strong></div>
+          <div style="margin-top:8px;font-size:13px;color:var(--text-secondary);">
+            📋 Free cancellation up to 7 days before check-in
+            <br>💳 50% refund for cancellations within 3-7 days
+            <br>❌ No refund for cancellations within 48 hours
+            <br><br>
+            ⚠️ Some properties may have different policies.
+          </div>
+          <button class="action-btn-chat amber" onclick="showToast('📧 Please email us at support@pahuna.com with your booking details', 'info')">
+            <i class="fas fa-envelope"></i> Request Refund
+          </button>
+        `;
       }
 
-      // Contact
-      if (lower.includes('contact') || lower.includes('help') || lower.includes('support')) {
-        return `📞 <strong>Contact Support</strong>\n\n` +
-               `📧 Email: support@pahuna.com\n` +
-               `📱 Phone: +977-1-1234567\n` +
-               `💬 Live chat: Available 24/7\n` +
-               `📍 Office: Kathmandu, Nepal\n\n` +
-               `We're here to help! 🏔️`;
-      }
-
-      // Default with suggestions
+      // DEFAULT
       return `🤔 I'm not sure I understood that. Here are some things I can help with:\n\n` +
+             `🔑 "How to login?"\n` +
+             `📝 "How to register?"\n` +
+             `🔐 "Reset my password"\n` +
              `🏨 "Find hotels in Pokhara"\n` +
              `💰 "Show me budget stays"\n` +
-             `💎 "Show me luxury properties"\n` +
-             `🌟 "Best rated properties"\n` +
-             `📋 "Show me all properties"\n` +
-             `📖 "Help with booking"\n\n` +
-             `Just type what you're looking for! 😊`;
+             `📞 "How to contact support?"\n` +
+             `🔄 "I need a refund"\n\n` +
+             `What would you like to do? 😊`;
     }
 
     // Clear chat
@@ -1390,7 +1449,6 @@
     window.resetChat = resetChat;
     window.toggleTheme = toggleTheme;
     window.showToast = showToast;
-    window.toggleWishlistChat = toggleWishlistChat;
   </script>
 
 </body>
