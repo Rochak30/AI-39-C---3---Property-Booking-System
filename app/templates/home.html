@@ -31,12 +31,10 @@
         align-items: flex-end;
         justify-content: flex-start;
         overflow: hidden;
-        /* background image – about.png, full cover */
         background: url("{{ url_for('static', filename='images/about.png') }}") center center / cover no-repeat;
         background-color: transparent;
     }
 
-    /* STRONGER GRADIENT OVERLAY – reduces exposure, improves readability */
     .hero-section::before {
         content: '';
         position: absolute;
@@ -74,7 +72,6 @@
         }
     }
 
-    /* ===== MAIN TITLE – 2 LINES ONLY ===== */
     .hero-title {
         font-family: var(--font-display), 'Playfair Display', serif;
         font-size: 62px;
@@ -94,7 +91,6 @@
         text-shadow: none;
     }
 
-    /* ===== SUBTITLE – REDUCED BOLDNESS ===== */
     .hero-subtitle {
         font-size: 20px;
         font-weight: 500;
@@ -107,7 +103,7 @@
     }
 
     /* ============================================================
-       HOW IT WORKS SECTION
+       HOW IT WORKS SECTION - REDESIGNED AESTHETIC VERSION
        ============================================================ */
     .how-it-works {
         padding: 80px 24px 40px 24px;
@@ -145,72 +141,191 @@
         gap: 32px;
     }
 
+    /* ── Redesigned Step Card ── */
     .step-card {
-        background: var(--bg-700);
-        border-radius: 20px;
-        padding: 40px 32px;
+        background: linear-gradient(145deg, var(--bg-700), var(--bg-600));
+        border-radius: 24px;
+        padding: 48px 32px 40px;
         text-align: center;
         border: 1px solid var(--border);
-        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         position: relative;
         overflow: hidden;
+        backdrop-filter: blur(10px);
     }
 
+    /* Animated gradient border on hover */
     .step-card::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--teal), #60b0ff);
-        transform: scaleX(0);
-        transition: transform 0.4s ease;
+        inset: -2px;
+        border-radius: 26px;
+        padding: 2px;
+        background: conic-gradient(from var(--angle, 0deg), 
+            transparent 0%, 
+            var(--teal) 20%, 
+            var(--cyan) 40%, 
+            transparent 60%, 
+            var(--teal) 80%, 
+            transparent 100%
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        animation: rotateBorder 4s linear infinite;
+    }
+
+    @keyframes rotateBorder {
+        to { --angle: 360deg; }
     }
 
     .step-card:hover::before {
-        transform: scaleX(1);
+        opacity: 1;
     }
 
     .step-card:hover {
-        transform: translateY(-8px);
+        transform: translateY(-12px) scale(1.02);
         border-color: var(--teal);
-        box-shadow: 0 12px 40px rgba(0, 201, 122, 0.1);
+        box-shadow: 0 20px 60px rgba(0, 201, 122, 0.15), inset 0 1px 0 rgba(0, 201, 122, 0.1);
     }
 
+    /* Glow orb behind number */
+    .step-card::after {
+        content: '';
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(0, 201, 122, 0.08), transparent 70%);
+        top: -40px;
+        right: -40px;
+        pointer-events: none;
+        transition: all 0.5s ease;
+    }
+
+    .step-card:hover::after {
+        transform: scale(1.3);
+        opacity: 0.5;
+    }
+
+    /* Step Number - Modern Design */
     .step-number {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--teal-glow), var(--teal));
+        width: 72px;
+        height: 72px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, var(--teal), var(--teal-dark));
         color: #051209;
-        font-size: 24px;
-        font-weight: 700;
-        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 24px;
+        position: relative;
+        transition: all 0.4s ease;
+        box-shadow: 0 8px 24px rgba(0, 201, 122, 0.25);
+        letter-spacing: -0.5px;
+        font-family: var(--font-display);
     }
 
+    .step-card:hover .step-number {
+        transform: rotate(-5deg) scale(1.05);
+        box-shadow: 0 12px 36px rgba(0, 201, 122, 0.4);
+    }
+
+    /* Number shine effect */
+    .step-number::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent 60%);
+        pointer-events: none;
+    }
+
+    /* Step Icon - Enhanced */
     .step-icon {
-        font-size: 40px;
+        font-size: 44px;
         color: var(--teal);
-        margin-bottom: 16px;
+        margin-bottom: 20px;
         display: block;
+        transition: all 0.5s ease;
+        background: linear-gradient(135deg, var(--teal), var(--cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
+    .step-card:hover .step-icon {
+        transform: scale(1.15) rotate(-5deg);
+    }
+
+    /* Step Title */
     .step-card h3 {
-        font-size: 20px;
+        font-size: 22px;
         font-weight: 700;
-        margin-bottom: 12px;
+        margin-bottom: 14px;
         color: var(--text-primary);
+        position: relative;
+        display: inline-block;
     }
 
+    .step-card h3::after {
+        content: '';
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 30px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--teal), var(--cyan));
+        border-radius: 2px;
+        transition: width 0.4s ease;
+    }
+
+    .step-card:hover h3::after {
+        width: 50px;
+    }
+
+    /* Step Description */
     .step-card p {
         color: var(--text-secondary);
         font-size: 14px;
-        line-height: 1.6;
+        line-height: 1.7;
         margin: 0;
+        padding-top: 4px;
+    }
+
+    /* Connecting line between steps - decorative */
+    .step-card .connector {
+        display: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .steps-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .steps-grid {
+            grid-template-columns: 1fr;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .step-card {
+            padding: 36px 24px 32px;
+        }
+
+        .step-number {
+            width: 64px;
+            height: 64px;
+            font-size: 24px;
+        }
     }
 
     /* ============================================================
@@ -286,14 +401,8 @@
     }
 
     @keyframes flamePulse {
-        0%, 100% {
-            transform: scale(1);
-            opacity: 0.8;
-        }
-        50% {
-            transform: scale(1.2);
-            opacity: 1;
-        }
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.2); opacity: 1; }
     }
 
     .property-rating-badge {
@@ -414,7 +523,7 @@
     }
 
     /* ============================================================
-       FOOTER SECTION – as shown in screenshot
+       FOOTER SECTION
        ============================================================ */
     .footer {
         background: var(--bg-800);
@@ -673,11 +782,10 @@
 
 {% block content %}
 <!-- ============================================================
-     HERO SECTION – relative positioning, scrolls normally
+     HERO SECTION
      ============================================================ -->
 <section class="hero-section">
     <div class="hero-content">
-        <!-- 2 LINES ONLY: "Experience Nepal," + "Like a Local" -->
         <h1 class="hero-title">
             Experience Nepal,<br>
             <span class="highlight">Like a Local</span>
@@ -689,7 +797,7 @@
 </section>
 
 <!-- ============================================================
-     HOW IT WORKS SECTION
+     HOW IT WORKS SECTION - REDESIGNED AESTHETIC VERSION
      ============================================================ -->
 <section class="how-it-works" id="how-it-works">
     <div class="section-header">
@@ -836,12 +944,11 @@
 </section>
 
 <!-- ============================================================
-     FOOTER SECTION – as shown in screenshot
+     FOOTER SECTION
      ============================================================ -->
 <footer class="footer">
     <div class="footer-container">
         <div class="footer-grid">
-            <!-- Brand Column -->
             <div class="footer-brand">
                 <div class="footer-logo">
                     <i class="fas fa-home"></i>
@@ -853,11 +960,9 @@
                 <div class="footer-social">
                     <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
                     <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
-                   
                 </div>
             </div>
 
-            <!-- Explore Column -->
             <div class="footer-column">
                 <h4>EXPLORE</h4>
                 <ul class="footer-links">
@@ -866,7 +971,6 @@
                 </ul>
             </div>
 
-            <!-- Account Column -->
             <div class="footer-column">
                 <h4>ACCOUNT</h4>
                 <ul class="footer-links">
@@ -875,7 +979,6 @@
                 </ul>
             </div>
 
-            <!-- Support Column -->
             <div class="footer-column">
                 <h4>SUPPORT</h4>
                 <ul class="footer-links">
@@ -885,7 +988,6 @@
             </div>
         </div>
 
-        <!-- Footer Bottom -->
         <div class="footer-bottom">
             <div class="footer-copyright">
                 © 2026 Pahuna. All rights reserved.
