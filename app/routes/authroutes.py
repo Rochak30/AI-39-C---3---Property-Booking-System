@@ -15,6 +15,7 @@ class AuthRoutes:
         self.bp.route("/about",   methods=["GET", "POST"])(self.controller.about)
         self.bp.route("/contact", methods=["GET", "POST"])(self.controller.contact)
         self.bp.route("/faq",     methods=["GET"])(self.controller.faq)
+        self.bp.route("/chatbot", methods=["GET"])(self.controller.chatbot)
         # ── Auth ──────────────────────────────────────────────
         self.bp.route("/login",    methods=["GET", "POST"])(self.controller.login)
         self.bp.route("/register", methods=["GET", "POST"])(self.controller.register)

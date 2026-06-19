@@ -1120,7 +1120,10 @@ class AuthController(BaseController):
 
     def home(self):
         return render_template("home.html")
-
+    
+    def chatbot(self):
+        return render_template("chatbot.html")
+    
     def about(self):
         return render_template("about.html")
 
