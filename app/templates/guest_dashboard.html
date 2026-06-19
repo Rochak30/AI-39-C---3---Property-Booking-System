@@ -133,21 +133,31 @@ tr:hover td { background: var(--bg-700); }
       {% if bookings %}
       <div class="table-wrap">
         <table id="bookingsTable">
-          <thead><tr><th>Ref</th><th>Property</th><th>Region</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Total</th><th>Status</th></tr></thead>
-          <tbody>
-          {% for b in bookings %}
-            <tr data-status="{{ b.status }}">
-              <td style="font-family:monospace;font-size:11px;">{{ b.booking_id }}</td>
-              <td>{{ b.property_title }}</td>
-              <td>{{ b.region }}</td>
-              <td>{{ b.checkin_date }}</td>
-              <td>{{ b.checkout_date }}</td>
-              <td>{{ b.guests_count }}</td>
-              <td>NPR {{ "{:,.0f}".format(b.total_amount) }}</td>
-              <td><span class="status status-{{ b.status }}">{{ b.status }}</span></td>
-            </tr>
-          {% endfor %}
-          </tbody>
+ <thead><tr><th>Ref</th><th>Property</th><th>Region</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Total</th><th>Status</th><th>Cancellation</th><th>Action</th></tr></thead>
+<tbody>
+{% for b in bookings %}
+  <tr data-status="{{ b.status }}">
+    <td style="font-family:monospace;font-size:11px;">{{ b.booking_id }}</td>
+    <td>{{ b.property_title }}</td>
+    <td>{{ b.region }}</td>
+    <td>{{ b.checkin_date }}</td>
+    <td>{{ b.checkout_date }}</td>
+    <td>{{ b.guests_count }}</td>
+    <td>NPR {{ "{:,.0f}".format(b.total_amount) }}</td>
+    <td><span class="status status-{{ b.status }}">{{ b.status }}</span></td>
+    <td>
+      {% if b.cancellation_status %}
+        <span class="status status-{{ 'cancelled' if b.cancellation_status=='approved' else 'pending' if b.cancellation_status=='requested' else 'completed' }}">{{ b.cancellation_status }}</span>
+      {% else %}—{% endif %}
+    </td>
+    <td>
+      {% if b.status == 'confirmed' and b.cancellation_status != 'requested' %}
+        <button class="btn-xs-remove" onclick="requestCancellation('{{ b.booking_id }}')">Cancel</button>
+      {% endif %}
+    </td>
+  </tr>
+{% endfor %}
+</tbody>
         </table>
       </div>
       {% else %}
@@ -209,6 +219,21 @@ tr:hover td { background: var(--bg-700); }
 
 {% block extra_js %}
 <script>
+
+function requestCancellation(bookingId) {
+  if (!confirm('Request cancellation? The host must approve it.')) return;
+  fetch('/booking/cancel', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ booking_id: bookingId })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) { showToast(data.message, 'success'); location.reload(); }
+    else { showToast(data.error || 'Failed.', 'error'); }
+  })
+  .catch(() => showToast('Network error.', 'error'));
+}
 function showSection(id, link) {
   document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
