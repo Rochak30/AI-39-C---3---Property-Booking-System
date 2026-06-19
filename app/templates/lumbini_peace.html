@@ -1725,7 +1725,7 @@
                 <div class="hero-meta">
                     <span><i class="fas fa-map-marker-alt"></i> Lumbini, Sacred Garden</span>
                     <span class="hero-type"><i class="fas fa-bed"></i> Private Room</span>
-                    <span class="hero-rating"><i class="fas fa-star"></i> 4.3 (19 reviews)</span>
+                    <span class="hero-rating"><i class="fas fa-star"></i> <span id="reviewAvg">4.3</span> (<span id="reviewCount">19</span> reviews)</span>
                 </div>
                 <div class="hero-price-badge">NPR 1,800 <span>/ night</span></div>
                 <a href="#booking-panel" class="btn btn-primary btn-hero">Book Now <i class="fas fa-arrow-right"></i></a>
@@ -1866,56 +1866,12 @@
 
             <!-- Reviews -->
 <div class="reviews-section">
-    <h3><i class="fas fa-star"></i> Guest reviews · 4.3 average</h3>
-    <div class="reviews-list">
-        <div class="review-card">
-            <div class="review-header">
-                <strong>Tenzin Hylmo</strong>
-                <div class="stars">★★★★★</div>
-                <span class="review-date">Mar 2026</span>
-                <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
-            </div>
-            <p>"A truly peaceful place close to the sacred garden. The owners are incredibly kind and helpful. Simple but clean rooms. Perfect for pilgrims and those seeking quiet contemplation."</p>
-        </div>
-        <div class="review-card">
-            <div class="review-header">
-                <strong>Sita Sherstha</strong>
-                <div class="stars">★★★★☆</div>
-                <span class="review-date">Feb 2026</span>
-                <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
-            </div>
-            <p>"Great value for money. Location is excellent - walking distance to all major sites. The garden is beautiful for morning meditation. Would stay again."</p>
-        </div>
-        <div class="review-card">
-            <div class="review-header">
-                <strong>Anita Desai</strong>
-                <div class="stars">★★★★★</div>
-                <span class="review-date">Jan 2026</span>
-                <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
-            </div>
-            <p>"Deepak is a wonderful host who went out of his way to help us arrange monastery visits. The vegetarian food was delicious and freshly prepared. Highly recommend for spiritual travelers."</p>
-        </div>
-        <div class="review-card">
-            <div class="review-header">
-                <strong>Lakpa Tamang</strong>
-                <div class="stars">★★★★☆</div>
-                <span class="review-date">Dec 2025</span>
-                <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
-            </div>
-            <p>"Basic but comfortable accommodation. The hot water worked well and room was clean. Very close to the temple complex. Great for budget travelers."</p>
-        </div>
-        <div class="review-card">
-            <div class="review-header">
-                <strong>Rijwan Miya</strong>
-                <div class="stars">★★★☆☆</div>
-                <span class="review-date">Nov 2025</span>
-                <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
-            </div>
-            <p>"Good location but rooms are quite basic. WiFi was slow. However, the peaceful atmosphere and kind staff made up for it. Bring your own toiletries."</p>
-        </div>
+    <h3><i class="fas fa-star"></i> Guest reviews · <span id="reviewAvg2">4.3</span> average</h3>
+    <div class="reviews-list" id="reviewsList">
+        <!-- Reviews will be loaded dynamically -->
     </div>
 
-    <!-- ===== ADD REVIEW FORM - ADD THIS SECTION ===== -->
+    <!-- ===== ADD REVIEW FORM ===== -->
     <div class="review-form-section" id="reviewFormSection">
         <h3><i class="fas fa-pen"></i> Write a Review</h3>
        
@@ -1997,7 +1953,7 @@
         <aside class="booking-sidebar" id="booking-panel">
             <div class="booking-card-sticky">
                 <div class="booking-price">NPR 1,800 <span class="per-night">/ night</span></div>
-                <div class="rating-summary"><i class="fas fa-star"></i> 4.3 · 19 reviews</div>
+                <div class="rating-summary"><i class="fas fa-star"></i> <span id="ratingSummaryAvg">4.3</span> · <span id="ratingSummaryCount">19</span> reviews</div>
                
                 <!-- CALENDAR SECTION - ENHANCED WITH ANIMATIONS -->
                 <div class="calendar-container">
@@ -2125,8 +2081,57 @@
 const PROPERTY_ID = 4;  // Lumbini Peace Lodge
 
 // ============================================
-// ADD REVIEW FUNCTIONALITY
+// REVIEW FUNCTIONS (NEW)
 // ============================================
+function loadReviews() {
+    fetch('/reviews/' + PROPERTY_ID)
+        .then(r => r.json())
+        .then(reviews => {
+            const list = document.getElementById('reviewsList');
+            const avgSpan = document.getElementById('reviewAvg2');
+            const avgSpanHero = document.getElementById('reviewAvg');
+            const countSpan = document.getElementById('reviewCount');
+            const avgSummary = document.getElementById('ratingSummaryAvg');
+            const countSummary = document.getElementById('ratingSummaryCount');
+            
+            list.innerHTML = '';
+            if (reviews.length === 0) {
+                list.innerHTML = '<p style="color:var(--text-muted);">No reviews yet. Be the first to review!</p>';
+                if (avgSpan) avgSpan.textContent = '0.0';
+                if (avgSpanHero) avgSpanHero.textContent = '0.0';
+                if (avgSummary) avgSummary.textContent = '0.0';
+                if (countSpan) countSpan.textContent = '0';
+                if (countSummary) countSummary.textContent = '0';
+                return;
+            }
+            let total = 0;
+            reviews.forEach((r, idx) => {
+                total += r.rating;
+                const card = document.createElement('div');
+                card.className = 'review-card';
+                card.style.animation = `slideUp 0.4s ease ${idx * 0.1}s both`;
+                card.innerHTML = `
+                    <div class="review-header">
+                        <strong>${r.guest_name}</strong>
+                        <div class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                        <span class="review-date">${new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+                        <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
+                    </div>
+                    <p>"${r.comment}"</p>
+                `;
+                list.appendChild(card);
+            });
+            const avg = (total / reviews.length).toFixed(1);
+            if (avgSpan) avgSpan.textContent = avg;
+            if (avgSpanHero) avgSpanHero.textContent = avg;
+            if (avgSummary) avgSummary.textContent = avg;
+            if (countSpan) countSpan.textContent = reviews.length;
+            if (countSummary) countSummary.textContent = reviews.length;
+        })
+        .catch(() => {
+            document.getElementById('reviewsList').innerHTML = '<p style="color:var(--text-muted);">Failed to load reviews.</p>';
+        });
+}
 
 // Star rating selection
 var ratingInputs = document.querySelectorAll('.rating-input input');
@@ -2142,7 +2147,7 @@ for (var i = 0; i < ratingInputs.length; i++) {
     });
 }
 
-// Submit review
+// Submit review (REAL backend)
 document.getElementById('submitReviewBtn').addEventListener('click', function() {
     var name = document.getElementById('reviewerName').value.trim();
     var content = document.getElementById('reviewContent').value.trim();
@@ -2184,68 +2189,54 @@ document.getElementById('submitReviewBtn').addEventListener('click', function() 
         return;
     }
    
-    // Disable button while processing
     var btn = this;
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
-   
-    // Simulate API call (replace with actual backend call)
-    setTimeout(function() {
-        // Show success
-        successDiv.style.display = 'flex';
-       
-        // Add the review to the list dynamically
-        var reviewsList = document.querySelector('.reviews-list');
-        var newReview = document.createElement('div');
-        newReview.className = 'review-card';
-        newReview.style.animation = 'slideUp 0.4s ease';
-        newReview.innerHTML = `
-            <div class="review-header">
-                <strong>${name}</strong>
-                <div class="stars">${'★'.repeat(selectedRating)}${'☆'.repeat(5 - selectedRating)}</div>
-                <span class="review-date">Just now</span>
-                <span class="verified-badge"><i class="fas fa-check-circle"></i> New</span>
-            </div>
-            <p>"${content}"</p>
-        `;
-        reviewsList.prepend(newReview);
-       
-        // Reset form
-        document.getElementById('reviewerName').value = '';
-        document.getElementById('reviewContent').value = '';
-        for (var j = 0; j < ratingInputs.length; j++) {
-            ratingInputs[j].checked = false;
-        }
-        selectedRating = 0;
-        ratingDisplay.textContent = 'Select rating';
-        ratingDisplay.style.color = 'var(--text-secondary)';
-       
-        // Reset button
+
+    fetch('/review/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            property_id: PROPERTY_ID,
+            rating: selectedRating,
+            comment: content
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Review';
-       
-        // Auto-hide success after 5 seconds
-        setTimeout(function() {
-            successDiv.style.display = 'none';
-        }, 5000);
-       
-        // Update review count
-        var reviewCount = document.querySelector('.reviews-section h3');
-        if (reviewCount) {
-            var currentText = reviewCount.textContent;
-            var match = currentText.match(/\d+\.?\d*/);
-            if (match) {
-                var currentAvg = parseFloat(match[0]);
-                var totalReviews = document.querySelectorAll('.review-card').length;
-                var newAvg = ((currentAvg * (totalReviews - 1)) + selectedRating) / totalReviews;
-                reviewCount.innerHTML = `<i class="fas fa-star"></i> Guest reviews · ${newAvg.toFixed(1)} average`;
+
+        if (data.success) {
+            successDiv.style.display = 'flex';
+            // Reset form
+            document.getElementById('reviewerName').value = '';
+            document.getElementById('reviewContent').value = '';
+            for (var j = 0; j < ratingInputs.length; j++) {
+                ratingInputs[j].checked = false;
             }
+            selectedRating = 0;
+            ratingDisplay.textContent = 'Select rating';
+            ratingDisplay.style.color = 'var(--text-secondary)';
+
+            // Reload reviews
+            loadReviews();
+            showToast('Thank you for your review!', 'success');
+
+            setTimeout(function() {
+                successDiv.style.display = 'none';
+            }, 5000);
+        } else {
+            errorDiv.querySelector('span').textContent = data.error || 'Submission failed.';
+            errorDiv.style.display = 'flex';
         }
-       
-        // Scroll to show the new review
-        newReview.scrollIntoView({ behavior: 'smooth', block: 'center' });
-       
-    }, 1500);
+    })
+    .catch(function() {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Review';
+        errorDiv.querySelector('span').textContent = 'Network error. Please try again.';
+        errorDiv.style.display = 'flex';
+    });
 });
 
 // All gallery images for the "View all images" feature - USING lp1.jpg to lp6.jpg
@@ -2815,6 +2806,7 @@ function switchLanguage() { showToast('Language switcher coming soon!', 'info');
 
 renderCalendar();
 calculatePriceWithDiscount();
+loadReviews(); // load reviews on page load
 </script>
 
 <!-- ========== FOOTER ========== -->
@@ -2874,11 +2866,13 @@ calculatePriceWithDiscount();
                 <button class="lang-btn" onclick="switchLanguage()">
                     <i class="fas fa-globe"></i> EN / नेपाली
                 </button>
-               
+                <button class="currency-btn">
+                    <i class="fas fa-rupee-sign"></i> NPR Rs
+                </button>
             </div>
         </div>
     </div>
 </footer>
 <!-- ========== END FOOTER ========== -->
 
-{% endblock %}
+{% endblock %} 
