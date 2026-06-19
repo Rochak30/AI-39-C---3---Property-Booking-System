@@ -4,129 +4,324 @@
 
 {% block extra_css %}
 <style>
-  /* ============================================================
-     CHATBOT CUSTOM STYLES
-     ============================================================ */
+  /* ── Import futuristic fonts ── */
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  /* ── Futuristic Background with animated grid ── */
   .chatbot-page {
     padding-top: 80px;
     min-height: calc(100vh - 200px);
     display: flex;
     flex-direction: column;
     align-items: center;
-    animation: fadeInPage 0.6s ease;
+    background: radial-gradient(ellipse at 20% 50%, rgba(0, 201, 122, 0.05) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(0, 100, 255, 0.05) 0%, transparent 60%),
+                var(--bg-900);
+    position: relative;
+    overflow: hidden;
   }
 
-  @keyframes fadeInPage {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* Animated grid background */
+  .chatbot-page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0, 201, 122, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 201, 122, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes gridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(60px, 60px); }
+  }
+
+  /* Orbiting glow particles */
+  .particle-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 20px 5px rgba(0, 201, 122, 0.3);
+    animation: particleFloat 15s infinite ease-in-out;
+  }
+
+  .particle:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+  .particle:nth-child(2) { top: 20%; right: 8%; animation-delay: 2s; width: 6px; height: 6px; }
+  .particle:nth-child(3) { bottom: 30%; left: 10%; animation-delay: 4s; }
+  .particle:nth-child(4) { bottom: 15%; right: 5%; animation-delay: 6s; width: 8px; height: 8px; }
+  .particle:nth-child(5) { top: 50%; left: 2%; animation-delay: 8s; }
+  .particle:nth-child(6) { top: 40%; right: 2%; animation-delay: 10s; width: 5px; height: 5px; }
+  .particle:nth-child(7) { bottom: 50%; left: 50%; animation-delay: 12s; width: 10px; height: 10px; }
+  .particle:nth-child(8) { top: 5%; left: 50%; animation-delay: 14s; }
+
+  @keyframes particleFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+    25% { transform: translate(30px, -60px) scale(1.5); opacity: 1; }
+    50% { transform: translate(-20px, -100px) scale(1); opacity: 0.8; }
+    75% { transform: translate(40px, -40px) scale(1.3); opacity: 1; }
   }
 
   .chatbot-hero {
     text-align: center;
-    padding: 30px 20px 20px;
-    max-width: 800px;
+    padding: 40px 20px 30px;
+    max-width: 900px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── 3D Chatbot Avatar ── */
+  .chatbot-3d-avatar {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 24px;
+    animation: avatarFloat 4s ease-in-out infinite;
+  }
+
+  @keyframes avatarFloat {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-15px) scale(1.02); }
+  }
+
+  .chatbot-3d-avatar .avatar-ring {
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background: conic-gradient(from 0deg, var(--teal), var(--cyan), var(--teal), var(--cyan), var(--teal));
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+    animation: ringSpin 6s linear infinite;
+  }
+
+  @keyframes ringSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .chatbot-3d-avatar .avatar-ring-2 {
+    position: absolute;
+    inset: -35px;
+    border-radius: 50%;
+    border: 1.5px solid transparent;
+    background: conic-gradient(from 90deg, rgba(0, 201, 122, 0.3), rgba(96, 176, 255, 0.3), rgba(0, 201, 122, 0.3));
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+    animation: ringSpin 8s linear infinite reverse;
+  }
+
+  .chatbot-3d-avatar .avatar-core {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal), var(--cyan), var(--teal-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    color: #051209;
+    box-shadow: 
+      0 0 60px rgba(0, 201, 122, 0.3),
+      inset 0 -30px 60px rgba(0, 0, 0, 0.2),
+      inset 0 30px 60px rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 2;
+    animation: avatarGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes avatarGlow {
+    0%, 100% { box-shadow: 0 0 60px rgba(0, 201, 122, 0.3), inset 0 -30px 60px rgba(0, 0, 0, 0.2), inset 0 30px 60px rgba(255, 255, 255, 0.1); }
+    50% { box-shadow: 0 0 80px rgba(0, 201, 122, 0.5), 0 0 120px rgba(96, 176, 255, 0.2), inset 0 -30px 60px rgba(0, 0, 0, 0.2), inset 0 30px 60px rgba(255, 255, 255, 0.15); }
+  }
+
+  /* Floating particles around avatar */
+  .avatar-particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 15px rgba(0, 201, 122, 0.5);
+    z-index: 3;
+  }
+
+  .avatar-particle:nth-child(3) {
+    width: 8px;
+    height: 8px;
+    top: -10px;
+    right: 10px;
+    animation: orbParticle 3s ease-in-out infinite;
+  }
+
+  .avatar-particle:nth-child(4) {
+    width: 6px;
+    height: 6px;
+    bottom: -5px;
+    left: 5px;
+    animation: orbParticle 3.5s ease-in-out infinite 1s;
+  }
+
+  .avatar-particle:nth-child(5) {
+    width: 10px;
+    height: 10px;
+    top: 20%;
+    right: -18px;
+    animation: orbParticle 4s ease-in-out infinite 2s;
+  }
+
+  .avatar-particle:nth-child(6) {
+    width: 5px;
+    height: 5px;
+    bottom: 30%;
+    left: -15px;
+    animation: orbParticle 3s ease-in-out infinite 0.5s;
+  }
+
+  @keyframes orbParticle {
+    0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.6; }
+    50% { transform: scale(1.5) translate(5px, -10px); opacity: 1; }
   }
 
   .chatbot-hero .hero-badge {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 18px;
-    background: var(--teal-glow);
-    border: 1px solid var(--border-teal);
+    padding: 8px 20px;
+    background: rgba(0, 201, 122, 0.1);
+    border: 1px solid rgba(0, 201, 122, 0.3);
     border-radius: 30px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: var(--teal);
     margin-bottom: 16px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 2px;
+    font-family: 'Orbitron', sans-serif;
+    backdrop-filter: blur(10px);
+    animation: badgePulse 3s ease-in-out infinite;
+  }
+
+  @keyframes badgePulse {
+    0%, 100% { border-color: rgba(0, 201, 122, 0.3); }
+    50% { border-color: rgba(0, 201, 122, 0.7); box-shadow: 0 0 30px rgba(0, 201, 122, 0.1); }
   }
 
   .chatbot-hero .hero-badge i { font-size: 14px; }
 
   .chatbot-hero h1 {
-    font-family: var(--font-display);
-    font-size: clamp(32px, 5vw, 48px);
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
     font-weight: 800;
     margin-bottom: 12px;
-    background: linear-gradient(135deg, var(--text-primary), var(--teal));
+    background: linear-gradient(135deg, #ffffff, var(--teal), var(--cyan), #ffffff);
+    background-size: 300% 300%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    animation: gradientShift 4s ease-in-out infinite;
+    letter-spacing: 2px;
+  }
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
   }
 
   .chatbot-hero .hero-subtitle {
     color: var(--text-secondary);
-    font-size: 16px;
-    line-height: 1.7;
-    max-width: 560px;
+    font-size: 17px;
+    line-height: 1.8;
+    max-width: 600px;
     margin: 0 auto;
+    font-weight: 300;
   }
 
   .chatbot-stats {
     display: flex;
     gap: 40px;
     justify-content: center;
-    margin-top: 24px;
+    margin-top: 28px;
     flex-wrap: wrap;
   }
 
   .chatbot-stats .stat-item {
     text-align: center;
-    padding: 8px 16px;
-    background: var(--surface);
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.03);
     border-radius: var(--radius-md);
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     min-width: 100px;
-    transition: all var(--transition);
+    transition: all 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+    backdrop-filter: blur(10px);
   }
 
   .chatbot-stats .stat-item:hover {
     border-color: var(--teal);
-    transform: translateY(-2px);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 40px rgba(0, 201, 122, 0.1);
   }
 
   .chatbot-stats .stat-number {
-    font-family: var(--font-display);
-    font-size: 28px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 30px;
     font-weight: 700;
     color: var(--teal);
+    text-shadow: 0 0 30px rgba(0, 201, 122, 0.2);
   }
 
   .chatbot-stats .stat-label {
     font-size: 11px;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    font-family: 'Orbitron', sans-serif;
   }
 
   .chat-wrapper {
     width: 100%;
-    max-width: 900px;
+    max-width: 920px;
     margin: 0 auto;
     padding: 0 20px 40px;
+    position: relative;
+    z-index: 1;
   }
 
   .chat-box {
-    background: var(--surface);
+    background: rgba(255, 255, 255, 0.03);
     border-radius: var(--radius-xl);
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     overflow: hidden;
-    box-shadow: var(--shadow-card);
-    transition: all var(--transition);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
   }
 
-  .chat-box:hover { border-color: var(--border-teal); }
+  .chat-box:hover {
+    border-color: rgba(0, 201, 122, 0.3);
+    box-shadow: 0 20px 80px rgba(0, 201, 122, 0.05);
+  }
 
   .chat-box-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 24px;
-    background: linear-gradient(135deg, var(--bg-700), var(--bg-600));
-    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     flex-wrap: wrap;
     gap: 10px;
   }
@@ -134,12 +329,12 @@
   .chat-box-header .chat-agent {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
   }
 
   .chat-box-header .agent-avatar {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     background: linear-gradient(135deg, var(--teal), var(--cyan));
     border-radius: 50%;
     display: flex;
@@ -147,19 +342,29 @@
     justify-content: center;
     font-size: 20px;
     color: #051209;
-    box-shadow: var(--shadow-teal);
+    box-shadow: 0 0 30px rgba(0, 201, 122, 0.2);
     animation: avatar-pulse 3s ease-in-out infinite;
+    position: relative;
   }
 
-  @keyframes avatar-pulse {
-    0%, 100% { box-shadow: var(--shadow-teal); }
-    50% { box-shadow: 0 0 30px 5px rgba(0, 201, 122, 0.25); }
+  .chat-box-header .agent-avatar::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1.5px solid transparent;
+    background: conic-gradient(from 0deg, var(--teal), transparent, var(--cyan), transparent, var(--teal));
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+    animation: ringSpin 4s linear infinite;
   }
 
   .chat-box-header .agent-info h4 {
-    font-size: 15px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
     font-weight: 700;
     color: var(--text-primary);
+    letter-spacing: 1px;
   }
 
   .chat-box-header .agent-info .status {
@@ -167,32 +372,30 @@
     color: var(--teal);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    font-weight: 300;
   }
 
   .chat-box-header .agent-info .status .status-dot {
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
     background: var(--green);
     border-radius: 50%;
     display: inline-block;
     animation: status-pulse 1.5s ease-in-out infinite;
-  }
-
-  @keyframes status-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
   }
 
   .chat-box-header .chat-actions button {
-    background: var(--bg-600);
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 8px;
     padding: 6px 12px;
     color: var(--text-secondary);
     cursor: pointer;
     transition: all var(--transition);
     font-size: 13px;
+    font-family: 'Inter', sans-serif;
   }
 
   .chat-box-header .chat-actions button:hover {
@@ -202,29 +405,29 @@
   }
 
   .chat-messages {
-    padding: 20px 24px;
-    max-height: 460px;
+    padding: 24px;
+    max-height: 480px;
     min-height: 350px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     scroll-behavior: smooth;
   }
 
   .chat-messages::-webkit-scrollbar { width: 5px; }
-  .chat-messages::-webkit-scrollbar-track { background: var(--bg-700); border-radius: 3px; }
+  .chat-messages::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); border-radius: 3px; }
   .chat-messages::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 3px; }
 
   .message {
     display: flex;
     gap: 12px;
     max-width: 85%;
-    animation: msgIn 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+    animation: msgIn 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
   }
 
   @keyframes msgIn {
-    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    from { opacity: 0; transform: translateY(15px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
@@ -232,11 +435,11 @@
   .message.user {
     align-self: flex-end;
     flex-direction: row-reverse;
-    animation: msgInUser 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+    animation: msgInUser 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
   }
 
   @keyframes msgInUser {
-    from { opacity: 0; transform: translateX(10px) scale(0.98); }
+    from { opacity: 0; transform: translateX(15px) scale(0.98); }
     to { opacity: 1; transform: translateX(0) scale(1); }
   }
 
@@ -254,26 +457,28 @@
   .message.bot .message-avatar {
     background: linear-gradient(135deg, var(--teal), var(--teal-dark));
     color: #051209;
+    box-shadow: 0 0 30px rgba(0, 201, 122, 0.15);
   }
 
   .message.user .message-avatar {
-    background: var(--bg-600);
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     color: var(--text-secondary);
   }
 
   .message-content {
-    padding: 12px 18px;
+    padding: 14px 20px;
     border-radius: var(--radius-md);
     font-size: 14px;
     line-height: 1.7;
     position: relative;
     word-wrap: break-word;
+    font-family: 'Inter', sans-serif;
   }
 
   .message.bot .message-content {
-    background: var(--bg-700);
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     color: var(--text-primary);
     border-top-left-radius: 4px;
   }
@@ -286,9 +491,10 @@
 
   .message-content .time {
     font-size: 10px;
-    opacity: 0.5;
+    opacity: 0.4;
     margin-top: 8px;
     display: block;
+    font-family: 'Inter', sans-serif;
   }
 
   .message.user .message-content .time { color: rgba(5, 18, 9, 0.7); }
@@ -301,31 +507,32 @@
   }
 
   .quick-reply {
-    background: var(--bg-600);
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 30px;
-    padding: 5px 16px;
+    padding: 6px 18px;
     font-size: 12px;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all var(--transition);
-    font-family: var(--font-body);
+    transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    font-family: 'Inter', sans-serif;
   }
 
   .quick-reply:hover {
     border-color: var(--teal);
     color: var(--teal);
     background: var(--teal-glow);
-    transform: scale(1.02);
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(0, 201, 122, 0.1);
   }
 
   .auth-help-card {
     margin-top: 10px;
-    padding: 14px 16px;
-    background: var(--bg-600);
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.03);
     border-radius: var(--radius-md);
     border-left: 3px solid var(--teal);
-    transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    transition: all 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
     animation: cardSlide 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
   }
 
@@ -335,9 +542,10 @@
   }
 
   .auth-help-card:hover {
-    transform: translateX(6px);
+    transform: translateX(8px);
     border-left-width: 5px;
-    background: var(--surface-hover);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 40px rgba(0, 201, 122, 0.05);
   }
 
   .auth-help-card .auth-title {
@@ -347,6 +555,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.5px;
   }
 
   .auth-help-card .auth-desc {
@@ -369,32 +579,34 @@
   }
 
   .auth-help-card .auth-steps li::before {
-    content: '•';
+    content: '▸';
     color: var(--teal);
     position: absolute;
-    left: -12px;
+    left: -14px;
   }
 
   .action-btn-chat {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     margin-top: 8px;
-    padding: 6px 16px;
+    padding: 8px 20px;
     background: var(--teal);
     color: #051209;
-    border-radius: 20px;
+    border-radius: 30px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
     border: none;
     text-decoration: none;
+    font-family: 'Inter', sans-serif;
   }
 
   .action-btn-chat:hover {
-    transform: scale(1.02);
+    transform: scale(1.05);
     background: var(--teal-dark);
+    box-shadow: 0 0 40px rgba(0, 201, 122, 0.3);
   }
 
   .action-btn-chat.amber {
@@ -417,18 +629,13 @@
   .typing-indicator {
     display: none;
     align-self: flex-start;
-    padding: 10px 18px;
-    background: var(--bg-700);
-    border: 1px solid var(--border);
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: var(--radius-md);
     border-top-left-radius: 4px;
-    gap: 5px;
+    gap: 6px;
     animation: typingFade 0.3s ease;
-  }
-
-  @keyframes typingFade {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
   }
 
   .typing-indicator.active { display: flex; }
@@ -439,6 +646,7 @@
     background: var(--teal);
     border-radius: 50%;
     animation: typingBounce 1.4s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(0, 201, 122, 0.2);
   }
 
   .typing-dot:nth-child(2) { animation-delay: 0.2s; }
@@ -451,28 +659,29 @@
 
   .chat-input-area {
     padding: 16px 24px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
     display: flex;
     gap: 12px;
-    background: var(--surface);
+    background: rgba(255, 255, 255, 0.02);
   }
 
   .chat-input-area input {
     flex: 1;
-    padding: 12px 18px;
-    background: var(--bg-700);
-    border: 1.5px solid var(--border);
+    padding: 14px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.06);
     border-radius: 40px;
     color: var(--text-primary);
-    font-family: var(--font-body);
+    font-family: 'Inter', sans-serif;
     font-size: 14px;
     outline: none;
-    transition: all var(--transition);
+    transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
   }
 
   .chat-input-area input:focus {
     border-color: var(--teal);
-    box-shadow: 0 0 0 3px var(--teal-glow);
+    box-shadow: 0 0 0 3px rgba(0, 201, 122, 0.1);
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .chat-input-area input::placeholder { color: var(--text-muted); }
@@ -480,13 +689,13 @@
   .chat-input-area button {
     background: linear-gradient(135deg, var(--teal), var(--teal-dark));
     border: none;
-    padding: 12px 28px;
+    padding: 14px 32px;
     border-radius: 40px;
     color: #051209;
     font-weight: 700;
     cursor: pointer;
-    transition: all var(--transition);
-    font-family: var(--font-body);
+    transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    font-family: 'Inter', sans-serif;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -502,20 +711,20 @@
     left: 50%;
     width: 0;
     height: 0;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     transition: width 0.6s, height 0.6s;
   }
 
   .chat-input-area button:hover:not(:disabled)::after {
-    width: 200px;
-    height: 200px;
+    width: 300px;
+    height: 300px;
   }
 
   .chat-input-area button:hover:not(:disabled) {
-    transform: scale(1.02);
-    box-shadow: var(--shadow-teal);
+    transform: scale(1.03);
+    box-shadow: 0 0 40px rgba(0, 201, 122, 0.3);
   }
 
   .chat-input-area button:disabled {
@@ -534,23 +743,25 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 16px 20px;
-    background: var(--surface);
-    border: 1px solid var(--border);
+    padding: 18px 22px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: var(--radius-md);
-    transition: all var(--transition);
+    transition: all 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+    backdrop-filter: blur(10px);
   }
 
   .chat-feature:hover {
     border-color: var(--teal);
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-teal);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 40px rgba(0, 201, 122, 0.05);
+    background: rgba(255, 255, 255, 0.05);
   }
 
   .chat-feature i {
-    font-size: 24px;
+    font-size: 28px;
     color: var(--teal);
-    width: 36px;
+    width: 40px;
     text-align: center;
   }
 
@@ -558,6 +769,7 @@
     font-size: 13px;
     font-weight: 500;
     color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
   }
 
   .chat-feature .feature-text small {
@@ -567,7 +779,7 @@
     color: var(--text-muted);
   }
 
-  /* ── Footer styles (copied from index) ── */
+  /* ── Footer styles ── */
   .footer {
     background: var(--bg-800);
     border-top: 1px solid var(--border);
@@ -646,6 +858,7 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 20px;
+    font-family: 'Orbitron', sans-serif;
   }
 
   .footer-links {
@@ -666,6 +879,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    font-family: 'Inter', sans-serif;
   }
 
   .footer-links a i {
@@ -728,32 +942,39 @@
 
   @media (max-width: 992px) {
     .footer-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 32px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
     }
     .footer-brand {
-        grid-column: span 2;
-        max-width: 100%;
+      grid-column: span 2;
+      max-width: 100%;
     }
   }
 
   @media (max-width: 768px) {
     .footer-grid {
-        grid-template-columns: 1fr;
+      grid-template-columns: 1fr;
     }
     .footer-brand {
-        grid-column: span 1;
+      grid-column: span 1;
     }
     .footer-bottom {
-        flex-direction: column;
-        text-align: center;
+      flex-direction: column;
+      text-align: center;
     }
     .footer-lang-currency {
-        justify-content: center;
+      justify-content: center;
     }
   }
 
   @media (max-width: 768px) {
+    .chatbot-3d-avatar {
+      width: 100px;
+      height: 100px;
+    }
+    .chatbot-3d-avatar .avatar-core {
+      font-size: 44px;
+    }
     .chatbot-hero h1 { font-size: 28px; }
     .chat-messages {
       max-height: 350px;
@@ -768,7 +989,7 @@
     .chat-input-area input { flex: 1 1 100%; }
     .chat-input-area button { flex: 1 1 100%; justify-content: center; }
     .chatbot-stats { gap: 12px; }
-    .chatbot-stats .stat-item { min-width: 80px; padding: 6px 12px; }
+    .chatbot-stats .stat-item { min-width: 80px; padding: 8px 14px; }
     .chatbot-stats .stat-number { font-size: 22px; }
     .chat-features { grid-template-columns: 1fr 1fr; }
     .chat-box-header {
@@ -782,6 +1003,19 @@
   }
 
   @media (max-width: 480px) {
+    .chatbot-3d-avatar {
+      width: 80px;
+      height: 80px;
+    }
+    .chatbot-3d-avatar .avatar-core {
+      font-size: 36px;
+    }
+    .chatbot-3d-avatar .avatar-ring {
+      inset: -10px;
+    }
+    .chatbot-3d-avatar .avatar-ring-2 {
+      inset: -18px;
+    }
     .chatbot-hero h1 { font-size: 24px; }
     .chatbot-hero .hero-subtitle { font-size: 14px; }
     .chat-features { grid-template-columns: 1fr; }
@@ -793,21 +1027,55 @@
 {% endblock %}
 
 {% block content %}
+<!-- Particle Container -->
+<div class="particle-container">
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+</div>
+
 <div class="chatbot-page">
   
   <!-- Hero -->
   <div class="chatbot-hero">
-    <div class="hero-badge"><i class="fas fa-robot"></i> AI-Powered Booking Assistant</div>
-    <h1>Hi, I'm Booky 👋</h1>
+    <!-- 3D Chatbot Avatar -->
+    <div class="chatbot-3d-avatar">
+      <div class="avatar-ring"></div>
+      <div class="avatar-ring-2"></div>
+      <div class="avatar-particle"></div>
+      <div class="avatar-particle"></div>
+      <div class="avatar-particle"></div>
+      <div class="avatar-particle"></div>
+      <div class="avatar-core">
+        <i class="fas fa-robot"></i>
+      </div>
+    </div>
+
+    <div class="hero-badge"><i class="fas fa-microchip"></i> AI-Powered • Neural Assistant</div>
+    <h1>Hi, I'm Booky</h1>
     <p class="hero-subtitle">
-      Your intelligent booking assistant for finding the perfect stay in Nepal.
-      I can help you with login, registration, password reset, property search, and more!
+      Your intelligent neural booking assistant. I help you find the perfect stay in Nepal,
+      manage your account, and provide instant support — 24/7.
     </p>
     
     <div class="chatbot-stats">
-      <div class="stat-item"><div class="stat-number">6</div><div class="stat-label">Properties</div></div>
-      <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
-      <div class="stat-item"><div class="stat-number">98%</div><div class="stat-label">Satisfaction</div></div>
+      <div class="stat-item">
+        <div class="stat-number">6</div>
+        <div class="stat-label">Properties</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Neural Support</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">98%</div>
+        <div class="stat-label">Satisfaction</div>
+      </div>
     </div>
   </div>
 
@@ -820,8 +1088,8 @@
         <div class="chat-agent">
           <div class="agent-avatar"><i class="fas fa-robot"></i></div>
           <div class="agent-info">
-            <h4>Booky — AI Assistant</h4>
-            <div class="status"><span class="status-dot"></span> Online • Ready to help</div>
+            <h4>BOOKY • AI</h4>
+            <div class="status"><span class="status-dot"></span> Neural Active • Ready</div>
           </div>
         </div>
         <div class="chat-actions">
@@ -856,91 +1124,83 @@
       </div>
       <div class="chat-feature">
         <i class="fas fa-headset"></i>
-        <div class="feature-text">24/7 Support <small>Get help with bookings & refunds</small></div>
+        <div class="feature-text">24/7 Neural Support <small>Instant help with bookings</small></div>
       </div>
       <div class="chat-feature">
-        <i class="fas fa-robot"></i>
+        <i class="fas fa-brain"></i>
         <div class="feature-text">AI Recommendations <small>Personalized suggestions</small></div>
       </div>
       <div class="chat-feature">
         <i class="fas fa-key"></i>
-        <div class="feature-text">Account Help <small>Login, Register, Reset Password</small></div>
+        <div class="feature-text">Account Neural Help <small>Login, Register, Reset</small></div>
       </div>
     </div>
   </div>
 
 </div>
 
-<!-- ============================================================
-     FOOTER SECTION – as shown in screenshot (copied from index)
-     ============================================================ -->
+<!-- ── Footer ── -->
 <footer class="footer">
-    <div class="footer-container">
-        <div class="footer-grid">
-            <!-- Brand Column -->
-            <div class="footer-brand">
-                <div class="footer-logo">
-                    <i class="fas fa-home"></i>
-                    <span>Pahuna</span>
-                </div>
-                <p class="footer-description">
-                    Nepal's dedicated accommodation booking platform. Connect with authentic homestays, guesthouses, and unique stays across the Himalayas.
-                </p>
-                <div class="footer-social">
-                    <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
-                   
-                </div>
-            </div>
-
-            <!-- Explore Column -->
-            <div class="footer-column">
-                <h4>EXPLORE</h4>
-                <ul class="footer-links">
-                    <li><a href="{{ url_for('auth.browse') }}"><i class="fas fa-compass"></i> Browse Properties</a></li>
-                    <li><a href="{{ url_for('auth.index') }}"><i class="fas fa-home"></i> Home</a></li>
-                </ul>
-            </div>
-
-            <!-- Account Column -->
-            <div class="footer-column">
-                <h4>ACCOUNT</h4>
-                <ul class="footer-links">
-                    <li><a href="{{ url_for('auth.register') }}"><i class="fas fa-user-plus"></i> Register</a></li>
-                    <li><a href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
-                </ul>
-            </div>
-
-            <!-- Support Column -->
-            <div class="footer-column">
-                <h4>SUPPORT</h4>
-                <ul class="footer-links">
-                    <li><a href="{{ url_for('auth.faq') }}"><i class="fas fa-question-circle"></i> FAQ</a></li>
-                    <li><a href="{{ url_for('auth.contact') }}"><i class="fas fa-envelope"></i> Contact Us</a></li>
-                </ul>
-            </div>
+  <div class="footer-container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <i class="fas fa-home"></i>
+          <span>Pahuna</span>
         </div>
-
-        <!-- Footer Bottom -->
-        <div class="footer-bottom">
-            <div class="footer-copyright">
-                © 2026 Pahuna. All rights reserved.
-            </div>
-            <div class="footer-lang-currency">
-                <button class="lang-btn" onclick="switchLanguage()">
-                    <i class="fas fa-globe"></i> EN / नेपाली
-                </button>
-                
-            </div>
+        <p class="footer-description">
+          Nepal's dedicated accommodation booking platform. Connect with authentic homestays, guesthouses, and unique stays across the Himalayas.
+        </p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
         </div>
+      </div>
+
+      <div class="footer-column">
+        <h4>EXPLORE</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('auth.browse') }}"><i class="fas fa-compass"></i> Browse Properties</a></li>
+          <li><a href="{{ url_for('auth.index') }}"><i class="fas fa-home"></i> Home</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>ACCOUNT</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('auth.register') }}"><i class="fas fa-user-plus"></i> Register</a></li>
+          <li><a href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>SUPPORT</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('auth.faq') }}"><i class="fas fa-question-circle"></i> FAQ</a></li>
+          <li><a href="{{ url_for('auth.contact') }}"><i class="fas fa-envelope"></i> Contact Us</a></li>
+        </ul>
+      </div>
     </div>
+
+    <div class="footer-bottom">
+      <div class="footer-copyright">© 2026 Pahuna. All rights reserved.</div>
+      <div class="footer-lang-currency">
+        <button class="lang-btn" onclick="switchLanguage()">
+          <i class="fas fa-globe"></i> EN / नेपाली
+        </button>
+        <button class="currency-btn">
+          <i class="fas fa-rupee-sign"></i> NPR Rs
+        </button>
+      </div>
+    </div>
+  </div>
 </footer>
 {% endblock %}
 
 {% block extra_js %}
 <script>
   function switchLanguage() {
-      alert('Language switcher coming soon!');
+    alert('Language switcher coming soon!');
   }
 
   // ============================================================
@@ -986,7 +1246,7 @@
   function buildLoginHelpCard() {
     return `
       <div class="auth-help-card">
-        <div class="auth-title"><i class="fas fa-sign-in-alt"></i> Login Help</div>
+        <div class="auth-title"><i class="fas fa-sign-in-alt"></i> Neural Login</div>
         <div class="auth-desc">To sign in to your account:</div>
         <ul class="auth-steps">
           <li>Go to the <strong>Login</strong> page</li>
@@ -1008,7 +1268,7 @@
   function buildRegisterHelpCard() {
     return `
       <div class="auth-help-card">
-        <div class="auth-title"><i class="fas fa-user-plus"></i> Registration Help</div>
+        <div class="auth-title"><i class="fas fa-user-plus"></i> Neural Registration</div>
         <div class="auth-desc">To create a new account:</div>
         <ul class="auth-steps">
           <li>Go to the <strong>Register</strong> page</li>
@@ -1031,7 +1291,7 @@
   function buildPasswordResetHelpCard() {
     return `
       <div class="auth-help-card">
-        <div class="auth-title"><i class="fas fa-key"></i> Password Reset Help</div>
+        <div class="auth-title"><i class="fas fa-key"></i> Neural Password Reset</div>
         <div class="auth-desc">To reset your password:</div>
         <ul class="auth-steps">
           <li>Go to the <strong>Forgot Password</strong> page</li>
@@ -1059,7 +1319,7 @@
   function buildRoleHelpCard() {
     return `
       <div class="auth-help-card">
-        <div class="auth-title"><i class="fas fa-users"></i> Choose Your Role</div>
+        <div class="auth-title"><i class="fas fa-users"></i> Neural Role Selection</div>
         <div class="auth-desc">When registering, you can choose:</div>
         <ul class="auth-steps">
           <li><strong>🧳 Guest</strong> — I want to book stays and travel</li>
@@ -1078,7 +1338,7 @@
   // Welcome Message
   function sendWelcomeMessage() {
     addMessage('bot', `
-      <div>👋 Namaste! I'm <strong>Booky</strong>, your AI booking assistant.</div>
+      <div>👋 Namaste! I'm <strong>Booky</strong>, your neural AI assistant.</div>
       <div style="margin-top:10px;">I can help you with:</div>
       <div style="margin-top:4px; font-size:0.85rem;">🔑 Login to your account</div>
       <div style="font-size:0.85rem;">📝 Register as Guest or Host</div>
@@ -1154,7 +1414,7 @@
 
     // GREETINGS
     if (lower.match(/^(hi|hello|hey|namaste|good morning|good evening|yo|hola)/)) {
-      return `👋 Hello! I'm Booky, your booking assistant. I can help you with login, registration, password reset, finding stays, and more! What do you need help with?`;
+      return `👋 Hello! I'm Booky, your neural booking assistant. I can help you with login, registration, password reset, finding stays, and more! What do you need help with?`;
     }
 
     // LOGIN HELP
@@ -1258,7 +1518,7 @@
     // CONTACT
     if (lower.includes('contact') || lower.includes('support') || lower.includes('help') || lower.includes('assist')) {
       return `
-        <div>📞 <strong>Contact Support</strong></div>
+        <div>📞 <strong>Contact Neural Support</strong></div>
         <div style="margin-top:8px;font-size:13px;color:var(--text-secondary);">
           📧 Email: <strong>support@pahuna.com</strong>
           <br>📱 Phone: <strong>+977 01-XXXXXXX</strong>
