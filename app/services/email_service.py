@@ -212,3 +212,150 @@ Need help? Contact us at support@pahuna.com
     except Exception as e:
         print(f"EMAIL SEND ERROR (booking confirmation): {e}")
         return False
+def send_property_approval_email(host_email, host_name, property_title):
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = f"✅ Your property '{property_title}' has been approved!"
+        msg["From"] = config.GMAIL_ADDRESS
+        msg["To"] = host_email
+
+        plain = f"""
+Hi {host_name},
+
+Great news! Your property "{property_title}" has been approved by our team.
+
+Please note: It will take up to 1 week for your property to appear on the browse page as we finalize the listing details.
+
+Thank you for choosing Pahuna.
+
+— The Pahuna Team
+        """.strip()
+
+        html = f"""
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#0d1117;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1117;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="480" cellpadding="0" cellspacing="0"
+               style="background:#161b22;border-radius:16px;border:1px solid #21262d;overflow:hidden;">
+          <tr>
+            <td style="background:linear-gradient(135deg,#0d1f3c,#1a3a5c,#0d2a2a);padding:32px;text-align:center;">
+              <div style="font-size:28px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">Pahuna</div>
+              <div style="font-size:13px;color:#8b949e;margin-top:4px;">Nepal's trusted accommodation platform</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:36px 40px;">
+              <p style="margin:0 0 8px;font-size:15px;color:#8b949e;">Hi {host_name},</p>
+              <p style="margin:0 0 28px;font-size:15px;color:#c9d1d9;line-height:1.6;">
+                Great news! Your property "<strong style="color:#00c97a;">{property_title}</strong>" has been approved by our team.
+              </p>
+              <div style="background:#0d1117;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:28px;">
+                <p style="margin:0;font-size:14px;color:#8b949e;">
+                  Please note: It will take <strong style="color:#f0a500;">up to 1 week</strong> for your property to appear on the browse page as we finalize the listing details.
+                </p>
+              </div>
+              <p style="margin:0 0 8px;font-size:13px;color:#8b949e;line-height:1.6;">
+                Thank you for choosing Pahuna. We look forward to hosting your guests!
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:20px 40px;border-top:1px solid #21262d;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#484f58;">© 2026 Pahuna · Nepal's Homestay Booking Platform</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+        """
+        msg.attach(MIMEText(plain, "plain", "utf-8"))
+        msg.attach(MIMEText(html, "html", "utf-8"))
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(config.GMAIL_ADDRESS, config.GMAIL_APP_PASSWORD)
+            server.sendmail(config.GMAIL_ADDRESS, host_email, msg.as_bytes())
+
+        print(f"Property approval email sent to {host_email}")
+        return True
+    except Exception as e:
+        print(f"EMAIL SEND ERROR (property approval): {e}")
+        return False
+
+def send_property_rejection_email(host_email, host_name, property_title):
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = f"❌ Your property '{property_title}' was not approved"
+        msg["From"] = config.GMAIL_ADDRESS
+        msg["To"] = host_email
+
+        plain = f"""
+Hi {host_name},
+
+We regret to inform you that your property "{property_title}" was not approved for listing at this time.
+
+Please review our guidelines and you may resubmit with updated details.
+
+— The Pahuna Team
+        """.strip()
+
+        html = f"""
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#0d1117;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1117;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="480" cellpadding="0" cellspacing="0"
+               style="background:#161b22;border-radius:16px;border:1px solid #21262d;overflow:hidden;">
+          <tr>
+            <td style="background:linear-gradient(135deg,#0d1f3c,#1a3a5c,#0d2a2a);padding:32px;text-align:center;">
+              <div style="font-size:28px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">Pahuna</div>
+              <div style="font-size:13px;color:#8b949e;margin-top:4px;">Nepal's trusted accommodation platform</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:36px 40px;">
+              <p style="margin:0 0 8px;font-size:15px;color:#8b949e;">Hi {host_name},</p>
+              <p style="margin:0 0 28px;font-size:15px;color:#c9d1d9;line-height:1.6;">
+                We regret to inform you that your property "<strong style="color:#e74c3c;">{property_title}</strong>" was not approved for listing at this time.
+              </p>
+              <div style="background:#0d1117;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:28px;">
+                <p style="margin:0;font-size:14px;color:#8b949e;">
+                  Please review our listing guidelines and you may resubmit your property with updated details.
+                </p>
+              </div>
+              <p style="margin:0 0 8px;font-size:13px;color:#8b949e;line-height:1.6;">
+                If you have any questions, please contact us.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:20px 40px;border-top:1px solid #21262d;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#484f58;">© 2026 Pahuna · Nepal's Homestay Booking Platform</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+        """
+        msg.attach(MIMEText(plain, "plain", "utf-8"))
+        msg.attach(MIMEText(html, "html", "utf-8"))
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(config.GMAIL_ADDRESS, config.GMAIL_APP_PASSWORD)
+            server.sendmail(config.GMAIL_ADDRESS, host_email, msg.as_bytes())
+
+        print(f"Property rejection email sent to {host_email}")
+        return True
+    except Exception as e:
+        print(f"EMAIL SEND ERROR (property rejection): {e}")
+        return False    
