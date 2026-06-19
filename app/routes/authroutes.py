@@ -58,6 +58,9 @@ class AuthRoutes:
         self.bp.route("/booking/reject",  methods=["POST"])(self.controller.reject_booking)
         # ── Browse ────────────────────────────────────────────
         self.bp.route("/browse", methods=["GET"])(self.controller.browse)
+        # ── Review ─────────────────────────
+        self.bp.route("/review/create", methods=["POST"])(self.controller.create_review)
+        self.bp.route("/reviews/<int:property_id>", methods=["GET"])(self.controller.get_reviews)
         # ── Property detail pages ─────────────────────────────
         self.bp.route("/property/mountain-view")(self.controller.property_mountain_view)
         self.bp.route("/property/thamel-heritage")(self.controller.property_thamel_heritage)
