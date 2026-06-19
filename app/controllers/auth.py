@@ -1,6 +1,14 @@
 import email as _email_module   # renamed to avoid collision with local var
-
 from flask import render_template, request, flash, redirect, url_for, session, jsonify
+from flask import send_file
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import mm
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 from app.controllers.basecontroller import BaseController
 from app.models.usermodel import User
 from app.models.database import Database
@@ -804,7 +812,111 @@ class AuthController(BaseController):
         db.execute("UPDATE bookings SET status='cancelled' WHERE booking_id=%s", (booking_id,))
         db.close()
         return jsonify({"success": True, "message": "Booking rejected and cancelled."})
+    
+    def download_invoice(self, booking_ref):
+        """
+        Generate a PDF invoice for a given booking.
+        Only the guest who made the booking or an admin can download.
+        """
+        if not self.is_logged_in():
+            flash("Please login to download invoice.", "warning")
+            return redirect(url_for("auth.login"))
 
+        guest_id = session["user_id"]
+        db = Database()
+
+        # Fetch full booking details (including guest/host/property names)
+        booking = db.fetch_one(
+            """SELECT b.*,
+                      g.name AS guest_name, g.email AS guest_email,
+                      p.title AS property_title, p.region,
+                      h.name AS host_name
+               FROM bookings b
+               JOIN users g ON g.user_id = b.guest_id
+               JOIN properties p ON p.property_id = b.property_id
+               JOIN users h ON h.user_id = p.host_id
+               WHERE b.booking_id = %s""",
+            (booking_ref,)
+        )
+        db.close()
+
+        if not booking:
+            flash("Booking not found.", "danger")
+            return redirect(url_for("auth.guest_dashboard"))
+
+        # Authorize: only the booking's guest or an admin
+        if booking["guest_id"] != guest_id and session.get("role") != "admin":
+            flash("You are not authorized to view this invoice.", "danger")
+            return redirect(url_for("auth.guest_dashboard"))
+
+        # (Optional) Only allow if booking is confirmed/completed
+        if booking["status"] not in ("confirmed", "completed"):
+            flash("Invoice is available only for confirmed or completed bookings.", "warning")
+            return redirect(url_for("auth.guest_dashboard"))
+
+        # ─────────────────────────────────────────────────────────────
+        # Generate PDF
+        # ─────────────────────────────────────────────────────────────
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4)
+        styles = getSampleStyleSheet()
+        elements = []
+
+        # Title
+        title_style = ParagraphStyle(
+            'Title',
+            parent=styles['Heading1'],
+            alignment=TA_CENTER,
+            fontSize=24,
+            textColor=colors.HexColor("#00c97a")
+        )
+        elements.append(Paragraph("PAHUNA INVOICE", title_style))
+        elements.append(Spacer(1, 12))
+
+        # Booking details table
+        data = [
+            ["Booking Reference", booking["booking_id"]],
+            ["Property", f"{booking['property_title']} – {booking['region']}"],
+            ["Guest", f"{booking['guest_name']} ({booking['guest_email']})"],
+            ["Host", booking["host_name"]],
+            ["Check-in", booking["checkin_date"].strftime("%B %d, %Y") if hasattr(booking["checkin_date"], "strftime") else booking["checkin_date"]],
+            ["Check-out", booking["checkout_date"].strftime("%B %d, %Y") if hasattr(booking["checkout_date"], "strftime") else booking["checkout_date"]],
+            ["Guests", str(booking["guests_count"])],
+            ["Total Amount", f"NPR {float(booking['total_amount']):,.2f}"],
+        ]
+
+        table = Table(data, colWidths=[100*mm, 100*mm])
+        table.setStyle(TableStyle([
+            ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
+            ('FONTSIZE', (0,0), (-1,-1), 12),
+            ('BACKGROUND', (0,0), (0,-1), colors.HexColor("#f0f0f0")),
+            ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('PADDING', (0,0), (-1,-1), 6),
+        ]))
+        elements.append(table)
+        elements.append(Spacer(1, 20))
+
+        # Footer
+        footer_style = ParagraphStyle(
+            'Footer',
+            parent=styles['Normal'],
+            alignment=TA_CENTER,
+            fontSize=10,
+            textColor=colors.grey
+        )
+        elements.append(Paragraph("Thank you for choosing Pahuna – Nepal's trusted accommodation platform.", footer_style))
+        elements.append(Paragraph("This is a system-generated invoice.", footer_style))
+
+        doc.build(elements)
+        buffer.seek(0)
+
+        return send_file(
+            buffer,
+            as_attachment=True,
+            download_name=f"invoice_{booking_ref}.pdf",
+            mimetype="application/pdf"
+        )
         # ────────────────────────────────────────────────────────────
     # NEW: Confirm and Reject booking (host actions)
     # ────────────────────────────────────────────────────────────

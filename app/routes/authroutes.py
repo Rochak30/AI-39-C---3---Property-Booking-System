@@ -56,6 +56,7 @@ class AuthRoutes:
         self.bp.route("/booking/mark-complete",  methods=["POST"])(self.controller.mark_booking_complete)
         self.bp.route("/booking/confirm", methods=["POST"])(self.controller.confirm_booking)
         self.bp.route("/booking/reject",  methods=["POST"])(self.controller.reject_booking)
+        self.bp.route("/booking/invoice/<booking_ref>", methods=["GET"])(self.controller.download_invoice)
         # ── Browse ────────────────────────────────────────────
         self.bp.route("/browse", methods=["GET"])(self.controller.browse)
         # ── Review ─────────────────────────
