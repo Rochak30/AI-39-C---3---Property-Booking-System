@@ -13,7 +13,6 @@
     padding: 0;
     box-sizing: border-box;
   }
-
   /* Light Theme Variables */
   :root {
     --bg-dark: #0a120e;
@@ -67,7 +66,6 @@
     overflow-x: hidden;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
-
   /* Scan line effect - reduced in light mode */
   body::before {
     content: '';
@@ -78,11 +76,9 @@
     z-index: 9999;
     opacity: 0.3;
   }
-
   [data-theme="light"] body::before {
     opacity: 0.1;
   }
-
   /* Animated background orbs */
   .orb {
     position: fixed;
@@ -92,12 +88,10 @@
     z-index: 0;
     animation: floatOrb 20s ease-in-out infinite alternate;
   }
-
   @keyframes floatOrb {
     0% { transform: translate(0, 0) scale(1); }
     100% { transform: translate(50px, 50px) scale(1.1); }
   }
-
   .orb-1 {
     width: 500px;
     height: 500px;
@@ -114,15 +108,12 @@
     left: -150px;
     animation-delay: -5s;
   }
-
   [data-theme="light"] .orb-1 {
     background: radial-gradient(circle, rgba(46, 204, 113, 0.06) 0%, transparent 70%);
   }
-
   [data-theme="light"] .orb-2 {
     background: radial-gradient(circle, rgba(46, 204, 113, 0.03) 0%, transparent 70%);
   }
-
   /* Navigation */
   .glass-nav {
     position: fixed;
@@ -144,12 +135,10 @@
   [data-theme="light"] .glass-nav {
     background: rgba(255, 255, 255, 0.92);
   }
-
   @keyframes slideDown {
     from { opacity: 0; transform: translateY(-30px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
   .logo {
     display: flex;
     align-items: center;
