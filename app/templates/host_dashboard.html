@@ -5,37 +5,32 @@
 <style>
 /* ============================================================
    HOST DASHBOARD STYLES
-   Purpose: Styling for the host dashboard layout and components
    ============================================================ */
 
-/* ── Dashboard Layout ── */
 .dash-wrap   { 
   display: flex; 
-  min-height: calc(100vh - 64px); /* Full viewport minus navbar height */
-  margin-top: 64px; /* Account for fixed navbar */
+  min-height: calc(100vh - 64px);
+  margin-top: 64px;
 }
 
-/* ── Sidebar ── */
 .dash-sidebar{
   width: 220px; 
-  flex-shrink: 0; /* Prevent sidebar from shrinking */
+  flex-shrink: 0; 
   background: var(--bg-800);
   border-right: 1px solid var(--border); 
   padding: 32px 0; 
-  position: sticky; /* Sticks to top when scrolling */
-  top: 64px; /* Below navbar */
-  height: calc(100vh - 64px); /* Full viewport height minus navbar */
-  overflow-y: auto; /* Scroll if content overflows */
+  position: sticky; 
+  top: 64px; 
+  height: calc(100vh - 64px); 
+  overflow-y: auto;
 }
 
-/* ── Main Content ── */
 .dash-main   { 
-  flex: 1; /* Takes remaining space */
+  flex: 1; 
   padding: 36px 40px; 
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-x: hidden;
 }
 
-/* ── Sidebar Labels ── */
 .sidebar-label{ 
   font-size: 10px; 
   font-weight: 700; 
@@ -45,7 +40,6 @@
   text-transform: uppercase; 
 }
 
-/* ── Sidebar Links ── */
 .sidebar-link{
   display: flex; 
   align-items: center; 
@@ -55,13 +49,13 @@
   color: var(--text-secondary); 
   text-decoration: none;
   transition: all .2s; 
-  border-left: 3px solid transparent; /* Left border for active state */
+  border-left: 3px solid transparent;
 }
 
 .sidebar-link:hover, .sidebar-link.active{
   color: var(--text-primary); 
   background: var(--bg-700); 
-  border-left-color: var(--teal); /* Teal indicator for active link */
+  border-left-color: var(--teal);
 }
 
 .sidebar-link i { 
@@ -69,7 +63,6 @@
   text-align: center; 
 }
 
-/* ── Statistics Cards ── */
 .stats-grid  { 
   display: grid; 
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
@@ -96,9 +89,8 @@
   margin-top: 4px; 
 }
 
-/* ── Dashboard Sections ── */
-.dash-section   { display: none; } /* Hidden by default */
-.dash-section.active { display: block; } /* Show active section */
+.dash-section   { display: none; }
+.dash-section.active { display: block; }
 
 .section-title  { 
   font-size: 22px; 
@@ -109,9 +101,8 @@
   gap: 10px; 
 }
 
-/* ── Table Styles ── */
 .table-wrap { 
-  overflow-x: auto; /* Horizontal scroll on small screens */
+  overflow-x: auto; 
   border-radius: 10px; 
   border: 1px solid var(--border); 
 }
@@ -140,10 +131,9 @@ td          {
   vertical-align: middle; 
 }
 
-tr:last-child td { border-bottom: none; } /* Remove border on last row */
-tr:hover td { background: var(--bg-700); } /* Hover effect */
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-700); }
 
-/* ── Status Badges ── */
 .status     { 
   display: inline-block; 
   padding: 2px 10px; 
@@ -153,33 +143,31 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
   text-transform: uppercase; 
 }
 
-/* Status colors - each with its own color scheme */
 .status-approved, .status-active { 
   background: rgba(46, 204, 113, .15); 
-  color: #2ecc71; /* Green */
+  color: #2ecc71;
 }
 
 .status-pending  { 
   background: rgba(230, 126, 34, .15); 
-  color: #e67e22; /* Orange */
+  color: #e67e22;
 }
 
 .status-rejected, .status-cancelled { 
   background: rgba(231, 76, 60, .15); 
-  color: #e74c3c; /* Red */
+  color: #e74c3c;
 }
 
 .status-confirmed { 
   background: rgba(46, 204, 113, .15); 
-  color: #2ecc71; /* Green */
+  color: #2ecc71;
 }
 
 .status-completed { 
   background: rgba(52, 152, 219, .15); 
-  color: #3498db; /* Blue */
+  color: #3498db;
 }
 
-/* ── Small Buttons ── */
 .btn-xs  { 
   padding: 4px 10px; 
   font-size: 11px; 
@@ -193,13 +181,47 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
   background: rgba(231, 76, 60, .1); 
   color: #e74c3c; 
 }
-
 .btn-del:hover { 
   background: #e74c3c; 
   color: #fff; 
 }
 
-/* ── Approval Banner ── */
+.btn-approve {
+  background: rgba(46, 204, 113, .15);
+  color: #2ecc71;
+}
+.btn-approve:hover {
+  background: #2ecc71;
+  color: #000;
+}
+
+.btn-reject {
+  background: rgba(231, 76, 60, .15);
+  color: #e74c3c;
+}
+.btn-reject:hover {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.btn-complete {
+    background: rgba(52, 152, 219, .15);
+    color: #3498db;
+}
+.btn-complete:hover {
+    background: #3498db;
+    color: #fff;
+}
+
+.btn-cancel-review {
+    background: rgba(230, 126, 34, .15);
+    color: #e67e22;
+}
+.btn-cancel-review:hover {
+    background: #e67e22;
+    color: #fff;
+}
+
 .banner { 
   padding: 14px 20px; 
   border-radius: 10px; 
@@ -213,54 +235,34 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
 .banner-warn { 
   background: rgba(230, 126, 34, .12); 
   border: 1px solid rgba(230, 126, 34, .3); 
-  color: #e67e22; /* Warning orange */
+  color: #e67e22;
 }
 
 .banner-ok   { 
   background: rgba(46, 204, 113, .1); 
   border: 1px solid rgba(46, 204, 113, .3); 
-  color: #2ecc71; /* Success green */
+  color: #2ecc71;
 }
 
-/* ── Profile Form ── */
 .profile-form { max-width: 500px; }
 .profile-form .form-group { margin-bottom: 16px; }
+
+.status-none {
+  background: var(--bg-600);
+  color: var(--text-muted);
+}
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- ============================================================
-     HOST DASHBOARD
-     
-     Purpose: Central control panel for hosts to manage:
-     - Properties (view, add, delete)
-     - Bookings (view all bookings on their properties)
-     - Earnings (revenue tracking)
-     - Profile (update personal information)
-     
-     Access: Only available to users with 'host' role
-     ============================================================ -->
 <div class="dash-wrap">
 
-  <!-- ============================================================
-       SIDEBAR NAVIGATION
-       
-       Structure:
-       - User info section (name + role)
-       - Host Panel links (Overview, Properties, Bookings, Earnings, Profile)
-       - Quick Links (Add Property, Logout)
-       
-       Active state: Current section highlighted with teal border
-       ============================================================ -->
   <aside class="dash-sidebar">
-    
-    <!-- ── User Info ── -->
     <div style="padding: 0 24px 24px; border-bottom: 1px solid var(--border);">
       <div style="font-weight:700; font-size:15px;">{{ session.user_name }}</div>
       <div style="font-size:12px; color:var(--teal); margin-top:2px;">Host</div>
     </div>
 
-    <!-- ── Host Panel Navigation ── -->
     <div class="sidebar-label">Host Panel</div>
     <a href="#" class="sidebar-link active" onclick="showSection('overview',this)">
       <i class="fas fa-tachometer-alt"></i> Overview
@@ -278,27 +280,13 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
       <i class="fas fa-user-edit"></i> Profile
     </a>
 
-    <!-- ── Quick Links ── -->
     <div class="sidebar-label">Quick Links</div>
     <a href="/add-property" class="sidebar-link"><i class="fas fa-plus"></i> Add Property</a>
     <a href="/logout" class="sidebar-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </aside>
 
-  <!-- ============================================================
-       MAIN CONTENT AREA
-       
-       Displays the active section based on sidebar navigation
-       Sections: Overview, Properties, Bookings, Earnings, Profile
-       ============================================================ -->
   <main class="dash-main">
 
-    <!-- ============================================================
-         APPROVAL BANNER
-         
-         Purpose: Shows host account verification status
-         - If verified: Show success banner
-         - If pending: Show warning banner (properties won't be visible)
-         ============================================================ -->
     {% if host_profile %}
       {% if host_profile.verified %}
         <div class="banner banner-ok">
@@ -314,18 +302,10 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
       {% endif %}
     {% endif %}
 
-    <!-- ============================================================
-         SECTION 1: OVERVIEW
-         
-         Purpose: Dashboard summary with key metrics
-         Displays:
-         - Stats cards: Properties count, Total Bookings, Total Revenue, Active Bookings
-         - Recent bookings table (last 5)
-         ============================================================ -->
+    <!-- OVERVIEW -->
     <section class="dash-section active" id="sec-overview">
       <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> Overview</h2>
       
-      <!-- ── Stats Cards ── -->
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-num">{{ properties|length }}</div>
@@ -345,7 +325,6 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
         </div>
       </div>
 
-      <!-- ── Recent Bookings Preview ── -->
       {% if bookings %}
       <h3 style="font-size:15px; margin-bottom:12px; color:var(--text-secondary);">Recent Bookings</h3>
       <div class="table-wrap">
@@ -360,7 +339,7 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
             </tr>
           </thead>
           <tbody>
-          {% for b in bookings[:5] %} <!-- Show only first 5 bookings -->
+          {% for b in bookings[:5] %}
             <tr>
               <td>{{ b.guest_name }}</td>
               <td>{{ b.property_title }}</td>
@@ -375,19 +354,10 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
       {% endif %}
     </section>
 
-    <!-- ============================================================
-         SECTION 2: MY PROPERTIES
-         
-         Purpose: Manage all properties owned by the host
-         Displays:
-         - Property listing with details (ID, Title, Region, Type, Price, Max Guests, Approval Status, Bookings)
-         - Delete action (with confirmation)
-         - Add Property button
-         ============================================================ -->
+    <!-- PROPERTIES -->
     <section class="dash-section" id="sec-properties">
       <h2 class="section-title"><i class="fas fa-home"></i> My Properties</h2>
       
-      <!-- ── Add Property Button ── -->
       <a href="/add-property" class="btn btn-primary btn-sm" style="margin-bottom:16px;display:inline-flex;">
         <i class="fas fa-plus"></i> Add New Property
       </a>
@@ -417,11 +387,9 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
               <td>{{ p.type }}</td>
               <td>NPR {{ "{:,.0f}".format(p.price_per_night) }}</td>
               <td>{{ p.max_guests }}</td>
-              <!-- Approval status badge -->
               <td><span class="status status-{{ p.approval_status }}">{{ p.approval_status }}</span></td>
               <td>{{ p.booking_count }}</td>
               <td>
-                <!-- Delete form with confirmation dialog -->
                 <form method="POST" action="/host/delete-property"
                       onsubmit="return confirm('Delete {{ p.title }}?')">
                   <input type="hidden" name="property_id" value="{{ p.property_id }}">
@@ -443,13 +411,7 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
       {% endif %}
     </section>
 
-    <!-- ============================================================
-         SECTION 3: BOOKINGS
-         
-         Purpose: View all bookings on the host's properties
-         Displays:
-         - Booking details: Reference, Guest, Property, Check-in, Check-out, Guests, Total, Status
-         ============================================================ -->
+    <!-- BOOKINGS with all host actions -->
     <section class="dash-section" id="sec-bookings">
       <h2 class="section-title"><i class="fas fa-calendar-check"></i> Bookings on My Properties</h2>
       
@@ -466,6 +428,8 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
               <th>Guests</th>
               <th>Total</th>
               <th>Status</th>
+              <th>Cancellation</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -479,6 +443,35 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
               <td>{{ b.guests_count }}</td>
               <td>NPR {{ "{:,.0f}".format(b.total_amount) }}</td>
               <td><span class="status status-{{ b.status }}">{{ b.status }}</span></td>
+              <td>
+                {% if b.cancellation_status == 'requested' %}
+                  <span class="status status-pending">Requested</span>
+                {% elif b.cancellation_status == 'approved' %}
+                  <span class="status status-approved">Approved</span>
+                {% elif b.cancellation_status == 'rejected' %}
+                  <span class="status status-rejected">Rejected</span>
+                {% else %}
+                  <span class="status status-none">—</span>
+                {% endif %}
+              </td>
+              <td>
+                <!-- If booking is pending, show Confirm/Reject -->
+                {% if b.status == 'pending' %}
+                  <button class="btn-xs btn-approve" onclick="confirmBooking('{{ b.booking_id }}')">✓ Confirm</button>
+                  <button class="btn-xs btn-reject"  onclick="rejectBooking('{{ b.booking_id }}')">✕ Reject</button>
+                {% endif %}
+
+                <!-- If cancellation is requested and booking not already cancelled -->
+                {% if b.cancellation_status == 'requested' and b.status != 'cancelled' %}
+                  <button class="btn-xs btn-approve" onclick="reviewCancellation('{{ b.booking_id }}', 'approve')">✓ Approve Cancel</button>
+                  <button class="btn-xs btn-reject"  onclick="reviewCancellation('{{ b.booking_id }}', 'reject')">✕ Reject Cancel</button>
+                {% endif %}
+
+                <!-- If booking is confirmed and no pending cancellation, show Complete -->
+                {% if b.status == 'confirmed' and b.cancellation_status != 'requested' %}
+                  <button class="btn-xs btn-complete" onclick="completeBooking('{{ b.booking_id }}')">✔ Complete</button>
+                {% endif %}
+              </td>
             </tr>
           {% endfor %}
           </tbody>
@@ -489,14 +482,7 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
       {% endif %}
     </section>
 
-    <!-- ============================================================
-         SECTION 4: EARNINGS
-         
-         Purpose: Track revenue from bookings
-         Displays:
-         - Stats cards: Total Revenue, Active Bookings Revenue, Completed Revenue, Active Bookings, Completed Stays
-         - Info note about revenue calculation
-         ============================================================ -->
+    <!-- EARNINGS -->
     <section class="dash-section" id="sec-earnings">
       <h2 class="section-title"><i class="fas fa-rupee-sign"></i> Earnings</h2>
       
@@ -529,18 +515,7 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
       </p>
     </section>
 
-    <!-- ============================================================
-         SECTION 5: PROFILE
-         
-         Purpose: Update host profile information
-         Fields:
-         - Full Name (required)
-         - Email (required)
-         - Phone (optional)
-         - New Password (optional, leave blank to keep current)
-         
-         Note: Password field has minimum length 6 characters
-         ============================================================ -->
+    <!-- PROFILE -->
     <section class="dash-section" id="sec-profile">
       <h2 class="section-title"><i class="fas fa-user-edit"></i> Edit Profile</h2>
       
@@ -580,31 +555,96 @@ tr:hover td { background: var(--bg-700); } /* Hover effect */
 <script>
 /* ============================================================
    DASHBOARD NAVIGATION
-   
-   Purpose: Switch between dashboard sections
-   
-   How it works:
-   1. Hides all sections (dash-section) by removing 'active' class
-   2. Removes 'active' class from all sidebar links
-   3. Shows the selected section by adding 'active' class
-   4. Highlights the clicked sidebar link with 'active' class
-   
-   Parameters:
-   - id: Section identifier (matches id="sec-{id}")
-   - link: The sidebar link element that was clicked
    ============================================================ */
 function showSection(id, link) {
-  // Hide all sections
   document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
-  
-  // Remove active class from all sidebar links
   document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-  
-  // Show the selected section
   document.getElementById('sec-' + id).classList.add('active');
-  
-  // Highlight the clicked link
   link.classList.add('active');
+}
+
+/* ============================================================
+   BOOKING ACTIONS
+   ============================================================ */
+
+// Confirm a pending booking
+function confirmBooking(bookingId) {
+    if (!confirm('Confirm this booking?')) return;
+    fetch('/booking/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ booking_id: bookingId })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.message, 'success');
+            location.reload();
+        } else {
+            showToast(data.error || 'Failed.', 'error');
+        }
+    })
+    .catch(() => showToast('Network error.', 'error'));
+}
+
+// Reject a pending booking
+function rejectBooking(bookingId) {
+    if (!confirm('Reject this booking? This will cancel it.')) return;
+    fetch('/booking/reject', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ booking_id: bookingId })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.message, 'success');
+            location.reload();
+        } else {
+            showToast(data.error || 'Failed.', 'error');
+        }
+    })
+    .catch(() => showToast('Network error.', 'error'));
+}
+
+// Review cancellation (approve/reject)
+function reviewCancellation(bookingId, action) {
+    if (!confirm(`Are you sure you want to ${action} this cancellation?`)) return;
+    fetch('/booking/cancel-review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ booking_id: bookingId, action: action })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.message, 'success');
+            location.reload();
+        } else {
+            showToast(data.error || 'Failed.', 'error');
+        }
+    })
+    .catch(() => showToast('Network error.', 'error'));
+}
+
+// Complete a confirmed booking (mark as completed)
+function completeBooking(bookingId) {
+    if (!confirm('Mark this booking as completed? This will add the revenue to your earnings.')) return;
+    fetch('/booking/mark-complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ booking_id: bookingId })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.message, 'success');
+            location.reload();
+        } else {
+            showToast(data.error || 'Failed.', 'error');
+        }
+    })
+    .catch(() => showToast('Network error.', 'error'));
 }
 </script>
 {% endblock %}
