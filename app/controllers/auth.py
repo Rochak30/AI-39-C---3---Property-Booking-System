@@ -513,6 +513,300 @@ class AuthController(BaseController):
         flash("Property deleted.", "warning")
         return redirect(url_for("auth.host_dashboard"))
 
+    # ════════════════════════════════════════════════════════════
+    # BOOKING — create, cancel, review-cancel, mark-complete
+    # ════════════════════════════════════════════════════════════
+
+    def create_booking(self):
+        """Guest creates a real booking. Replaces the old frontend-only flow."""
+        if not self.is_logged_in():
+            return jsonify({"error": "Please login first."}), 401
+        if session.get("role") not in ("guest", "user"):
+            return jsonify({"error": "Only guests can book."}), 403
+
+        data = request.get_json(silent=True) or {}
+        property_id  = data.get("property_id")
+        checkin      = data.get("checkin_date")
+        checkout     = data.get("checkout_date")
+        guests       = data.get("guests_count")
+        coupon_code  = (data.get("coupon_code") or "").strip().upper()
+        guest_id     = session["user_id"]
+
+        if not all([property_id, checkin, checkout, guests]):
+            return jsonify({"error": "Missing required fields."}), 400
+
+        db = Database()
+        prop = db.fetch_one(
+            "SELECT property_id, host_id, price_per_night, max_guests, title, "
+            "approval_status, status FROM properties WHERE property_id=%s",
+            (property_id,)
+        )
+        if not prop:
+            db.close()
+            return jsonify({"error": "Property not found."}), 404
+        if prop["approval_status"] != "approved" or prop["status"] != "active":
+            db.close()
+            return jsonify({"error": "Property is not available for booking."}), 400
+
+        try:
+            guests_int = int(guests)
+        except (TypeError, ValueError):
+            db.close()
+            return jsonify({"error": "Invalid guest count."}), 400
+        if guests_int > int(prop["max_guests"]):
+            db.close()
+            return jsonify({"error": f"Maximum {prop['max_guests']} guests allowed."}), 400
+
+        try:
+            checkin_date  = datetime.strptime(checkin, "%Y-%m-%d").date()
+            checkout_date = datetime.strptime(checkout, "%Y-%m-%d").date()
+        except ValueError:
+            db.close()
+            return jsonify({"error": "Invalid date format."}), 400
+        if checkin_date >= checkout_date:
+            db.close()
+            return jsonify({"error": "Check-out must be after check-in."}), 400
+        if checkin_date < datetime.now().date():
+            db.close()
+            return jsonify({"error": "Check-in date cannot be in the past."}), 400
+
+        nights  = (checkout_date - checkin_date).days
+        subtotal = nights * float(prop["price_per_night"])
+
+        coupon_id = None
+        discount_amount = 0.0
+        if coupon_code:
+            coupon = db.fetch_one(
+                "SELECT coupon_id, type, value, expiry_date, active "
+                "FROM coupons WHERE code=%s AND active=1",
+                (coupon_code,)
+            )
+            if coupon and coupon["expiry_date"] and coupon["expiry_date"] < datetime.now().date():
+                coupon = None
+            if coupon:
+                used = db.fetch_one(
+                    "SELECT 1 FROM coupon_usage WHERE coupon_id=%s AND guest_id=%s",
+                    (coupon["coupon_id"], guest_id)
+                )
+                if used:
+                    db.close()
+                    return jsonify({"error": "You have already used this coupon."}), 400
+                coupon_id = coupon["coupon_id"]
+                if coupon["type"] == "percentage":
+                    discount_amount = subtotal * (float(coupon["value"]) / 100)
+                elif coupon["type"] == "fixed":
+                    discount_amount = min(float(coupon["value"]), subtotal)
+            else:
+                db.close()
+                return jsonify({"error": "Invalid or expired coupon code."}), 400
+
+        total_amount = max(subtotal - discount_amount, 0)
+        booking_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
+        # CHANGED: status from 'confirmed' to 'pending'
+        db.execute(
+            """INSERT INTO bookings
+               (booking_id, guest_id, property_id, coupon_id, checkin_date, checkout_date,
+                guests_count, total_amount, status, created_at)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'pending', NOW())""",
+            (booking_id, guest_id, property_id, coupon_id, checkin, checkout,
+             guests_int, total_amount)
+        )
+
+        if coupon_id:
+            db.execute(
+                "INSERT INTO coupon_usage (coupon_id, guest_id, booking_id) VALUES (%s, %s, %s)",
+                (coupon_id, guest_id, booking_id)
+            )
+
+        db.close()
+        return jsonify({
+            "success": True,
+            "booking_id": booking_id,
+            "total": float(total_amount),
+            "nights": nights,
+            "property_title": prop["title"],
+        })
+
+    def cancel_booking(self):
+        """Guest requests cancellation; host must approve it."""
+        if not self.is_logged_in():
+            return jsonify({"error": "Please login first."}), 401
+        if session.get("role") not in ("guest", "user"):
+            return jsonify({"error": "Only guests can cancel."}), 403
+
+        data = request.get_json(silent=True) or {}
+        booking_id = data.get("booking_id")
+        if not booking_id:
+            return jsonify({"error": "Missing booking_id"}), 400
+
+        guest_id = session["user_id"]
+        db = Database()
+        booking = db.fetch_one(
+            "SELECT status, cancellation_status FROM bookings WHERE booking_id=%s AND guest_id=%s",
+            (booking_id, guest_id)
+        )
+        if not booking:
+            db.close()
+            return jsonify({"error": "Booking not found."}), 404
+        if booking["status"] in ("cancelled", "completed"):
+            db.close()
+            return jsonify({"error": "This booking cannot be cancelled."}), 400
+        if booking["cancellation_status"] == "requested":
+            db.close()
+            return jsonify({"error": "Cancellation already requested."}), 400
+
+        db.execute(
+            "UPDATE bookings SET cancellation_status='requested' WHERE booking_id=%s",
+            (booking_id,)
+        )
+        db.close()
+        return jsonify({"success": True, "message": "Cancellation requested. Waiting for host approval."})
+
+    def review_cancellation(self):
+        """Host approves or rejects a guest's cancellation request."""
+        if not self.is_logged_in():
+            return jsonify({"error": "Please login first."}), 401
+        if session.get("role") != "host":
+            return jsonify({"error": "Only hosts can review cancellations."}), 403
+
+        data = request.get_json(silent=True) or {}
+        booking_id = data.get("booking_id")
+        action     = data.get("action")
+        host_id    = session["user_id"]
+
+        if not booking_id or action not in ("approve", "reject"):
+            return jsonify({"error": "Missing booking_id or invalid action."}), 400
+
+        db = Database()
+        booking = db.fetch_one(
+            """SELECT b.* FROM bookings b
+               JOIN properties p ON b.property_id = p.property_id
+               WHERE b.booking_id=%s AND p.host_id=%s""",
+            (booking_id, host_id)
+        )
+        if not booking:
+            db.close()
+            return jsonify({"error": "Booking not found or you are not the host."}), 404
+        if booking["cancellation_status"] != "requested":
+            db.close()
+            return jsonify({"error": "No pending cancellation request for this booking."}), 400
+
+        if action == "approve":
+            db.execute(
+                "UPDATE bookings SET status='cancelled', cancellation_status='approved' WHERE booking_id=%s",
+                (booking_id,)
+            )
+            message = "Cancellation approved. Booking cancelled."
+        else:
+            db.execute(
+                "UPDATE bookings SET cancellation_status='rejected' WHERE booking_id=%s",
+                (booking_id,)
+            )
+            message = "Cancellation rejected. Booking remains active."
+
+        db.close()
+        return jsonify({"success": True, "message": message})
+
+    def mark_booking_complete(self):
+        """
+        Host marks a confirmed stay as completed (after checkout).
+        Without this, status never leaves 'confirmed' and 'completed_revenue'
+        on the earnings dashboard would always show zero.
+        """
+        if not self.is_logged_in():
+            return jsonify({"error": "Please login first."}), 401
+        if session.get("role") != "host":
+            return jsonify({"error": "Only hosts can do this."}), 403
+
+        data = request.get_json(silent=True) or {}
+        booking_id = data.get("booking_id")
+        host_id = session["user_id"]
+        if not booking_id:
+            return jsonify({"error": "Missing booking_id"}), 400
+
+        db = Database()
+        booking = db.fetch_one(
+            """SELECT b.status FROM bookings b
+               JOIN properties p ON b.property_id = p.property_id
+               WHERE b.booking_id=%s AND p.host_id=%s""",
+            (booking_id, host_id)
+        )
+        if not booking:
+            db.close()
+            return jsonify({"error": "Booking not found or you are not the host."}), 404
+        if booking["status"] != "confirmed":
+            db.close()
+            return jsonify({"error": "Only confirmed bookings can be marked complete."}), 400
+
+        db.execute("UPDATE bookings SET status='completed' WHERE booking_id=%s", (booking_id,))
+        db.close()
+        return jsonify({"success": True, "message": "Booking marked as completed."})
+
+    # ────────────────────────────────────────────────────────────
+    # NEW: Confirm and Reject booking (host actions)
+    # ────────────────────────────────────────────────────────────
+
+    def confirm_booking(self):
+        """Host confirms a pending booking."""
+        if not self.is_logged_in() or session.get("role") != "host":
+            return jsonify({"error": "Unauthorized"}), 401
+
+        data = request.get_json(silent=True) or {}
+        booking_id = data.get("booking_id")
+        host_id = session["user_id"]
+
+        if not booking_id:
+            return jsonify({"error": "Missing booking_id"}), 400
+
+        db = Database()
+        booking = db.fetch_one(
+            """SELECT b.status FROM bookings b
+               JOIN properties p ON b.property_id = p.property_id
+               WHERE b.booking_id=%s AND p.host_id=%s""",
+            (booking_id, host_id)
+        )
+        if not booking:
+            db.close()
+            return jsonify({"error": "Booking not found or you are not the host."}), 404
+        if booking["status"] != "pending":
+            db.close()
+            return jsonify({"error": "Only pending bookings can be confirmed."}), 400
+
+        db.execute("UPDATE bookings SET status='confirmed' WHERE booking_id=%s", (booking_id,))
+        db.close()
+        return jsonify({"success": True, "message": "Booking confirmed."})
+
+    def reject_booking(self):
+        """Host rejects a pending booking (cancels it)."""
+        if not self.is_logged_in() or session.get("role") != "host":
+            return jsonify({"error": "Unauthorized"}), 401
+
+        data = request.get_json(silent=True) or {}
+        booking_id = data.get("booking_id")
+        host_id = session["user_id"]
+
+        if not booking_id:
+            return jsonify({"error": "Missing booking_id"}), 400
+
+        db = Database()
+        booking = db.fetch_one(
+            """SELECT b.status FROM bookings b
+               JOIN properties p ON b.property_id = p.property_id
+               WHERE b.booking_id=%s AND p.host_id=%s""",
+            (booking_id, host_id)
+        )
+        if not booking:
+            db.close()
+            return jsonify({"error": "Booking not found or you are not the host."}), 404
+        if booking["status"] != "pending":
+            db.close()
+            return jsonify({"error": "Only pending bookings can be rejected."}), 400
+
+        db.execute("UPDATE bookings SET status='cancelled' WHERE booking_id=%s", (booking_id,))
+        db.close()
+        return jsonify({"success": True, "message": "Booking rejected and cancelled."})
+
     # ────────────────────────────────────────────────────────────
     # GUEST DASHBOARD
     # ────────────────────────────────────────────────────────────
