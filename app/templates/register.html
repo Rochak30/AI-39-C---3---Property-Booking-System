@@ -3,12 +3,7 @@
 
 {% block extra_css %}
 <style>
-  /* ============================================================
-     REGISTRATION PAGE STYLES
-     Purpose: Additional component styles for the registration form
-     ============================================================ */
-
-  /* ── Role Switch Buttons ── */
+  /* Additional component styles that complement the existing style.css */
   .role-switch {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -30,15 +25,12 @@
     transition: all 0.2s;
     color: var(--text-secondary);
   }
-  /* Active state - teal gradient with glow */
   .role-btn.active {
     background: var(--teal);
     border-color: var(--teal);
     color: #051209;
     box-shadow: 0 4px 12px rgba(0, 201, 122, 0.3);
   }
-  
-  /* ── Role Note ── */
   .role-note {
     font-size: 12px;
     color: var(--text-muted);
@@ -51,8 +43,6 @@
     display: inline-block;
     width: 100%;
   }
-
-  /* ── Conditional Cards (Guest/Host specific fields) ── */
   .conditional-card {
     background: var(--bg-600);
     border: 1px solid var(--border);
@@ -68,8 +58,6 @@
     align-items: center;
     gap: 6px;
   }
-
-  /* ── Two Column Grid ── */
   .two-col-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -79,8 +67,6 @@
   .full-width {
     grid-column: span 2;
   }
-
-  /* ── Section Labels ── */
   .section-upper {
     font-size: 11px;
     letter-spacing: 0.8px;
@@ -89,8 +75,6 @@
     text-transform: uppercase;
     margin: 12px 0 8px 0;
   }
-
-  /* ── Checkbox Group ── */
   .checkbox-group {
     display: flex;
     align-items: center;
@@ -102,8 +86,6 @@
     height: 18px;
     accent-color: var(--teal);
   }
-
-  /* ── Input with Icon Group ── */
   .input-icon-group {
     display: flex;
     align-items: center;
@@ -112,7 +94,6 @@
     border-radius: 12px;
     transition: all 0.2s;
   }
-  /* Focus state - teal glow */
   .input-icon-group:focus-within {
     border-color: var(--teal);
     box-shadow: 0 0 0 3px var(--teal-glow);
@@ -132,8 +113,7 @@
     color: var(--text-primary);
     outline: none;
   }
-
-  /* ── Eye Toggle Button ── */
+  /* ── Eye toggle ── */
   .btn-eye {
     background: none;
     border: none;
@@ -146,8 +126,7 @@
     transition: color 0.2s;
   }
   .btn-eye:hover { color: var(--text-secondary); }
-
-  /* ── Validation Feedback ── */
+  /* ── /Eye toggle ── */
   .validation-feedback {
     font-size: 11px;
     margin-top: 4px;
@@ -158,8 +137,6 @@
   }
   .valid-ok { color: var(--green); }
   .valid-error { color: var(--red); }
-
-  /* ── Password Strength Bar ── */
   .strength-bar {
     height: 5px;
     background: var(--bg-500);
@@ -173,8 +150,6 @@
     transition: width 0.2s, background 0.2s;
     border-radius: 6px;
   }
-
-  /* ── Responsive Design ── */
   @media (max-width: 640px) {
     .two-col-grid {
       grid-template-columns: 1fr;
@@ -188,77 +163,37 @@
 {% endblock %}
 
 {% block content %}
-<!-- ============================================================
-     REGISTRATION PAGE
-     
-     Purpose: User account creation with role selection
-     
-     Features:
-     - Role selection: Guest or Host
-     - Shared fields: Name, Email, Password, Confirm Password, Phone
-     - Guest-specific fields: Home Address, Emergency Contact, Preferred Language
-     - Host-specific fields: ID Type/Number, Property Type, Payout Bank, Address, Consent
-     - Real-time validation with visual feedback
-     - Password strength indicator
-     - Form submission via POST to Flask backend
-     ============================================================ -->
 <div class="auth-page" style="margin-top: 64px; min-height: calc(100vh - 64px); display: grid; grid-template-columns: 1fr 1fr;">
-  
-  <!-- ============================================================
-       LEFT SIDE: HERO PANEL WITH MARKETING
-       Purpose: Brand reinforcement and value proposition
-       ============================================================ -->
+  <!-- LEFT SIDE: Hero panel with marketing -->
   <div class="auth-visual" style="background: linear-gradient(135deg, #0d1f3c 0%, #1a3a5c 50%, #0d2a2a 100%); display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 60px; position: relative; overflow: hidden;">
     <div class="auth-visual-content" style="position: relative; z-index: 1; text-align: center;">
-      
-      <!-- Brand Logo -->
-      <div class="auth-visual-logo" style="font-family: var(--font-display); font-size: 48px; font-weight: 800; margin-bottom: 16px;">
-        Book<span style="color: var(--teal);">mandu</span>
-      </div>
-      
-      <!-- Tagline -->
-      <p class="auth-visual-tagline" style="font-size: 18px; color: var(--text-secondary); line-height: 1.6;">
-        Join as a Guest to explore<br>or as a Host to earn
-      </p>
-      
-      <!-- Benefits Card -->
+      <div class="auth-visual-logo" style="font-family: var(--font-display); font-size: 48px; font-weight: 800; margin-bottom: 16px;">Book<span style="color: var(--teal);">mandu</span></div>
+      <p class="auth-visual-tagline" style="font-size: 18px; color: var(--text-secondary); line-height: 1.6;">Join as a Guest to explore<br>or as a Host to earn</p>
       <div style="margin-top:48px; background: var(--teal-glow); border:1px solid var(--border-teal); border-radius:16px; padding:24px; text-align:left">
         <p style="font-size:14px; color:var(--text-secondary); margin-bottom:12px">✓ Free to join, no booking fees for guests</p>
         <p style="font-size:14px; color:var(--text-secondary); margin-bottom:12px">✓ Hosts list in minutes & earn in Nepali Rupees</p>
         <p style="font-size:14px; color:var(--text-secondary)">✓ Verified reviews from real travelers</p>
       </div>
-      
-      <!-- Footer Quote -->
-      <div style="margin-top: 32px; font-style: italic; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 20px;">
-        "Travel like a local, host like a friend — Bookmandu connects souls of Nepal."
-      </div>
+      <div style="margin-top: 32px; font-style: italic; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 20px;">"Travel like a local, host like a friend — Bookmandu connects souls of Nepal."</div>
     </div>
   </div>
 
-  <!-- ============================================================
-       RIGHT SIDE: FORM CARD
-       Purpose: Registration form with role selection and validation
-       ============================================================ -->
+  <!-- RIGHT SIDE: Form card -->
   <div class="auth-form-side" style="display: flex; align-items: center; justify-content: center; padding: 60px 80px; background: var(--bg-900);">
     <div class="auth-form-container" style="width: 100%; max-width: 520px;">
-      
-      <!-- ── Form Header ── -->
       <h2 class="auth-title" style="font-family: var(--font-display); font-size: 32px; font-weight: 800; margin-bottom: 8px;">Create your account</h2>
       <p class="auth-subtitle" style="color: var(--text-secondary); margin-bottom: 28px; font-size: 15px;">It only takes a minute to get started.</p>
 
-      <!-- ── Role Selector ── -->
-      <!-- Guest and Host buttons toggle between registration types -->
+      <!-- Role Selector -->
       <div class="role-switch">
         <div id="roleGuestBtn" class="role-btn active">🧳 Guest — I want to book</div>
         <div id="roleHostBtn" class="role-btn">🏠 Host — I want to list</div>
       </div>
       <div class="role-note">Admin accounts are created internally and cannot be self-registered.</div>
 
-      <!-- ── Registration Form ── -->
-      <!-- Shared fields form (submitted via JavaScript to Flask) -->
+      <!-- Shared fields form (no actual submit event, handled via JS) -->
       <div id="registerForm">
-        
-        <!-- ── Full Name ── -->
+        <!-- Full Name -->
         <div class="form-group" style="margin-bottom: 18px;">
           <div class="input-icon-group">
             <span class="input-icon">👤</span>
@@ -267,7 +202,7 @@
           <div class="validation-feedback" id="nameFeedback"></div>
         </div>
 
-        <!-- ── Email ── -->
+        <!-- Email -->
         <div class="form-group" style="margin-bottom: 18px;">
           <div class="input-icon-group">
             <span class="input-icon">✉️</span>
@@ -276,24 +211,22 @@
           <div class="validation-feedback" id="emailFeedback"></div>
         </div>
 
-        <!-- ── Password ── -->
+        <!-- Password -->
         <div class="form-group" style="margin-bottom: 18px;">
           <div class="input-icon-group">
             <span class="input-icon">🔑</span>
             <input type="password" id="password" placeholder="Password (min. 8 characters)">
-            <!-- Eye toggle button to show/hide password -->
             <button type="button" class="btn-eye" onclick="toggleEye('password', this)" aria-label="Show password">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
               </svg>
             </button>
           </div>
-          <!-- Password strength indicator -->
           <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
           <div class="validation-feedback" id="passwordFeedback"></div>
         </div>
 
-        <!-- ── Confirm Password ── -->
+        <!-- Confirm Password -->
         <div class="form-group" style="margin-bottom: 18px;">
           <div class="input-icon-group">
             <span class="input-icon">🔒</span>
@@ -307,7 +240,7 @@
           <div class="validation-feedback" id="confirmFeedback"></div>
         </div>
 
-        <!-- ── Phone Number ── -->
+        <!-- Phone Number -->
         <div class="form-group" style="margin-bottom: 18px;">
           <div class="input-icon-group">
             <span class="input-icon">📱</span>
@@ -316,8 +249,7 @@
           <div class="validation-feedback" id="phoneFeedback"></div>
         </div>
 
-        <!-- ── Guest Only Block ── -->
-        <!-- Visible by default, shown when Guest role is selected -->
+        <!-- Guest Only Block (visible by default) -->
         <div id="guestBlock" class="conditional-card">
           <div class="conditional-title">🏡 Guest details</div>
           <div class="form-group" style="margin-bottom: 14px;">
@@ -337,13 +269,11 @@
           </div>
         </div>
 
-        <!-- ── Host Only Block ── -->
-        <!-- Hidden initially, shown when Host role is selected -->
+        <!-- Host Only Block (hidden initially) -->
         <div id="hostBlock" class="conditional-card" style="display: none;">
           <div class="conditional-title">🛡️ Host verification</div>
           <div style="font-size:12px; color:var(--text-muted); margin-bottom: 16px;">Reviewed manually. Never shared publicly.</div>
           
-          <!-- Identity Section -->
           <div class="section-upper">Identity</div>
           <div class="two-col-grid">
             <select id="idType" class="form-select">
@@ -354,7 +284,6 @@
             <input type="text" id="idNumber" class="form-input" placeholder="ID Number">
           </div>
 
-          <!-- Property Section -->
           <div class="section-upper">Property</div>
           <div class="two-col-grid">
             <select id="propertyType" class="form-select">
@@ -369,7 +298,6 @@
             <input type="text" id="hostAddress" class="form-input" placeholder="Property Address (full address)">
           </div>
 
-          <!-- Consent Checkbox -->
           <div class="checkbox-group">
             <input type="checkbox" id="consentCheckbox">
             <label for="consentCheckbox" style="font-size:13px;">I consent to a background & document verification check, and agree to Bookmandu's Host Terms.</label>
@@ -377,15 +305,10 @@
           <div class="validation-feedback" id="consentFeedback"></div>
         </div>
 
-        <!-- ── Submit Button ── -->
-        <!-- Text changes based on selected role (Guest/Host) -->
         <button type="button" id="submitAccountBtn" class="btn btn-primary btn-lg" style="width:100%; justify-content:center; margin-top: 12px;">Create Guest Account</button>
       </div>
 
-      <!-- ── Footer Link ── -->
-      <div class="auth-footer" style="margin-top: 24px; text-align: center; font-size: 14px;">
-        Already have an account? <a href="/login" class="auth-link" style="color: var(--teal); font-weight: 600;">Sign in</a>
-      </div>
+      <div class="auth-footer" style="margin-top: 24px; text-align: center; font-size: 14px;">Already have an account? <a href="/login" class="auth-link" style="color: var(--teal); font-weight: 600;">Sign in</a></div>
     </div>
   </div>
 </div>
@@ -393,42 +316,23 @@
 
 {% block extra_js %}
 <script>
-  /* ============================================================
-     REGISTRATION PAGE JAVASCRIPT
-     
-     Features:
-     1. Role switching (Guest/Host)
-     2. Password visibility toggle (eye icon)
-     3. Password strength indicator
-     4. Real-time field validation
-     5. Email uniqueness check (localStorage)
-     6. Form submission via hidden form to Flask
-     ============================================================ */
-
-  // ── Eye Toggle ──
-  /**
-   * toggleEye - Toggle password field visibility
-   * @param {string} inputId - ID of the password input
-   * @param {HTMLElement} btn - The eye button element
-   * 
-   * Switches input type between 'password' and 'text'
-   * Updates SVG icon to show open/closed eye
-   */
+  // ── Eye toggle ──
   function toggleEye(inputId, btn) {
     const input = document.getElementById(inputId);
     const isHidden = input.type === 'password';
     input.type = isHidden ? 'text' : 'password';
     btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
     btn.querySelector('svg').innerHTML = isHidden
-      ? /* eye-off icon */
+      ? /* eye-off */
         '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>' +
         '<path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>' +
         '<line x1="1" y1="1" x2="23" y2="23"/>'
-      : /* eye-open icon */
+      : /* eye */
         '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
   }
+  // ── /Eye toggle ──
 
-  // ── DOM References ──
+  // DOM elements
   const roleGuestBtn = document.getElementById('roleGuestBtn');
   const roleHostBtn = document.getElementById('roleHostBtn');
   const guestBlock = document.getElementById('guestBlock');
@@ -442,12 +346,12 @@
   const confirmPwd = document.getElementById('confirmPassword');
   const phone = document.getElementById('phone');
 
-  // Guest specific fields
+  // Guest specific
   const homeAddress = document.getElementById('homeAddress');
   const emergencyContact = document.getElementById('emergencyContact');
   const preferredLanguage = document.getElementById('preferredLanguage');
 
-  // Host specific fields
+  // Host specific
   const idType = document.getElementById('idType');
   const idNumber = document.getElementById('idNumber');
   const propertyType = document.getElementById('propertyType');
@@ -455,7 +359,7 @@
   const hostAddress = document.getElementById('hostAddress');
   const consentCheckbox = document.getElementById('consentCheckbox');
 
-  // Feedback elements
+  // Feedback spans
   const nameFeed = document.getElementById('nameFeedback');
   const emailFeed = document.getElementById('emailFeedback');
   const passwordFeed = document.getElementById('passwordFeedback');
@@ -464,13 +368,9 @@
   const consentFeed = document.getElementById('consentFeedback');
   const strengthFill = document.getElementById('strengthFill');
 
-  let selectedRole = 'guest'; // Current selected role: 'guest' or 'host'
+  let selectedRole = 'guest'; // 'guest' or 'host'
 
-  /**
-   * showToast - Display a toast notification
-   * @param {string} message - Message to display
-   * @param {string} type - 'success' or 'error'
-   */
+  // Helper: Toast
   function showToast(message, type = 'success') {
     let toastContainer = document.querySelector('.toast-container');
     if (!toastContainer) {
@@ -486,18 +386,7 @@
     setTimeout(() => toast.remove(), 3000);
   }
 
-  /**
-   * getPasswordStrength - Evaluate password strength
-   * @param {string} pwd - Password to evaluate
-   * @returns {number} - Strength score (0-4)
-   * 
-   * Criteria:
-   * - Length >= 8
-   * - Length >= 12
-   * - Contains uppercase letter
-   * - Contains number
-   * - Contains special character
-   */
+  // Password strength evaluator (length, uppercase, digit, special)
   function getPasswordStrength(pwd) {
     let score = 0;
     if (pwd.length >= 8) score++;
@@ -508,10 +397,6 @@
     return Math.min(4, Math.floor(score / 1.5));
   }
 
-  /**
-   * updateStrengthBar - Update password strength indicator
-   * Shows color-coded bar: Red (weak) → Amber (medium) → Green (strong)
-   */
   function updateStrengthBar() {
     const pwd = password.value;
     const strength = getPasswordStrength(pwd);
@@ -523,74 +408,42 @@
     else { percent = 100; color = '#2ecc71'; }
     strengthFill.style.width = percent + '%';
     strengthFill.style.background = color;
-    
-    // Update feedback message
-    if (pwd.length > 0 && pwd.length < 8) {
-      passwordFeed.innerHTML = '<span class="valid-error">❌ Must be at least 8 characters</span>';
-    } else if (pwd.length >= 8 && strength < 2) {
-      passwordFeed.innerHTML = '<span class="valid-error">⚠️ Weak — add uppercase, number or symbol</span>';
-    } else if (strength >= 2) {
-      passwordFeed.innerHTML = '<span class="valid-ok">✓ Strong password</span>';
-    } else {
-      passwordFeed.innerHTML = '';
-    }
+    if (pwd.length > 0 && pwd.length < 8) passwordFeed.innerHTML = '<span class="valid-error">❌ Must be at least 8 characters</span>';
+    else if (pwd.length >= 8 && strength < 2) passwordFeed.innerHTML = '<span class="valid-error">⚠️ Weak — add uppercase, number or symbol</span>';
+    else if (strength >= 2) passwordFeed.innerHTML = '<span class="valid-ok">✓ Strong password</span>';
+    else passwordFeed.innerHTML = '';
   }
 
-  // ── Validation Functions ──
+  // live validators
   function validateName() { return fullName.value.trim().length > 0; }
   function validateEmailFormat() { return /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(email.value.trim()); }
   function validatePhone() { return (phone.value.replace(/[^0-9]/g, '').length >= 10); }
   function validatePasswordMatch() { return password.value === confirmPwd.value && password.value.length >= 8; }
 
-  /**
-   * updateLiveFeedback - Real-time validation for all fields
-   * Updates feedback messages as user types
-   */
   function updateLiveFeedback() {
-    // Name validation
+    // Name
     if (fullName.value.trim() === '') nameFeed.innerHTML = '<span class="valid-error">❌ Required</span>';
     else nameFeed.innerHTML = '<span class="valid-ok">✓ Valid</span>';
-    
-    // Email validation
+    // Email
     if (!validateEmailFormat() && email.value !== '') emailFeed.innerHTML = '<span class="valid-error">❌ Invalid email</span>';
     else if (email.value === '') emailFeed.innerHTML = '<span class="valid-error">❌ Required</span>';
     else emailFeed.innerHTML = '<span class="valid-ok">✓ Looks good</span>';
-    
-    // Confirm password validation
-    if (confirmPwd.value !== '' && password.value !== confirmPwd.value) {
-      confirmFeed.innerHTML = '<span class="valid-error">❌ Passwords do not match</span>';
-    } else if (password.value.length >= 8 && password.value === confirmPwd.value && confirmPwd.value !== '') {
-      confirmFeed.innerHTML = '<span class="valid-ok">✓ Matches</span>';
-    } else if (confirmPwd.value !== '') {
-      confirmFeed.innerHTML = '<span class="valid-error">❌ Not matching</span>';
-    } else {
-      confirmFeed.innerHTML = '';
-    }
-    
-    // Phone validation
-    if (phone.value !== '' && !validatePhone()) {
-      phoneFeed.innerHTML = '<span class="valid-error">❌ At least 10 digits</span>';
-    } else if (phone.value === '') {
-      phoneFeed.innerHTML = '<span class="valid-error">❌ Required</span>';
-    } else {
-      phoneFeed.innerHTML = '<span class="valid-ok">✓ Valid phone</span>';
-    }
+    // Confirm password
+    if (confirmPwd.value !== '' && password.value !== confirmPwd.value) confirmFeed.innerHTML = '<span class="valid-error">❌ Passwords do not match</span>';
+    else if (password.value.length >= 8 && password.value === confirmPwd.value && confirmPwd.value !== '') confirmFeed.innerHTML = '<span class="valid-ok">✓ Matches</span>';
+    else if (confirmPwd.value !== '') confirmFeed.innerHTML = '<span class="valid-error">❌ Not matching</span>';
+    else confirmFeed.innerHTML = '';
+    // Phone
+    if (phone.value !== '' && !validatePhone()) phoneFeed.innerHTML = '<span class="valid-error">❌ At least 10 digits</span>';
+    else if (phone.value === '') phoneFeed.innerHTML = '<span class="valid-error">❌ Required</span>';
+    else phoneFeed.innerHTML = '<span class="valid-ok">✓ Valid phone</span>';
   }
 
-  /**
-   * checkEmailUniqueness - Check if email already exists in localStorage
-   * @param {string} emailStr - Email to check
-   * @returns {boolean} - True if email is available
-   */
   function checkEmailUniqueness(emailStr) {
     const accounts = JSON.parse(localStorage.getItem('bookmandu_accounts') || '[]');
     return !accounts.some(acc => acc.email.toLowerCase() === emailStr.toLowerCase());
   }
 
-  /**
-   * validateHostFields - Validate all host-specific fields
-   * @returns {boolean} - True if all fields are valid
-   */
   function validateHostFields() {
     if (!idNumber.value.trim()) return false;
     if (!payoutBank.value.trim()) return false;
@@ -599,25 +452,17 @@
     return true;
   }
 
-  /**
-   * validateGuestFields - Validate all guest-specific fields
-   * @returns {boolean} - True if all fields are valid
-   */
   function validateGuestFields() {
     if (!homeAddress.value.trim()) return false;
     if (!emergencyContact.value.trim()) return false;
     return true;
   }
 
-  /**
-   * getFullAccountObject - Build account object from form data
-   * @returns {Object} - Complete account data object
-   */
   function getFullAccountObject() {
     const base = {
       fullName: fullName.value.trim(),
       email: email.value.trim(),
-      password: password.value,
+      password: password.value, // plain for demo
       phone: phone.value.trim(),
       role: selectedRole,
       createdAt: new Date().toISOString()
@@ -641,10 +486,6 @@
     return base;
   }
 
-  /**
-   * validateAll - Comprehensive validation before submission
-   * @returns {boolean} - True if all validation passes
-   */
   function validateAll() {
     let isValid = true;
     if (!fullName.value.trim()) { isValid = false; nameFeed.innerHTML = '<span class="valid-error">❌ Full name required</span>'; }
@@ -662,16 +503,7 @@
     return isValid;
   }
 
-  // ── Role Switcher ──
-  /**
-   * setRole - Switch between Guest and Host registration
-   * @param {string} role - 'guest' or 'host'
-   * 
-   * Updates:
-   * - Active button styling
-   * - Visibility of guest/host blocks
-   * - Submit button text
-   */
+  // Role switcher
   function setRole(role) {
     selectedRole = role;
     if (role === 'guest') {
@@ -689,99 +521,77 @@
     }
   }
 
-  // ── Event Listeners ──
   roleGuestBtn.addEventListener('click', () => setRole('guest'));
   roleHostBtn.addEventListener('click', () => setRole('host'));
 
-  /**
-   * saveAccountToLocalStorage - Save account data (for demo)
-   * @param {Object} account - Account data object
-   * 
-   * Note: In production, this is handled by Flask backend
-   */
+  // save account to localStorage
   function saveAccountToLocalStorage(account) {
     const accounts = JSON.parse(localStorage.getItem('bookmandu_accounts') || '[]');
     accounts.push(account);
     localStorage.setItem('bookmandu_accounts', JSON.stringify(accounts));
   }
 
-  // ── Submit Button Handler ──
-  /**
-   * Submit Button Click Handler
-   * 
-   * Process:
-   * 1. Validate all fields
-   * 2. If invalid: Show error and stop
-   * 3. Build hidden form with all fields
-   * 4. POST to Flask /register endpoint
-   * 
-   * This approach handles both Guest and Host registration
-   * without requiring separate endpoints.
-   */
-  submitBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    updateLiveFeedback();
+// ─submitBtn click handler 
 
-    // ── Client-side validation ──
-    let isValid = true;
-    if (!fullName.value.trim()) { isValid = false; nameFeed.innerHTML = '<span class="valid-error">❌ Full name required</span>'; }
-    if (!validateEmailFormat()) { isValid = false; emailFeed.innerHTML = '<span class="valid-error">❌ Valid email required</span>'; }
-    if (password.value.length < 8) { isValid = false; passwordFeed.innerHTML = '<span class="valid-error">❌ Password must be at least 8 characters</span>'; }
-    if (password.value !== confirmPwd.value) { isValid = false; confirmFeed.innerHTML = '<span class="valid-error">❌ Passwords do not match</span>'; }
-    if (!validatePhone()) { isValid = false; phoneFeed.innerHTML = '<span class="valid-error">❌ Phone must have at least 10 digits</span>'; }
-    if (selectedRole === 'guest' && !validateGuestFields()) { 
-      isValid = false; 
-      showToast('Please fill all Guest details (Home Address, Emergency Contact)', 'error'); 
-    }
-    if (selectedRole === 'host' && !validateHostFields()) {
-      isValid = false;
-      consentFeed.innerHTML = '<span class="valid-error">❌ All host fields & consent required</span>';
-      showToast('Please fill all Host fields and accept the consent checkbox.', 'error');
-    }
+submitBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  updateLiveFeedback();
 
-    if (!isValid) {
-      showToast('Please fix the errors before submitting.', 'error');
-      return;
-    }
+  // Client-side validation
+  let isValid = true;
+  if (!fullName.value.trim()) { isValid = false; nameFeed.innerHTML = '<span class="valid-error">❌ Full name required</span>'; }
+  if (!validateEmailFormat()) { isValid = false; emailFeed.innerHTML = '<span class="valid-error">❌ Valid email required</span>'; }
+  if (password.value.length < 8) { isValid = false; passwordFeed.innerHTML = '<span class="valid-error">❌ Password must be at least 8 characters</span>'; }
+  if (password.value !== confirmPwd.value) { isValid = false; confirmFeed.innerHTML = '<span class="valid-error">❌ Passwords do not match</span>'; }
+  if (!validatePhone()) { isValid = false; phoneFeed.innerHTML = '<span class="valid-error">❌ Phone must have at least 10 digits</span>'; }
+  if (selectedRole === 'guest' && !validateGuestFields()) { isValid = false; showToast('Please fill all Guest details (Home Address, Emergency Contact)', 'error'); }
+  if (selectedRole === 'host' && !validateHostFields()) {
+    isValid = false;
+    consentFeed.innerHTML = '<span class="valid-error">❌ All host fields & consent required</span>';
+    showToast('Please fill all Host fields and accept the consent checkbox.', 'error');
+  }
 
-    // ── Build Hidden Form and POST to Flask ──
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/register';
+  if (!isValid) {
+    showToast('Please fix the errors before submitting.', 'error');
+    return;
+  }
 
-    // Base fields
-    const fields = {
-      name:     fullName.value.trim(),
-      email:    email.value.trim(),
-      password: password.value,
-      role:     selectedRole
-    };
+  // Build a hidden form and POST to Flask
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '/register';
 
-    // Add host-specific fields if registering as host
-    if (selectedRole === 'host') {
-      fields.id_type       = idType.value;
-      fields.id_number     = idNumber.value.trim();
-      fields.property_type = propertyType.value;
-      fields.payout_bank   = payoutBank.value.trim();
-      fields.host_address  = hostAddress.value.trim();
-      fields.consent       = consentCheckbox.checked ? 'true' : 'false';
-    }
+  const fields = {
+    name:     fullName.value.trim(),
+    email:    email.value.trim(),
+    password: password.value,
+    phone:    phone.value.trim(),
+    role:     selectedRole
+  };
 
-    // Append hidden inputs to form
-    for (const [key, val] of Object.entries(fields)) {
-      const input = document.createElement('input');
-      input.type  = 'hidden';
-      input.name  = key;
-      input.value = val;
-      form.appendChild(input);
-    }
+  // Add host-specific fields if registering as host
+  if (selectedRole === 'host') {
+    fields.id_type       = idType.value;
+    fields.id_number     = idNumber.value.trim();
+    fields.property_type = propertyType.value;
+    fields.payout_bank   = payoutBank.value.trim();
+    fields.host_address  = hostAddress.value.trim();
+    fields.consent       = consentCheckbox.checked ? 'true' : 'false';
+  }
 
-    // Submit form to Flask backend
-    document.body.appendChild(form);
-    form.submit();
-  });
+  for (const [key, val] of Object.entries(fields)) {
+    const input = document.createElement('input');
+    input.type  = 'hidden';
+    input.name  = key;
+    input.value = val;
+    form.appendChild(input);
+  }
 
-  // ── Live Validation Events ──
+  document.body.appendChild(form);
+  form.submit();
+});
+
+  // live events
   fullName.addEventListener('input', updateLiveFeedback);
   email.addEventListener('input', updateLiveFeedback);
   password.addEventListener('input', () => { updateStrengthBar(); updateLiveFeedback(); });
@@ -791,7 +601,7 @@
   emergencyContact.addEventListener('input', () => {});
   consentCheckbox.addEventListener('change', () => { if(consentCheckbox.checked) consentFeed.innerHTML = ''; });
 
-  // ── Initialize ──
+  // initial validations
   updateStrengthBar();
   updateLiveFeedback();
   setRole('guest');
