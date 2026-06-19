@@ -1141,7 +1141,7 @@ class AuthController(BaseController):
 
         db = Database()
 
-        # Optional booking check (uncomment if needed)
+        # # Optional booking check (uncomment if needed)
         # booking = db.fetch_one(
         #     "SELECT 1 FROM bookings WHERE guest_id=%s AND property_id=%s AND status='completed'",
         #     (guest_id, property_id)
@@ -1150,7 +1150,7 @@ class AuthController(BaseController):
         #     db.close()
         #     return jsonify({"error": "You must have a completed stay to review this property."}), 400
 
-        # ✅ Use execute_get_id directly for the INSERT
+        # # ✅ Use execute_get_id directly for the INSERT
         review_id = db.execute_get_id(
             """INSERT INTO reviews (booking_id, guest_id, property_id, rating, comment, created_at)
                VALUES (NULL, %s, %s, %s, %s, NOW())""",
