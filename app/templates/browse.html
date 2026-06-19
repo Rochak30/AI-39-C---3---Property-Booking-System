@@ -1345,7 +1345,6 @@ function applyFiltersAndSort() {
   resultsCount.textContent = `${count} propert${count === 1 ? 'y' : 'ies'} found`;
   noResults.classList.toggle('hidden', visibleCards2.length > 0);
 }
-
 function setChipGroup(groupId, value) {
   const chips = document.querySelectorAll(`#${groupId} .chip`);
   chips.forEach(chip => {
@@ -1353,7 +1352,6 @@ function setChipGroup(groupId, value) {
     else chip.classList.remove('active');
   });
 }
-
 // Event listeners
 document.getElementById('regionFilter').addEventListener('click', (e) => {
   if (!e.target.classList.contains('chip')) return;
@@ -1361,14 +1359,12 @@ document.getElementById('regionFilter').addEventListener('click', (e) => {
   setChipGroup('regionFilter', activeRegion);
   applyFiltersAndSort();
 });
-
 document.getElementById('typeFilter').addEventListener('click', (e) => {
   if (!e.target.classList.contains('chip')) return;
   activeType = e.target.dataset.value;
   setChipGroup('typeFilter', activeType);
   applyFiltersAndSort();
 });
-
 document.getElementById('amenityFilter').addEventListener('click', (e) => {
   if (!e.target.classList.contains('chip')) return;
   const amenity = e.target.dataset.value;
@@ -1382,18 +1378,15 @@ document.getElementById('amenityFilter').addEventListener('click', (e) => {
   }
   applyFiltersAndSort();
 });
-
 document.getElementById('searchInput').addEventListener('input', (e) => {
   searchTerm = e.target.value.toLowerCase();
   if (compactSearchInput) compactSearchInput.value = e.target.value;
   applyFiltersAndSort();
 });
-
 document.getElementById('sortSelect').addEventListener('change', (e) => {
   sortBy = e.target.value;
   applyFiltersAndSort();
 });
-
 const priceMinInput = document.getElementById('priceMin');
 const priceMaxInput = document.getElementById('priceMax');
 priceMinInput.addEventListener('input', () => applyFiltersAndSort());
@@ -1419,7 +1412,6 @@ document.getElementById('clearFilters').addEventListener('click', () => {
   applyFiltersAndSort();
   showToast('✨ All filters cleared', 'info');
 });
-
 function showToast(message, type) {
   let container = document.getElementById('toasts');
   if (!container) {
@@ -1435,7 +1427,6 @@ function showToast(message, type) {
   container.appendChild(toast);
   setTimeout(() => toast.remove(), 4000);
 }
-
 function switchLanguage() {
   showToast('Language switcher coming soon!', 'info');
 }

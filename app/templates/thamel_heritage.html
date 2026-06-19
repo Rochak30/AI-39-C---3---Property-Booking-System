@@ -2412,7 +2412,6 @@ function updateBookingSummary() {
     } else if (selectedCheckIn) { document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-day"></i> Check-in: ' + selectedCheckIn.toDateString() + '<br><small>Select check-out date</small>'; }
     else { document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-alt"></i> Select check-in and check-out dates'; }
 }
-
 function applyCoupon() {
     var couponCode = document.getElementById('couponCode').value.trim().toUpperCase();
     var msgDiv = document.getElementById('discountMessage');
@@ -2477,7 +2476,6 @@ function applyCoupon() {
    
     setTimeout(function() { if (msgDiv.style.display === 'flex') msgDiv.style.display = 'none'; }, 4000);
 }
-
 function removeCoupon() {
     if (appliedCoupon) {
         showToast('Coupon removed. Cannot be reused.', 'info');
@@ -2488,7 +2486,6 @@ function removeCoupon() {
         updateBookingSummary();
     }
 }
-
 function addClearCouponButton() {
     var group = document.querySelector('.coupon-input-group');
     if (group && !document.getElementById('clearCouponBtn')) {
@@ -2500,7 +2497,6 @@ function addClearCouponButton() {
         group.appendChild(btn);
     }
 }
-
 document.getElementById('applyCouponBtn').addEventListener('click', applyCoupon);
 document.getElementById('couponCode').addEventListener('keypress', function(e) { if (e.key === 'Enter') applyCoupon(); });
 document.getElementById('prevMonthBtn').addEventListener('click', function() { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
@@ -2570,7 +2566,6 @@ function showEnhancedBookingModal() {
     document.getElementById('bookingSummary').innerHTML = bookingSummaryHtml;
     document.getElementById('priceBreakdown').innerHTML = priceHtml;
 }
-
 // ========== SINGLE IMAGE VIEWER ==========
 function openImageViewer(index) {
     var modal = document.getElementById('imageViewerModal');
@@ -2593,13 +2588,11 @@ function openImageViewer(index) {
     if (img && bedroomImages[index]) img.src = bedroomImages[index];
     if (modal) modal.classList.add('open');
 }
-
 function closeImageViewer(e) {
     var modal = document.getElementById('imageViewerModal');
     if (modal && (!e || e.target.id === 'imageViewerModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))))
         modal.classList.remove('open');
 }
-
 // ========== VIEW ALL IMAGES - SHOWS ALL 6 IMAGES IN A GRID ==========
 function openAllImages() {
     var galleryModal = document.getElementById('allImagesModal');
@@ -2624,7 +2617,6 @@ function openAllImages() {
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         galleryModal = document.getElementById('allImagesModal');
     }
-   
     var imagesGrid = document.getElementById('allImagesGrid');
     if (imagesGrid) {
         imagesGrid.innerHTML = '';
@@ -2653,7 +2645,6 @@ function openAllImages() {
    
     if (galleryModal) galleryModal.classList.add('open');
 }
-
 function closeAllImagesModal(e) {
     var modal = document.getElementById('allImagesModal');
     if (!modal) return;
@@ -2661,7 +2652,6 @@ function closeAllImagesModal(e) {
         modal.classList.remove('open');
     }
 }
-
 function showAllRules() {
     var modal = document.getElementById('rulesModal');
     if (!modal) {
@@ -2671,19 +2661,16 @@ function showAllRules() {
     }
     if (modal) modal.classList.add('open');
 }
-
 function closeRulesModal(e) {
     var modal = document.getElementById('rulesModal');
     if (modal && (!e || e.target.id === 'rulesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))))
         modal.classList.remove('open');
 }
-
 function copyBankText(elementId) {
     var text = document.getElementById(elementId).textContent;
     navigator.clipboard.writeText(text);
     showToast('Copied to clipboard!', 'success');
 }
-
 function showToast(message, type) {
     var container = document.getElementById('toasts');
     if (!container) {
@@ -2699,7 +2686,6 @@ function showToast(message, type) {
     container.appendChild(toast);
     setTimeout(function() { toast.remove(); }, 4000);
 }
-
 var paymentMethods = document.querySelectorAll('.payment-method-enhanced');
 for (var i = 0; i < paymentMethods.length; i++) {
     paymentMethods[i].addEventListener('click', function() {
