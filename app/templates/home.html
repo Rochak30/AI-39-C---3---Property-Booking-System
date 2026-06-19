@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-
+ 
 {% block title %}Pahuna — Experience Nepal, Like a Local{% endblock %}
-
+ 
 {% block extra_css %}
 <style>
     /* ============================================================
@@ -12,13 +12,13 @@
         padding: 0;
         box-sizing: border-box;
     }
-
+ 
     body {
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
         background: var(--bg-800);
         color: var(--text-primary);
     }
-
+ 
     /* ============================================================
        HERO SECTION – relative positioning, scrolls normally
        ============================================================ */
@@ -35,23 +35,23 @@
         background: url("{{ url_for('static', filename='images/about.png') }}") center center / cover no-repeat;
         background-color: transparent;
     }
-
+ 
     /* STRONGER GRADIENT OVERLAY – reduces exposure, improves readability */
     .hero-section::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, 
-            rgba(0, 0, 0, 0.75) 0%, 
-            rgba(0, 0, 0, 0.4) 35%, 
-            rgba(0, 0, 0, 0.15) 60%, 
+        background: linear-gradient(to top,
+            rgba(0, 0, 0, 0.75) 0%,
+            rgba(0, 0, 0, 0.4) 35%,
+            rgba(0, 0, 0, 0.15) 60%,
             rgba(0, 0, 0, 0.05) 80%,
             transparent 100%
         );
         z-index: 1;
         pointer-events: none;
     }
-
+ 
     .hero-content {
         position: relative;
         z-index: 2;
@@ -62,7 +62,7 @@
         padding-bottom: 100px;
         width: 100%;
     }
-
+ 
     @keyframes heroFadeIn {
         from {
             opacity: 0;
@@ -73,7 +73,7 @@
             transform: translateY(0);
         }
     }
-
+ 
     /* ===== MAIN TITLE – 2 LINES ONLY ===== */
     .hero-title {
         font-family: var(--font-display), 'Playfair Display', serif;
@@ -85,7 +85,7 @@
         text-shadow: 0 4px 40px rgba(0, 0, 0, 0.8);
         letter-spacing: -0.02em;
     }
-
+ 
     .hero-title .highlight {
         background: linear-gradient(135deg, var(--teal), var(--cyan));
         -webkit-background-clip: text;
@@ -93,7 +93,7 @@
         background-clip: text;
         text-shadow: none;
     }
-
+ 
     /* ===== SUBTITLE – REDUCED BOLDNESS ===== */
     .hero-subtitle {
         font-size: 20px;
@@ -105,7 +105,7 @@
         text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
         letter-spacing: 0.02em;
     }
-
+ 
     /* ============================================================
        HOW IT WORKS SECTION
        ============================================================ */
@@ -115,12 +115,12 @@
         margin: 0 auto;
         background: var(--bg-800);
     }
-
+ 
     .section-header {
         text-align: center;
         margin-bottom: 60px;
     }
-
+ 
     .section-header h2 {
         font-family: var(--font-display), 'Playfair Display', serif;
         font-size: 42px;
@@ -131,20 +131,20 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
-
+ 
     .section-header p {
         color: var(--text-secondary);
         font-size: 18px;
         max-width: 500px;
         margin: 0 auto;
     }
-
+ 
     .steps-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 32px;
     }
-
+ 
     .step-card {
         background: var(--bg-700);
         border-radius: 20px;
@@ -155,7 +155,7 @@
         position: relative;
         overflow: hidden;
     }
-
+ 
     .step-card::before {
         content: '';
         position: absolute;
@@ -167,17 +167,17 @@
         transform: scaleX(0);
         transition: transform 0.4s ease;
     }
-
+ 
     .step-card:hover::before {
         transform: scaleX(1);
     }
-
+ 
     .step-card:hover {
         transform: translateY(-8px);
         border-color: var(--teal);
         box-shadow: 0 12px 40px rgba(0, 201, 122, 0.1);
     }
-
+ 
     .step-number {
         display: inline-flex;
         align-items: center;
@@ -191,28 +191,28 @@
         font-weight: 700;
         margin-bottom: 20px;
     }
-
+ 
     .step-icon {
         font-size: 40px;
         color: var(--teal);
         margin-bottom: 16px;
         display: block;
     }
-
+ 
     .step-card h3 {
         font-size: 20px;
         font-weight: 700;
         margin-bottom: 12px;
         color: var(--text-primary);
     }
-
+ 
     .step-card p {
         color: var(--text-secondary);
         font-size: 14px;
         line-height: 1.6;
         margin: 0;
     }
-
+ 
     /* ============================================================
        FEATURED PROPERTIES SECTION
        ============================================================ */
@@ -222,14 +222,14 @@
         margin: 0 auto;
         background: var(--bg-800);
     }
-
+ 
     .properties-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 28px;
         margin-top: 40px;
     }
-
+ 
     .property-card {
         background: var(--bg-700);
         border-radius: 16px;
@@ -238,30 +238,30 @@
         transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         cursor: pointer;
     }
-
+ 
     .property-card:hover {
         transform: translateY(-8px);
         border-color: var(--teal);
         box-shadow: 0 12px 40px rgba(0, 201, 122, 0.1);
     }
-
+ 
     .property-card-image {
         position: relative;
         height: 220px;
         overflow: hidden;
     }
-
+ 
     .property-card-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.6s ease;
     }
-
+ 
     .property-card:hover .property-card-image img {
         transform: scale(1.05);
     }
-
+ 
     .property-badge {
         position: absolute;
         top: 12px;
@@ -275,7 +275,7 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
-
+ 
     .property-rating-badge {
         position: absolute;
         bottom: 12px;
@@ -290,22 +290,22 @@
         align-items: center;
         gap: 4px;
     }
-
+ 
     .property-rating-badge i {
         color: #f0a500;
     }
-
+ 
     .property-card-body {
         padding: 20px;
     }
-
+ 
     .property-card-body h3 {
         font-size: 18px;
         font-weight: 700;
         margin-bottom: 4px;
         color: var(--text-primary);
     }
-
+ 
     .property-location {
         font-size: 13px;
         color: var(--text-secondary);
@@ -314,19 +314,19 @@
         align-items: center;
         gap: 4px;
     }
-
+ 
     .property-location i {
         color: var(--teal);
         font-size: 12px;
     }
-
+ 
     .property-amenities {
         display: flex;
         gap: 8px;
         flex-wrap: wrap;
         margin-bottom: 12px;
     }
-
+ 
     .property-amenity {
         font-size: 11px;
         color: var(--text-secondary);
@@ -337,12 +337,12 @@
         align-items: center;
         gap: 4px;
     }
-
+ 
     .property-amenity i {
         font-size: 10px;
         color: var(--teal);
     }
-
+ 
     .property-card-footer {
         display: flex;
         justify-content: space-between;
@@ -350,29 +350,29 @@
         padding-top: 12px;
         border-top: 1px solid var(--border);
     }
-
+ 
     .property-price {
         font-size: 20px;
         font-weight: 700;
         color: var(--teal);
     }
-
+ 
     .property-price span {
         font-size: 13px;
         font-weight: 400;
         color: var(--text-secondary);
     }
-
+ 
     .property-review-count {
         font-size: 12px;
         color: var(--text-secondary);
     }
-
+ 
     .view-all-link {
         text-align: center;
         margin-top: 48px;
     }
-
+ 
     .view-all-link a {
         display: inline-flex;
         align-items: center;
@@ -385,14 +385,14 @@
         text-decoration: none;
         transition: all 0.3s ease;
     }
-
+ 
     .view-all-link a:hover {
         background: var(--teal);
         color: #051209;
         transform: translateY(-3px);
         box-shadow: 0 8px 30px rgba(0, 201, 122, 0.2);
     }
-
+ 
     /* ============================================================
        FOOTER SECTION – as shown in screenshot
        ============================================================ */
@@ -401,23 +401,23 @@
         border-top: 1px solid var(--border);
         padding: 60px 24px 32px;
     }
-
+ 
     .footer-container {
         max-width: 1200px;
         margin: 0 auto;
     }
-
+ 
     .footer-grid {
         display: grid;
         grid-template-columns: 2fr 1fr 1fr 1fr;
         gap: 48px;
         margin-bottom: 48px;
     }
-
+ 
     .footer-brand {
         max-width: 320px;
     }
-
+ 
     .footer-logo {
         display: flex;
         align-items: center;
@@ -427,24 +427,24 @@
         margin-bottom: 16px;
         color: var(--text-primary);
     }
-
+ 
     .footer-logo i {
         font-size: 28px;
         color: var(--teal);
     }
-
+ 
     .footer-description {
         font-size: 14px;
         color: var(--text-secondary);
         line-height: 1.6;
         margin-bottom: 20px;
     }
-
+ 
     .footer-social {
         display: flex;
         gap: 12px;
     }
-
+ 
     .social-link {
         width: 36px;
         height: 36px;
@@ -458,14 +458,14 @@
         transition: all 0.3s ease;
         text-decoration: none;
     }
-
+ 
     .social-link:hover {
         background: var(--teal);
         color: #051209;
         transform: translateY(-3px);
         border-color: var(--teal);
     }
-
+ 
     .footer-column h4 {
         font-size: 12px;
         font-weight: 700;
@@ -474,17 +474,17 @@
         letter-spacing: 0.1em;
         margin-bottom: 20px;
     }
-
+ 
     .footer-links {
         list-style: none;
         padding: 0;
         margin: 0;
     }
-
+ 
     .footer-links li {
         margin-bottom: 12px;
     }
-
+ 
     .footer-links a {
         color: var(--text-secondary);
         text-decoration: none;
@@ -494,23 +494,23 @@
         align-items: center;
         gap: 8px;
     }
-
+ 
     .footer-links a i {
         font-size: 12px;
         width: 16px;
         color: var(--teal);
         transition: transform 0.2s ease;
     }
-
+ 
     .footer-links a:hover {
         color: var(--teal);
         transform: translateX(5px);
     }
-
+ 
     .footer-links a:hover i {
         transform: translateX(3px);
     }
-
+ 
     .footer-bottom {
         display: flex;
         justify-content: space-between;
@@ -520,17 +520,17 @@
         flex-wrap: wrap;
         gap: 16px;
     }
-
+ 
     .footer-copyright {
         font-size: 13px;
         color: var(--text-muted);
     }
-
+ 
     .footer-lang-currency {
         display: flex;
         gap: 12px;
     }
-
+ 
     .lang-btn,
     .currency-btn {
         background: transparent;
@@ -545,14 +545,14 @@
         align-items: center;
         gap: 6px;
     }
-
+ 
     .lang-btn:hover,
     .currency-btn:hover {
         border-color: var(--teal);
         color: var(--teal);
         transform: translateY(-2px);
     }
-
+ 
     /* ============================================================
        RESPONSIVE
        ============================================================ */
@@ -560,89 +560,89 @@
         .hero-title {
             font-size: 48px;
         }
-
+ 
         .hero-subtitle {
             font-size: 18px;
         }
-
+ 
         .hero-content {
             padding: 0 32px 80px 32px;
         }
-
+ 
         .steps-grid,
         .properties-grid {
             grid-template-columns: repeat(2, 1fr);
         }
-
+ 
         .footer-grid {
             grid-template-columns: repeat(2, 1fr);
             gap: 32px;
         }
-
+ 
         .footer-brand {
             grid-column: span 2;
             max-width: 100%;
         }
     }
-
+ 
     @media (max-width: 768px) {
         .hero-title {
             font-size: 36px;
         }
-
+ 
         .hero-subtitle {
             font-size: 16px;
         }
-
+ 
         .hero-content {
             padding: 0 24px 70px 24px;
             padding-bottom: 80px;
         }
-
+ 
         .steps-grid {
             grid-template-columns: 1fr;
             max-width: 400px;
             margin: 0 auto;
         }
-
+ 
         .properties-grid {
             grid-template-columns: 1fr;
             max-width: 400px;
             margin: 0 auto;
         }
-
+ 
         .section-header h2 {
             font-size: 32px;
         }
-
+ 
         .footer-grid {
             grid-template-columns: 1fr;
         }
-
+ 
         .footer-brand {
             grid-column: span 1;
         }
-
+ 
         .footer-bottom {
             flex-direction: column;
             text-align: center;
         }
-
+ 
         .footer-lang-currency {
             justify-content: center;
         }
     }
-
+ 
     @media (max-width: 480px) {
         .hero-title {
             font-size: 28px;
         }
-
+ 
         .hero-subtitle {
             font-size: 14px;
             font-weight: 500;
         }
-
+ 
         .hero-content {
             padding: 0 16px 60px 16px;
             padding-bottom: 70px;
@@ -650,7 +650,7 @@
     }
 </style>
 {% endblock %}
-
+ 
 {% block content %}
 <!-- ============================================================
      HERO SECTION – relative positioning, scrolls normally
@@ -667,7 +667,7 @@
         </p>
     </div>
 </section>
-
+ 
 <!-- ============================================================
      HOW IT WORKS SECTION
      ============================================================ -->
@@ -676,7 +676,7 @@
         <h2>How It Works</h2>
         <p>Three simple steps to your perfect Nepali stay</p>
     </div>
-
+ 
     <div class="steps-grid">
         <!-- Step 1: Search -->
         <div class="step-card">
@@ -685,7 +685,7 @@
             <h3>Search</h3>
             <p>Filter by region, price, amenities and find your ideal homestay.</p>
         </div>
-
+ 
         <!-- Step 2: Book -->
         <div class="step-card">
             <div class="step-number">02</div>
@@ -693,7 +693,7 @@
             <h3>Book</h3>
             <p>Pick your dates, apply a coupon, and confirm in just a few clicks.</p>
         </div>
-
+ 
         <!-- Step 3: Stay -->
         <div class="step-card">
             <div class="step-number">03</div>
@@ -703,7 +703,7 @@
         </div>
     </div>
 </section>
-
+ 
 <!-- ============================================================
      FEATURED PROPERTIES SECTION
      ============================================================ -->
@@ -712,7 +712,7 @@
         <h2>Featured Properties</h2>
         <p>Most loved by our guests this season</p>
     </div>
-
+ 
     <div class="properties-grid">
         <!-- Property 1: Jungle Retreat Chitwan -->
         <div class="property-card" onclick="window.location.href='{{ url_for('auth.property_jungle_retreat') }}'">
@@ -742,7 +742,7 @@
                 </div>
             </div>
         </div>
-
+ 
         <!-- Property 2: Mountain View Homestay -->
         <div class="property-card" onclick="window.location.href='{{ url_for('auth.property_mountain_view') }}'">
             <div class="property-card-image">
@@ -771,7 +771,7 @@
                 </div>
             </div>
         </div>
-
+ 
         <!-- Property 3: Thamel Heritage House -->
         <div class="property-card" onclick="window.location.href='{{ url_for('auth.property_thamel_heritage') }}'">
             <div class="property-card-image">
@@ -801,14 +801,14 @@
             </div>
         </div>
     </div>
-
+ 
     <div class="view-all-link">
         <a href="{{ url_for('auth.browse') }}">
             See all properties <i class="fas fa-arrow-right"></i>
         </a>
     </div>
 </section>
-
+ 
 <!-- ============================================================
      FOOTER SECTION – as shown in screenshot
      ============================================================ -->
@@ -825,12 +825,12 @@
                     Nepal's dedicated accommodation booking platform. Connect with authentic homestays, guesthouses, and unique stays across the Himalayas.
                 </p>
                 <div class="footer-social">
-                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
                    
                 </div>
             </div>
-
+ 
             <!-- Explore Column -->
             <div class="footer-column">
                 <h4>EXPLORE</h4>
@@ -839,7 +839,7 @@
                     <li><a href="{{ url_for('auth.index') }}"><i class="fas fa-home"></i> Home</a></li>
                 </ul>
             </div>
-
+ 
             <!-- Account Column -->
             <div class="footer-column">
                 <h4>ACCOUNT</h4>
@@ -848,7 +848,7 @@
                     <li><a href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
                 </ul>
             </div>
-
+ 
             <!-- Support Column -->
             <div class="footer-column">
                 <h4>SUPPORT</h4>
@@ -858,7 +858,7 @@
                 </ul>
             </div>
         </div>
-
+ 
         <!-- Footer Bottom -->
         <div class="footer-bottom">
             <div class="footer-copyright">
@@ -875,7 +875,7 @@
         </div>
     </div>
 </footer>
-
+ 
 <script>
 function switchLanguage() {
     alert('Language switcher coming soon!');
