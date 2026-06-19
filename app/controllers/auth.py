@@ -143,9 +143,9 @@ class AuthController(BaseController):
         return render_template("register.html")
 
     def logout(self):
-        # If admin is mid-impersonation, "Logout" should just exit back to
-        # admin rather than destroying the admin's real session entirely.
-        if session.get("viewing_as") and "impersonator_id" in session:
+    # If admin is impersonating, return to admin instead of
+    # destroying the real admin session.
+        if session.get("_impersonator_id"):
             return self.exit_view_as()
 
         session.clear()
@@ -179,56 +179,7 @@ class AuthController(BaseController):
     # The admin's real identity is stashed in session under
     # "impersonator_*" keys and restored on exit_view_as().
 
-    def view_as_user(self):
-        if session.get("role") != "admin":
-            flash("Admin access required.", "danger")
-            return redirect(url_for("auth.dashboard"))
 
-        target_user_id = request.form.get("user_id")
-        db = Database()
-        target_user = db.fetch_one(
-            "SELECT * FROM users WHERE user_id=%s", (target_user_id,)
-        )
-        db.close()
-
-        if not target_user:
-            flash("User not found.", "danger")
-            return redirect(url_for("auth.admin_dashboard"))
-
-        if target_user["role"] == "admin":
-            flash("You can't view-as another admin account.", "warning")
-            return redirect(url_for("auth.admin_dashboard"))
-
-        # Stash the real admin identity so we can restore it later
-        session["impersonator_id"]   = session.get("user_id")
-        session["impersonator_name"] = session.get("user_name")
-
-        # Swap session to the target user
-        session["user_id"]   = target_user["user_id"]
-        session["user_name"] = target_user["name"]
-        session["role"]      = target_user["role"]
-        session["viewing_as"] = True
-
-        flash(f"You are now viewing as {target_user['name']}.", "info")
-
-        if target_user["role"] == "host":
-            return redirect(url_for("auth.host_dashboard"))
-        else:
-            return redirect(url_for("auth.guest_dashboard"))
-
-    def exit_view_as(self):
-        if not session.get("viewing_as") or "impersonator_id" not in session:
-            flash("Not currently viewing as another user.", "warning")
-            return redirect(url_for("auth.dashboard"))
-
-        # Restore the real admin identity
-        session["user_id"]   = session.pop("impersonator_id")
-        session["user_name"] = session.pop("impersonator_name")
-        session["role"]      = "admin"
-        session.pop("viewing_as", None)
-
-        flash("Returned to your admin account.", "success")
-        return redirect(url_for("auth.admin_dashboard"))
 
     # ────────────────────────────────────────────────────────────
     # ADMIN DASHBOARD
