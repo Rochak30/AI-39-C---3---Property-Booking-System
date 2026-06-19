@@ -2126,6 +2126,8 @@
 // ============================================
 // FULL JAVASCRIPT CODE - WITH ENHANCED FEATURES
 // ============================================
+const PROPERTY_ID = 3;  // Jungle Retreat Chitwan
+
 // ============================================
 // ADD REVIEW FUNCTIONALITY
 // ============================================
@@ -2249,6 +2251,7 @@ document.getElementById('submitReviewBtn').addEventListener('click', function() 
        
     }, 1500);
 });
+
 // All gallery images for the "View all images" feature - USING jr1.jpg to jr6.jpg
 var galleryAllImages = [
     '{{ url_for("static", filename="images/jr1.jpg") }}',
@@ -2648,7 +2651,8 @@ function openAllImages() {
     }
    
     if (galleryModal) galleryModal.classList.add('open');
-}s
+}
+
 function closeAllImagesModal(e) {
     var modal = document.getElementById('allImagesModal');
     if (!modal) return;
@@ -2656,6 +2660,7 @@ function closeAllImagesModal(e) {
         modal.classList.remove('open');
     }
 }
+
 function showAllRules() {
     var modal = document.getElementById('rulesModal');
     if (!modal) {
@@ -2665,16 +2670,19 @@ function showAllRules() {
     }
     if (modal) modal.classList.add('open');
 }
+
 function closeRulesModal(e) {
     var modal = document.getElementById('rulesModal');
     if (modal && (!e || e.target.id === 'rulesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))))
         modal.classList.remove('open');
 }
+
 function copyBankText(elementId) {
     var text = document.getElementById(elementId).textContent;
     navigator.clipboard.writeText(text);
     showToast('Copied to clipboard!', 'success');
 }
+
 function showToast(message, type) {
     var container = document.getElementById('toasts');
     if (!container) {
@@ -2690,6 +2698,7 @@ function showToast(message, type) {
     container.appendChild(toast);
     setTimeout(function() { toast.remove(); }, 4000);
 }
+
 var paymentMethods = document.querySelectorAll('.payment-method-enhanced');
 for (var i = 0; i < paymentMethods.length; i++) {
     paymentMethods[i].addEventListener('click', function() {
@@ -2713,6 +2722,7 @@ for (var i = 0; i < paymentMethods.length; i++) {
         }
     });
 }
+
 document.getElementById('confirmBookingBtn').addEventListener('click', function() {
     if (selectedCheckIn && selectedCheckOut) {
         showEnhancedBookingModal();
@@ -2726,6 +2736,7 @@ document.getElementById('confirmBookingBtn').addEventListener('click', function(
         selectedPaymentMethod = null;
     }
 });
+
 document.getElementById('proceedPaymentBtn').addEventListener('click', function() {
     if (!selectedPaymentMethod) {
         showToast('Please select a payment method', 'error');
@@ -2742,25 +2753,66 @@ document.getElementById('proceedPaymentBtn').addEventListener('click', function(
         document.getElementById('confirmPaymentBtn').style.display = 'flex';
     }, 2000);
 });
+
+// ---- REAL BOOKING CREATION ----
 document.getElementById('confirmPaymentBtn').addEventListener('click', function() {
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    var bookingReference = '';
-    for (var i = 0; i < 10; i++) bookingReference += chars.charAt(Math.floor(Math.random() * chars.length));
-    var calc = calculatePriceWithDiscount();
-    var options = { year: 'numeric', month: 'short', day: 'numeric' };
-    document.getElementById('bookingRef').innerHTML = 'JR-' + bookingReference;
-    document.getElementById('successDetails').innerHTML = '<p><strong>Property:</strong> Jungle Retreat Chitwan</p><p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p><p><strong>Guests:</strong> ' + document.getElementById('guests').value + '</p><p><strong>Total Paid:</strong> NPR ' + calc.total.toLocaleString() + '</p>';
-    document.getElementById('bookingModal').classList.remove('active');
-    document.getElementById('successModal').classList.add('active');
-    selectedCheckIn = null;
-    selectedCheckOut = null;
-    appliedCoupon = null;
-    document.getElementById('couponCode').value = '';
-    document.getElementById('discountMessage').style.display = 'none';
-    calculatePriceWithDiscount();
-    updateBookingSummary();
-    renderCalendar();
+    const checkin_date  = selectedCheckIn.toISOString().split('T')[0];
+    const checkout_date = selectedCheckOut.toISOString().split('T')[0];
+    const guests_count  = document.getElementById('guests').value;
+    const coupon_code   = appliedCoupon || '';
+
+    const btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
+
+    fetch('/booking/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            property_id: PROPERTY_ID,
+            checkin_date: checkin_date,
+            checkout_date: checkout_date,
+            guests_count: guests_count,
+            coupon_code: coupon_code
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm Payment <i class="fas fa-check"></i>';
+
+        if (!data.success) {
+            showToast(data.error || 'Booking failed.', 'error');
+            return;
+        }
+
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('bookingRef').innerHTML = data.booking_id;
+        document.getElementById('successDetails').innerHTML =
+            '<p><strong>Property:</strong> ' + data.property_title + '</p>' +
+            '<p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p>' +
+            '<p><strong>Guests:</strong> ' + guests_count + '</p>' +
+            '<p><strong>Total Paid:</strong> NPR ' + data.total.toLocaleString() + '</p>';
+
+        document.getElementById('bookingModal').classList.remove('active');
+        document.getElementById('successModal').classList.add('active');
+
+        selectedCheckIn = null;
+        selectedCheckOut = null;
+        appliedCoupon = null;
+        document.getElementById('couponCode').value = '';
+        document.getElementById('discountMessage').style.display = 'none';
+        calculatePriceWithDiscount();
+        updateBookingSummary();
+        renderCalendar();
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm Payment <i class="fas fa-check"></i>';
+        showToast('Network error. Please try again.', 'error');
+    });
 });
+
 function closeBookingModal() { document.getElementById('bookingModal').classList.remove('active'); }
 function closeSuccessModal() { document.getElementById('successModal').classList.remove('active'); }
 function redirectToBrowse() { window.location.href = "{{ url_for('auth.browse') }}"; }
