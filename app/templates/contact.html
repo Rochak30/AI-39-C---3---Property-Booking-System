@@ -388,29 +388,29 @@ textarea.form-input {
       </div>
     </div>
 
-    <div class="contact-form-card">
-      <div class="contact-form">
-        <div class="form-group">
-          <label class="form-label"><i class="fas fa-user"></i> Full Name</label>
-          <input type="text" class="form-input" id="contact-name" placeholder="Your name">
-        </div>
-        <div class="form-group">
-          <label class="form-label"><i class="fas fa-envelope"></i> Email Address</label>
-          <input type="email" class="form-input" id="contact-email" placeholder="you@example.com">
-        </div>
-        <div class="form-group">
-          <label class="form-label"><i class="fas fa-tag"></i> Subject</label>
-          <input type="text" class="form-input" id="contact-subject" placeholder="How can we help?">
-        </div>
-        <div class="form-group">
-          <label class="form-label"><i class="fas fa-comment"></i> Message</label>
-          <textarea class="form-input" id="contact-message" rows="5" placeholder="Describe your issue in detail..."></textarea>
-        </div>
-        <button class="btn-primary" onclick="sendContact()">
-          Send Message <i class="fas fa-paper-plane"></i>
-        </button>
+<div class="contact-form-card">
+  <div class="contact-form">
+    <form method="POST" action="{{ url_for('auth.contact') }}" id="contactForm">
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-user"></i> Full Name</label>
+        <input type="text" class="form-input" id="contact-name" name="name" placeholder="Your name" required>
       </div>
-    </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-envelope"></i> Email Address</label>
+        <input type="email" class="form-input" id="contact-email" name="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-tag"></i> Subject</label>
+        <input type="text" class="form-input" id="contact-subject" name="subject" placeholder="How can we help?" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-comment"></i> Message</label>
+        <textarea class="form-input" id="contact-message" name="message" rows="5" placeholder="Describe your issue in detail..." required></textarea>
+      </div>
+      <button type="submit" class="btn-primary">
+        Send Message <i class="fas fa-paper-plane"></i>
+      </button>
+    </form>
   </div>
 </div>
 
@@ -476,23 +476,21 @@ textarea.form-input {
 
 {% block extra_js %}
 <script>
-function sendContact() {
-  const n = document.getElementById('contact-name').value;
-  const e = document.getElementById('contact-email').value;
-  const s = document.getElementById('contact-subject').value;
-  const m = document.getElementById('contact-message').value;
-  if (!n || !e || !s || !m) { showToast('Please fill in all fields.', 'error'); return; }
-  showToast("✓ Message sent! We'll respond within 24 hours.", 'success');
-  document.getElementById('contact-name').value = '';
-  document.getElementById('contact-email').value = '';
-  document.getElementById('contact-subject').value = '';
-  document.getElementById('contact-message').value = '';
-}
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('contactForm');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      // Let the form submit normally - the backend will handle flash messages
+      // We'll show a loading state
+      const btn = this.querySelector('button[type="submit"]');
+      btn.innerHTML = 'Sending... <i class="fas fa-spinner fa-spin"></i>';
+      btn.disabled = true;
+      // Don't prevent default - let the form submit
+    });
+  }
+});
 
-function switchLanguage() {
-  showToast('Language switcher coming soon!', 'info');
-}
-
+// Toast function for flash messages from backend
 function showToast(message, type) {
   let container = document.getElementById('toasts');
   if (!container) {
@@ -507,6 +505,10 @@ function showToast(message, type) {
   toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
   container.appendChild(toast);
   setTimeout(() => toast.remove(), 4000);
+}
+
+function switchLanguage() {
+  showToast('Language switcher coming soon!', 'info');
 }
 </script>
 
