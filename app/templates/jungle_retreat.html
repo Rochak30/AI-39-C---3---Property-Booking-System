@@ -1867,53 +1867,9 @@
 
             <!-- Reviews -->
 <div class="reviews-section">
-    <h3><i class="fas fa-star"></i> Guest reviews · 4.9 average</h3>
-    <div class="reviews-list">
-        <div class="review-card">
-            <div class="review-header">
-                <strong>Salina Lama</strong>
-                <div class="stars">★★★★★</div>
-                <span class="review-date">Mar 2026</span>
-                <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
-            </div>
-            <p>"Absolutely incredible! We saw rhinos, elephants, and even a tiger! Aayush is an amazing guide. The cottages are comfortable and the staff is wonderful. The evening cultural show was a highlight."</p>
-        </div>
-        <div class="review-card">
-            <div class="review-header">
-                <strong>Jun Maharjan</strong>
-                <div class="stars">★★★★★</div>
-                <span class="review-date">Feb 2026</span>
-                <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
-            </div>
-            <p>"Best wildlife experience of my life. The jungle safari was well-organized, and the food was delicious. Highly recommend the canoe ride at sunrise - we saw so many crocodiles and birds!"</p>
-        </div>
-        <div class="review-card">
-            <div class="review-header">
-                <strong>Priya Rai</strong>
-                <div class="stars">★★★★★</div>
-                <span class="review-date">Jan 2026</span>
-                <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
-            </div>
-            <p>"A perfect blend of adventure and comfort. The staff went above and beyond to make our stay special. Aayush's knowledge of the jungle is unmatched. Will definitely return!"</p>
-        </div>
-        <div class="review-card">
-            <div class="review-header">
-                <strong>Manish Bhattrai</strong>
-                <div class="stars">★★★★★</div>
-                <span class="review-date">Dec 2025</span>
-                <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
-            </div>
-            <p>"Unforgettable! Aayush knows everything about the jungle. We learned so much and saw incredible wildlife including a rare Bengal tiger. The accommodation was clean, cozy, and eco-friendly."</p>
-        </div>
-        <div class="review-card">
-            <div class="review-header">
-                <strong>Enush Parajuli</strong>
-                <div class="stars">★★★★☆</div>
-                <span class="review-date">Nov 2025</span>
-                <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
-            </div>
-            <p>"Amazing location right next to the park. The safari was fantastic and we loved the Tharu cultural performance. Only small issue was WiFi connectivity in the rooms, but who needs internet in the jungle!"</p>
-        </div>
+    <h3><i class="fas fa-star"></i> Guest reviews · <span id="reviewAvg">4.9</span> average</h3>
+    <div class="reviews-list" id="reviewsList">
+        <!-- Reviews will be loaded dynamically -->
     </div>
 
     <!-- ADD REVIEW FORM - NEW SECTION -->
@@ -2129,8 +2085,44 @@
 const PROPERTY_ID = 3;  // Jungle Retreat Chitwan
 
 // ============================================
-// ADD REVIEW FUNCTIONALITY
+// REVIEW FUNCTIONS (NEW)
 // ============================================
+function loadReviews() {
+    fetch('/reviews/' + PROPERTY_ID)
+        .then(r => r.json())
+        .then(reviews => {
+            const list = document.getElementById('reviewsList');
+            const avgSpan = document.getElementById('reviewAvg');
+            list.innerHTML = '';
+            if (reviews.length === 0) {
+                list.innerHTML = '<p style="color:var(--text-muted);">No reviews yet. Be the first to review!</p>';
+                if (avgSpan) avgSpan.textContent = '0.0';
+                return;
+            }
+            let total = 0;
+            reviews.forEach((r, idx) => {
+                total += r.rating;
+                const card = document.createElement('div');
+                card.className = 'review-card';
+                card.style.animation = `slideUp 0.4s ease ${idx * 0.1}s both`;
+                card.innerHTML = `
+                    <div class="review-header">
+                        <strong>${r.guest_name}</strong>
+                        <div class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                        <span class="review-date">${new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+                        <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified</span>
+                    </div>
+                    <p>"${r.comment}"</p>
+                `;
+                list.appendChild(card);
+            });
+            const avg = (total / reviews.length).toFixed(1);
+            if (avgSpan) avgSpan.textContent = avg;
+        })
+        .catch(() => {
+            document.getElementById('reviewsList').innerHTML = '<p style="color:var(--text-muted);">Failed to load reviews.</p>';
+        });
+}
 
 // Star rating selection
 var ratingInputs = document.querySelectorAll('.rating-input input');
@@ -2146,7 +2138,7 @@ for (var i = 0; i < ratingInputs.length; i++) {
     });
 }
 
-// Submit review
+// Submit review (REAL backend)
 document.getElementById('submitReviewBtn').addEventListener('click', function() {
     var name = document.getElementById('reviewerName').value.trim();
     var content = document.getElementById('reviewContent').value.trim();
@@ -2188,68 +2180,54 @@ document.getElementById('submitReviewBtn').addEventListener('click', function() 
         return;
     }
    
-    // Disable button while processing
     var btn = this;
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
-   
-    // Simulate API call (replace with actual backend call)
-    setTimeout(function() {
-        // Show success
-        successDiv.style.display = 'flex';
-       
-        // Add the review to the list dynamically
-        var reviewsList = document.querySelector('.reviews-list');
-        var newReview = document.createElement('div');
-        newReview.className = 'review-card';
-        newReview.style.animation = 'slideUp 0.4s ease';
-        newReview.innerHTML = `
-            <div class="review-header">
-                <strong>${name}</strong>
-                <div class="stars">${'★'.repeat(selectedRating)}${'☆'.repeat(5 - selectedRating)}</div>
-                <span class="review-date">Just now</span>
-                <span class="verified-badge"><i class="fas fa-check-circle"></i> New</span>
-            </div>
-            <p>"${content}"</p>
-        `;
-        reviewsList.prepend(newReview);
-       
-        // Reset form
-        document.getElementById('reviewerName').value = '';
-        document.getElementById('reviewContent').value = '';
-        for (var j = 0; j < ratingInputs.length; j++) {
-            ratingInputs[j].checked = false;
-        }
-        selectedRating = 0;
-        ratingDisplay.textContent = 'Select rating';
-        ratingDisplay.style.color = 'var(--text-secondary)';
-       
-        // Reset button
+
+    fetch('/review/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            property_id: PROPERTY_ID,
+            rating: selectedRating,
+            comment: content
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Review';
-       
-        // Auto-hide success after 5 seconds
-        setTimeout(function() {
-            successDiv.style.display = 'none';
-        }, 5000);
-       
-        // Update review count
-        var reviewCount = document.querySelector('.reviews-section h3');
-        if (reviewCount) {
-            var currentText = reviewCount.textContent;
-            var match = currentText.match(/\d+\.?\d*/);
-            if (match) {
-                var currentAvg = parseFloat(match[0]);
-                var totalReviews = document.querySelectorAll('.review-card').length;
-                var newAvg = ((currentAvg * (totalReviews - 1)) + selectedRating) / totalReviews;
-                reviewCount.innerHTML = `<i class="fas fa-star"></i> Guest reviews · ${newAvg.toFixed(1)} average`;
+
+        if (data.success) {
+            successDiv.style.display = 'flex';
+            // Reset form
+            document.getElementById('reviewerName').value = '';
+            document.getElementById('reviewContent').value = '';
+            for (var j = 0; j < ratingInputs.length; j++) {
+                ratingInputs[j].checked = false;
             }
+            selectedRating = 0;
+            ratingDisplay.textContent = 'Select rating';
+            ratingDisplay.style.color = 'var(--text-secondary)';
+
+            // Reload reviews
+            loadReviews();
+            showToast('Thank you for your review!', 'success');
+
+            setTimeout(function() {
+                successDiv.style.display = 'none';
+            }, 5000);
+        } else {
+            errorDiv.querySelector('span').textContent = data.error || 'Submission failed.';
+            errorDiv.style.display = 'flex';
         }
-       
-        // Scroll to show the new review
-        newReview.scrollIntoView({ behavior: 'smooth', block: 'center' });
-       
-    }, 1500);
+    })
+    .catch(function() {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Review';
+        errorDiv.querySelector('span').textContent = 'Network error. Please try again.';
+        errorDiv.style.display = 'flex';
+    });
 });
 
 // All gallery images for the "View all images" feature - USING jr1.jpg to jr6.jpg
@@ -2821,6 +2799,7 @@ function switchLanguage() { showToast('Language switcher coming soon!', 'info');
 
 renderCalendar();
 calculatePriceWithDiscount();
+loadReviews();  // load reviews on page load
 </script>
 
 <!-- ========== FOOTER ========== -->
@@ -2880,7 +2859,9 @@ calculatePriceWithDiscount();
                 <button class="lang-btn" onclick="switchLanguage()">
                     <i class="fas fa-globe"></i> EN / नेपाली
                 </button>
-                
+                <button class="currency-btn">
+                    <i class="fas fa-rupee-sign"></i> NPR Rs
+                </button>
             </div>
         </div>
     </div>
