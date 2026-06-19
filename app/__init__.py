@@ -48,25 +48,21 @@ def create_app():
     # static_folder='static': Location of static files (CSS, JS, images)
     # template_folder='templates': Location of HTML templates
     app = Flask(__name__, static_folder='static', template_folder='templates')
-    
     # ── Set Secret Key ──
     # Used for session signing and CSRF protection
     # Retrieved from config.py file for security
     app.secret_key = config.SECRET_KEY
-
     # ── Initialize Database ──
     # Create database tables if they don't exist
     # Using app.app_context() ensures proper application context
     # before performing database operations
     with app.app_context():
         Database.create_tables()
-
     # ── Register Blueprints ──
     # Create auth routes instance and register its blueprint
     # auth_routes.register() returns a Blueprint object
     auth_routes = AuthRoutes()
     app.register_blueprint(auth_routes.register())
-    
     # ── Return Configured App ──
     # Return the fully configured application instance
     return app
