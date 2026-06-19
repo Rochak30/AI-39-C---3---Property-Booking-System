@@ -2131,6 +2131,8 @@
 // ============================================
 // FULL JAVASCRIPT CODE - WITH ENHANCED FEATURES
 // ============================================
+const PROPERTY_ID = 2;  // Thamel Heritage House
+
 // ============================================
 // ADD REVIEW FUNCTIONALITY
 // ============================================
@@ -2254,6 +2256,7 @@ document.getElementById('submitReviewBtn').addEventListener('click', function() 
        
     }, 1500);
 });
+
 // All gallery images for the "View all images" feature
 var galleryAllImages = [
     '{{ url_for("static", filename="images/th1.jpg") }}',
@@ -2412,6 +2415,7 @@ function updateBookingSummary() {
     } else if (selectedCheckIn) { document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-day"></i> Check-in: ' + selectedCheckIn.toDateString() + '<br><small>Select check-out date</small>'; }
     else { document.getElementById('selectedDatesDisplay').innerHTML = '<i class="fas fa-calendar-alt"></i> Select check-in and check-out dates'; }
 }
+
 function applyCoupon() {
     var couponCode = document.getElementById('couponCode').value.trim().toUpperCase();
     var msgDiv = document.getElementById('discountMessage');
@@ -2476,6 +2480,7 @@ function applyCoupon() {
    
     setTimeout(function() { if (msgDiv.style.display === 'flex') msgDiv.style.display = 'none'; }, 4000);
 }
+
 function removeCoupon() {
     if (appliedCoupon) {
         showToast('Coupon removed. Cannot be reused.', 'info');
@@ -2486,6 +2491,7 @@ function removeCoupon() {
         updateBookingSummary();
     }
 }
+
 function addClearCouponButton() {
     var group = document.querySelector('.coupon-input-group');
     if (group && !document.getElementById('clearCouponBtn')) {
@@ -2497,6 +2503,7 @@ function addClearCouponButton() {
         group.appendChild(btn);
     }
 }
+
 document.getElementById('applyCouponBtn').addEventListener('click', applyCoupon);
 document.getElementById('couponCode').addEventListener('keypress', function(e) { if (e.key === 'Enter') applyCoupon(); });
 document.getElementById('prevMonthBtn').addEventListener('click', function() { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
@@ -2566,6 +2573,7 @@ function showEnhancedBookingModal() {
     document.getElementById('bookingSummary').innerHTML = bookingSummaryHtml;
     document.getElementById('priceBreakdown').innerHTML = priceHtml;
 }
+
 // ========== SINGLE IMAGE VIEWER ==========
 function openImageViewer(index) {
     var modal = document.getElementById('imageViewerModal');
@@ -2588,11 +2596,13 @@ function openImageViewer(index) {
     if (img && bedroomImages[index]) img.src = bedroomImages[index];
     if (modal) modal.classList.add('open');
 }
+
 function closeImageViewer(e) {
     var modal = document.getElementById('imageViewerModal');
     if (modal && (!e || e.target.id === 'imageViewerModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))))
         modal.classList.remove('open');
 }
+
 // ========== VIEW ALL IMAGES - SHOWS ALL 6 IMAGES IN A GRID ==========
 function openAllImages() {
     var galleryModal = document.getElementById('allImagesModal');
@@ -2617,6 +2627,7 @@ function openAllImages() {
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         galleryModal = document.getElementById('allImagesModal');
     }
+   
     var imagesGrid = document.getElementById('allImagesGrid');
     if (imagesGrid) {
         imagesGrid.innerHTML = '';
@@ -2645,6 +2656,7 @@ function openAllImages() {
    
     if (galleryModal) galleryModal.classList.add('open');
 }
+
 function closeAllImagesModal(e) {
     var modal = document.getElementById('allImagesModal');
     if (!modal) return;
@@ -2652,6 +2664,7 @@ function closeAllImagesModal(e) {
         modal.classList.remove('open');
     }
 }
+
 function showAllRules() {
     var modal = document.getElementById('rulesModal');
     if (!modal) {
@@ -2661,16 +2674,19 @@ function showAllRules() {
     }
     if (modal) modal.classList.add('open');
 }
+
 function closeRulesModal(e) {
     var modal = document.getElementById('rulesModal');
     if (modal && (!e || e.target.id === 'rulesModal' || (e.target && e.target.classList && e.target.classList.contains('modal-close'))))
         modal.classList.remove('open');
 }
+
 function copyBankText(elementId) {
     var text = document.getElementById(elementId).textContent;
     navigator.clipboard.writeText(text);
     showToast('Copied to clipboard!', 'success');
 }
+
 function showToast(message, type) {
     var container = document.getElementById('toasts');
     if (!container) {
@@ -2686,6 +2702,7 @@ function showToast(message, type) {
     container.appendChild(toast);
     setTimeout(function() { toast.remove(); }, 4000);
 }
+
 var paymentMethods = document.querySelectorAll('.payment-method-enhanced');
 for (var i = 0; i < paymentMethods.length; i++) {
     paymentMethods[i].addEventListener('click', function() {
@@ -2741,24 +2758,63 @@ document.getElementById('proceedPaymentBtn').addEventListener('click', function(
     }, 2000);
 });
 
+// ---- REAL BOOKING CREATION ----
 document.getElementById('confirmPaymentBtn').addEventListener('click', function() {
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    var bookingReference = '';
-    for (var i = 0; i < 10; i++) bookingReference += chars.charAt(Math.floor(Math.random() * chars.length));
-    var calc = calculatePriceWithDiscount();
-    var options = { year: 'numeric', month: 'short', day: 'numeric' };
-    document.getElementById('bookingRef').innerHTML = 'TH-' + bookingReference;
-    document.getElementById('successDetails').innerHTML = '<p><strong>Property:</strong> Thamel Heritage House</p><p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p><p><strong>Guests:</strong> ' + document.getElementById('guests').value + '</p><p><strong>Total Paid:</strong> NPR ' + calc.total.toLocaleString() + '</p>';
-    document.getElementById('bookingModal').classList.remove('active');
-    document.getElementById('successModal').classList.add('active');
-    selectedCheckIn = null;
-    selectedCheckOut = null;
-    appliedCoupon = null;
-    document.getElementById('couponCode').value = '';
-    document.getElementById('discountMessage').style.display = 'none';
-    calculatePriceWithDiscount();
-    updateBookingSummary();
-    renderCalendar();
+    const checkin_date  = selectedCheckIn.toISOString().split('T')[0];
+    const checkout_date = selectedCheckOut.toISOString().split('T')[0];
+    const guests_count  = document.getElementById('guests').value;
+    const coupon_code   = appliedCoupon || '';
+
+    const btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
+
+    fetch('/booking/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            property_id: PROPERTY_ID,
+            checkin_date: checkin_date,
+            checkout_date: checkout_date,
+            guests_count: guests_count,
+            coupon_code: coupon_code
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm Payment <i class="fas fa-check"></i>';
+
+        if (!data.success) {
+            showToast(data.error || 'Booking failed.', 'error');
+            return;
+        }
+
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('bookingRef').innerHTML = data.booking_id;
+        document.getElementById('successDetails').innerHTML =
+            '<p><strong>Property:</strong> ' + data.property_title + '</p>' +
+            '<p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p>' +
+            '<p><strong>Guests:</strong> ' + guests_count + '</p>' +
+            '<p><strong>Total Paid:</strong> NPR ' + data.total.toLocaleString() + '</p>';
+
+        document.getElementById('bookingModal').classList.remove('active');
+        document.getElementById('successModal').classList.add('active');
+
+        selectedCheckIn = null;
+        selectedCheckOut = null;
+        appliedCoupon = null;
+        document.getElementById('couponCode').value = '';
+        document.getElementById('discountMessage').style.display = 'none';
+        calculatePriceWithDiscount();
+        updateBookingSummary();
+        renderCalendar();
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm Payment <i class="fas fa-check"></i>';
+        showToast('Network error. Please try again.', 'error');
+    });
 });
 
 function closeBookingModal() { document.getElementById('bookingModal').classList.remove('active'); }
