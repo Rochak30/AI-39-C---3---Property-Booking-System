@@ -74,6 +74,37 @@ tr:hover td  { background: var(--bg-700); }
 .btn-delete:hover { background: #e74c3c; color: #fff; }
 .btn-resolve:hover{ background: #3498db; color: #fff; }
 
+/* ── Modal Styles ── */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
+    z-index: 10000;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+    background: var(--bg-800); border-radius: 16px; border: 1px solid var(--border);
+    max-width: 800px; width: 90%; max-height: 80vh; overflow-y: auto;
+    padding: 24px;
+}
+.modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border); padding-bottom: 12px;
+}
+.modal-title { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+.modal-close {
+    background: none; border: none; font-size: 28px; color: var(--text-secondary);
+    cursor: pointer;
+}
+.modal-body { padding-top: 16px; color: var(--text-secondary); }
+.modal-body .detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.modal-body .detail-label { font-weight: 600; color: var(--text-muted); }
+.modal-body .detail-value { color: var(--text-primary); }
+.modal-body .image-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.modal-body .image-list img { width: 120px; height: 80px; object-fit: cover; border-radius: 8px; }
+
 /* ── Footer styles (copied from index) ── */
 .footer {
     background: var(--bg-800);
@@ -81,183 +112,37 @@ tr:hover td  { background: var(--bg-700); }
     padding: 60px 24px 32px;
     margin-top: 0;
 }
-
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 48px;
-    margin-bottom: 48px;
-}
-
-.footer-brand {
-    max-width: 320px;
-}
-
-.footer-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 24px;
-    font-weight: 800;
-    margin-bottom: 16px;
-    color: var(--text-primary);
-}
-
-.footer-logo i {
-    font-size: 28px;
-    color: var(--teal);
-}
-
-.footer-description {
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-
-.footer-social {
-    display: flex;
-    gap: 12px;
-}
-
-.social-link {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--bg-700);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
-    transition: all 0.3s ease;
-    text-decoration: none;
-}
-
-.social-link:hover {
-    background: var(--teal);
-    color: #051209;
-    transform: translateY(-3px);
-    border-color: var(--teal);
-}
-
-.footer-column h4 {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--teal);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 20px;
-}
-
-.footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.footer-links li {
-    margin-bottom: 12px;
-}
-
-.footer-links a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.footer-links a i {
-    font-size: 12px;
-    width: 16px;
-    color: var(--teal);
-    transition: transform 0.2s ease;
-}
-
-.footer-links a:hover {
-    color: var(--teal);
-    transform: translateX(5px);
-}
-
-.footer-links a:hover i {
-    transform: translateX(3px);
-}
-
-.footer-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.footer-copyright {
-    font-size: 13px;
-    color: var(--text-muted);
-}
-
-.footer-lang-currency {
-    display: flex;
-    gap: 12px;
-}
-
-.lang-btn,
-.currency-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    padding: 6px 16px;
-    border-radius: 30px;
-    font-size: 12px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.lang-btn:hover,
-.currency-btn:hover {
-    border-color: var(--teal);
-    color: var(--teal);
-    transform: translateY(-2px);
-}
+.footer-container { max-width: 1200px; margin: 0 auto; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-brand { max-width: 320px; }
+.footer-logo { display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 800; margin-bottom: 16px; color: var(--text-primary); }
+.footer-logo i { font-size: 28px; color: var(--teal); }
+.footer-description { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; }
+.footer-social { display: flex; gap: 12px; }
+.social-link { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-700); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: all 0.3s ease; text-decoration: none; }
+.social-link:hover { background: var(--teal); color: #051209; transform: translateY(-3px); border-color: var(--teal); }
+.footer-column h4 { font-size: 12px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px; }
+.footer-links { list-style: none; padding: 0; margin: 0; }
+.footer-links li { margin-bottom: 12px; }
+.footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
+.footer-links a i { font-size: 12px; width: 16px; color: var(--teal); transition: transform 0.2s ease; }
+.footer-links a:hover { color: var(--teal); transform: translateX(5px); }
+.footer-links a:hover i { transform: translateX(3px); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
+.footer-copyright { font-size: 13px; color: var(--text-muted); }
+.footer-lang-currency { display: flex; gap: 12px; }
+.lang-btn, .currency-btn { background: transparent; border: 1px solid var(--border); padding: 6px 16px; border-radius: 30px; font-size: 12px; color: var(--text-secondary); cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px; }
+.lang-btn:hover, .currency-btn:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
 
 @media (max-width: 992px) {
-    .footer-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 32px;
-    }
-    .footer-brand {
-        grid-column: span 2;
-        max-width: 100%;
-    }
+    .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    .footer-brand { grid-column: span 2; max-width: 100%; }
 }
-
 @media (max-width: 768px) {
-    .footer-grid {
-        grid-template-columns: 1fr;
-    }
-    .footer-brand {
-        grid-column: span 1;
-    }
-    .footer-bottom {
-        flex-direction: column;
-        text-align: center;
-    }
-    .footer-lang-currency {
-        justify-content: center;
-    }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-brand { grid-column: span 1; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+    .footer-lang-currency { justify-content: center; }
 }
 </style>
 {% endblock %}
@@ -377,6 +262,45 @@ tr:hover td  { background: var(--bg-700); }
         </table>
       </div>
       {% endif %}
+
+      <!-- ── PENDING PROPERTIES SECTION ── -->
+      {% set pending_props = properties | selectattr('approval_status', 'equalto', 'pending') | list %}
+      {% if pending_props %}
+      <h3 style="font-size:16px; margin-bottom:12px; color:var(--text-secondary);">
+        <i class="fas fa-home" style="color:#e67e22;"></i> Pending Properties
+        <span class="stat-badge badge-warn" style="margin-left:8px;">{{ pending_props|length }}</span>
+      </h3>
+      <div class="table-wrap" style="margin-bottom:32px;">
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Host</th><th>Region</th><th>Type</th><th>Price/Night</th><th>Actions</th></tr></thead>
+          <tbody>
+          {% for p in pending_props %}
+            <tr>
+              <td>{{ p.property_id }}</td>
+              <td>{{ p.title }}</td>
+              <td>{{ p.host_name }}</td>
+              <td>{{ p.region }}</td>
+              <td>{{ p.type }}</td>
+              <td>NPR {{ "{:,.0f}".format(p.price_per_night) }}</td>
+              <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button class="btn-xs btn-view" onclick="showPropertyDetails({{ p.property_id }})">
+                  <i class="fas fa-eye"></i> Details
+                </button>
+                <form method="POST" action="/admin/approve-property">
+                  <input type="hidden" name="property_id" value="{{ p.property_id }}">
+                  <button class="btn-xs btn-approve" type="submit">✓ Approve</button>
+                </form>
+                <form method="POST" action="/admin/reject-property">
+                  <input type="hidden" name="property_id" value="{{ p.property_id }}">
+                  <button class="btn-xs btn-reject" type="submit">✕ Reject</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
     </section>
 
     <!-- USERS -->
@@ -435,6 +359,9 @@ tr:hover td  { background: var(--bg-700); }
               <td>NPR {{ "{:,.0f}".format(p.price_per_night) }}</td>
               <td><span class="status status-{{ p.approval_status }}">{{ p.approval_status }}</span></td>
               <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button class="btn-xs btn-view" onclick="showPropertyDetails({{ p.property_id }})">
+                  <i class="fas fa-eye"></i> Details
+                </button>
                 {% if p.approval_status == 'pending' %}
                   <form method="POST" action="/admin/approve-property">
                     <input type="hidden" name="property_id" value="{{ p.property_id }}">
@@ -524,8 +451,23 @@ tr:hover td  { background: var(--bg-700); }
   </main>
 </div>
 
+<!-- ────────────────────────────────────────────────────────────────
+     PROPERTY DETAILS MODAL
+     ──────────────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="propertyDetailsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalPropertyTitle">Property Details</span>
+      <button class="modal-close" onclick="closePropertyDetails()">&times;</button>
+    </div>
+    <div class="modal-body" id="modalPropertyContent">
+      <p style="color:var(--text-muted);">Loading...</p>
+    </div>
+  </div>
+</div>
+
 <!-- ============================================================
-     FOOTER SECTION – as shown in screenshot (copied from index)
+     FOOTER SECTION
      ============================================================ -->
 <footer class="footer">
     <div class="footer-container">
@@ -542,7 +484,6 @@ tr:hover td  { background: var(--bg-700); }
                 <div class="footer-social">
                     <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
                     <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
-                   
                 </div>
             </div>
 
@@ -583,7 +524,6 @@ tr:hover td  { background: var(--bg-700); }
                 <button class="lang-btn" onclick="switchLanguage()">
                     <i class="fas fa-globe"></i> EN / नेपाली
                 </button>
-                
             </div>
         </div>
     </div>
@@ -609,6 +549,96 @@ function filterTable(tableId, term) {
   rows.forEach(row => {
     row.style.display = row.textContent.toLowerCase().includes(t) ? '' : 'none';
   });
+}
+
+// ── Property Details Modal ──────────────────────────────────────
+function showPropertyDetails(propertyId) {
+  const modal = document.getElementById('propertyDetailsModal');
+  const content = document.getElementById('modalPropertyContent');
+  const title = document.getElementById('modalPropertyTitle');
+
+  modal.classList.add('open');
+  content.innerHTML = '<p style="color:var(--text-muted);">Loading property details...</p>';
+
+  fetch('/admin/property/' + propertyId)
+    .then(r => r.json())
+    .then(data => {
+      title.textContent = data.title;
+      // Build the detail grid
+      let html = '<div class="detail-grid">';
+      const fields = [
+        { label: 'Host', value: data.host_name },
+        { label: 'Region', value: data.region },
+        { label: 'Type', value: data.type },
+        { label: 'Price/Night', value: 'NPR ' + Number(data.price_per_night).toLocaleString() },
+        { label: 'Max Guests', value: data.max_guests },
+        { label: 'Bedrooms', value: data.bedrooms },
+        { label: 'Bathrooms', value: data.bathrooms },
+        { label: 'Check-in', value: data.checkin_time },
+        { label: 'Check-out', value: data.checkout_time },
+        { label: 'Prepayment', value: 'NPR ' + Number(data.prepayment_amount || 0).toLocaleString() },
+        { label: 'Free Cancellation', value: data.free_cancellation_days + ' days' },
+        { label: 'Non-refundable', value: data.nonrefundable_hours + ' hours' },
+      ];
+      fields.forEach(f => {
+        html += `<div><span class="detail-label">${f.label}</span><br><span class="detail-value">${f.value || '—'}</span></div>`;
+      });
+      html += '</div>';
+
+      // Description
+      html += `<div style="margin-top:16px;"><span class="detail-label">Tagline</span><br><span class="detail-value">${data.tagline || '—'}</span></div>`;
+      html += `<div style="margin-top:8px;"><span class="detail-label">Description</span><br><span class="detail-value">${data.description || '—'}</span></div>`;
+      if (data.description_2) {
+        html += `<div style="margin-top:8px;"><span class="detail-label">Description 2</span><br><span class="detail-value">${data.description_2}</span></div>`;
+      }
+      html += `<div style="margin-top:8px;"><span class="detail-label">Address</span><br><span class="detail-value">${data.address || '—'}</span></div>`;
+      html += `<div style="margin-top:8px;"><span class="detail-label">Map Embed URL</span><br><span class="detail-value">${data.map_embed_url || '—'}</span></div>`;
+
+      // Arrays (amenities, highlights, inclusions, rules)
+      const parseArray = (str) => { try { return JSON.parse(str || '[]'); } catch(e) { return []; } };
+      const amenities = parseArray(data.amenities);
+      const highlights = parseArray(data.highlights);
+      const inclusions = parseArray(data.inclusions);
+      const rules = parseArray(data.rules);
+
+      html += `<div style="margin-top:8px;"><span class="detail-label">Amenities</span><br><span class="detail-value">${amenities.length ? amenities.join(', ') : '—'}</span></div>`;
+      html += `<div style="margin-top:8px;"><span class="detail-label">Highlights</span><br><span class="detail-value">${highlights.length ? highlights.join(', ') : '—'}</span></div>`;
+      html += `<div style="margin-top:8px;"><span class="detail-label">Inclusions</span><br><span class="detail-value">${inclusions.length ? inclusions.join(', ') : '—'}</span></div>`;
+      html += `<div style="margin-top:8px;"><span class="detail-label">Rules</span><br><span class="detail-value">${rules.length ? rules.join(', ') : '—'}</span></div>`;
+      html += `<div style="margin-top:8px;"><span class="detail-label">Additional Rules</span><br><span class="detail-value">${data.additional_rules || '—'}</span></div>`;
+
+      // Host info
+      html += `<div style="margin-top:16px;"><span class="detail-label">Host Bio</span><br><span class="detail-value">${data.host_bio || '—'}</span></div>`;
+      html += `<div style="margin-top:8px;"><span class="detail-label">Host Languages</span><br><span class="detail-value">${data.host_languages || '—'}</span></div>`;
+      html += `<div style="margin-top:8px;"><span class="detail-label">Years Hosting</span><br><span class="detail-value">${data.years_hosting || '—'}</span></div>`;
+      html += `<div style="margin-top:8px;"><span class="detail-label">Response Rate</span><br><span class="detail-value">${data.response_rate || '—'}%</span></div>`;
+      html += `<div style="margin-top:8px;"><span class="detail-label">Response Time</span><br><span class="detail-value">${data.response_time || '—'}</span></div>`;
+
+      // Images
+      if (data.images) {
+        const imgList = data.images.split(',').filter(Boolean);
+        html += `<div style="margin-top:16px;"><span class="detail-label">Images</span><div class="image-list">`;
+        imgList.forEach(src => {
+          html += `<img src="${src}" alt="Property image">`;
+        });
+        html += `</div></div>`;
+      }
+
+      // Host avatar
+      if (data.host_avatar) {
+        html += `<div style="margin-top:8px;"><span class="detail-label">Host Avatar</span><br><img src="${data.host_avatar}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--teal);"></div>`;
+      }
+
+      content.innerHTML = html;
+    })
+    .catch(err => {
+      content.innerHTML = '<p style="color:var(--red);">Failed to load property details. Please try again.</p>';
+      console.error(err);
+    });
+}
+
+function closePropertyDetails() {
+  document.getElementById('propertyDetailsModal').classList.remove('open');
 }
 </script>
 {% endblock %}
