@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Mountain View Homestay – Pokhara | Bookmandu{% endblock %}
+{% block title %}Mountain View Homestay – Pokhara | Pahuna{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/property_details.css') }}">
@@ -1917,7 +1917,7 @@
             </div>
             <div class="bank-details" id="bankDetails" style="display: none;">
                 <p><strong><i class="fas fa-university"></i> Bank:</strong> <span id="bankName">Nepal Investment Bank</span> <button class="copy-btn" onclick="copyBankText('bankName')"><i class="fas fa-copy"></i> Copy</button></p>
-                <p><strong><i class="fas fa-user"></i> Account:</strong> <span id="accountName">Bookmandu Pvt. Ltd.</span> <button class="copy-btn" onclick="copyBankText('accountName')"><i class="fas fa-copy"></i> Copy</button></p>
+                <p><strong><i class="fas fa-user"></i> Account:</strong> <span id="accountName">Pahuna Pvt. Ltd.</span> <button class="copy-btn" onclick="copyBankText('accountName')"><i class="fas fa-copy"></i> Copy</button></p>
                 <p><strong><i class="fas fa-hashtag"></i> Number:</strong> <span id="accountNumber">0578010012345</span> <button class="copy-btn" onclick="copyBankText('accountNumber')"><i class="fas fa-copy"></i> Copy</button></p>
                 <p><strong><i class="fas fa-money-bill-wave"></i> Amount:</strong> <span id="paymentAmount"></span></p>
             </div>
@@ -2121,7 +2121,7 @@ var usedCoupons = [];
 
 function loadUsedCouponsFromStorage() {
     try {
-        var saved = localStorage.getItem('bookmandu_used_coupons');
+        var saved = localStorage.getItem('pahuna_used_coupons');
         if (saved) {
             usedCoupons = JSON.parse(saved);
         } else {
@@ -2134,7 +2134,7 @@ function loadUsedCouponsFromStorage() {
 
 function saveUsedCouponsToStorage() {
     try {
-        localStorage.setItem('bookmandu_used_coupons', JSON.stringify(usedCoupons));
+        localStorage.setItem('pahuna_used_coupons', JSON.stringify(usedCoupons));
     } catch(e) {}
 }
 
@@ -2155,7 +2155,7 @@ loadUsedCouponsFromStorage();
 
 function formatDate(year, month, day) { return year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0'); }
 function isDateBooked(year, month, day) { return bookedDates.indexOf(formatDate(year, month, day)) !== -1; }
-function getQRCodeUrl(amount, method) { return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + method.toUpperCase() + ':PAY:' + amount + ':BOOKMANDU'; }
+function getQRCodeUrl(amount, method) { return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + method.toUpperCase() + ':PAY:' + amount + ':PAHUNA'; }
 function getNights() { if (!selectedCheckIn || !selectedCheckOut) return 0; return Math.ceil(Math.abs(selectedCheckOut - selectedCheckIn) / (1000 * 60 * 60 * 24)); }
 
 function calculatePriceWithDiscount() {
