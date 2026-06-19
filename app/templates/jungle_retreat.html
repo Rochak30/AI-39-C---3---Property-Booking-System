@@ -2794,7 +2794,14 @@ document.getElementById('confirmPaymentBtn').addEventListener('click', function(
 function closeBookingModal() { document.getElementById('bookingModal').classList.remove('active'); }
 function closeSuccessModal() { document.getElementById('successModal').classList.remove('active'); }
 function redirectToBrowse() { window.location.href = "{{ url_for('auth.browse') }}"; }
-function downloadInvoice() { showToast('Downloading invoice...', 'success'); }
+function downloadInvoice() {
+    var ref = document.getElementById('bookingRef').textContent.trim();
+    if (ref) {
+        window.location.href = '/booking/invoice/' + ref;
+    } else {
+        showToast('Booking reference not found. Please refresh and try again.', 'error');
+    }
+}
 function switchLanguage() { showToast('Language switcher coming soon!', 'info'); }
 
 renderCalendar();
