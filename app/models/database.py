@@ -66,18 +66,20 @@ class Database:
                 registered_at TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
             )
         """)
-        # -- FORGOT PASSWORD ─────────────────────────────────────────────────
+
+        # ── PASSWORD RESETS ──────────────────────────────────────────────────
         db.execute("""
-                   CREATE TABLE IF NOT EXISTS password_resets (
-                    id         INT AUTO_INCREMENT PRIMARY KEY,
-                    email      VARCHAR(100) NOT NULL,
-                    code       VARCHAR(6)   NOT NULL,
-                    expires_at DATETIME     NOT NULL,
-                    used       BOOLEAN      NOT NULL DEFAULT FALSE,
-                    created_at DATETIME     DEFAULT CURRENT_TIMESTAMP,
-                    INDEX idx_email (email) 
-                );
-        """)           
+            CREATE TABLE IF NOT EXISTS password_resets (
+                id         INT AUTO_INCREMENT PRIMARY KEY,
+                email      VARCHAR(100) NOT NULL,
+                code       VARCHAR(6)   NOT NULL,
+                expires_at DATETIME     NOT NULL,
+                used       BOOLEAN      NOT NULL DEFAULT FALSE,
+                created_at DATETIME     DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_email (email)
+            )
+        """)
+
         # ── AMENITIES ─────────────────────────────────────────────────────────
         db.execute("""
             CREATE TABLE IF NOT EXISTS amenities (
@@ -87,16 +89,45 @@ class Database:
         """)
 
         # ── PROPERTIES ────────────────────────────────────────────────────────
+        # All columns included – no need for later ALTER TABLE
         db.execute("""
             CREATE TABLE IF NOT EXISTS properties (
-                property_id     INT AUTO_INCREMENT PRIMARY KEY,
-                host_id         INT            NOT NULL,
-                title           VARCHAR(200)   NOT NULL,
-                region          VARCHAR(100)   NOT NULL,
-                type            VARCHAR(50)    NOT NULL,
-                price_per_night DECIMAL(10,2)  NOT NULL,
-                max_guests      INT            NOT NULL DEFAULT 1,
-                status          VARCHAR(20)    NOT NULL DEFAULT 'active',
+                property_id         INT AUTO_INCREMENT PRIMARY KEY,
+                host_id             INT            NOT NULL,
+                title               VARCHAR(200)   NOT NULL,
+                region              VARCHAR(100)   NOT NULL,
+                type                VARCHAR(50)    NOT NULL,
+                price_per_night     DECIMAL(10,2)  NOT NULL,
+                max_guests          INT            NOT NULL DEFAULT 1,
+                status              VARCHAR(20)    NOT NULL DEFAULT 'active',
+                approval_status     VARCHAR(20)    DEFAULT 'pending',
+                description         TEXT,
+                description_2       TEXT,
+                tagline             VARCHAR(255),
+                address             TEXT,
+                checkin_time        TIME,
+                checkout_time       TIME,
+                prepayment_amount   DECIMAL(10,2),
+                free_cancellation_days INT DEFAULT 7,
+                nonrefundable_hours INT DEFAULT 72,
+                breakfast_time      TIME,
+                map_embed_url       TEXT,
+                latitude            DECIMAL(10,8),
+                longitude           DECIMAL(11,8),
+                bedrooms            INT DEFAULT 1,
+                bathrooms           INT DEFAULT 1,
+                amenities           TEXT,
+                highlights          TEXT,
+                inclusions          TEXT,
+                rules               TEXT,
+                additional_rules    TEXT,
+                images              TEXT,
+                host_bio            TEXT,
+                host_languages      VARCHAR(100),
+                years_hosting       INT,
+                response_rate       INT,
+                response_time       VARCHAR(50),
+                host_avatar         VARCHAR(255),
                 CONSTRAINT fk_property_host
                     FOREIGN KEY (host_id) REFERENCES users(user_id)
                     ON DELETE CASCADE ON UPDATE CASCADE
@@ -104,10 +135,6 @@ class Database:
         """)
 
         # ── HOST_PROFILES ─────────────────────────────────────────────────────
-        # Stores host-specific verification details collected at registration.
-        # user_id is UNIQUE — one profile per host.
-        # verified starts FALSE; admin manually flips it after review.
-        # host profiles, to be made locally, for no errors with sql
         db.execute("""
             CREATE TABLE IF NOT EXISTS host_profiles (
                 host_profile_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -216,13 +243,16 @@ class Database:
         """)
 
         # ── SUPPORT_QUERIES ───────────────────────────────────────────────────
+        # Added `message` column (was missing, but used in `auth.contact`)
         db.execute("""
             CREATE TABLE IF NOT EXISTS support_queries (
-                query_id INT AUTO_INCREMENT PRIMARY KEY,
-                name     VARCHAR(100) NOT NULL,
-                email    VARCHAR(100) NOT NULL,
-                subject  VARCHAR(200) NOT NULL,
-                status   VARCHAR(20)  NOT NULL DEFAULT 'open'
+                query_id   INT AUTO_INCREMENT PRIMARY KEY,
+                name       VARCHAR(100) NOT NULL,
+                email      VARCHAR(100) NOT NULL,
+                subject    VARCHAR(200) NOT NULL,
+                message    TEXT,
+                status     VARCHAR(20)  NOT NULL DEFAULT 'open',
+                created_at DATETIME     DEFAULT CURRENT_TIMESTAMP
             )
         """)
 

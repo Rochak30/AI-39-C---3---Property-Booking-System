@@ -12,11 +12,19 @@ from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 from app.controllers.basecontroller import BaseController
 from app.models.usermodel import User
 from app.models.database import Database
-from app.services.email_service import send_reset_code, send_booking_confirmation
+from app.services.email_service import (
+    send_reset_code,
+    send_booking_confirmation,
+    send_property_approval_email,
+    send_property_rejection_email
+)
 from app.auth import role_required
 import random
 import string
+import json
+import os
 from datetime import datetime, timedelta
+from werkzeug.utils import secure_filename
 
 
 class AuthController(BaseController):
@@ -295,31 +303,108 @@ class AuthController(BaseController):
         flash("Host rejected and downgraded to guest.", "warning")
         return redirect(url_for("auth.admin_dashboard"))
 
+    # ── Admin property actions (with email notifications) ──────
+
     def approve_property(self):
         if session.get("role") != "admin":
             return redirect(url_for("auth.admin_dashboard"))
+
         property_id = request.form.get("property_id")
         db = Database()
+
+        # Fetch property details including host email
+        prop = db.fetch_one("""
+            SELECT p.*, u.email AS host_email, u.name AS host_name
+            FROM properties p
+            JOIN users u ON u.user_id = p.host_id
+            WHERE p.property_id = %s
+        """, (property_id,))
+
+        if not prop:
+            db.close()
+            flash("Property not found.", "danger")
+            return redirect(url_for("auth.admin_dashboard"))
+
+        # Update status – ONLY set approval_status, NOT status
+        # This keeps the property hidden from browse (status='inactive')
         db.execute(
             "UPDATE properties SET approval_status='approved' WHERE property_id=%s",
             (property_id,)
         )
         db.close()
-        flash("Property approved.", "success")
+
+        # Send email to host
+        send_property_approval_email(
+            host_email=prop["host_email"],
+            host_name=prop["host_name"],
+            property_title=prop["title"]
+        )
+
+        flash("Property approved and host notified.", "success")
         return redirect(url_for("auth.admin_dashboard"))
 
     def reject_property(self):
         if session.get("role") != "admin":
             return redirect(url_for("auth.admin_dashboard"))
+
         property_id = request.form.get("property_id")
         db = Database()
+
+        # Fetch property details including host email
+        prop = db.fetch_one("""
+            SELECT p.*, u.email AS host_email, u.name AS host_name
+            FROM properties p
+            JOIN users u ON u.user_id = p.host_id
+            WHERE p.property_id = %s
+        """, (property_id,))
+
+        if not prop:
+            db.close()
+            flash("Property not found.", "danger")
+            return redirect(url_for("auth.admin_dashboard"))
+
+        # Update status
         db.execute(
             "UPDATE properties SET approval_status='rejected' WHERE property_id=%s",
             (property_id,)
         )
         db.close()
-        flash("Property rejected.", "warning")
+
+        # Send email to host
+        send_property_rejection_email(
+            host_email=prop["host_email"],
+            host_name=prop["host_name"],
+            property_title=prop["title"]
+        )
+
+        flash("Property rejected and host notified.", "warning")
         return redirect(url_for("auth.admin_dashboard"))
+
+    # ── Admin AJAX property details for modal ──────────────────
+
+    def admin_property_details(self, property_id):
+        """Return JSON with full property details for admin modal."""
+        if session.get("role") != "admin":
+            return jsonify({"error": "Unauthorized"}), 403
+
+        db = Database()
+        prop = db.fetch_one("""
+            SELECT p.*, u.name AS host_name
+            FROM properties p
+            JOIN users u ON u.user_id = p.host_id
+            WHERE p.property_id = %s
+        """, (property_id,))
+        db.close()
+
+        if not prop:
+            return jsonify({"error": "Not found"}), 404
+
+        # Convert time objects to strings for JSON
+        for key in ['checkin_time', 'checkout_time', 'breakfast_time']:
+            if prop.get(key):
+                prop[key] = str(prop[key])
+
+        return jsonify(prop)
 
     def delete_user(self):
         if session.get("role") != "admin":
@@ -754,7 +839,7 @@ class AuthController(BaseController):
     # ────────────────────────────────────────────────────────────
 
     def confirm_booking(self):
-        """Host confirms a pending booking."""
+        """Host confirms a pending booking and sends email to guest."""
         if not self.is_logged_in() or session.get("role") != "host":
             return jsonify({"error": "Unauthorized"}), 401
 
@@ -766,12 +851,18 @@ class AuthController(BaseController):
             return jsonify({"error": "Missing booking_id"}), 400
 
         db = Database()
+
+        # Fetch booking details including guest and property info
         booking = db.fetch_one(
-            """SELECT b.status FROM bookings b
-               JOIN properties p ON b.property_id = p.property_id
+            """SELECT b.*, u.email AS guest_email, u.name AS guest_name,
+                      p.title AS property_title
+               FROM bookings b
+               JOIN users u ON u.user_id = b.guest_id
+               JOIN properties p ON p.property_id = b.property_id
                WHERE b.booking_id=%s AND p.host_id=%s""",
             (booking_id, host_id)
         )
+
         if not booking:
             db.close()
             return jsonify({"error": "Booking not found or you are not the host."}), 404
@@ -779,9 +870,29 @@ class AuthController(BaseController):
             db.close()
             return jsonify({"error": "Only pending bookings can be confirmed."}), 400
 
+        # Update status to confirmed
         db.execute("UPDATE bookings SET status='confirmed' WHERE booking_id=%s", (booking_id,))
         db.close()
-        return jsonify({"success": True, "message": "Booking confirmed."})
+
+        # Send confirmation email to guest (fail silently if email fails – booking already confirmed)
+        try:
+            send_booking_confirmation(
+                guest_email=booking["guest_email"],
+                guest_name=booking["guest_name"],
+                property_title=booking["property_title"],
+                checkin_date=booking["checkin_date"].strftime("%B %d, %Y"),
+                checkout_date=booking["checkout_date"].strftime("%B %d, %Y"),
+                total_amount=float(booking["total_amount"]),
+                booking_ref=booking["booking_id"]
+            )
+        except Exception as e:
+            # Log the error but don't break the response
+            print(f"Booking confirmation email failed: {e}")
+
+        return jsonify({
+            "success": True,
+            "message": "Booking confirmed and email sent to guest."
+        })
 
     def reject_booking(self):
         """Host rejects a pending booking (cancels it)."""
@@ -812,7 +923,11 @@ class AuthController(BaseController):
         db.execute("UPDATE bookings SET status='cancelled' WHERE booking_id=%s", (booking_id,))
         db.close()
         return jsonify({"success": True, "message": "Booking rejected and cancelled."})
-    
+
+    # ────────────────────────────────────────────────────────────
+    # DOWNLOAD INVOICE
+    # ────────────────────────────────────────────────────────────
+
     def download_invoice(self, booking_ref):
         """
         Generate a PDF invoice for a given booking.
@@ -917,65 +1032,7 @@ class AuthController(BaseController):
             download_name=f"invoice_{booking_ref}.pdf",
             mimetype="application/pdf"
         )
-        # ────────────────────────────────────────────────────────────
-    # NEW: Confirm and Reject booking (host actions)
-    # ────────────────────────────────────────────────────────────
 
-    def confirm_booking(self):
-        """Host confirms a pending booking and sends email to guest."""
-        if not self.is_logged_in() or session.get("role") != "host":
-            return jsonify({"error": "Unauthorized"}), 401
-
-        data = request.get_json(silent=True) or {}
-        booking_id = data.get("booking_id")
-        host_id = session["user_id"]
-
-        if not booking_id:
-            return jsonify({"error": "Missing booking_id"}), 400
-
-        db = Database()
-
-        # Fetch booking details including guest and property info
-        booking = db.fetch_one(
-            """SELECT b.*, u.email AS guest_email, u.name AS guest_name,
-                      p.title AS property_title
-               FROM bookings b
-               JOIN users u ON u.user_id = b.guest_id
-               JOIN properties p ON p.property_id = b.property_id
-               WHERE b.booking_id=%s AND p.host_id=%s""",
-            (booking_id, host_id)
-        )
-
-        if not booking:
-            db.close()
-            return jsonify({"error": "Booking not found or you are not the host."}), 404
-        if booking["status"] != "pending":
-            db.close()
-            return jsonify({"error": "Only pending bookings can be confirmed."}), 400
-
-        # Update status to confirmed
-        db.execute("UPDATE bookings SET status='confirmed' WHERE booking_id=%s", (booking_id,))
-        db.close()
-
-        # Send confirmation email to guest (fail silently if email fails – booking already confirmed)
-        try:
-            send_booking_confirmation(
-                guest_email=booking["guest_email"],
-                guest_name=booking["guest_name"],
-                property_title=booking["property_title"],
-                checkin_date=booking["checkin_date"].strftime("%B %d, %Y"),
-                checkout_date=booking["checkout_date"].strftime("%B %d, %Y"),
-                total_amount=float(booking["total_amount"]),
-                booking_ref=booking["booking_id"]
-            )
-        except Exception as e:
-            # Log the error but don't break the response
-            print(f"Booking confirmation email failed: {e}")
-
-        return jsonify({
-            "success": True,
-            "message": "Booking confirmed and email sent to guest."
-        })
     # ────────────────────────────────────────────────────────────
     # GUEST DASHBOARD
     # ────────────────────────────────────────────────────────────
@@ -1139,7 +1196,7 @@ class AuthController(BaseController):
         return render_template("contact.html")
 
     # ════════════════════════════════════════════════════════════
-    # ADD PROPERTY — fixed column names to match actual schema
+    # ADD PROPERTY — Simplified version (only stores essential fields)
     # ════════════════════════════════════════════════════════════
 
     def add_property(self):
@@ -1151,7 +1208,7 @@ class AuthController(BaseController):
             flash("Only hosts can add properties.", "warning")
             return redirect(url_for("auth.browse"))
 
-        # Gate: unverified hosts cannot submit properties
+        # Gate: unverified hosts cannot submit
         db = Database()
         host_profile = db.fetch_one(
             "SELECT verified FROM host_profiles WHERE user_id=%s",
@@ -1159,40 +1216,59 @@ class AuthController(BaseController):
         )
         db.close()
         if not host_profile or not host_profile["verified"]:
-            flash(
-                "Your host account is still pending admin approval. "
-                "You'll be able to add properties once approved.",
-                "warning"
-            )
+            flash("Your host account is still pending admin approval.", "warning")
             return redirect(url_for("auth.host_dashboard"))
 
         if request.method == "POST":
-            title           = request.form.get("property_name", "").strip()
-            prop_type       = request.form.get("property_type", "").strip()
-            region          = request.form.get("region", "").strip()
-            price_per_night = request.form.get("price_per_night", 0)
-            max_guests      = request.form.get("max_guests", 1)
+            # --- Basic required fields ---
+            title = request.form.get("property_name", "").strip()
+            prop_type = request.form.get("property_type", "").strip()
+            region = request.form.get("region", "").strip()
+            price = request.form.get("price_per_night", 0)
+            max_guests = request.form.get("max_guests", 2)
 
-            if not title or not prop_type or not region or not price_per_night:
+            if not title or not prop_type or not region or not price:
                 flash("All required fields must be filled.", "danger")
                 return render_template("add_property.html")
 
-            try:
-                db = Database()
-                db.execute("""
-                    INSERT INTO properties
-                      (host_id, title, region, type, price_per_night, max_guests, status, approval_status)
-                    VALUES (%s, %s, %s, %s, %s, %s, 'active', 'pending')
-                """, (
-                    session.get("user_id"), title, region, prop_type,
-                    price_per_night, max_guests
-                ))
-                db.close()
-                flash("Property submitted for approval!", "success")
-                return redirect(url_for("auth.host_dashboard"))
-            except Exception as e:
-                flash(f"Error adding property: {str(e)}", "danger")
+            # --- Image uploads (saved to disk, but not stored in DB yet) ---
+            images = request.files.getlist("images")
+            if len(images) < 6:
+                flash("Please upload at least 6 images.", "danger")
                 return render_template("add_property.html")
+
+            import os
+            from werkzeug.utils import secure_filename
+            from datetime import datetime
+
+            upload_dir = os.path.join("static", "uploads", "properties")
+            os.makedirs(upload_dir, exist_ok=True)
+
+            for idx, img in enumerate(images):
+                if img.filename:
+                    filename = secure_filename(f"{session['user_id']}_{int(datetime.now().timestamp())}_{idx}_{img.filename}")
+                    path = os.path.join(upload_dir, filename)
+                    img.save(path)
+
+            # --- Insert only the columns that exist in your current table ---
+            db = Database()
+            property_id = db.execute_get_id("""
+                INSERT INTO properties (
+                    host_id, title, region, type, price_per_night, max_guests,
+                    status, approval_status
+                ) VALUES (%s, %s, %s, %s, %s, %s, 'inactive', 'pending')
+            """, (
+                session["user_id"],
+                title,
+                region,
+                prop_type,
+                price,
+                max_guests
+            ))
+            db.close()
+
+            flash("Your property has been submitted for admin review. You'll be notified when it's approved.", "success")
+            return redirect(url_for("auth.host_dashboard"))
 
         return render_template("add_property.html")
 
@@ -1312,7 +1388,7 @@ class AuthController(BaseController):
 
         db = Database()
 
-        # # Optional booking check (uncomment if needed)
+        # Optional booking check (commented out for now – you can enable if needed)
         # booking = db.fetch_one(
         #     "SELECT 1 FROM bookings WHERE guest_id=%s AND property_id=%s AND status='completed'",
         #     (guest_id, property_id)
@@ -1321,7 +1397,6 @@ class AuthController(BaseController):
         #     db.close()
         #     return jsonify({"error": "You must have a completed stay to review this property."}), 400
 
-        # # ✅ Use execute_get_id directly for the INSERT
         review_id = db.execute_get_id(
             """INSERT INTO reviews (booking_id, guest_id, property_id, rating, comment, created_at)
                VALUES (NULL, %s, %s, %s, %s, NOW())""",
@@ -1353,34 +1428,10 @@ class AuthController(BaseController):
         )
         db.close()
         return jsonify(reviews)
-# ════════════════════════════════════════════════════════════════
-# CONTACT — saves to DB
-# ════════════════════════════════════════════════════════════════
 
-    def contact(self):
-        if request.method == "POST":
-            name    = request.form.get("name", "").strip()
-            email   = request.form.get("email", "").strip()
-            subject = request.form.get("subject", "").strip()
-            message = request.form.get("message", "").strip()
-
-            if not name or not email or not subject or not message:
-                flash("All fields are required.", "danger")
-                return render_template("contact.html")
-
-            db = Database()
-            db.execute(
-                "INSERT INTO support_queries (name, email, subject, message, status) VALUES (%s,%s,%s,%s,'open')",
-                (name, email, subject, message)
-            )
-            db.close()
-            flash("Your message has been sent. We'll get back to you soon!", "success")
-            return redirect(url_for("auth.contact"))
-
-        return render_template("contact.html")
-    # ════════════════════════════════════════════════════════════
+    # ────────────────────────────────────────────────────────────
     # STATIC PAGES
-    # ════════════════════════════════════════════════════════════
+    # ────────────────────────────────────────────────────────────
 
     def home(self):
         return render_template("home.html")
@@ -1398,9 +1449,6 @@ class AuthController(BaseController):
         return render_template("product_form.html")
 
     # Property detail pages — kept as static templates for now.
-    # When your teammate's add-property feature is done, replace with one
-    # dynamic route: /property/<int:property_id>
-
     def property_mountain_view(self):
         return render_template("mountain_view.html")
 
