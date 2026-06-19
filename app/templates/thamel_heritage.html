@@ -2131,6 +2131,8 @@
 // ============================================
 // FULL JAVASCRIPT CODE - WITH ENHANCED FEATURES
 // ============================================
+const PROPERTY_ID = 2;  // Thamel Heritage House
+
 // ============================================
 // ADD REVIEW FUNCTIONALITY
 // ============================================
@@ -2254,6 +2256,7 @@ document.getElementById('submitReviewBtn').addEventListener('click', function() 
        
     }, 1500);
 });
+
 // All gallery images for the "View all images" feature
 var galleryAllImages = [
     '{{ url_for("static", filename="images/th1.jpg") }}',
@@ -2755,24 +2758,63 @@ document.getElementById('proceedPaymentBtn').addEventListener('click', function(
     }, 2000);
 });
 
+// ---- REAL BOOKING CREATION ----
 document.getElementById('confirmPaymentBtn').addEventListener('click', function() {
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    var bookingReference = '';
-    for (var i = 0; i < 10; i++) bookingReference += chars.charAt(Math.floor(Math.random() * chars.length));
-    var calc = calculatePriceWithDiscount();
-    var options = { year: 'numeric', month: 'short', day: 'numeric' };
-    document.getElementById('bookingRef').innerHTML = 'TH-' + bookingReference;
-    document.getElementById('successDetails').innerHTML = '<p><strong>Property:</strong> Thamel Heritage House</p><p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p><p><strong>Guests:</strong> ' + document.getElementById('guests').value + '</p><p><strong>Total Paid:</strong> NPR ' + calc.total.toLocaleString() + '</p>';
-    document.getElementById('bookingModal').classList.remove('active');
-    document.getElementById('successModal').classList.add('active');
-    selectedCheckIn = null;
-    selectedCheckOut = null;
-    appliedCoupon = null;
-    document.getElementById('couponCode').value = '';
-    document.getElementById('discountMessage').style.display = 'none';
-    calculatePriceWithDiscount();
-    updateBookingSummary();
-    renderCalendar();
+    const checkin_date  = selectedCheckIn.toISOString().split('T')[0];
+    const checkout_date = selectedCheckOut.toISOString().split('T')[0];
+    const guests_count  = document.getElementById('guests').value;
+    const coupon_code   = appliedCoupon || '';
+
+    const btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
+
+    fetch('/booking/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            property_id: PROPERTY_ID,
+            checkin_date: checkin_date,
+            checkout_date: checkout_date,
+            guests_count: guests_count,
+            coupon_code: coupon_code
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm Payment <i class="fas fa-check"></i>';
+
+        if (!data.success) {
+            showToast(data.error || 'Booking failed.', 'error');
+            return;
+        }
+
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('bookingRef').innerHTML = data.booking_id;
+        document.getElementById('successDetails').innerHTML =
+            '<p><strong>Property:</strong> ' + data.property_title + '</p>' +
+            '<p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p>' +
+            '<p><strong>Guests:</strong> ' + guests_count + '</p>' +
+            '<p><strong>Total Paid:</strong> NPR ' + data.total.toLocaleString() + '</p>';
+
+        document.getElementById('bookingModal').classList.remove('active');
+        document.getElementById('successModal').classList.add('active');
+
+        selectedCheckIn = null;
+        selectedCheckOut = null;
+        appliedCoupon = null;
+        document.getElementById('couponCode').value = '';
+        document.getElementById('discountMessage').style.display = 'none';
+        calculatePriceWithDiscount();
+        updateBookingSummary();
+        renderCalendar();
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm Payment <i class="fas fa-check"></i>';
+        showToast('Network error. Please try again.', 'error');
+    });
 });
 
 function closeBookingModal() { document.getElementById('bookingModal').classList.remove('active'); }

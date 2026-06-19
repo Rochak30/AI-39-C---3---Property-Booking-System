@@ -9,12 +9,10 @@
     .amenities-section h3 i {
         color: #ffffff !important;
     }  
-   
     /* Where you'll stay - Change bed icon to white */
     .where-stay-section h3 i {
         color: #ffffff !important;
     }
-   
     /* Package section icon to white */
     .package-section h3 {
         color: #ffffff !important;
@@ -22,12 +20,10 @@
     .package-section h3 i {
         color: #ffffff !important;
     }
-   
     /* Rules section icon to white */
     .rules-section h3 i {
         color: #ffffff !important;
     }
-   
     /* ========== COMPACT DESIGN OVERRIDES ========== */
    
     /* FIXED: Remove left-side independent scrolling - use normal page scroll */
@@ -2138,7 +2134,7 @@
 // ============================================
 // ADD REVIEW FUNCTIONALITY
 // ============================================
-
+const PROPERTY_ID = 6; // Lakeside Comfort Inn — matches properties.property_id in DB
 // Star rating selection
 var ratingInputs = document.querySelectorAll('.rating-input input');
 var ratingDisplay = document.getElementById('ratingDisplay');
@@ -2298,42 +2294,6 @@ var availableCoupons = {
     'FLAT500': { discount: 500, type: 'fixed', message: 'NPR 500 off!', description: 'NPR 500 discount applied' }
 };
 
-// Persistent coupon tracking
-var usedCoupons = [];
-
-function loadUsedCouponsFromStorage() {
-    try {
-        var saved = localStorage.getItem('bookmandu_used_coupons');
-        if (saved) {
-            usedCoupons = JSON.parse(saved);
-        } else {
-            usedCoupons = [];
-        }
-    } catch(e) {
-        usedCoupons = [];
-    }
-}
-
-function saveUsedCouponsToStorage() {
-    try {
-        localStorage.setItem('bookmandu_used_coupons', JSON.stringify(usedCoupons));
-    } catch(e) {}
-}
-
-function isCouponAlreadyUsed(couponCode) {
-    return usedCoupons.includes(couponCode);
-}
-
-function markCouponAsUsed(couponCode) {
-    if (!usedCoupons.includes(couponCode)) {
-        usedCoupons.push(couponCode);
-        saveUsedCouponsToStorage();
-        return true;
-    }
-    return false;
-}
-
-loadUsedCouponsFromStorage();
 
 function formatDate(year, month, day) { return year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0'); }
 function isDateBooked(year, month, day) { return bookedDates.indexOf(formatDate(year, month, day)) !== -1; }
@@ -2442,16 +2402,6 @@ function applyCoupon() {
         return;
     }
    
-    if (isCouponAlreadyUsed(couponCode)) {
-        msgDiv.innerHTML = '<i class="fas fa-ban"></i> ❌ This coupon has already been used!';
-        msgDiv.className = 'discount-applied error';
-        msgDiv.style.display = 'flex';
-        appliedCoupon = null;
-        calculatePriceWithDiscount();
-        updateBookingSummary();
-        setTimeout(function() { msgDiv.style.display = 'none'; }, 4000);
-        return;
-    }
    
     var nights = getNights();
     if (nights === 0) {
@@ -2471,7 +2421,7 @@ function applyCoupon() {
     }
    
     appliedCoupon = couponCode;
-    markCouponAsUsed(couponCode);
+
    
     msgDiv.innerHTML = '<i class="fas fa-check-circle"></i> ✅ ' + coupon.message + ' Applied!';
     msgDiv.className = 'discount-applied success';
@@ -2761,23 +2711,61 @@ document.getElementById('proceedPaymentBtn').addEventListener('click', function(
 });
 
 document.getElementById('confirmPaymentBtn').addEventListener('click', function() {
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    var bookingReference = '';
-    for (var i = 0; i < 10; i++) bookingReference += chars.charAt(Math.floor(Math.random() * chars.length));
-    var calc = calculatePriceWithDiscount();
-    var options = { year: 'numeric', month: 'short', day: 'numeric' };
-    document.getElementById('bookingRef').innerHTML = 'LC-' + bookingReference;
-    document.getElementById('successDetails').innerHTML = '<p><strong>Property:</strong> Lakeside Comfort Inn</p><p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p><p><strong>Guests:</strong> ' + document.getElementById('guests').value + '</p><p><strong>Total Paid:</strong> NPR ' + calc.total.toLocaleString() + '</p>';
-    document.getElementById('bookingModal').classList.remove('active');
-    document.getElementById('successModal').classList.add('active');
-    selectedCheckIn = null;
-    selectedCheckOut = null;
-    appliedCoupon = null;
-    document.getElementById('couponCode').value = '';
-    document.getElementById('discountMessage').style.display = 'none';
-    calculatePriceWithDiscount();
-    updateBookingSummary();
-    renderCalendar();
+    const checkin_date  = selectedCheckIn.toISOString().split('T')[0];
+    const checkout_date = selectedCheckOut.toISOString().split('T')[0];
+    const guests_count  = document.getElementById('guests').value;
+    const coupon_code   = appliedCoupon || '';
+
+    const btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
+
+    fetch('/booking/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            property_id: PROPERTY_ID,
+            checkin_date: checkin_date,
+            checkout_date: checkout_date,
+            guests_count: guests_count,
+            coupon_code: coupon_code
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm Payment <i class="fas fa-check"></i>';
+
+        if (!data.success) {
+            showToast(data.error || 'Booking failed.', 'error');
+            return;
+        }
+
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('bookingRef').innerHTML = data.booking_id;
+        document.getElementById('successDetails').innerHTML =
+            '<p><strong>Property:</strong> ' + data.property_title + '</p>' +
+            '<p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p>' +
+            '<p><strong>Guests:</strong> ' + guests_count + '</p>' +
+            '<p><strong>Total Paid:</strong> NPR ' + data.total.toLocaleString() + '</p>';
+
+        document.getElementById('bookingModal').classList.remove('active');
+        document.getElementById('successModal').classList.add('active');
+
+        selectedCheckIn = null;
+        selectedCheckOut = null;
+        appliedCoupon = null;
+        document.getElementById('couponCode').value = '';
+        document.getElementById('discountMessage').style.display = 'none';
+        calculatePriceWithDiscount();
+        updateBookingSummary();
+        renderCalendar();
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm Payment <i class="fas fa-check"></i>';
+        showToast('Network error. Please try again.', 'error');
+    });
 });
 
 function closeBookingModal() { document.getElementById('bookingModal').classList.remove('active'); }

@@ -9,12 +9,10 @@
     .amenities-section h3 i {
         color: #ffffff !important;
     }  
-   
     /* Where you'll stay - Change bed icon to white */
     .where-stay-section h3 i {
         color: #ffffff !important;
     }
-   
     /* Package section icon to white */
     .package-section h3 {
         color: #ffffff !important;
@@ -27,9 +25,7 @@
     .rules-section h3 i {
         color: #ffffff !important;
     }
-   
     /* ========== COMPACT DESIGN OVERRIDES ========== */
-   
     /* FIXED: Remove left-side independent scrolling - use normal page scroll */
     .property-main {
         max-height: none;
@@ -41,12 +37,10 @@
     .property-main::-webkit-scrollbar {
         display: none;
     }
-   
     .hero-section {
         height: 45vh;
         min-height: 380px;
     }
-   
     .hero-title {
         font-size: 38px;
         margin-bottom: 12px;
@@ -55,28 +49,23 @@
     .hero-overlay-content {
         padding: 30px 40px;
     }
-   
     .hero-meta {
         gap: 16px;
         margin-bottom: 16px;
         font-size: 14px;
     }
-   
     .hero-price-badge {
         font-size: 26px;
         margin-bottom: 16px;
     }
-   
     .btn-hero {
         padding: 10px 28px;
         font-size: 14px;
     }
-   
     .property-layout {
         gap: 32px;
         padding: 32px 24px;
     }
-   
     .gallery-section {
         margin-bottom: 28px;
     }
@@ -2137,6 +2126,8 @@
 // ============================================
 // FULL JAVASCRIPT CODE - WITH ENHANCED FEATURES
 // ============================================
+const PROPERTY_ID = 3;  // Jungle Retreat Chitwan
+
 // ============================================
 // ADD REVIEW FUNCTIONALITY
 // ============================================
@@ -2260,6 +2251,7 @@ document.getElementById('submitReviewBtn').addEventListener('click', function() 
        
     }, 1500);
 });
+
 // All gallery images for the "View all images" feature - USING jr1.jpg to jr6.jpg
 var galleryAllImages = [
     '{{ url_for("static", filename="images/jr1.jpg") }}',
@@ -2762,24 +2754,63 @@ document.getElementById('proceedPaymentBtn').addEventListener('click', function(
     }, 2000);
 });
 
+// ---- REAL BOOKING CREATION ----
 document.getElementById('confirmPaymentBtn').addEventListener('click', function() {
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    var bookingReference = '';
-    for (var i = 0; i < 10; i++) bookingReference += chars.charAt(Math.floor(Math.random() * chars.length));
-    var calc = calculatePriceWithDiscount();
-    var options = { year: 'numeric', month: 'short', day: 'numeric' };
-    document.getElementById('bookingRef').innerHTML = 'JR-' + bookingReference;
-    document.getElementById('successDetails').innerHTML = '<p><strong>Property:</strong> Jungle Retreat Chitwan</p><p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p><p><strong>Guests:</strong> ' + document.getElementById('guests').value + '</p><p><strong>Total Paid:</strong> NPR ' + calc.total.toLocaleString() + '</p>';
-    document.getElementById('bookingModal').classList.remove('active');
-    document.getElementById('successModal').classList.add('active');
-    selectedCheckIn = null;
-    selectedCheckOut = null;
-    appliedCoupon = null;
-    document.getElementById('couponCode').value = '';
-    document.getElementById('discountMessage').style.display = 'none';
-    calculatePriceWithDiscount();
-    updateBookingSummary();
-    renderCalendar();
+    const checkin_date  = selectedCheckIn.toISOString().split('T')[0];
+    const checkout_date = selectedCheckOut.toISOString().split('T')[0];
+    const guests_count  = document.getElementById('guests').value;
+    const coupon_code   = appliedCoupon || '';
+
+    const btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
+
+    fetch('/booking/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            property_id: PROPERTY_ID,
+            checkin_date: checkin_date,
+            checkout_date: checkout_date,
+            guests_count: guests_count,
+            coupon_code: coupon_code
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm Payment <i class="fas fa-check"></i>';
+
+        if (!data.success) {
+            showToast(data.error || 'Booking failed.', 'error');
+            return;
+        }
+
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('bookingRef').innerHTML = data.booking_id;
+        document.getElementById('successDetails').innerHTML =
+            '<p><strong>Property:</strong> ' + data.property_title + '</p>' +
+            '<p><strong>Dates:</strong> ' + selectedCheckIn.toLocaleDateString('en-US', options) + ' → ' + selectedCheckOut.toLocaleDateString('en-US', options) + '</p>' +
+            '<p><strong>Guests:</strong> ' + guests_count + '</p>' +
+            '<p><strong>Total Paid:</strong> NPR ' + data.total.toLocaleString() + '</p>';
+
+        document.getElementById('bookingModal').classList.remove('active');
+        document.getElementById('successModal').classList.add('active');
+
+        selectedCheckIn = null;
+        selectedCheckOut = null;
+        appliedCoupon = null;
+        document.getElementById('couponCode').value = '';
+        document.getElementById('discountMessage').style.display = 'none';
+        calculatePriceWithDiscount();
+        updateBookingSummary();
+        renderCalendar();
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm Payment <i class="fas fa-check"></i>';
+        showToast('Network error. Please try again.', 'error');
+    });
 });
 
 function closeBookingModal() { document.getElementById('bookingModal').classList.remove('active'); }

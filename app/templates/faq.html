@@ -3,25 +3,18 @@
 
 {% block extra_css %}
 <style>
-/* ============================================================
-   FAQ PAGE STYLES
-   Purpose: Styling for the Frequently Asked Questions page
-   ============================================================ */
-
-/* ── Page Container ── */
 .faq-page { 
   max-width: 900px; 
   margin: 0 auto; 
-  padding: 100px 24px 60px; /* Top padding accounts for fixed navbar */
+  padding: 100px 24px 60px; 
 }
 
-/* ── Section Header Enhancement ── */
+/* Section Header Enhancement */
 .faq-header { 
   text-align: center; 
   margin-bottom: 48px; 
 }
 
-/* Small label above main heading */
 .faq-header .section-label {
   display: inline-block;
   padding: 6px 16px;
@@ -36,7 +29,6 @@
   margin-bottom: 16px;
 }
 
-/* Main heading with gradient text */
 .faq-header .section-title {
   font-family: var(--font-display);
   font-size: 42px;
@@ -48,7 +40,6 @@
   margin-bottom: 16px;
 }
 
-/* Subtitle text */
 .faq-header .section-sub {
   color: var(--text-secondary);
   font-size: 16px;
@@ -56,7 +47,7 @@
   margin: 0 auto;
 }
 
-/* ── Search Bar Enhancement ── */
+/* Search Bar Enhancement */
 .faq-search {
   display: flex;
   align-items: center;
@@ -72,14 +63,12 @@
   transition: all 0.3s ease;
 }
 
-/* Focus state - teal glow and lift effect */
 .faq-search:focus-within { 
   border-color: var(--teal); 
   box-shadow: 0 0 0 4px var(--teal-glow);
   transform: translateY(-2px);
 }
 
-/* Search icon scaling on focus */
 .faq-search span { 
   font-size: 20px; 
   transition: transform 0.3s ease;
@@ -89,7 +78,6 @@
   transform: scale(1.1);
 }
 
-/* Search input styling */
 .faq-search input { 
   background: none; 
   border: none; 
@@ -104,10 +92,10 @@
   font-size: 14px;
 }
 
-/* ── Category Section ── */
+/* Category Section */
 .faq-category { 
   margin-bottom: 48px; 
-  animation: fadeInUp 0.5s ease; /* Entrance animation */
+  animation: fadeInUp 0.5s ease;
 }
 
 @keyframes fadeInUp {
@@ -121,7 +109,6 @@
   }
 }
 
-/* Category title with teal accent */
 .faq-category-title {
   font-family: var(--font-display);
   font-size: 20px;
@@ -136,7 +123,6 @@
   position: relative;
 }
 
-/* Decorative underline gradient */
 .faq-category-title::after {
   content: '';
   position: absolute;
@@ -151,7 +137,7 @@
   font-size: 24px;
 }
 
-/* ── FAQ Items ── */
+/* FAQ Items */
 .faq-item {
   background: linear-gradient(135deg, var(--surface), var(--bg-700));
   border: 1px solid var(--border);
@@ -162,14 +148,12 @@
   cursor: pointer;
 }
 
-/* Hover effect - slide right and border highlight */
 .faq-item:hover {
   border-color: var(--border-teal);
   transform: translateX(6px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Question header */
 .faq-question {
   display: flex;
   align-items: center;
@@ -182,12 +166,10 @@
   transition: all 0.3s ease;
 }
 
-/* Question text turns teal on hover */
 .faq-item:hover .faq-question {
   color: var(--teal);
 }
 
-/* Chevron icon - rotates when open */
 .faq-chevron { 
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
   font-size: 18px; 
@@ -201,26 +183,22 @@
   background: var(--bg-600);
 }
 
-/* Chevron rotates 180deg and turns teal when open */
 .faq-item.open .faq-chevron { 
   transform: rotate(180deg);
   background: var(--teal);
   color: #051209;
 }
 
-/* Answer container - hidden by default (max-height: 0) */
 .faq-answer { 
   max-height: 0; 
   overflow: hidden; 
   transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
 }
 
-/* Expand to show answer when open */
 .faq-item.open .faq-answer { 
   max-height: 300px; 
 }
 
-/* Answer inner content */
 .faq-answer-inner { 
   padding: 0 24px 20px 24px; 
   font-size: 14px; 
@@ -231,7 +209,7 @@
   padding-top: 16px;
 }
 
-/* ── No Results Message ── */
+/* No Results Message */
 .no-results {
   text-align: center;
   padding: 60px 20px;
@@ -251,7 +229,7 @@
   font-size: 16px;
 }
 
-/* ── Footer Styles ── */
+/* Footer Styles */
 .footer {
   background: var(--bg-800);
   border-top: 1px solid var(--border);
@@ -305,7 +283,6 @@
 }
 .lang-btn:hover, .currency-btn:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
 
-/* ── Responsive: Footer ── */
 @media (max-width: 992px) {
   .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
   .footer-brand { grid-column: span 2; max-width: 100%; }
@@ -324,47 +301,26 @@
 {% endblock %}
 
 {% block content %}
-<!-- ============================================================
-     FAQ PAGE
-     
-     Purpose: Frequently Asked Questions page for user support
-     
-     Features:
-     - Search functionality to filter questions
-     - Expandable/collapsible FAQ items
-     - Categorized questions (Booking, Payments, Hosting, Account)
-     - Animated transitions for smooth UX
-     - No results message when search returns nothing
-     ============================================================ -->
 <div class="faq-page">
-  
-  <!-- ── FAQ Header ── -->
   <div class="faq-header">
     <div class="section-label">Help Centre</div>
     <h1 class="section-title">Frequently Asked Questions</h1>
     <p class="section-sub">Find answers to common questions about Pahuna</p>
   </div>
 
-  <!-- ── Search Bar ── -->
   <div class="faq-search">
     <span>🔍</span>
     <input type="text" placeholder="Search frequently asked questions..." id="faq-search-input" oninput="searchFAQ(this.value)">
   </div>
 
-  <!-- ── FAQ Content Container ── -->
-  <!-- Populated dynamically by JavaScript from FAQ_DATA -->
   <div id="faq-content"></div>
 </div>
 
-<!-- ============================================================
-     FOOTER
-     Purpose: Site-wide footer with navigation and branding
-     ============================================================ -->
+<!-- Footer -->
 <footer class="footer">
   <div class="footer-container">
     <div class="footer-grid">
       
-      <!-- ── Brand Column ── -->
       <div class="footer-brand">
         <div class="footer-logo">
           <i class="fas fa-home"></i>
@@ -379,7 +335,6 @@
         </div>
       </div>
 
-      <!-- ── Explore Column ── -->
       <div class="footer-column">
         <h4 class="footer-heading">EXPLORE</h4>
         <ul class="footer-links">
@@ -388,7 +343,6 @@
         </ul>
       </div>
 
-      <!-- ── Account Column ── -->
       <div class="footer-column">
         <h4 class="footer-heading">ACCOUNT</h4>
         <ul class="footer-links">
@@ -397,7 +351,6 @@
         </ul>
       </div>
 
-      <!-- ── Support Column ── -->
       <div class="footer-column">
         <h4 class="footer-heading">SUPPORT</h4>
         <ul class="footer-links">
@@ -407,7 +360,6 @@
       </div>
     </div>
 
-    <!-- ── Footer Bottom ── -->
     <div class="footer-bottom">
       <div class="footer-copyright">
         © 2026 Pahuna. All rights reserved.
@@ -427,12 +379,6 @@
 
 {% block extra_js %}
 <script>
-/* ============================================================
-   FAQ DATA
-   
-   Structure: Array of categories with icon and items
-   Each item has: question (q) and answer (a)
-   ============================================================ */
 const FAQ_DATA = [
   { category:"Booking", icon:"📅", items:[
     { q:"How do I find a property?", a:"Use the Browse page to search by region, property type, price range, and amenities. You can also use the search bar on the homepage to find properties by city or region name." },
@@ -447,6 +393,7 @@ const FAQ_DATA = [
   { category:"Hosting", icon:"🏠", items:[
     { q:"How do I list my property?", a:"Register as a host, go to your Host Dashboard, and click 'Add New Property'. Fill in all details including description, pricing, amenities, and upload a property image. Admin will review and approve within 48 hours." },
     { q:"How long does admin approval take?", a:"Property listings are reviewed by our admin team within 24–48 hours. You'll receive an email notification when your listing is approved or rejected." },
+    { q:"What makes you suitable for hosting?", a:"We look for hosts who offer authentic Nepali hospitality, maintain clear communication, provide accurate property descriptions, and uphold high cleanliness standards. A proven track record of positive guest reviews, quick response times, and a willingness to share local experiences make you stand out. Our team also values hosts who embrace sustainable tourism practices and contribute to their local communities." }
   ]},
   { category:"Account", icon:"👤", items:[
     { q:"How do I reset my password?", a:"Click 'Forgot Password' on the login page. Enter your registered email and a reset link will be sent to you within 2 minutes. The link expires after 1 hour." },
@@ -455,13 +402,6 @@ const FAQ_DATA = [
   ]},
 ];
 
-/**
- * renderFAQ - Render FAQ content from FAQ_DATA
- * 
- * Called on DOMContentLoaded
- * Generates HTML for each category and its items
- * Uses data attributes for search functionality
- */
 document.addEventListener('DOMContentLoaded', renderFAQ);
 
 function renderFAQ() {
@@ -481,38 +421,18 @@ function renderFAQ() {
   `).join('');
 }
 
-/**
- * toggleFAQ - Toggle FAQ item open/closed
- * 
- * @param {HTMLElement} el - The FAQ item element clicked
- * 
- * Toggles 'open' class to show/hide answer
- * Chevron rotates 180deg automatically via CSS
- */
 function toggleFAQ(el) { 
   el.classList.toggle('open'); 
 }
 
-/**
- * searchFAQ - Filter FAQ items based on search query
- * 
- * @param {string} q - Search query from input field
- * 
- * Features:
- * - Searches both question and answer text
- * - Automatically opens matching items
- * - Hides non-matching items
- * - Shows "No results" message if no matches found
- * - Hides empty categories
- */
 function searchFAQ(q) {
   const searchTerm = q.toLowerCase().trim();
   const faqItems = document.querySelectorAll('.faq-item');
   const faqCategories = document.querySelectorAll('.faq-category');
   let hasVisibleItems = false;
   
-  // If search is empty, show all items and reset
   if (!searchTerm) {
+    // Show all items and reset
     faqItems.forEach(item => {
       item.style.display = '';
       item.classList.remove('open');
@@ -521,7 +441,6 @@ function searchFAQ(q) {
     return;
   }
   
-  // Filter items based on search term
   faqItems.forEach(item => {
     const question = item.getAttribute('data-question') || '';
     const answer = item.getAttribute('data-answer') || '';
@@ -529,7 +448,7 @@ function searchFAQ(q) {
     
     if (isMatch) {
       item.style.display = '';
-      item.classList.add('open'); // Auto-expand matching items
+      item.classList.add('open');
       hasVisibleItems = true;
     } else {
       item.style.display = 'none';
@@ -537,7 +456,7 @@ function searchFAQ(q) {
     }
   });
   
-  // Hide categories that have no visible items
+  // Hide empty categories
   faqCategories.forEach(cat => {
     const visibleItems = cat.querySelectorAll('.faq-item[style="display: none;"]');
     const totalItems = cat.querySelectorAll('.faq-item').length;
@@ -545,7 +464,7 @@ function searchFAQ(q) {
     cat.style.display = allHidden ? 'none' : '';
   });
   
-  // Show "No results" message if no matches found
+  // Show no results message if needed
   let noResultsMsg = document.getElementById('no-results-message');
   if (!hasVisibleItems && searchTerm) {
     if (!noResultsMsg) {
@@ -564,23 +483,10 @@ function searchFAQ(q) {
   }
 }
 
-/**
- * switchLanguage - Placeholder for language switcher
- * Shows toast notification when clicked
- */
 function switchLanguage() {
   showToast('Language switcher coming soon!', 'info');
 }
 
-/**
- * showToast - Display a toast notification
- * 
- * @param {string} message - Message to display
- * @param {string} type - 'success', 'error', or 'info'
- * 
- * Creates toast element with appropriate styling
- * Auto-dismisses after 4 seconds
- */
 function showToast(message, type) {
   let container = document.getElementById('toasts');
   if (!container) {
@@ -599,7 +505,7 @@ function showToast(message, type) {
 </script>
 
 <style>
-/* ── Toast Notification Styles ── */
+/* Toast styles */
 .toast-container {
   position: fixed;
   bottom: 24px;

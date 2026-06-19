@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot — Pahuna AI Assistant</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Alata&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <style>
+    /* ============================================================
+       CSS CUSTOM PROPERTIES — DESIGN TOKENS
+       ============================================================ */
+    :root {
+      --bg-900: #0b1015;
+      --bg-800: #131a22;
+      --bg-700: #192030;
+      --bg-600: #1e2738;
+      --bg-500: #263040;
+      --surface: #1a2535;
+      --surface-hover: #1f2d40;
+      --teal: #00c97a;
+      --teal-dark: #00a864;
+      --teal-glow: rgba(0, 201, 122, 0.13);
+      --cyan: #00e5cc;
+      --amber: #f0a500;
+      --red: #e74c3c;
+      --green: #2ecc71;
+      --orange: #e67e22;
+      --text-primary: #e8eef5;
+      --text-secondary: #8b9ab0;
+      --text-muted: #5f6e82;
+      --border: rgba(40, 55, 75, 0.9);
+      --border-teal: rgba(0, 201, 122, 0.3);
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'Alata', sans-serif;
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.45);
+      --shadow-teal: 0 0 24px rgba(0, 201, 122, 0.18);
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] {
+      --bg-900: #f0f5f0;
+      --bg-800: #ffffff;
+      --bg-700: #f5faf7;
+      --bg-600: #e4ede8;
+      --bg-500: #cddbd2;
+      --surface: #ffffff;
+      --surface-hover: #f0f9f4;
+      --text-primary: #0d1f14;
+      --text-secondary: #3d5a47;
+      --text-muted: #7a9485;
+      --border: rgba(180, 210, 195, 0.85);
+      --border-teal: rgba(0, 201, 122, 0.35);
+      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+      --shadow-teal: 0 0 20px rgba(0, 201, 122, 0.15);
+    }
+
+    /* ============================================================
+       3D TRANSFORM UTILITIES
+       ============================================================ */
+    .perspective-3d {
+      perspective: 1200px;
+    }
+
+    .preserve-3d {
+      transform-style: preserve-3d;
+    }
+
+    .rotate-3d {
+      transform: rotateY(var(--rotate-y, 0deg)) rotateX(var(--rotate-x, 0deg));
+      transition: transform 0.1s ease-out;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-900);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ============================================================
+       3D PARALLAX FLOATING ORBS
+       ============================================================ */
+    .orb-3d {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      transform-style: preserve-3d;
+      animation: orbFloat 20s ease-in-out infinite alternate;
+      opacity: 0.4;
+    }
+
+    @keyframes orbFloat {
+      0% { transform: translate(0, 0) scale(1) rotateX(0deg); }
+      25% { transform: translate(30px, -40px) scale(1.1) rotateX(10deg); }
+      50% { transform: translate(-20px, 20px) scale(0.9) rotateX(-5deg); }
+      75% { transform: translate(40px, 10px) scale(1.05) rotateX(15deg); }
+      100% { transform: translate(-10px, -30px) scale(0.95) rotateX(-10deg); }
+    }
+
+    .orb-3d-1 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(0, 201, 122, 0.08), transparent 70%);
+      top: -100px;
+      right: -100px;
+      animation-duration: 25s;
+    }
+
+    .orb-3d-2 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 229, 204, 0.06), transparent 70%);
+      bottom: -50px;
+      left: -80px;
+      animation-duration: 30s;
+      animation-delay: -5s;
+    }
+
+    .orb-3d-3 {
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(180, 124, 255, 0.04), transparent 70%);
+      top: 40%;
+      right: 20%;
+      animation-duration: 18s;
+      animation-delay: -10s;
+    }
+
+    /* ============================================================
+       3D NAVIGATION
+       ============================================================ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(11, 16, 21, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+      transform-style: preserve-3d;
+      perspective: 800px;
+    }
+
+    [data-theme="light"] .nav { background: rgba(255, 255, 255, 0.92); }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      padding: 0 24px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      transform-style: preserve-3d;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .nav-logo:hover {
+      transform: translateZ(20px) scale(1.02);
+    }
+
+    .nav-logo-img {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      object-fit: contain;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .nav-logo:hover .nav-logo-img {
+      transform: rotateY(180deg);
+    }
+
+    .nav-logo-wordmark {
+      font-family: 'Dancing Script', cursive;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      color: #2c3e50;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-logo:hover .nav-logo-wordmark { transform: scale(1.05); }
+    [data-theme="dark"] .nav-logo-wordmark { color: #ffffff; }
+    [data-theme="light"] .nav-logo-wordmark { color: #1a1a2e; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-link {
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-style: preserve-3d;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-sm);
+      background: var(--teal-glow);
+      border: 1px solid var(--border-teal);
+      transform: scale(0.8) translateZ(-10px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .nav-link:hover::before {
+      transform: scale(1) translateZ(0px);
+      opacity: 1;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      transform: translateZ(10px);
+    }
+
+    .nav-link.active {
+      color: var(--teal);
+      background: var(--teal-glow);
+      border: 1px solid var(--border-teal);
+      transform: translateZ(5px);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-role-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--teal-glow);
+      color: var(--teal);
+      border: 1px solid var(--border-teal);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .nav-role-badge:hover {
+      transform: translateZ(10px) scale(1.05);
+    }
+
+    .btn-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-600);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .btn-icon:hover {
+      color: var(--text-primary);
+      background: var(--bg-500);
+      transform: translateZ(10px) scale(1.05);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      white-space: nowrap;
+      transform-style: preserve-3d;
+    }
+
+    .btn-primary { background: var(--teal); color: #051209; border: none; }
+    .btn-primary:hover { 
+      background: var(--teal-dark); 
+      transform: translateZ(15px) scale(1.02);
+      box-shadow: var(--shadow-teal);
+    }
+    .btn-ghost { background: var(--bg-600); color: var(--text-secondary); border: 1px solid var(--border); }
+    .btn-ghost:hover { 
+      color: var(--text-primary); 
+      background: var(--bg-500);
+      transform: translateZ(10px);
+    }
+    .btn-sm { padding: 6px 14px; font-size: 13px; }
+
+    /* ============================================================
+       TOAST NOTIFICATIONS
+       ============================================================ */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--bg-800);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      font-size: 14px;
+      font-weight: 500;
+      min-width: 280px;
+      animation: slideInRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-width: 380px;
+      transform-style: preserve-3d;
+    }
+
+    .toast:hover {
+      transform: translateZ(20px);
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(60px) rotateY(-20deg); }
+      to { opacity: 1; transform: translateX(0) rotateY(0deg); }
+    }
+
+    .toast.success { border-left: 3px solid var(--teal); }
+    .toast.error { border-left: 3px solid var(--red); }
+    .toast.info { border-left: 3px solid var(--cyan); }
+
+    .toast-icon { font-size: 20px; }
+    .toast-close { margin-left: auto; color: var(--text-muted); cursor: pointer; font-size: 18px; }
+
+    /* ============================================================
+       CHATBOT PAGE
+       ============================================================ */
+    .chatbot-page {
+      padding-top: 80px;
+      min-height: calc(100vh - 200px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeInPage 0.8s cubic-bezier(0.34, 1.2, 0.64, 1);
+      perspective: 1200px;
+    }
+
+    @keyframes fadeInPage {
+      from { opacity: 0; transform: rotateX(10deg) translateY(40px); }
+      to { opacity: 1; transform: rotateX(0deg) translateY(0); }
+    }
+
+    .chatbot-hero {
+      text-align: center;
+      padding: 30px 20px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      transform-style: preserve-3d;
+      animation: heroFloat 6s ease-in-out infinite;
+    }
+
+    @keyframes heroFloat {
+      0%, 100% { transform: translateY(0px) rotateX(0deg); }
+      50% { transform: translateY(-10px) rotateX(2deg); }
+    }
+
+    .chatbot-hero .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      background: var(--teal-glow);
+      border: 1px solid var(--border-teal);
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--teal);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-style: preserve-3d;
+    }
+
+    .chatbot-hero .hero-badge:hover {
+      transform: translateZ(20px) scale(1.05);
+    }
+
+    .chatbot-hero .hero-badge i { font-size: 14px; }
+
+    .chatbot-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--text-primary), var(--teal));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      transform-style: preserve-3d;
+      animation: textGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes textGlow {
+      0%, 100% { text-shadow: 0 0 20px rgba(0, 201, 122, 0.1); }
+      50% { text-shadow: 0 0 40px rgba(0, 201, 122, 0.3); }
+    }
+
+    .chatbot-hero .hero-subtitle {
+      color: var(--text-secondary);
+      font-size: 16px;
+      line-height: 1.7;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .chatbot-stats {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      margin-top: 24px;
+      flex-wrap: wrap;
+      perspective: 800px;
+    }
+
+    .chatbot-stats .stat-item {
+      text-align: center;
+      padding: 8px 16px;
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      min-width: 100px;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-style: preserve-3d;
+    }
+
+    .chatbot-stats .stat-item:hover {
+      border-color: var(--teal);
+      transform: translateZ(20px) rotateX(5deg);
+      box-shadow: 0 10px 30px rgba(0, 201, 122, 0.15);
+    }
+
+    .chatbot-stats .stat-number {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--teal);
+    }
+
+    .chatbot-stats .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ============================================================
+       CHAT CONTAINER — 3D
+       ============================================================ */
+    .chat-wrapper {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+      perspective: 1200px;
+    }
+
+    .chat-box {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-style: preserve-3d;
+      transform: rotateX(2deg);
+    }
+
+    .chat-box:hover {
+      border-color: var(--border-teal);
+      transform: rotateX(0deg) translateZ(10px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 201, 122, 0.05);
+    }
+
+    .chat-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, var(--bg-700), var(--bg-600));
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chat-box-header .chat-agent {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-box-header .agent-avatar {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--teal), var(--cyan));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #051209;
+      box-shadow: var(--shadow-teal);
+      animation: avatar-pulse-3d 3s ease-in-out infinite;
+      transform-style: preserve-3d;
+    }
+
+    @keyframes avatar-pulse-3d {
+      0%, 100% { transform: scale(1) rotateY(0deg); box-shadow: var(--shadow-teal); }
+      50% { transform: scale(1.05) rotateY(180deg); box-shadow: 0 0 40px 10px rgba(0, 201, 122, 0.2); }
+    }
+
+    .chat-box-header .agent-info h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .chat-box-header .agent-info .status {
+      font-size: 12px;
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chat-box-header .agent-info .status .status-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      display: inline-block;
+      animation: status-pulse-3d 1.5s ease-in-out infinite;
+    }
+
+    @keyframes status-pulse-3d {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.5); }
+    }
+
+    .chat-box-header .chat-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .chat-box-header .chat-actions button {
+      background: var(--bg-600);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-size: 13px;
+      transform-style: preserve-3d;
+    }
+
+    .chat-box-header .chat-actions button:hover {
+      background: var(--teal-glow);
+      color: var(--teal);
+      border-color: var(--border-teal);
+      transform: translateZ(15px) scale(1.05);
+    }
+
+    .chat-messages {
+      padding: 20px 24px;
+      max-height: 460px;
+      min-height: 350px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+    }
+
+    .chat-messages::-webkit-scrollbar { width: 5px; }
+    .chat-messages::-webkit-scrollbar-track { background: var(--bg-700); border-radius: 3px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 3px; }
+
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 85%;
+      animation: msgIn-3d 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
+      transform-style: preserve-3d;
+    }
+
+    @keyframes msgIn-3d {
+      from { opacity: 0; transform: translateZ(-50px) rotateX(10deg) scale(0.9); }
+      to { opacity: 1; transform: translateZ(0) rotateX(0deg) scale(1); }
+    }
+
+    .message.bot { align-self: flex-start; }
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+      animation: msgInUser-3d 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+
+    @keyframes msgInUser-3d {
+      from { opacity: 0; transform: translateZ(-50px) rotateX(-10deg) scale(0.9); }
+      to { opacity: 1; transform: translateZ(0) rotateX(0deg) scale(1); }
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-style: preserve-3d;
+    }
+
+    .message:hover .message-avatar {
+      transform: translateZ(20px) scale(1.1);
+    }
+
+    .message.bot .message-avatar {
+      background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+      color: #051209;
+    }
+
+    .message.user .message-avatar {
+      background: var(--bg-600);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .message-content {
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      line-height: 1.7;
+      position: relative;
+      word-wrap: break-word;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-style: preserve-3d;
+    }
+
+    .message:hover .message-content {
+      transform: translateZ(10px);
+    }
+
+    .message.bot .message-content {
+      background: var(--bg-700);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      border-top-left-radius: 4px;
+    }
+
+    .message.user .message-content {
+      background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+      color: #051209;
+      border-top-right-radius: 4px;
+    }
+
+    .message-content .time {
+      font-size: 10px;
+      opacity: 0.5;
+      margin-top: 8px;
+      display: block;
+    }
+
+    .message.user .message-content .time { color: rgba(5, 18, 9, 0.7); }
+
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .quick-reply {
+      background: var(--bg-600);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 5px 16px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-family: var(--font-body);
+      transform-style: preserve-3d;
+    }
+
+    .quick-reply:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: var(--teal-glow);
+      transform: translateZ(15px) scale(1.05);
+    }
+
+    /* ============================================================
+       AUTH HELP CARDS - 3D
+       ============================================================ */
+    .auth-help-card {
+      margin-top: 10px;
+      padding: 14px 16px;
+      background: var(--bg-600);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--teal);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: cardSlide-3d 0.6s cubic-bezier(0.34, 1.2, 0.64, 1);
+      transform-style: preserve-3d;
+    }
+
+    @keyframes cardSlide-3d {
+      from { opacity: 0; transform: translateX(-30px) rotateY(-10deg) scale(0.95); }
+      to { opacity: 1; transform: translateX(0) rotateY(0deg) scale(1); }
+    }
+
+    .auth-help-card:hover {
+      transform: translateX(8px) translateZ(15px) rotateY(2deg);
+      border-left-width: 5px;
+      background: var(--surface-hover);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .auth-help-card .auth-title {
+      font-weight: 700;
+      color: var(--teal);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .auth-help-card .auth-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .auth-help-card .auth-steps {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      padding-left: 16px;
+      list-style: none;
+    }
+
+    .auth-help-card .auth-steps li {
+      margin-bottom: 2px;
+      position: relative;
+    }
+
+    .auth-help-card .auth-steps li::before {
+      content: '•';
+      color: var(--teal);
+      position: absolute;
+      left: -12px;
+    }
+
+    .action-btn-chat {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 6px 16px;
+      background: var(--teal);
+      color: #051209;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: none;
+      text-decoration: none;
+      transform-style: preserve-3d;
+    }
+
+    .action-btn-chat:hover {
+      transform: translateZ(15px) scale(1.05);
+      background: var(--teal-dark);
+    }
+
+    .action-btn-chat.amber {
+      background: var(--amber);
+    }
+
+    .action-btn-chat.amber:hover {
+      background: #d4940a;
+    }
+
+    .action-btn-chat.purple {
+      background: #9b59b6;
+      color: #fff;
+    }
+
+    .action-btn-chat.purple:hover {
+      background: #8e44ad;
+    }
+
+    /* Typing Indicator - 3D */
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      padding: 10px 18px;
+      background: var(--bg-700);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      border-top-left-radius: 4px;
+      gap: 5px;
+      animation: typingFade-3d 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+      transform-style: preserve-3d;
+    }
+
+    @keyframes typingFade-3d {
+      from { opacity: 0; transform: scale(0.8) translateZ(-20px); }
+      to { opacity: 1; transform: scale(1) translateZ(0); }
+    }
+
+    .typing-indicator.active { display: flex; }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--teal);
+      border-radius: 50%;
+      animation: typingBounce-3d 1.4s ease-in-out infinite;
+      transform-style: preserve-3d;
+    }
+
+    @keyframes typingBounce-3d {
+      0%, 60%, 100% { transform: translateY(0) scale(1) rotateX(0deg); opacity: 0.4; }
+      30% { transform: translateY(-10px) scale(1.2) rotateX(180deg); opacity: 1; }
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    /* Chat Input - 3D */
+    .chat-input-area {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      background: var(--surface);
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      padding: 12px 18px;
+      background: var(--bg-700);
+      border: 1.5px solid var(--border);
+      border-radius: 40px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-style: preserve-3d;
+    }
+
+    .chat-input-area input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 4px var(--teal-glow);
+      transform: translateZ(5px) scale(1.01);
+    }
+
+    .chat-input-area input::placeholder { color: var(--text-muted); }
+
+    .chat-input-area button {
+      background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+      border: none;
+      padding: 12px 28px;
+      border-radius: 40px;
+      color: #051209;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-family: var(--font-body);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .chat-input-area button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .chat-input-area button:hover:not(:disabled)::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    .chat-input-area button:hover:not(:disabled) {
+      transform: translateZ(15px) scale(1.03);
+      box-shadow: var(--shadow-teal);
+    }
+
+    .chat-input-area button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Features - 3D */
+    .chat-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 32px;
+      perspective: 800px;
+    }
+
+    .chat-feature {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .chat-feature:hover {
+      border-color: var(--teal);
+      transform: translateZ(20px) rotateY(5deg);
+      box-shadow: 0 15px 40px rgba(0, 201, 122, 0.1);
+    }
+
+    .chat-feature i {
+      font-size: 24px;
+      color: var(--teal);
+      width: 36px;
+      text-align: center;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .chat-feature:hover i {
+      transform: scale(1.2) rotateY(180deg);
+    }
+
+    .chat-feature .feature-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .chat-feature .feature-text small {
+      display: block;
+      font-weight: 400;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--bg-800);
+      border-top: 1px solid var(--border);
+      padding: 32px 24px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 20px;
+      transform-style: preserve-3d;
+    }
+
+    .footer i { color: var(--teal); }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 768px) {
+      .nav-inner {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px 16px;
+        gap: 10px;
+      }
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+        width: 100%;
+        order: 3;
+      }
+      .nav-link { font-size: 13px; padding: 5px 10px; }
+      .nav-actions { gap: 6px; }
+
+      .chatbot-hero h1 { font-size: 28px; }
+      .chat-messages {
+        max-height: 350px;
+        min-height: 200px;
+        padding: 16px;
+      }
+      .message { max-width: 95%; }
+      .chat-input-area {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+      }
+      .chat-input-area input { flex: 1 1 100%; }
+      .chat-input-area button { flex: 1 1 100%; justify-content: center; }
+      .chatbot-stats { gap: 12px; }
+      .chatbot-stats .stat-item { min-width: 80px; padding: 6px 12px; }
+      .chatbot-stats .stat-number { font-size: 22px; }
+      .chat-features { grid-template-columns: 1fr 1fr; }
+      .chat-box-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .chat-box-header .chat-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-logo-wordmark { font-size: 26px; }
+      .nav-logo-img { width: 32px; height: 32px; }
+      .chatbot-hero h1 { font-size: 24px; }
+      .chatbot-hero .hero-subtitle { font-size: 14px; }
+      .chat-features { grid-template-columns: 1fr; }
+      .chat-box-header .agent-avatar { width: 36px; height: 36px; font-size: 16px; }
+      .chat-box-header .agent-info h4 { font-size: 13px; }
+      .message-content { font-size: 13px; padding: 10px 14px; }
+      .toast { min-width: auto; max-width: 300px; font-size: 13px; padding: 12px 16px; }
+    }
+  </style>
+</head>
+
+<body data-theme="dark">
+
+  <!-- ============================================================
+     3D FLOATING ORBS
+     ============================================================ -->
+  <div class="orb-3d orb-3d-1"></div>
+  <div class="orb-3d orb-3d-2"></div>
+  <div class="orb-3d orb-3d-3"></div>
+
+  <!-- ============================================================
+     NAVIGATION
+     ============================================================ -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='38' viewBox='0 0 38 38'%3E%3Crect width='38' height='38' rx='10' fill='%2300c97a'/%3E%3Ctext x='19' y='24' text-anchor='middle' font-size='22' font-weight='bold' fill='%23051209' font-family='Arial'%3E🏔%3C/text%3E%3C/svg%3E" alt="Logo" class="nav-logo-img" />
+        <div class="nav-logo-wordmark">Pahuna</div>
+      </a>
+
+      <div class="nav-links">
+        <a href="#" class="nav-link">Home</a>
+        <a href="#" class="nav-link">Browse</a>
+        <a href="#" class="nav-link active">Chatbot</a>
+        <a href="#" class="nav-link">About</a>
+        <a href="#" class="nav-link">Contact</a>
+        <a href="#" class="nav-link">FAQ</a>
+      </div>
+
+      <div class="nav-actions">
+        <div class="nav-role-badge">GUEST ✦</div>
+        <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme" id="theme-btn">🌙</button>
+        <a href="#" class="btn btn-ghost btn-sm">Login</a>
+        <a href="#" class="btn btn-primary btn-sm">Register</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+     CHATBOT PAGE CONTENT
+     ============================================================ -->
+  <div class="chatbot-page">
+    
+    <!-- Hero -->
+    <div class="chatbot-hero">
+      <div class="hero-badge"><i class="fas fa-robot"></i> AI-Powered Booking Assistant</div>
+      <h1>Hi, I'm Booky 👋</h1>
+      <p class="hero-subtitle">
+        Your intelligent booking assistant for finding the perfect stay in Nepal.
+        I can help you with login, registration, password reset, property search, and more!
+      </p>
+      
+      <div class="chatbot-stats">
+        <div class="stat-item"><div class="stat-number">6</div><div class="stat-label">Properties</div></div>
+        <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
+        <div class="stat-item"><div class="stat-number">98%</div><div class="stat-label">Satisfaction</div></div>
+      </div>
+    </div>
+
+    <!-- Chat Wrapper -->
+    <div class="chat-wrapper">
+      <div class="chat-box">
+
+        <!-- Chat Header -->
+        <div class="chat-box-header">
+          <div class="chat-agent">
+            <div class="agent-avatar"><i class="fas fa-robot"></i></div>
+            <div class="agent-info">
+              <h4>Booky — AI Assistant</h4>
+              <div class="status"><span class="status-dot"></span> Online • Ready to help</div>
+            </div>
+          </div>
+          <div class="chat-actions">
+            <button onclick="clearChat()" title="Clear chat"><i class="fas fa-trash-alt"></i></button>
+            <button onclick="resetChat()" title="Reset conversation"><i class="fas fa-undo"></i></button>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-messages" id="chatMessages"></div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator" id="typingIndicator">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+
+        <!-- Input -->
+        <div class="chat-input-area">
+          <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off" />
+          <button id="sendBtn"><i class="fas fa-paper-plane"></i> Send</button>
+        </div>
+
+      </div>
+
+      <!-- Features -->
+      <div class="chat-features">
+        <div class="chat-feature">
+          <i class="fas fa-search-location"></i>
+          <div class="feature-text">Smart Search <small>Find hotels by city or budget</small></div>
+        </div>
+        <div class="chat-feature">
+          <i class="fas fa-headset"></i>
+          <div class="feature-text">24/7 Support <small>Get help with bookings & refunds</small></div>
+        </div>
+        <div class="chat-feature">
+          <i class="fas fa-robot"></i>
+          <div class="feature-text">AI Recommendations <small>Personalized suggestions</small></div>
+        </div>
+        <div class="chat-feature">
+          <i class="fas fa-key"></i>
+          <div class="feature-text">Account Help <small>Login, Register, Reset Password</small></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+     FOOTER
+     ============================================================ -->
+  <footer class="footer">
+    <p>© 2025 Pahuna — Authentic Himalayan Hospitality. <i class="fas fa-heart"></i></p>
+    <p><small>Contact support: support@pahuna.com | +977-1-1234567</small></p>
+  </footer>
+
+  <!-- ============================================================
+     TOAST
+     ============================================================ -->
+  <div class="toast-container" id="toasts"></div>
+
+  <script>
+    // ============================================================
+    // 3D MOUSE PARALLAX
+    // ============================================================
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 10;
+      const y = (e.clientY / window.innerHeight - 0.5) * 10;
+      
+      document.querySelectorAll('.chat-box, .auth-help-card, .chat-feature, .stat-item').forEach(el => {
+        el.style.setProperty('--rotate-y', x + 'deg');
+        el.style.setProperty('--rotate-x', -y + 'deg');
+      });
+    });
+
+    // ============================================================
+    // THEME TOGGLE
+    // ============================================================
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      const btn = document.getElementById('theme-btn');
+      if (btn) btn.textContent = next === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('theme', next);
+    }
+
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+        const btn = document.getElementById('theme-btn');
+        if (btn) btn.textContent = saved === 'dark' ? '🌙' : '☀️';
+      }
+    })();
+
+    // ============================================================
+    // TOAST
+    // ============================================================
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toasts');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <span class="toast-icon">${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span>
+        <span>${message}</span>
+        <span class="toast-close" onclick="this.parentElement.remove()">✕</span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    }
+
+    // ============================================================
+    // PROPERTY DATA
+    // ============================================================
+    const propertyData = [
+      { id: 1, name: 'Pokhara Lake Hotel', region: 'Pokhara', type: 'Hotel', price: 4500, rating: 4.8, bookings: 156, amenities: ['WiFi', 'Hot Water', 'Breakfast Included'] },
+      { id: 2, name: 'Kathmandu Heritage Home', region: 'Kathmandu', type: 'Homestay', price: 2500, rating: 4.6, bookings: 89, amenities: ['WiFi', 'Hot Water', 'Kitchen Access'] },
+      { id: 3, name: 'Mustang Mountain Lodge', region: 'Mustang', type: 'Apartment', price: 9200, rating: 5.0, bookings: 67, amenities: ['Mountain View', 'Hot Water', 'Parking'] },
+      { id: 4, name: 'Chitwan Jungle Resort', region: 'Chitwan', type: 'Resort', price: 5800, rating: 4.3, bookings: 45, amenities: ['WiFi', 'Hot Water', 'Kitchen Access'] },
+      { id: 5, name: 'Lumbini Peace Villa', region: 'Lumbini', type: 'Guesthouse', price: 3200, rating: 3.9, bookings: 34, amenities: ['WiFi', 'Hot Water'] },
+      { id: 6, name: 'Kathmandu Budget Inn', region: 'Kathmandu', type: 'Homestay', price: 1800, rating: 3.8, bookings: 28, amenities: ['WiFi'] }
+    ];
+
+    // ============================================================
+    // CHAT LOGIC
+    // ============================================================
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const typingIndicator = document.getElementById('typingIndicator');
+
+    let isProcessing = false;
+
+    // Build property listing card
+    function buildPropertyCardHTML(property, index) {
+      return `
+        <div class="auth-help-card" onclick="window.location.href='#'">
+          <div class="auth-title"><span class="prop-index" style="background:var(--teal-glow);padding:0 8px;border-radius:12px;font-size:10px;color:var(--teal);">#${index + 1}</span> ${property.name}</div>
+          <div class="auth-desc">
+            <span><i class="fas fa-map-marker-alt"></i> ${property.region}</span> · 
+            <span><i class="fas fa-rupee-sign"></i> NPR ${property.price.toLocaleString()}/night</span> · 
+            <span><i class="fas fa-star" style="color: var(--amber);"></i> ${property.rating}</span>
+          </div>
+          <button class="action-btn-chat" onclick="event.stopPropagation(); window.location.href='#'">
+            <i class="fas fa-eye"></i> View Details
+          </button>
+        </div>
+      `;
+    }
+
+    // Build Login Help Card
+    function buildLoginHelpCard() {
+      return `
+        <div class="auth-help-card">
+          <div class="auth-title"><i class="fas fa-sign-in-alt"></i> Login Help</div>
+          <div class="auth-desc">To sign in to your account:</div>
+          <ul class="auth-steps">
+            <li>Go to the <strong>Login</strong> page</li>
+            <li>Enter your <strong>Email Address</strong></li>
+            <li>Enter your <strong>Password</strong></li>
+            <li>Click <strong>Sign In</strong></li>
+          </ul>
+          <div class="auth-desc" style="margin-top:6px;font-size:12px;color:var(--text-muted);">
+            💡 Forgot password? Ask me about "password reset" or click the "Forgot password?" link on the login page.
+          </div>
+          <button class="action-btn-chat" onclick="window.location.href='/login'">
+            <i class="fas fa-arrow-right"></i> Go to Login
+          </button>
+        </div>
+      `;
+    }
+
+    // Build Register Help Card
+    function buildRegisterHelpCard() {
+      return `
+        <div class="auth-help-card">
+          <div class="auth-title"><i class="fas fa-user-plus"></i> Registration Help</div>
+          <div class="auth-desc">To create a new account:</div>
+          <ul class="auth-steps">
+            <li>Go to the <strong>Register</strong> page</li>
+            <li>Choose your role: <strong>Guest</strong> (book stays) or <strong>Host</strong> (list properties)</li>
+            <li>Fill in your <strong>Full Name, Email, Password, Phone</strong></li>
+            <li>Fill in role-specific details (Guest: Address, Emergency Contact | Host: ID, Property, Bank)</li>
+            <li>Agree to the terms and click <strong>Create Account</strong></li>
+          </ul>
+          <div class="auth-desc" style="margin-top:6px;font-size:12px;color:var(--text-muted);">
+            ✅ Registration is free and takes less than 2 minutes!
+          </div>
+          <button class="action-btn-chat" onclick="window.location.href='/register'">
+            <i class="fas fa-arrow-right"></i> Go to Register
+          </button>
+        </div>
+      `;
+    }
+
+    // Build Password Reset Help Card
+    function buildPasswordResetHelpCard() {
+      return `
+        <div class="auth-help-card">
+          <div class="auth-title"><i class="fas fa-key"></i> Password Reset Help</div>
+          <div class="auth-desc">To reset your password:</div>
+          <ul class="auth-steps">
+            <li>Go to the <strong>Forgot Password</strong> page</li>
+            <li>Enter your <strong>registered email address</strong></li>
+            <li>Check your inbox for a <strong>6-digit reset code</strong></li>
+            <li>Enter the code and set a <strong>new password</strong></li>
+            <li>Sign in with your new password</li>
+          </ul>
+          <div class="auth-desc" style="margin-top:6px;font-size:12px;color:var(--text-muted);">
+            ⏰ The code expires in <strong>10 minutes</strong> for security.
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+            <button class="action-btn-chat" onclick="window.location.href='/forgot-password'">
+              <i class="fas fa-arrow-right"></i> Reset Password
+            </button>
+            <button class="action-btn-chat amber" onclick="window.location.href='/login'">
+              <i class="fas fa-sign-in-alt"></i> Back to Login
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Build Role Selection Help
+    function buildRoleHelpCard() {
+      return `
+        <div class="auth-help-card">
+          <div class="auth-title"><i class="fas fa-users"></i> Choose Your Role</div>
+          <div class="auth-desc">When registering, you can choose:</div>
+          <ul class="auth-steps">
+            <li><strong>🧳 Guest</strong> — I want to book stays and travel</li>
+            <li><strong>🏠 Host</strong> — I want to list properties and earn</li>
+          </ul>
+          <div class="auth-desc" style="margin-top:6px;font-size:12px;color:var(--text-muted);">
+            ⚡ You can switch roles later, but some details may need re-verification.
+          </div>
+          <button class="action-btn-chat purple" onclick="window.location.href='/register'">
+            <i class="fas fa-arrow-right"></i> Create Account
+          </button>
+        </div>
+      `;
+    }
+
+    // Welcome Message
+    function sendWelcomeMessage() {
+      addMessage('bot', `
+        <div>👋 Namaste! I'm <strong>Booky</strong>, your AI booking assistant.</div>
+        <div style="margin-top:10px;">I can help you with:</div>
+        <div style="margin-top:4px; font-size:0.85rem;">🔑 Login to your account</div>
+        <div style="font-size:0.85rem;">📝 Register as Guest or Host</div>
+        <div style="font-size:0.85rem;">🔐 Reset your password</div>
+        <div style="font-size:0.85rem;">🏨 Find properties in Nepal</div>
+        <div style="font-size:0.85rem;">🔄 Process refunds</div>
+        <div style="font-size:0.85rem;">📞 Contact support</div>
+        <div style="margin-top:12px; font-size:0.9rem; color:var(--teal);">Try asking me:</div>
+        <div class="quick-replies">
+          <button class="quick-reply" onclick="sendQuickReply('How to login?')">🔑 Login</button>
+          <button class="quick-reply" onclick="sendQuickReply('How to register?')">📝 Register</button>
+          <button class="quick-reply" onclick="sendQuickReply('Reset my password')">🔐 Reset</button>
+          <button class="quick-reply" onclick="sendQuickReply('Find hotels in Pokhara')">🏔️ Pokhara</button>
+        </div>
+      `);
+    }
+
+    function addMessage(sender, content) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}`;
+
+      const avatar = document.createElement('div');
+      avatar.className = 'message-avatar';
+      avatar.innerHTML = sender === 'bot' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+      contentDiv.innerHTML = content;
+
+      const time = document.createElement('span');
+      time.className = 'time';
+      time.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      contentDiv.appendChild(time);
+
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(contentDiv);
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function sendQuickReply(text) {
+      chatInput.value = text;
+      sendMessage();
+    }
+
+    function sendMessage() {
+      const message = chatInput.value.trim();
+      if (!message || isProcessing) return;
+
+      addMessage('user', message);
+      chatInput.value = '';
+      sendBtn.disabled = true;
+      isProcessing = true;
+
+      typingIndicator.classList.add('active');
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      setTimeout(() => {
+        const response = getBotResponse(message);
+        typingIndicator.classList.remove('active');
+        addMessage('bot', response);
+        sendBtn.disabled = false;
+        isProcessing = false;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 400 + Math.random() * 600);
+    }
+
+    // ============================================================
+    // BOT RESPONSE ENGINE
+    // ============================================================
+    function getBotResponse(message) {
+      const lower = message.toLowerCase();
+
+      // GREETINGS
+      if (lower.match(/^(hi|hello|hey|namaste|good morning|good evening|yo|hola)/)) {
+        return `👋 Hello! I'm Booky, your booking assistant. I can help you with login, registration, password reset, finding stays, and more! What do you need help with?`;
+      }
+
+      // LOGIN HELP
+      if (lower.includes('login') || lower.includes('sign in') || lower.includes('log in')) {
+        return buildLoginHelpCard();
+      }
+
+      // REGISTER HELP
+      if (lower.includes('register') || lower.includes('sign up') || lower.includes('create account') || lower.includes('account')) {
+        if (lower.includes('role') || lower.includes('guest') || lower.includes('host')) {
+          return buildRoleHelpCard();
+        }
+        return buildRegisterHelpCard();
+      }
+
+      // ROLE SELECTION
+      if (lower.includes('guest') || lower.includes('host') || lower.includes('role')) {
+        return buildRoleHelpCard();
+      }
+
+      // PASSWORD RESET HELP
+      if (lower.includes('reset') || lower.includes('forgot') || lower.includes('password') || lower.includes('recover')) {
+        return buildPasswordResetHelpCard();
+      }
+
+      // PROPERTY SEARCH
+      if (lower.includes('find') || lower.includes('search') || lower.includes('show') || lower.includes('hotel') || lower.includes('stay')) {
+        let region = null;
+        const regions = ['pokhara', 'kathmandu', 'chitwan', 'lumbini', 'mustang'];
+        for (const r of regions) {
+          if (lower.includes(r)) { region = r; break; }
+        }
+
+        let budget = null;
+        const budgetMatch = lower.match(/(?:under|below|less than|<=|>?)\s*([0-9,]+)/i);
+        if (budgetMatch) budget = parseInt(budgetMatch[1].replace(/,/g, ''));
+
+        let filtered = propertyData;
+        if (region) filtered = filtered.filter(p => p.region.toLowerCase() === region);
+        if (budget) filtered = filtered.filter(p => p.price <= budget);
+
+        if (filtered.length === 0) {
+          return `😅 I couldn't find any properties matching your criteria in ${region || 'Nepal'}${budget ? ` under NPR ${budget}` : ''}. Try adjusting your search!`;
+        }
+
+        let response = `🏨 I found <strong>${filtered.length}</strong> property(ies) ${region ? `in ${region}` : 'in Nepal'}${budget ? ` under NPR ${budget}` : ''}:\n\n`;
+        filtered.forEach((p, i) => {
+          response += buildPropertyCardHTML(p, i);
+          response += '\n';
+        });
+        return response;
+      }
+
+      // BUDGET
+      if (lower.includes('budget') || lower.includes('cheap') || lower.includes('affordable')) {
+        const sorted = [...propertyData].sort((a, b) => a.price - b.price);
+        let response = `💰 <strong>Best Budget Options (${sorted.length} properties)</strong>\n\n`;
+        sorted.slice(0, 5).forEach((p, i) => {
+          response += `${i + 1}. <strong>${p.name}</strong> — NPR ${p.price.toLocaleString()}/night ⭐ ${p.rating}\n`;
+          response += `   📍 ${p.region} · ${p.type}\n\n`;
+        });
+        return response;
+      }
+
+      // TOP RATED
+      if (lower.includes('best') || lower.includes('top') || lower.includes('highest') || lower.includes('rated')) {
+        const top = [...propertyData].sort((a, b) => b.rating - a.rating);
+        let response = `🌟 <strong>Top Rated Properties (${top.length} options)</strong>\n\n`;
+        top.slice(0, 3).forEach((p, i) => {
+          response += `${i + 1}. <strong>${p.name}</strong> — ⭐ ${p.rating}\n`;
+          response += `   📍 ${p.region} · 💰 NPR ${p.price.toLocaleString()}/night\n`;
+          response += `   🏷️ ${p.amenities.slice(0, 3).join(' · ')}\n\n`;
+        });
+        return response;
+      }
+
+      // ALL PROPERTIES
+      if (lower.includes('all properties') || lower.includes('show me all') || lower.includes('list all')) {
+        let response = `🏨 <strong>All ${propertyData.length} Properties</strong>\n\n`;
+        propertyData.forEach((p, i) => {
+          response += `${i + 1}. <strong>${p.name}</strong> — ⭐ ${p.rating}\n`;
+          response += `   📍 ${p.region} · 💰 NPR ${p.price.toLocaleString()}/night\n\n`;
+        });
+        return response;
+      }
+
+      // BOOKING HELP
+      if (lower.includes('book') || lower.includes('booking') || lower.includes('reserve')) {
+        return `📖 <strong>Booking with Pahuna is easy!</strong>\n\n` +
+               `1️⃣ Find your perfect property using the search above\n` +
+               `2️⃣ Click "View Details" on any property\n` +
+               `3️⃣ Choose your check-in/out dates\n` +
+               `4️⃣ Enter guest details and confirm\n` +
+               `5️⃣ Receive confirmation email\n\n` +
+               `🔗 Need help? Contact us at support@pahuna.com`;
+      }
+
+      // CONTACT
+      if (lower.includes('contact') || lower.includes('support') || lower.includes('help') || lower.includes('assist')) {
+        return `
+          <div>📞 <strong>Contact Support</strong></div>
+          <div style="margin-top:8px;font-size:13px;color:var(--text-secondary);">
+            📧 Email: <strong>support@pahuna.com</strong>
+            <br>📱 Phone: <strong>+977 01-XXXXXXX</strong>
+            <br>📍 Location: <strong>Kathmandu, Nepal</strong>
+            <br>⏰ Response Time: <strong>Within 24 hours (NPT)</strong>
+          </div>
+          <button class="action-btn-chat" onclick="window.location.href='/contact'">
+            <i class="fas fa-paper-plane"></i> Go to Contact Page
+          </button>
+        `;
+      }
+
+      // REFUND
+      if (lower.includes('refund') || lower.includes('cancel') || lower.includes('return money')) {
+        return `
+          <div>🔄 <strong>Refund & Cancellation Policy</strong></div>
+          <div style="margin-top:8px;font-size:13px;color:var(--text-secondary);">
+            📋 Free cancellation up to 7 days before check-in
+            <br>💳 50% refund for cancellations within 3-7 days
+            <br>❌ No refund for cancellations within 48 hours
+            <br><br>
+            ⚠️ Some properties may have different policies.
+          </div>
+          <button class="action-btn-chat amber" onclick="showToast('📧 Please email us at support@pahuna.com with your booking details', 'info')">
+            <i class="fas fa-envelope"></i> Request Refund
+          </button>
+        `;
+      }
+
+      // DEFAULT
+      return `🤔 I'm not sure I understood that. Here are some things I can help with:\n\n` +
+             `🔑 "How to login?"\n` +
+             `📝 "How to register?"\n` +
+             `🔐 "Reset my password"\n` +
+             `🏨 "Find hotels in Pokhara"\n` +
+             `💰 "Show me budget stays"\n` +
+             `📞 "How to contact support?"\n` +
+             `🔄 "I need a refund"\n\n` +
+             `What would you like to do? 😊`;
+    }
+
+    // Clear chat
+    function clearChat() {
+      chatMessages.innerHTML = '';
+      sendWelcomeMessage();
+      showToast('Chat cleared!', 'info');
+    }
+
+    // Reset chat
+    function resetChat() {
+      chatMessages.innerHTML = '';
+      sendWelcomeMessage();
+      showToast('Conversation reset!', 'info');
+    }
+
+    // Event listeners
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Initialize chat
+    sendWelcomeMessage();
+    chatInput.focus();
+
+    // Make functions global
+    window.sendQuickReply = sendQuickReply;
+    window.clearChat = clearChat;
+    window.resetChat = resetChat;
+    window.toggleTheme = toggleTheme;
+    window.showToast = showToast;
+  </script>
+
+</body>
+</html>

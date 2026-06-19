@@ -274,6 +274,26 @@
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .property-badge i {
+        font-size: 13px;
+        color: #ff6b35;
+        animation: flamePulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes flamePulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.8;
+        }
+        50% {
+            transform: scale(1.2);
+            opacity: 1;
+        }
     }
 
     .property-rating-badge {
@@ -718,7 +738,9 @@
         <div class="property-card" onclick="window.location.href='{{ url_for('auth.property_jungle_retreat') }}'">
             <div class="property-card-image">
                 <img src="{{ url_for('static', filename='images/jr1.jpg') }}" alt="Jungle Retreat Chitwan" onerror="this.src='https://via.placeholder.com/400x220/1a1a2e/00c97a?text=Jungle+Retreat'">
-                <span class="property-badge">Trending</span>
+                <span class="property-badge">
+                    <i class="fas fa-fire"></i> Trending
+                </span>
                 <div class="property-rating-badge">
                     <i class="fas fa-star"></i> 4.9
                 </div>
@@ -747,7 +769,9 @@
         <div class="property-card" onclick="window.location.href='{{ url_for('auth.property_mountain_view') }}'">
             <div class="property-card-image">
                 <img src="{{ url_for('static', filename='images/mvh1.jpg') }}" alt="Mountain View Homestay" onerror="this.src='https://via.placeholder.com/400x220/1a1a2e/00c97a?text=Mountain+View'">
-                <span class="property-badge">Trending</span>
+                <span class="property-badge">
+                    <i class="fas fa-fire"></i> Trending
+                </span>
                 <div class="property-rating-badge">
                     <i class="fas fa-star"></i> 4.8
                 </div>
@@ -776,7 +800,9 @@
         <div class="property-card" onclick="window.location.href='{{ url_for('auth.property_thamel_heritage') }}'">
             <div class="property-card-image">
                 <img src="{{ url_for('static', filename='images/th1.jpg') }}" alt="Thamel Heritage House" onerror="this.src='https://via.placeholder.com/400x220/1a1a2e/00c97a?text=Thamel+Heritage'">
-                <span class="property-badge">Trending</span>
+                <span class="property-badge">
+                    <i class="fas fa-fire"></i> Trending
+                </span>
                 <div class="property-rating-badge">
                     <i class="fas fa-star"></i> 4.5
                 </div>
@@ -825,8 +851,8 @@
                     Nepal's dedicated accommodation booking platform. Connect with authentic homestays, guesthouses, and unique stays across the Himalayas.
                 </p>
                 <div class="footer-social">
-                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
                    
                 </div>
             </div>

@@ -21,16 +21,13 @@
   color: var(--text-primary); background: var(--bg-700); border-left-color: var(--teal);
 }
 .sidebar-link i { width: 18px; text-align: center; }
-
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 16px; margin-bottom: 28px; }
 .stat-card  { background: var(--bg-800); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
 .stat-num   { font-size: 26px; font-weight: 800; color: var(--teal); }
 .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-
 .dash-section   { display: none; }
 .dash-section.active { display: block; }
 .section-title  { font-size: 22px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-
 .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
 table       { width: 100%; border-collapse: collapse; font-size: 13px; }
 th          { background: var(--bg-700); color: var(--text-muted); font-weight: 600; letter-spacing: .07em;
@@ -38,13 +35,11 @@ th          { background: var(--bg-700); color: var(--text-muted); font-weight: 
 td          { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); vertical-align: middle; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--bg-700); }
-
 .status     { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
 .status-confirmed{ background: rgba(46,204,113,.15); color: #2ecc71; }
 .status-pending  { background: rgba(230,126,34,.15); color: #e67e22; }
 .status-cancelled{ background: rgba(231,76,60,.15);  color: #e74c3c; }
 .status-completed{ background: rgba(52,152,219,.15); color: #3498db; }
-
 /* Wishlist cards */
 .wl-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap: 16px; }
 .wl-card { background: var(--bg-800); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
@@ -54,11 +49,9 @@ tr:hover td { background: var(--bg-700); }
 .btn-xs-remove{ padding: 5px 12px; font-size: 11px; border-radius: 6px; cursor: pointer;
   border: none; background: rgba(231,76,60,.1); color: #e74c3c; font-weight: 600; margin-top: 12px; }
 .btn-xs-remove:hover{ background: #e74c3c; color: #fff; }
-
 /* Profile form */
 .profile-form { max-width: 500px; }
 .profile-form .form-group { margin-bottom: 16px; }
-
 /* Booking status tabs */
 .tab-btns { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .tab-btn  { padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border);
@@ -133,21 +126,31 @@ tr:hover td { background: var(--bg-700); }
       {% if bookings %}
       <div class="table-wrap">
         <table id="bookingsTable">
-          <thead><tr><th>Ref</th><th>Property</th><th>Region</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Total</th><th>Status</th></tr></thead>
-          <tbody>
-          {% for b in bookings %}
-            <tr data-status="{{ b.status }}">
-              <td style="font-family:monospace;font-size:11px;">{{ b.booking_id }}</td>
-              <td>{{ b.property_title }}</td>
-              <td>{{ b.region }}</td>
-              <td>{{ b.checkin_date }}</td>
-              <td>{{ b.checkout_date }}</td>
-              <td>{{ b.guests_count }}</td>
-              <td>NPR {{ "{:,.0f}".format(b.total_amount) }}</td>
-              <td><span class="status status-{{ b.status }}">{{ b.status }}</span></td>
-            </tr>
-          {% endfor %}
-          </tbody>
+ <thead><tr><th>Ref</th><th>Property</th><th>Region</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Total</th><th>Status</th><th>Cancellation</th><th>Action</th></tr></thead>
+<tbody>
+{% for b in bookings %}
+  <tr data-status="{{ b.status }}">
+    <td style="font-family:monospace;font-size:11px;">{{ b.booking_id }}</td>
+    <td>{{ b.property_title }}</td>
+    <td>{{ b.region }}</td>
+    <td>{{ b.checkin_date }}</td>
+    <td>{{ b.checkout_date }}</td>
+    <td>{{ b.guests_count }}</td>
+    <td>NPR {{ "{:,.0f}".format(b.total_amount) }}</td>
+    <td><span class="status status-{{ b.status }}">{{ b.status }}</span></td>
+    <td>
+      {% if b.cancellation_status %}
+        <span class="status status-{{ 'cancelled' if b.cancellation_status=='approved' else 'pending' if b.cancellation_status=='requested' else 'completed' }}">{{ b.cancellation_status }}</span>
+      {% else %}—{% endif %}
+    </td>
+    <td>
+      {% if b.status == 'confirmed' and b.cancellation_status != 'requested' %}
+        <button class="btn-xs-remove" onclick="requestCancellation('{{ b.booking_id }}')">Cancel</button>
+      {% endif %}
+    </td>
+  </tr>
+{% endfor %}
+</tbody>
         </table>
       </div>
       {% else %}
@@ -206,16 +209,28 @@ tr:hover td { background: var(--bg-700); }
   </main>
 </div>
 {% endblock %}
-
 {% block extra_js %}
 <script>
+function requestCancellation(bookingId) {
+  if (!confirm('Request cancellation? The host must approve it.')) return;
+  fetch('/booking/cancel', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ booking_id: bookingId })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) { showToast(data.message, 'success'); location.reload(); }
+    else { showToast(data.error || 'Failed.', 'error'); }
+  })
+  .catch(() => showToast('Network error.', 'error'));
+}
 function showSection(id, link) {
   document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
   document.getElementById('sec-' + id).classList.add('active');
   link.classList.add('active');
 }
-
 function filterBookings(status, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -224,7 +239,6 @@ function filterBookings(status, btn) {
     r.style.display = (status === 'all' || r.dataset.status === status) ? '' : 'none';
   });
 }
-
 function removeWishlist(propertyId, btn) {
   fetch('/wishlist/toggle', {
     method: 'POST',
