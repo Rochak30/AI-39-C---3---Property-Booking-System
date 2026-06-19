@@ -143,8 +143,8 @@ class AuthController(BaseController):
         return render_template("register.html")
 
     def logout(self):
-    # If admin is impersonating, return to admin instead of
-    # destroying the real admin session.
+        # If admin is impersonating, return to admin instead of
+        # destroying the real admin session.
         if session.get("_impersonator_id"):
             return self.exit_view_as()
 
@@ -178,8 +178,6 @@ class AuthController(BaseController):
     # interactive (can submit forms / edit data as that user).
     # The admin's real identity is stashed in session under
     # "impersonator_*" keys and restored on exit_view_as().
-
-
 
     # ────────────────────────────────────────────────────────────
     # ADMIN DASHBOARD
@@ -1114,16 +1112,111 @@ class AuthController(BaseController):
             "Password updated! Please log in.", "success", "auth.login"
         )
 
+    # ────────────────────────────────────────────────────────────
+    # REVIEWS
+    # ────────────────────────────────────────────────────────────
+
+    def create_review(self):
+        if not self.is_logged_in():
+            return jsonify({"error": "Please login to submit a review."}), 401
+
+        data = request.get_json()
+        property_id = data.get("property_id")
+        rating = data.get("rating")
+        comment = data.get("comment", "").strip()
+        guest_id = session["user_id"]
+
+        if not property_id or not rating:
+            return jsonify({"error": "Missing property_id or rating."}), 400
+
+        try:
+            rating = int(rating)
+            if rating < 1 or rating > 5:
+                return jsonify({"error": "Rating must be between 1 and 5."}), 400
+        except ValueError:
+            return jsonify({"error": "Invalid rating."}), 400
+
+        if len(comment) < 2:
+            return jsonify({"error": "Comment must be at least 2 characters."}), 400
+
+        db = Database()
+
+        # Optional booking check (uncomment if needed)
+        # booking = db.fetch_one(
+        #     "SELECT 1 FROM bookings WHERE guest_id=%s AND property_id=%s AND status='completed'",
+        #     (guest_id, property_id)
+        # )
+        # if not booking:
+        #     db.close()
+        #     return jsonify({"error": "You must have a completed stay to review this property."}), 400
+
+        # ✅ Use execute_get_id directly for the INSERT
+        review_id = db.execute_get_id(
+            """INSERT INTO reviews (booking_id, guest_id, property_id, rating, comment, created_at)
+               VALUES (NULL, %s, %s, %s, %s, NOW())""",
+            (guest_id, property_id, rating, comment)
+        )
+        db.close()
+
+        return jsonify({
+            "success": True,
+            "review": {
+                "id": review_id,
+                "guest_name": session.get("user_name", "Anonymous"),
+                "rating": rating,
+                "comment": comment,
+                "created_at": datetime.now().strftime("%b %d, %Y")
+            }
+        })
+
+    def get_reviews(self, property_id):
+        """Fetch all reviews for a given property (public)."""
+        db = Database()
+        reviews = db.fetch_all(
+            """SELECT r.*, u.name AS guest_name
+               FROM reviews r
+               JOIN users u ON u.user_id = r.guest_id
+               WHERE r.property_id = %s
+               ORDER BY r.created_at DESC""",
+            (property_id,)
+        )
+        db.close()
+        return jsonify(reviews)
+# ════════════════════════════════════════════════════════════════
+# CONTACT — saves to DB
+# ════════════════════════════════════════════════════════════════
+
+    def contact(self):
+        if request.method == "POST":
+            name    = request.form.get("name", "").strip()
+            email   = request.form.get("email", "").strip()
+            subject = request.form.get("subject", "").strip()
+            message = request.form.get("message", "").strip()
+
+            if not name or not email or not subject or not message:
+                flash("All fields are required.", "danger")
+                return render_template("contact.html")
+
+            db = Database()
+            db.execute(
+                "INSERT INTO support_queries (name, email, subject, message, status) VALUES (%s,%s,%s,%s,'open')",
+                (name, email, subject, message)
+            )
+            db.close()
+            flash("Your message has been sent. We'll get back to you soon!", "success")
+            return redirect(url_for("auth.contact"))
+
+        return render_template("contact.html")
     # ════════════════════════════════════════════════════════════
     # STATIC PAGES
     # ════════════════════════════════════════════════════════════
 
     def home(self):
         return render_template("home.html")
-    
+
     def chatbot(self):
         return render_template("chatbot.html")
-    
+
     def about(self):
         return render_template("about.html")
 
