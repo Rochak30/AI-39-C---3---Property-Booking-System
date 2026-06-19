@@ -76,7 +76,6 @@
 }
 </style>
 {% endblock %}
-
 {% block content %}
 <div class="detail-page">
   <a href="/browse" class="btn btn-ghost btn-sm detail-back">← Back to Browse</a>
@@ -162,7 +161,6 @@
   </div>
 </div>
 {% endblock %}
-
 {% block extra_js %}
 <script>
 // Get property ID from URL: /property/1
@@ -171,7 +169,6 @@ let currentProp = PROPERTIES.find(p => p.id === propId);
 let calYear = 2026, calMonth = 5;
 let discountPct = 0;
 let checkinDate = null, checkoutDate = null;
-
 document.addEventListener('DOMContentLoaded', () => {
   if (!currentProp) { document.getElementById('detail-title').textContent = 'Property not found'; return; }
   loadDetail(currentProp);
@@ -182,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCalendar();
   calcPrice();
 });
-
 function loadDetail(p) {
   document.getElementById('detail-hero').textContent = p.icon;
   document.getElementById('detail-title').textContent = p.title;
@@ -218,7 +214,6 @@ function loadDetail(p) {
       <p class="review-text">${r.text}</p>
     </div>`).join('');
 }
-
 function renderCalendar() {
   const p = currentProp;
   const bookedDates = p ? p.bookedDates : [];
@@ -240,7 +235,6 @@ function renderCalendar() {
 }
 function prevMonth() { calMonth--; if(calMonth<1){calMonth=12;calYear--;} renderCalendar(); }
 function nextMonth() { calMonth++; if(calMonth>12){calMonth=1;calYear++;} renderCalendar(); }
-
 function calcPrice() {
   const ci = document.getElementById('book-checkin').value;
   const co = document.getElementById('book-checkout').value;
@@ -260,7 +254,6 @@ function calcPrice() {
   document.getElementById('total-amount').textContent = `NPR ${total.toLocaleString()}`;
   checkinDate = ci; checkoutDate = co;
 }
-
 function applyCoupon() {
   const code = document.getElementById('coupon-input').value.trim().toUpperCase();
   const coupons = { 'WELCOME10': 10, 'NEPAL20': 20 };
@@ -268,13 +261,11 @@ function applyCoupon() {
   else if (code === 'SAVE500') { showToast('✓ Coupon SAVE500 applied: NPR 500 off!', 'success'); }
   else { showToast('✕ Invalid or expired coupon code.', 'error'); }
 }
-
 function validateGuests() {
   const g = +document.getElementById('book-guests').value;
   const max = currentProp?.maxGuests || 10;
   document.getElementById('guests-error').style.display = g > max ? 'block' : 'none';
 }
-
 function bookNow() {
   if (!checkinDate || !checkoutDate) { showToast('Please select check-in and checkout dates.', 'error'); return; }
   const g = +document.getElementById('book-guests').value;
@@ -284,7 +275,6 @@ function bookNow() {
   const params = new URLSearchParams({ propId: currentProp.id, checkin: checkinDate, checkout: checkoutDate, guests: g, total });
   window.location.href = `/booking/confirm?${params.toString()}`;
 }
-
 function toggleWishlistDetail() {
   toggleWishlist(currentProp.id, null);
   const inW = wishlist.includes(currentProp.id);
