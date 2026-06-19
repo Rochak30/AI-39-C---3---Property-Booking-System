@@ -48,6 +48,13 @@ class AuthRoutes:
         self.bp.route("/guest/update-profile", methods=["POST"])(self.controller.guest_update_profile)
         # ── Wishlist (AJAX) ───────────────────────────────────
         self.bp.route("/wishlist/toggle", methods=["POST"])(self.controller.toggle_wishlist)
+        # ── Booking ──────────────────────────────────────────
+        self.bp.route("/booking/create",        methods=["POST"])(self.controller.create_booking)
+        self.bp.route("/booking/cancel",         methods=["POST"])(self.controller.cancel_booking)
+        self.bp.route("/booking/cancel-review",  methods=["POST"])(self.controller.review_cancellation)
+        self.bp.route("/booking/mark-complete",  methods=["POST"])(self.controller.mark_booking_complete)
+        self.bp.route("/booking/confirm", methods=["POST"])(self.controller.confirm_booking)
+        self.bp.route("/booking/reject",  methods=["POST"])(self.controller.reject_booking)
         # ── Browse ────────────────────────────────────────────
         self.bp.route("/browse", methods=["GET"])(self.controller.browse)
         # ── Property detail pages ─────────────────────────────
@@ -62,3 +69,5 @@ class AuthRoutes:
         # ── Misc ──────────────────────────────────────────────
         self.bp.route("/product_form",  methods=["GET", "POST"])(self.controller.product_form)
         return self.bp
+    
+    
