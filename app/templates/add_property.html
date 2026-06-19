@@ -666,28 +666,6 @@
         color: var(--red);
     }
 
-    .btn-save-draft {
-        padding: 16px 32px;
-        background: transparent;
-        color: var(--text-secondary);
-        border: 1.5px solid var(--border);
-        border-radius: 14px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .btn-save-draft:hover {
-        border-color: var(--teal);
-        color: var(--teal);
-    }
-
     .note-text {
         font-size: 12px;
         color: var(--text-muted);
@@ -1728,12 +1706,9 @@
         </div>
 
         <!-- ============================================================
-             SECTION 10: FORM ACTIONS
+             SECTION 10: FORM ACTIONS (FIXED)
              ============================================================ -->
         <div class="form-actions">
-            <button type="button" class="btn-save-draft" onclick="saveDraft()">
-                <i class="fas fa-save"></i> Save Draft
-            </button>
             <button type="submit" class="btn-submit" id="submitBtn">
                 <i class="fas fa-rocket"></i> Publish Property
             </button>
@@ -1750,7 +1725,7 @@
 </div>
 
 <!-- ============================================================
-     JAVASCRIPT
+     JAVASCRIPT – FIXED IMAGE UPLOAD
      ============================================================ -->
 <script>
     function switchLanguage() {
@@ -1793,46 +1768,54 @@
         sections.forEach(section => observer.observe(section));
     });
 
-    // ========== IMAGE UPLOAD (main gallery) ==========
+    // ========== IMAGE UPLOAD (USING URL.createObjectURL) ==========
     const imageInput = document.getElementById('imageInput');
     const imagePreviewGrid = document.getElementById('imagePreviewGrid');
     const MAX_IMAGES = 10;
-    let uploadedImages = [];
+    let uploadedFiles = [];  // store file objects and their object URLs
 
     imageInput.addEventListener('change', function(e) {
         const files = Array.from(e.target.files);
-        const remaining = MAX_IMAGES - uploadedImages.length;
-        if (files.length > remaining) { showToast(`You can upload ${remaining} more image(s).`, 'error'); return; }
+        const remaining = MAX_IMAGES - uploadedFiles.length;
+        if (files.length > remaining) {
+            showToast(`You can upload ${remaining} more image(s).`, 'error');
+            return;
+        }
         files.forEach(file => {
-            if (uploadedImages.length >= MAX_IMAGES) return;
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                uploadedImages.push({ file, dataUrl: ev.target.result });
-                renderImagePreviews();
-            };
-            reader.readAsDataURL(file);
+            if (uploadedFiles.length >= MAX_IMAGES) return;
+            // Create object URL for preview
+            const objectUrl = URL.createObjectURL(file);
+            uploadedFiles.push({ file, objectUrl });
         });
+        renderImagePreviews();
+        // Reset the input so the same files can be re-selected if needed
         e.target.value = '';
     });
 
     function renderImagePreviews() {
         imagePreviewGrid.innerHTML = '';
         const labels = ['Hero / Cover', 'Gallery 2', 'Gallery 3', 'Gallery 4', 'Gallery 5', 'Gallery 6', 'Room 1', 'Room 2', 'Room 3', 'Room 4'];
-        uploadedImages.forEach((img, index) => {
+        uploadedFiles.forEach((item, index) => {
             const div = document.createElement('div');
             div.className = 'image-preview-item';
-            const imgEl = document.createElement('img');
-            imgEl.src = img.dataUrl;
-            imgEl.alt = `Image ${index + 1}`;
+            const img = document.createElement('img');
+            img.src = item.objectUrl;
+            img.alt = `Image ${index + 1}`;
             const removeBtn = document.createElement('button');
             removeBtn.className = 'remove-image';
             removeBtn.innerHTML = '✕';
-            removeBtn.onclick = function(e) { e.stopPropagation(); uploadedImages.splice(index, 1); renderImagePreviews(); };
+            removeBtn.onclick = function(e) {
+                e.stopPropagation();
+                // Revoke object URL to free memory
+                URL.revokeObjectURL(item.objectUrl);
+                uploadedFiles.splice(index, 1);
+                renderImagePreviews();
+            };
             const badge = document.createElement('div');
             badge.style.cssText = `position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,0.7);color:#fff;padding:2px 7px;border-radius:10px;font-size:9px;font-weight:700;`;
             badge.textContent = labels[index] || `Photo ${index + 1}`;
             if (index === 0) { badge.style.background = 'var(--teal)'; badge.style.color = '#051209'; }
-            div.appendChild(imgEl);
+            div.appendChild(img);
             div.appendChild(removeBtn);
             div.appendChild(badge);
             imagePreviewGrid.appendChild(div);
@@ -1849,15 +1832,18 @@
         this.style.borderColor = 'var(--border)';
         this.style.background = 'var(--bg-600)';
         const files = Array.from(e.dataTransfer.files);
-        const remaining = MAX_IMAGES - uploadedImages.length;
-        if (files.length > remaining) { showToast(`You can upload ${remaining} more image(s).`, 'error'); return; }
+        const remaining = MAX_IMAGES - uploadedFiles.length;
+        if (files.length > remaining) {
+            showToast(`You can upload ${remaining} more image(s).`, 'error');
+            return;
+        }
         files.forEach(file => {
-            if (uploadedImages.length >= MAX_IMAGES) return;
+            if (uploadedFiles.length >= MAX_IMAGES) return;
             if (!file.type.startsWith('image/')) return;
-            const reader = new FileReader();
-            reader.onload = function(ev) { uploadedImages.push({ file, dataUrl: ev.target.result }); renderImagePreviews(); };
-            reader.readAsDataURL(file);
+            const objectUrl = URL.createObjectURL(file);
+            uploadedFiles.push({ file, objectUrl });
         });
+        renderImagePreviews();
     });
 
     // ========== HOST AVATAR UPLOAD ==========
@@ -1909,11 +1895,14 @@
         const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
         let filled = 0;
         inputs.forEach(input => { if (input.value && input.value.trim() !== '') filled++; });
-        if (uploadedImages.length >= 6) filled += 1;
-        const total = inputs.length + 1;
-        const percentage = Math.min((filled / total) * 100, 100);
-        document.getElementById('progressFill').style.width = percentage + '%';
+        // Count uploaded images (at least 6 for full progress)
+        const imgProgress = Math.min(uploadedFiles.length / 6, 1);
+        const totalInputs = inputs.length + 1;
+        const progress = Math.min(((filled + imgProgress) / totalInputs) * 100, 100);
+        document.getElementById('progressFill').style.width = progress + '%';
     }
+
+    // Update progress on input change
     document.querySelectorAll('input, select, textarea').forEach(el => {
         el.addEventListener('change', updateProgress);
         el.addEventListener('input', updateProgress);
@@ -1922,6 +1911,8 @@
     // ========== FORM VALIDATION ==========
     document.getElementById('addPropertyForm').addEventListener('submit', function(e) {
         e.preventDefault();
+
+        // Check required fields
         const required = this.querySelectorAll('[required]');
         let isValid = true;
         required.forEach(field => {
@@ -1932,13 +1923,53 @@
                 field.style.borderColor = '';
             }
         });
-        if (!isValid) { showToast('Please fill all required fields.', 'error'); return; }
-        if (uploadedImages.length < 6) { showToast('Please upload at least 6 photos (1 hero + 5 gallery images).', 'error'); return; }
-        this.submit();
-    });
 
-    // ========== SAVE DRAFT ==========
-    function saveDraft() { showToast('💾 Draft saved successfully!', 'success'); }
+        if (!isValid) {
+            showToast('Please fill all required fields.', 'error');
+            return;
+        }
+
+        // Check image count
+        if (uploadedFiles.length < 6) {
+            showToast('Please upload at least 6 photos (1 hero + 5 gallery images).', 'error');
+            return;
+        }
+
+        // Everything is good – submit the form
+        // We need to include the images in the FormData. Since we are using the file input,
+        // we must transfer the files from our uploadedFiles array back to the input.
+        // The simplest way: we already have the File objects in uploadedFiles.
+        // We'll create a new FormData and append all files.
+        const formData = new FormData(this);
+        // Remove existing images from formData (they are empty if input was reset)
+        formData.delete('images');
+        uploadedFiles.forEach(item => {
+            formData.append('images', item.file, item.file.name);
+        });
+
+        // Show loading state
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
+
+        fetch('/add-property', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text()) // or JSON if you return JSON
+        .then(html => {
+            // Replace current page with the response (which should be a redirect or success page)
+            document.open();
+            document.write(html);
+            document.close();
+        })
+        .catch(err => {
+            showToast('An error occurred. Please try again.', 'error');
+            console.error(err);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-rocket"></i> Publish Property';
+        });
+    });
 
     // ========== TOAST ==========
     function showToast(message, type) {
@@ -1957,11 +1988,6 @@
         setTimeout(() => toast.remove(), 4000);
     }
 
-    // ========== KEYBOARD SHORTCUT ==========
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveDraft(); }
-    });
-
     // ========== INIT ==========
     updateProgress();
 </script>
@@ -1969,12 +1995,11 @@
 {% endif %}
 
 <!-- ============================================================
-     FOOTER SECTION – as shown in screenshot (copied from index)
+     FOOTER SECTION
      ============================================================ -->
 <footer class="footer">
     <div class="footer-container">
         <div class="footer-grid">
-            <!-- Brand Column -->
             <div class="footer-brand">
                 <div class="footer-logo">
                     <i class="fas fa-home"></i>
@@ -1986,11 +2011,9 @@
                 <div class="footer-social">
                     <a href="https://www.facebook.com/laksmm99" class="social-link"><i class="fab fa-facebook-f"></i></a>
                     <a href="https://www.instagram.com/lil.starrrrrrre/" class="social-link"><i class="fab fa-instagram"></i></a>
-                   
                 </div>
             </div>
 
-            <!-- Explore Column -->
             <div class="footer-column">
                 <h4>EXPLORE</h4>
                 <ul class="footer-links">
@@ -1999,7 +2022,6 @@
                 </ul>
             </div>
 
-            <!-- Account Column -->
             <div class="footer-column">
                 <h4>ACCOUNT</h4>
                 <ul class="footer-links">
@@ -2008,7 +2030,6 @@
                 </ul>
             </div>
 
-            <!-- Support Column -->
             <div class="footer-column">
                 <h4>SUPPORT</h4>
                 <ul class="footer-links">
@@ -2018,7 +2039,6 @@
             </div>
         </div>
 
-        <!-- Footer Bottom -->
         <div class="footer-bottom">
             <div class="footer-copyright">
                 © 2026 Pahuna. All rights reserved.
@@ -2027,7 +2047,6 @@
                 <button class="lang-btn" onclick="switchLanguage()">
                     <i class="fas fa-globe"></i> EN / नेपाली
                 </button>
-               
             </div>
         </div>
     </div>
