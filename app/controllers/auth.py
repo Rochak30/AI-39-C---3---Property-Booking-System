@@ -4,7 +4,7 @@ from flask import render_template, request, flash, redirect, url_for, session, j
 from app.controllers.basecontroller import BaseController
 from app.models.usermodel import User
 from app.models.database import Database
-from app.services.email_service import send_reset_code
+from app.services.email_service import send_reset_code, send_booking_confirmation
 from app.auth import role_required
 import random
 import string
@@ -805,6 +805,65 @@ class AuthController(BaseController):
         db.close()
         return jsonify({"success": True, "message": "Booking rejected and cancelled."})
 
+        # ────────────────────────────────────────────────────────────
+    # NEW: Confirm and Reject booking (host actions)
+    # ────────────────────────────────────────────────────────────
+
+    def confirm_booking(self):
+        """Host confirms a pending booking and sends email to guest."""
+        if not self.is_logged_in() or session.get("role") != "host":
+            return jsonify({"error": "Unauthorized"}), 401
+
+        data = request.get_json(silent=True) or {}
+        booking_id = data.get("booking_id")
+        host_id = session["user_id"]
+
+        if not booking_id:
+            return jsonify({"error": "Missing booking_id"}), 400
+
+        db = Database()
+
+        # Fetch booking details including guest and property info
+        booking = db.fetch_one(
+            """SELECT b.*, u.email AS guest_email, u.name AS guest_name,
+                      p.title AS property_title
+               FROM bookings b
+               JOIN users u ON u.user_id = b.guest_id
+               JOIN properties p ON p.property_id = b.property_id
+               WHERE b.booking_id=%s AND p.host_id=%s""",
+            (booking_id, host_id)
+        )
+
+        if not booking:
+            db.close()
+            return jsonify({"error": "Booking not found or you are not the host."}), 404
+        if booking["status"] != "pending":
+            db.close()
+            return jsonify({"error": "Only pending bookings can be confirmed."}), 400
+
+        # Update status to confirmed
+        db.execute("UPDATE bookings SET status='confirmed' WHERE booking_id=%s", (booking_id,))
+        db.close()
+
+        # Send confirmation email to guest (fail silently if email fails – booking already confirmed)
+        try:
+            send_booking_confirmation(
+                guest_email=booking["guest_email"],
+                guest_name=booking["guest_name"],
+                property_title=booking["property_title"],
+                checkin_date=booking["checkin_date"].strftime("%B %d, %Y"),
+                checkout_date=booking["checkout_date"].strftime("%B %d, %Y"),
+                total_amount=float(booking["total_amount"]),
+                booking_ref=booking["booking_id"]
+            )
+        except Exception as e:
+            # Log the error but don't break the response
+            print(f"Booking confirmation email failed: {e}")
+
+        return jsonify({
+            "success": True,
+            "message": "Booking confirmed and email sent to guest."
+        })
     # ────────────────────────────────────────────────────────────
     # GUEST DASHBOARD
     # ────────────────────────────────────────────────────────────
