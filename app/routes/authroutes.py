@@ -72,8 +72,6 @@ class AuthRoutes:
         self.bp.route("/property/lakeside-comfort")(self.controller.property_lakeside_comfort)
         # ── Add property ──────────────────────────────────────
         self.bp.route("/add-property",  methods=["GET", "POST"])(self.controller.add_property)
-        # ── Misc ──────────────────────────────────────────────
-        self.bp.route("/product_form",  methods=["GET", "POST"])(self.controller.product_form)
         return self.bp
     
     
