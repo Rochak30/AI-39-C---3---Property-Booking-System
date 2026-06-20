@@ -243,7 +243,6 @@ class Database:
         """)
 
         # ── SUPPORT_QUERIES ───────────────────────────────────────────────────
-        # Added `message` column (was missing, but used in `auth.contact`)
         db.execute("""
             CREATE TABLE IF NOT EXISTS support_queries (
                 query_id   INT AUTO_INCREMENT PRIMARY KEY,
@@ -253,16 +252,6 @@ class Database:
                 message    TEXT,
                 status     VARCHAR(20)  NOT NULL DEFAULT 'open',
                 created_at DATETIME     DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-
-        # ── FAQ ───────────────────────────────────────────────────────────────
-        db.execute("""
-            CREATE TABLE IF NOT EXISTS faq (
-                faq_id   INT AUTO_INCREMENT PRIMARY KEY,
-                category VARCHAR(100) NOT NULL,
-                question VARCHAR(500) NOT NULL,
-                answer   TEXT         NOT NULL
             )
         """)
 
