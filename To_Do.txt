@@ -1,0 +1,127 @@
+For the app to work fully, few installations and changes need to be done (for new users)
+
+pip install reportlab
+pip install pymysql
+pip install pytest
+
+SQL Changes:
+-- 1. Drop the foreign key constraint
+ALTER TABLE reviews DROP FOREIGN KEY fk_rv_booking;
+
+-- 2. Make booking_id nullable (match the exact type of bookings.booking_id)
+--    If bookings.booking_id is INT (check with: SHOW COLUMNS FROM bookings LIKE 'booking_id';)
+ALTER TABLE reviews MODIFY booking_id INT NULL;
+
+
+--3. 
+UPDATE properties SET host_id = (SELECT user_id FROM users WHERE email = 'your_host_email') WHERE property_id BETWEEN 1 AND 6;
+
+Replace "your_host_email" with the host in your particular device 
+
+--4. 
+-- Cancellation tracking
+ALTER TABLE bookings
+  ADD COLUMN cancellation_status VARCHAR(20) DEFAULT NULL;
+
+-- Track who used which coupon (prevents reuse, survives logout)
+CREATE TABLE IF NOT EXISTS coupon_usage (
+    usage_id   INT AUTO_INCREMENT PRIMARY KEY,
+    coupon_id  INT NOT NULL,
+    guest_id   INT NOT NULL,
+    booking_id VARCHAR(30) NOT NULL,
+    used_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (coupon_id)  REFERENCES coupons(coupon_id)   ON DELETE CASCADE,
+    FOREIGN KEY (guest_id)   REFERENCES users(user_id)       ON DELETE CASCADE,
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    UNIQUE KEY (coupon_id, guest_id)
+);
+
+-- Your coupons table is currently empty — seed it
+INSERT INTO coupons (code, type, value, expiry_date, active) VALUES
+('WELCOME10', 'percentage', 10,  '2026-12-31', 1),
+('SAVE20',    'percentage', 20,  '2026-12-31', 1),
+('FLAT500',   'fixed',      500, '2026-12-31', 1),
+('SPECIAL50', 'percentage', 50,  '2026-12-31', 1);
+
+--5. 
+-- ============================================================
+-- Pahuna — Minimal Migration (Run Once)
+-- Only adds what is needed. Does NOT drop or rename anything.
+--
+-- Written to work on ANY MySQL/MariaDB version — does NOT rely on
+-- "ADD COLUMN IF NOT EXISTS" syntax, which only exists on MySQL
+-- 8.0.29+. Uses a stored-procedure check against information_schema
+-- instead, which works everywhere.
+-- ============================================================
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS add_column_if_missing $$
+CREATE PROCEDURE add_column_if_missing(
+    IN p_table  VARCHAR(64),
+    IN p_column VARCHAR(64),
+    IN p_def    VARCHAR(255)
+)
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME   = p_table
+          AND COLUMN_NAME  = p_column
+    ) THEN
+        SET @ddl = CONCAT('ALTER TABLE `', p_table, '` ADD COLUMN `', p_column, '` ', p_def);
+        PREPARE stmt FROM @ddl;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
+    END IF;
+END $$
+
+DELIMITER ;
+
+-- ── 1. Properties: add approval_status for the approval workflow ───────────
+CALL add_column_if_missing('properties', 'approval_status', "VARCHAR(20) NOT NULL DEFAULT 'pending'");
+
+-- ── 2. Support queries: add message + timestamp (contact form needs these) ─
+CALL add_column_if_missing('support_queries', 'message',    'TEXT DEFAULT NULL');
+CALL add_column_if_missing('support_queries', 'created_at', 'DATETIME DEFAULT CURRENT_TIMESTAMP');
+
+-- ── 3. Users: add phone for profile editing ──────────────────────────────
+CALL add_column_if_missing('users', 'phone', 'VARCHAR(20) DEFAULT NULL');
+
+-- Clean up — drop the helper procedure, it was only needed during migration
+DROP PROCEDURE IF EXISTS add_column_if_missing;
+
+-- ── 4. Seed the 6 existing hardcoded properties so the DB has real rows ───
+-- Uses admin (user_id=1) as placeholder host. Change host_id after real hosts register.
+INSERT IGNORE INTO properties (property_id, host_id, title, region, type, price_per_night, max_guests, status, approval_status)
+VALUES
+  (1, 1, 'Mountain View Homestay',  'Pokhara',    'Homestay',        2500.00, 4, 'active', 'approved'),
+  (2, 1, 'Thamel Heritage House',   'Kathmandu',  'Guesthouse',      3200.00, 6, 'active', 'approved'),
+  (3, 1, 'Jungle Retreat Chitwan',  'Chitwan',    'Entire Property', 4500.00, 8, 'active', 'approved'),
+  (4, 1, 'Lumbini Peace Villa',     'Lumbini',    'Private Room',    1800.00, 2, 'active', 'approved'),
+  (5, 1, 'Mustang Desert Lodge',    'Mustang',    'Entire Property', 5500.00, 6, 'active', 'approved'),
+  (6, 1, 'Lakeside Comfort Inn',    'Pokhara',    'Guesthouse',      2200.00, 4, 'active', 'approved');
+
+-- ── 5. Seed amenities (INSERT IGNORE is safe to re-run) ────────────────────
+INSERT IGNORE INTO amenities (name) VALUES
+  ('WiFi'), ('Parking'), ('Breakfast Included'), ('Hot Water'),
+  ('Kitchen Access'), ('Mountain View'), ('Air Conditioning'), ('Pet Friendly');
+
+-- ── 6. Link amenities to seeded properties ─────────────────────────────────
+INSERT IGNORE INTO property_amenities (property_id, amenity_id)
+  SELECT 1, amenity_id FROM amenities WHERE name IN ('WiFi','Breakfast Included','Mountain View','Hot Water');
+INSERT IGNORE INTO property_amenities (property_id, amenity_id)
+  SELECT 2, amenity_id FROM amenities WHERE name IN ('WiFi','Parking','Kitchen Access','Hot Water');
+INSERT IGNORE INTO property_amenities (property_id, amenity_id)
+  SELECT 3, amenity_id FROM amenities WHERE name IN ('Breakfast Included','Parking','Hot Water');
+INSERT IGNORE INTO property_amenities (property_id, amenity_id)
+  SELECT 4, amenity_id FROM amenities WHERE name IN ('WiFi','Hot Water');
+INSERT IGNORE INTO property_amenities (property_id, amenity_id)
+  SELECT 5, amenity_id FROM amenities WHERE name IN ('WiFi','Mountain View','Parking');
+INSERT IGNORE INTO property_amenities (property_id, amenity_id)
+  SELECT 6, amenity_id FROM amenities WHERE name IN ('WiFi','Parking','Hot Water');
+
+-- ============================================================
+-- Done. No tables dropped. No columns renamed.
+-- ============================================================
+
