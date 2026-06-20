@@ -1232,10 +1232,10 @@ class AuthController(BaseController):
                 return render_template("add_property.html")
 
             # --- Image uploads (saved to disk, but not stored in DB yet) ---
-            images = request.files.getlist("images")
-            if len(images) < 6:
-                flash("Please upload at least 6 images.", "danger")
-                return render_template("add_property.html")
+            # images = request.files.getlist("images")
+            # if len(images) < 6:
+            #     flash("Please upload at least 6 images.", "danger")
+            #     return render_template("add_property.html")
 
             import os
             from werkzeug.utils import secure_filename
@@ -1244,11 +1244,11 @@ class AuthController(BaseController):
             upload_dir = os.path.join("static", "uploads", "properties")
             os.makedirs(upload_dir, exist_ok=True)
 
-            for idx, img in enumerate(images):
-                if img.filename:
-                    filename = secure_filename(f"{session['user_id']}_{int(datetime.now().timestamp())}_{idx}_{img.filename}")
-                    path = os.path.join(upload_dir, filename)
-                    img.save(path)
+            # for idx, img in enumerate(images):
+            #     if img.filename:
+            #         filename = secure_filename(f"{session['user_id']}_{int(datetime.now().timestamp())}_{idx}_{img.filename}")
+            #         path = os.path.join(upload_dir, filename)
+            #         img.save(path)
 
             # --- Insert only the columns that exist in your current table ---
             db = Database()
